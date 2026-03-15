@@ -1,0 +1,39 @@
+{
+	"accessMode": {
+		"title": "Hiển thị quyền truy cập từ backend",
+		"description": "Trang hiện tại chỉ hỗ trợ lấy quyền hiển thị route thông qua API backend"
+	},
+	"adminVisible": {
+		"title": "Chỉ Admin thấy",
+		"description": "Trang này chỉ hiển thị cho tài khoản Admin"
+	},
+	"commonVisible": {
+		"title": "Người dùng thường",
+		"description": "Trang này chỉ hiển thị cho tài khoản người dùng thường"
+	},
+	"pageControl": {
+		"alertMessage": "Demo phân quyền truy cập trang",
+		"alertDescription": "Chuyển sang các tài khoản khác nhau và quan sát sự thay đổi trong submenu 'Permission Demonstration'.",
+		"cardTitle": "Chế độ phân quyền",
+		"frontendControl": "Phân quyền phía Frontend",
+		"backendControl": "Phân quyền phía Backend",
+		"switchToFrontend": "Chuyển sang chế độ Frontend",
+		"switchToBackend": "Chuyển sang chế độ Backend",
+		"switchAdmin": "Chuyển sang Admin",
+		"switchCommon": "Chuyển sang User thường",
+		"currentPermissionMode": "Chế độ quyền hiện tại:",
+		"accountSwitching": "Chuyển tài khoản",
+		"warningMessage": "Nếu enableFrontendAceess và enableBackendAceess giống nhau thì không thể chuyển chế độ route."
+	},
+	"buttonControl": {
+		"alertMessage": "Demo phân quyền nút",
+		"alertDescription": "Chuyển giữa các tài khoản để quan sát sự thay đổi của nút.",
+		"currentRole": "Vai trò hiện tại",
+		"switchAdmin": "Chuyển sang Admin",
+		"switchCommon": "Chuyển sang User thường",
+		"componentControlPermissionCodes": "Phân quyền theo component - mã quyền",
+		"componentControlRoles": "Phân quyền theo component - role",
+		"functionControlPermissionCodes": "Phân quyền theo function - mã quyền",
+		"functionControlRoles": "Phân quyền theo function - role"
+	}
+}

@@ -1,0 +1,7 @@
+{
+	"404SubTitle": "Xin lỗi, trang bạn truy cập không tồn tại.",
+	"403SubTitle": "Xin lỗi, bạn không có quyền truy cập trang này.",
+	"500SubTitle": "Xin lỗi, máy chủ đang gặp lỗi.",
+	"unknownComponentSubTitle": "Route hiện tại không có component tương ứng, vui lòng liên hệ developer.",
+	"pageErrorTitle": "Oops! Đã xảy ra lỗi!"
+}

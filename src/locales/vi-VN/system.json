@@ -1,0 +1,32 @@
+{
+	"role": {
+		"name": "Tên vai trò",
+		"id": "ID vai trò",
+		"addRole": "Thêm vai trò",
+		"editRole": "Sửa vai trò",
+		"assignMenu": "Phân quyền menu"
+	},
+
+	"user": {
+		"name": "Tên người dùng",
+		"id": "ID người dùng",
+		"addUser": "Thêm người dùng",
+		"editUser": "Sửa người dùng"
+	},
+
+	"menu": {
+		"name": "Tên menu",
+		"routePath": "Đường dẫn route",
+		"addMenu": "Thêm menu",
+		"editMenu": "Sửa menu",
+		"menuType": "Loại menu",
+		"menuOrder": "Thứ tự menu"
+	},
+
+	"dept": {
+		"name": "Tên phòng ban",
+		"id": "ID phòng ban",
+		"addDept": "Thêm phòng ban",
+		"editDept": "Sửa phòng ban"
+	}
+}

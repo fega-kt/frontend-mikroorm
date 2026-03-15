@@ -1,0 +1,15 @@
+{
+	"document": "Tài liệu",
+	"qa": "Hỏi đáp",
+	"setting": "Cài đặt",
+	"logoutTip": "Bạn có muốn đăng xuất?",
+	"viewAll": "Xem tất cả",
+	"notifications": "Thông báo",
+	"markAllAsRead": "Đánh dấu đã đọc",
+	"clearNotifications": "Xóa",
+
+	"versionMonitorTitle": "Thông báo cập nhật hệ thống",
+	"versionMonitorContent": "Phát hiện phiên bản mới của hệ thống, bạn có muốn tải lại trang không?",
+	"versionMonitorConfirm": "Tải lại ngay",
+	"versionMonitorCancel": "Để sau"
+}

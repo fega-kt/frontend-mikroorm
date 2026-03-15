@@ -1,0 +1,17 @@
+{
+	"title": "Tùy chọn",
+	"copyPreferences": "Sao chép cấu hình",
+	"copyPreferencesSuccessTitle": "Sao chép thành công",
+	"clearAndLogout": "Xóa cache và đăng xuất",
+
+	"theme": {
+		"title": "Giao diện",
+		"light": "Sáng",
+		"dark": "Tối"
+	},
+
+	"general": {
+		"title": "Cài đặt chung",
+		"language": "Ngôn ngữ"
+	}
+}
