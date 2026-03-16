@@ -1,15 +1,24 @@
 {
 	"document": "Tài liệu",
-	"qa": "Hỏi đáp",
+	"qa": "Hỏi & Đáp",
 	"setting": "Cài đặt",
-	"logoutTip": "Bạn có muốn đăng xuất?",
-	"viewAll": "Xem tất cả",
+	"logoutTip": "Bạn có muốn đăng xuất không?",
+	"viewAll": "Xem tất cả thông báo",
 	"notifications": "Thông báo",
-	"markAllAsRead": "Đánh dấu đã đọc",
+	"markAllAsRead": "Đánh dấu tất cả đã đọc",
 	"clearNotifications": "Xóa",
-
-	"versionMonitorTitle": "Thông báo cập nhật hệ thống",
-	"versionMonitorContent": "Phát hiện phiên bản mới của hệ thống, bạn có muốn tải lại trang không?",
+	"versionMonitorTitle": "Thông báo cập nhật phiên bản hệ thống",
+	"versionMonitorContent": "Đã phát hiện phiên bản mới của hệ thống, bạn có muốn tải lại trang ngay không?",
 	"versionMonitorConfirm": "Tải lại ngay",
-	"versionMonitorCancel": "Để sau"
+	"versionMonitorCancel": "Để sau",
+	"search": {
+		"placeholder": "Nhập từ khóa để tìm kiếm menu",
+		"title": "Tìm kiếm",
+		"select": "Chọn",
+		"navigate": "Đi tới",
+		"close": "Đóng",
+		"noResults": "Không tìm thấy kết quả",
+		"noRecent": "Không có lịch sử tìm kiếm",
+		"total": "Tổng {{total}} mục"
+	}
 }
