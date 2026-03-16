@@ -15,7 +15,7 @@ import { usePreferencesStore } from "#src/store/preferences";
 
 import { supabase } from "#src/store/supabaseClient";
 import { useUserStore } from "#src/store/user";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { matchRoutes, Navigate, useLocation, useNavigate, useSearchParams } from "react-router";
 import { removeDuplicateRoutes } from "./utils";
 
@@ -39,7 +39,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
 	const [searchParams] = useSearchParams();
 	const currentRoute = useCurrentRoute();
 	const { pathname, search } = useLocation();
-	const [isLogin, setIsLogin] = useState(false);
+	const [isLogin, setIsLogin] = useState<boolean | null>(null);
 	const [isServerHealth, setIsServerHealth] = useState(true);
 	const [hasErrorAuth, setHasErrorAuth] = useState(false);
 
@@ -79,100 +79,98 @@ export function AuthGuard({ children }: AuthGuardProps) {
 
 		return () => clearInterval(interval);
 	}, []);
-	/**
-	 * @zh 异步获取用户信息和路由配置
-	 * @en Fetch user information and route configuration asynchronously
-	 */
-	useEffect(() => {
-		async function fetchUserInfoAndRoutes() {
-			/**
-			 * @zh 登录跳转，防止闪烁
-			 * @en Login redirect, prevent flicker
-			 */
+
+	const fetchUserInfoAndRoutes = useCallback(async (hasLoading?: boolean) => {
+		/**
+		 * @zh 登录跳转，防止闪烁
+		 * @en Login redirect, prevent flicker
+		 */
+		if (hasLoading)
 			setupLoading();
 
-			/**
-			 * @zh 初始化一个空数组来存放 Promise 对象
-			 * @en Initialize an empty array to hold Promise objects
-			 */
-			const promises = [];
+		/**
+		 * @zh 初始化一个空数组来存放 Promise 对象
+		 * @en Initialize an empty array to hold Promise objects
+		 */
+		const promises = [];
 
-			/**
-			 * @zh 获取用户信息
-			 * @en Fetch user information
-			 */
-			promises.push(getUserInfo());
+		/**
+		 * @zh 获取用户信息
+		 * @en Fetch user information
+		 */
+		promises.push(getUserInfo());
 
-			/**
-			 * @zh 启用了后端路由，且路由从单独接口中获取，则发起请求
-			 * @en If backend routing is enabled and the route is obtained from a separate interface, then initiate a request
-			 */
-			if (enableBackendAccess && isSendRoutingRequest) {
-				promises.push(fetchAsyncRoutes());
-			}
+		/**
+		 * @zh 启用了后端路由，且路由从单独接口中获取，则发起请求
+		 * @en If backend routing is enabled and the route is obtained from a separate interface, then initiate a request
+		 */
+		if (enableBackendAccess && isSendRoutingRequest) {
+			promises.push(fetchAsyncRoutes());
+		}
 
-			const results = await Promise.allSettled(promises);
-			const [userInfoResult, routeResult] = results;
-			const routes = [];
-			const latestRoles = [];
-			/**
-			 * @zh 从用户接口中获取角色信息
-			 * @en Fetch role information from the user interface
-			 */
+		const results = await Promise.allSettled(promises);
+		const [userInfoResult, routeResult] = results;
+		const routes = [];
+		const latestRoles = [];
+		/**
+		 * @zh 从用户接口中获取角色信息
+		 * @en Fetch role information from the user interface
+		 */
 
-			if (userInfoResult.status === "fulfilled" && "roles" in userInfoResult.value) {
-				latestRoles.push(...userInfoResult.value?.roles ?? []);
-			}
-			/**
-			 * @zh 启用了后端路由且路由从用户接口中获取
-			 * @en If backend routing is enabled and the route is obtained from the user interface
-			 */
-			if (enableBackendAccess && !isSendRoutingRequest && userInfoResult.status === "fulfilled" && "menus" in userInfoResult.value) {
-				routes.push(...await generateRoutesFromBackend(userInfoResult.value?.menus ?? []));
-			}
-			/**
-			 * @zh 启用了后端路由且路由从单独接口中获取
-			 * @en If backend routing is enabled and the route is obtained from a separate interface
-			 */
-			if (enableBackendAccess && isSendRoutingRequest && routeResult.status === "fulfilled" && "result" in routeResult.value) {
-				routes.push(...await generateRoutesFromBackend(routeResult.value?.result ?? []));
-			}
+		if (userInfoResult.status === "fulfilled" && "roles" in userInfoResult.value) {
+			latestRoles.push(...userInfoResult.value?.roles ?? []);
+		}
+		/**
+		 * @zh 启用了后端路由且路由从用户接口中获取
+		 * @en If backend routing is enabled and the route is obtained from the user interface
+		 */
+		if (enableBackendAccess && !isSendRoutingRequest && userInfoResult.status === "fulfilled" && "menus" in userInfoResult.value) {
+			routes.push(...await generateRoutesFromBackend(userInfoResult.value?.menus ?? []));
+		}
+		/**
+		 * @zh 启用了后端路由且路由从单独接口中获取
+		 * @en If backend routing is enabled and the route is obtained from a separate interface
+		 */
+		if (enableBackendAccess && isSendRoutingRequest && routeResult.status === "fulfilled" && "result" in routeResult.value) {
+			routes.push(...await generateRoutesFromBackend(routeResult.value?.result ?? []));
+		}
 
-			/**
-			 * @zh 启用了前端路由
-			 * @en If frontend routing is enabled
-			 */
-			if (enableFrontendAceess) {
-				routes.push(...generateRoutesByFrontend(accessRoutes, latestRoles));
-			}
+		/**
+		 * @zh 启用了前端路由
+		 * @en If frontend routing is enabled
+		 */
+		if (enableFrontendAceess) {
+			routes.push(...generateRoutesByFrontend(accessRoutes, latestRoles));
+		}
 
-			const uniqueRoutes = removeDuplicateRoutes(routes);
-			setAccessStore(uniqueRoutes);
+		const uniqueRoutes = removeDuplicateRoutes(routes);
+		setAccessStore(uniqueRoutes);
 
-			const hasError = results.some(result => result.status === "rejected");
-			/**
-			 * @zh 网络请求失败，跳转到 500 页面
-			 * @en Network request failed, redirect to 500 page
-			 */
-			setHasErrorAuth(!!hasError);
-			if (hasError) {
-				return;
-			}
+		const hasError = results.some(result => result.status === "rejected");
+		/**
+		 * @zh 网络请求失败，跳转到 500 页面
+		 * @en Network request failed, redirect to 500 page
+		 */
+		setHasErrorAuth(!!hasError);
+		if (hasError) {
+			return;
+		}
 
-			/**
-			 *
-			 * @zh 开启动态路由条件下需要替换当前路由？
-			 * 1. 浏览器导航进入动态路由地址，例如 /system/user
-			 * 2. 动态路由未添加到路由，所以地址栏中依然是 /system/user 但匹配到的路由是 fallback (path = "*") 路由
-			 * 3. 添加完动态路由后，使用 replace 替换当前路由，触发程序重新匹配到 /system/user 路由
-			 *
-			 * Refer：https://router.vuejs.org/guide/advanced/dynamic-routing#Adding-routes
-			 *
-			 * @en Under the condition of dynamic routing, do you need to replace the current route?
-			 * 1. Browser navigation into a dynamic routing address, such as /system/user
-			 * 2. The dynamic route is not added to the route, so the address bar is still /system/user but the matched route is the fallback (path = "*") route
-			 * 3. After adding the dynamic route, use replace to replace the current route and trigger the program to match /system/user again
-			 */
+		/**
+		 *
+		 * @zh 开启动态路由条件下需要替换当前路由？
+		 * 1. 浏览器导航进入动态路由地址，例如 /system/user
+		 * 2. 动态路由未添加到路由，所以地址栏中依然是 /system/user 但匹配到的路由是 fallback (path = "*") 路由
+		 * 3. 添加完动态路由后，使用 replace 替换当前路由，触发程序重新匹配到 /system/user 路由
+		 *
+		 * Refer：https://router.vuejs.org/guide/advanced/dynamic-routing#Adding-routes
+		 *
+		 * @en Under the condition of dynamic routing, do you need to replace the current route?
+		 * 1. Browser navigation into a dynamic routing address, such as /system/user
+		 * 2. The dynamic route is not added to the route, so the address bar is still /system/user but the matched route is the fallback (path = "*") route
+		 * 3. After adding the dynamic route, use replace to replace the current route and trigger the program to match /system/user again
+		 */
+		if (location.pathname !== pathname) {
 			navigate(`${pathname}${search}`, {
 				replace: true,
 				/**
@@ -182,22 +180,28 @@ export function AuthGuard({ children }: AuthGuardProps) {
 				flushSync: true,
 			});
 		}
-		/**
-		 * @zh 只有在以下条件下才执行获取用户信息和路由的逻辑
-		 * 1. 非路由白名单
-		 * 2. 已登录
-		 * 3. 未获取到用户信息和路由信息
-		 *
-		 * @en The logic of obtaining user information and routes is only executed under the following conditions
-		 * 1. Not in the route whitelist
-		 * 2. Logged in
-		 * 3. Unable to obtain user information and route information
-		 *
-		 */
-		if (!whiteRouteNames.includes(pathname) && isLogin && !isAuthorized) {
-			fetchUserInfoAndRoutes();
-		}
+	}, []);
+	/**
+	 * @zh 异步获取用户信息和路由配置
+	 * @en Fetch user information and route configuration asynchronously
+	 */
+	useEffect(() => {
+		if (whiteRouteNames.includes(pathname) || !isLogin || isAuthorized)
+			return;
+
+		fetchUserInfoAndRoutes(true);
 	}, [pathname, isLogin, isAuthorized]);
+
+	useEffect(() => {
+		if (!isLogin)
+			return;
+
+		const interval = setInterval(() => {
+			fetchUserInfoAndRoutes();
+		}, 5 * 60 * 1000);
+
+		return () => clearInterval(interval);
+	}, [isLogin]);
 
 	if (!isServerHealth || hasErrorAuth) {
 		return <Exception500 hiddenBtnBackHome />;
@@ -218,7 +222,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
 	 * @en Processing logic under unlogged conditions
 	 */
 	/* --------------- Start ------------------ */
-	if (!isLogin) {
+	if (isLogin === false) {
 		hideLoading();
 		// 未登录且目标页不是登录页，则跳转到登录页
 		if (pathname !== loginPath) {
