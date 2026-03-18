@@ -6,12 +6,12 @@ import { create } from "zustand";
 const initialState = {
 	id: "",
 	avatar: "",
-	username: "",
-	email: "",
+	fullName: "",
+	loginName: "",
 	phoneNumber: "",
+	workEmail: "",
 	description: "",
-	roles: [],
-	// menus: [],
+	permissions: [],
 };
 
 type UserState = UserInfoType;
