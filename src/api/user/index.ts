@@ -24,5 +24,5 @@ export interface RefreshTokenResult {
 }
 
 export async function fetchRefreshToken() {
-	return supabase.auth.getSession();
+	return supabase.auth.refreshSession();
 }

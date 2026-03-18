@@ -13,11 +13,11 @@ export interface LoginInfo {
 export interface UserInfoType {
 	id: string
 	avatar: string
-	username: string
-	email: string
-	phoneNumber: string
+	loginName: string
+	workEmail: string
+	phoneNumber?: string
 	description: string
-	roles: Array<string>
+	permissions: Array<string>
 	// 路由可以在此处动态添加
 	menus?: AppRouteRecordRaw[]
 }
