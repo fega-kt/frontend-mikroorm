@@ -46,7 +46,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
 	const isAuthorized = useUserStore(state => Boolean(state.id));
 
 	const getUserInfo = useUserStore(state => state.getUserInfo);
-	const userRoles = useUserStore(state => state.roles);
+	const userPermissions = useUserStore(state => state.permissions);
 	const { setAccessStore, isAccessChecked, routeList } = useAccessStore();
 	const { enableBackendAccess, enableFrontendAceess } = usePreferencesStore(state => state);
 
@@ -111,14 +111,14 @@ export function AuthGuard({ children }: AuthGuardProps) {
 		const results = await Promise.allSettled(promises);
 		const [userInfoResult, routeResult] = results;
 		const routes = [];
-		const latestRoles = [];
+		const latestPermssions: string[] = [];
 		/**
 		 * @zh 从用户接口中获取角色信息
 		 * @en Fetch role information from the user interface
 		 */
 
-		if (userInfoResult.status === "fulfilled" && "roles" in userInfoResult.value) {
-			latestRoles.push(...userInfoResult.value?.roles ?? []);
+		if (userInfoResult.status === "fulfilled" && "permissions" in userInfoResult.value) {
+			latestPermssions.push(...userInfoResult.value?.permissions ?? []);
 		}
 		/**
 		 * @zh 启用了后端路由且路由从用户接口中获取
@@ -140,7 +140,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
 		 * @en If frontend routing is enabled
 		 */
 		if (enableFrontendAceess) {
-			routes.push(...generateRoutesByFrontend(accessRoutes, latestRoles));
+			routes.push(...generateRoutesByFrontend(accessRoutes, latestPermssions));
 		}
 
 		const uniqueRoutes = removeDuplicateRoutes(routes);
@@ -356,7 +356,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
 	 * @zh 角色权限校验
 	 * @en Role permission verification
 	 */
-	const hasRoutePermission = userRoles.some(role => routeRoles?.includes(role));
+	const hasRoutePermission = userPermissions.some(role => routeRoles?.includes(role));
 	/**
 	 * @zh 权限校验逻辑：
 	 * 1. 如果路由上没有携带 roles，视为无权限路由，等同于 ignoreAccess 为 true

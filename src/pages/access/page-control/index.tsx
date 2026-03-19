@@ -25,16 +25,16 @@ export default function PageControl() {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { enableFrontendAceess, enableBackendAccess, setPreferences } = usePreferences();
-	const { roles: userRoles } = useUserStore();
+	const { permissions: userPermissions } = useUserStore();
 	const resetAllStores = useAuthStore(state => state.reset);
 	const authLogin = useAuthStore(state => state.login);
 
 	function roleButtonType(role: string) {
-		return userRoles.includes(role) ? "primary" : "default";
+		return userPermissions.includes(role) ? "primary" : "default";
 	}
 
 	function changeAccount(role: string) {
-		if (userRoles.includes(role)) {
+		if (userPermissions.includes(role)) {
 			return;
 		}
 
