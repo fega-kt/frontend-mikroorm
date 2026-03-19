@@ -25,16 +25,16 @@ export default function ButtonControl() {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { hasAccessByCodes, hasAccessByRoles } = useAccess();
-	const { roles: userRoles } = useUserStore();
+	const { permissions: userPermissions } = useUserStore();
 	const resetAllStores = useAuthStore(state => state.reset);
 	const authLogin = useAuthStore(state => state.login);
 
 	function roleButtonType(role: string) {
-		return userRoles.includes(role) ? "primary" : "default";
+		return userPermissions.includes(role) ? "primary" : "default";
 	}
 
 	function changeAccount(role: string) {
-		if (userRoles.includes(role)) {
+		if (userPermissions.includes(role)) {
 			return;
 		}
 
@@ -55,7 +55,7 @@ export default function ButtonControl() {
 					<>
 						{t("access.buttonControl.currentRole")}
 						&nbsp;&nbsp;
-						<Typography.Text mark code>{userRoles}</Typography.Text>
+						<Typography.Text mark code>{userPermissions}</Typography.Text>
 					</>
 				)}
 			>

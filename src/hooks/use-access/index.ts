@@ -12,7 +12,7 @@ export * from "./constants";
  */
 export function useAccess() {
 	const matches = useMatches();
-	const { roles: userRoles } = useUserStore();
+	const { permissions: userPermissions } = useUserStore();
 	const currentRoute = matches[matches.length - 1];
 
 	/**
@@ -50,7 +50,7 @@ export function useAccess() {
 	 * @returns boolean 是否具有指定权限
 	 */
 	const hasAccessByRoles = (roles?: string | Array<string>) => {
-		if (!roles || !userRoles) {
+		if (!roles || !userPermissions) {
 			return false;
 		}
 		roles = isString(roles) ? [roles] : roles;
@@ -63,7 +63,7 @@ export function useAccess() {
 				}
 			}
 		}
-		const isAuth = userRoles.some(item => roles.includes(item.toLowerCase()));
+		const isAuth = userPermissions.some(item => roles.includes(item.toLowerCase()));
 		return isAuth;
 	};
 
