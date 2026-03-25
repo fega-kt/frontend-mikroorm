@@ -59,7 +59,7 @@ export default function LayoutRoot() {
 			const newTitle = isString(documentTitle) ? documentTitle : documentTitle?.props?.children;
 			document.title = t(newTitle) || document.title;
 		}
-	}, [enableDynamicTitle, language, location]);
+	}, [enableDynamicTitle, language, location, isAccessChecked, isAuthorized, isLogin]);
 
 	/* tailwind theme */
 	useEffect(() => {
