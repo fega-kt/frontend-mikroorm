@@ -173,7 +173,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
 			 */
 			flushSync: true,
 		});
-	}, []);
+	}, [enableBackendAccess, enableFrontendAceess, getUserInfo, navigate, pathname, search, setAccessStore]);
 	/**
 	 * @zh 异步获取用户信息和路由配置
 	 * @en Fetch user information and route configuration asynchronously
@@ -183,7 +183,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
 			return;
 
 		fetchUserInfoAndRoutes(true);
-	}, [pathname, isLogin, isAuthorized]);
+	}, [pathname, isLogin, isAuthorized, fetchUserInfoAndRoutes]);
 
 	useEffect(() => {
 		if (!isLogin)
@@ -194,7 +194,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
 		}, 5 * 60 * 1000);
 
 		return () => clearInterval(interval);
-	}, [isLogin]);
+	}, [fetchUserInfoAndRoutes, isLogin]);
 
 	if (!isServerHealth || hasErrorAuth) {
 		return <Exception500 hiddenBtnBackHome />;
