@@ -9,6 +9,7 @@ export default antfu({
 		"jsonc/indent": ["error", "tab"],
 		"style/no-tabs": "off",
 		"style/jsx-indent-props": ["error", "tab"],
-		"react-hooks/exhaustive-deps": "off",
+		"react-hooks/exhaustive-deps": "error",
+		"unused-imports/no-unused-imports": "error",
 	},
 });
