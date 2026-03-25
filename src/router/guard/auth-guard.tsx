@@ -158,28 +158,21 @@ export function AuthGuard({ children }: AuthGuardProps) {
 
 		/**
 		 *
-		 * @zh 开启动态路由条件下需要替换当前路由？
+		 * @zh 添加完动态路由后，使用 replace 替换当前路由，触发程序重新匹配到正确的路由
 		 * 1. 浏览器导航进入动态路由地址，例如 /system/user
 		 * 2. 动态路由未添加到路由，所以地址栏中依然是 /system/user 但匹配到的路由是 fallback (path = "*") 路由
 		 * 3. 添加完动态路由后，使用 replace 替换当前路由，触发程序重新匹配到 /system/user 路由
 		 *
-		 * Refer：https://router.vuejs.org/guide/advanced/dynamic-routing#Adding-routes
-		 *
-		 * @en Under the condition of dynamic routing, do you need to replace the current route?
-		 * 1. Browser navigation into a dynamic routing address, such as /system/user
-		 * 2. The dynamic route is not added to the route, so the address bar is still /system/user but the matched route is the fallback (path = "*") route
-		 * 3. After adding the dynamic route, use replace to replace the current route and trigger the program to match /system/user again
+		 * @en After adding dynamic routes, use replace to force the router to re-match the current URL against the newly added routes
 		 */
-		if (location.pathname !== pathname) {
-			navigate(`${pathname}${search}`, {
-				replace: true,
-				/**
-				 * @zh 保证替换路由前不会显示 404 页面（登录页面，网速切换为 3G 会闪烁显示 404 页面）
-				 * @en Ensure that the 404 page will not be displayed before replacing the route
-				 */
-				flushSync: true,
-			});
-		}
+		navigate(`${pathname}${search}`, {
+			replace: true,
+			/**
+			 * @zh 保证替换路由前不会显示 404 页面（登录页面，网速切换为 3G 会闪烁显示 404 页面）
+			 * @en Ensure that the 404 page will not be displayed before replacing the route
+			 */
+			flushSync: true,
+		});
 	}, []);
 	/**
 	 * @zh 异步获取用户信息和路由配置
