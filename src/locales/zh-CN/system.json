@@ -35,8 +35,12 @@
 	},
 	"dept": {
 		"name": "部门名称",
+		"code": "部门编码",
 		"id": "部门标识",
 		"addDept": "新增部门",
-		"editDept": "编辑部门"
+		"editDept": "编辑部门",
+		"parentDept": "上级部门",
+		"parentCode": "路径编码",
+		"userCount": "人员数量"
 	}
 }
