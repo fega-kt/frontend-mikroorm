@@ -69,6 +69,7 @@ export default function LayoutRoot() {
 		else {
 			toggleHtmlClass("dark").remove();
 		}
+		document.documentElement.style.colorScheme = isDark ? "dark" : "light";
 	}, [isDark]);
 
 	/**
