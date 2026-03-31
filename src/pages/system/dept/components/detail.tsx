@@ -1,4 +1,4 @@
-import type { DeptItemType } from "#src/api/system/dept";
+import type { DepartmentEntity } from "#src/api/system/dept";
 import { fetchAddDeptItem, fetchUpdateDeptItem } from "#src/api/system/dept";
 import { handleTree } from "#src/utils/tree";
 
@@ -14,9 +14,9 @@ import { useTranslation } from "react-i18next";
 
 interface DetailProps {
 	title: React.ReactNode
-	flatDeptList: DeptItemType[]
+	flatDeptList: DepartmentEntity[]
 	open: boolean
-	detailData: Partial<DeptItemType>
+	detailData: Partial<DepartmentEntity>
 	onCloseChange: () => void
 	refreshTable?: () => void
 }
@@ -30,9 +30,9 @@ export function Detail({
 	refreshTable,
 }: DetailProps) {
 	const { t } = useTranslation();
-	const [form] = Form.useForm<DeptItemType>();
+	const [form] = Form.useForm<DepartmentEntity>();
 
-	const onFinish = async (values: DeptItemType) => {
+	const onFinish = async (values: DepartmentEntity) => {
 		if (detailData.id) {
 			await fetchUpdateDeptItem(values);
 			window.$message?.success(t("common.updateSuccess"));
@@ -52,7 +52,7 @@ export function Detail({
 	}, [detailData, form, open]);
 
 	return (
-		<ModalForm<DeptItemType>
+		<ModalForm<DepartmentEntity>
 			title={title}
 			open={open}
 			onOpenChange={(visible) => {
@@ -91,8 +91,11 @@ export function Detail({
 			/>
 
 			<ProFormCascader
-				name="parentId"
+				name="parent"
 				label={t("system.dept.parentDept")}
+				transform={(value: DepartmentEntity[]) => ({
+					parent: value?.[value.length - 1],
+				})}
 				fieldProps={{
 					showSearch: true,
 					autoClearSearchValue: true,

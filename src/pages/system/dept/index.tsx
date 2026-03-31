@@ -1,4 +1,4 @@
-import type { DeptItemType } from "#src/api/system/dept";
+import type { DepartmentEntity } from "#src/api/system/dept";
 import type { ActionType, ProColumns, ProCoreActionType } from "@ant-design/pro-components";
 
 import { fetchDeleteDeptItem, fetchDeptList } from "#src/api/system/dept";
@@ -6,34 +6,35 @@ import { BasicButton } from "#src/components/basic-button";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
 import { accessControlCodes, useAccess } from "#src/hooks/use-access";
-import { handleTree } from "#src/utils/tree";
+import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
 
+import { handleTree } from "#src/utils/tree";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Popconfirm } from "antd";
 import { useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
 
+import { useTranslation } from "react-i18next";
 import { Detail } from "./components/detail";
 import { getConstantColumns } from "./constants";
 
 export default function Dept() {
 	const { t } = useTranslation();
-	const { hasAccessByCodes } = useAccess();
+	const { canAccess } = useAccess();
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [title, setTitle] = useState("");
-	const [detailData, setDetailData] = useState<Partial<DeptItemType>>({});
-	const [flatDeptList, setFlatDeptList] = useState<DeptItemType[]>([]);
+	const [detailData, setDetailData] = useState<Partial<DepartmentEntity>>({});
+	const [flatDeptList, setFlatDeptList] = useState<DepartmentEntity[]>([]);
 
 	const actionRef = useRef<ActionType>(null);
 
-	const handleDeleteRow = async (id: number, action?: ProCoreActionType<object>) => {
+	const handleDeleteRow = async (id: string, action?: ProCoreActionType<object>) => {
 		const responseData = await fetchDeleteDeptItem(id);
 		await action?.reload?.();
 		window.$message?.success(`${t("common.deleteSuccess")} id = ${responseData.result}`);
 	};
 
-	const columns: ProColumns<DeptItemType>[] = [
+	const columns: ProColumns<DepartmentEntity>[] = [
 		...getConstantColumns(t),
 		{
 			title: t("common.action"),
@@ -47,7 +48,7 @@ export default function Dept() {
 						key="editable"
 						type="link"
 						size="small"
-						disabled={!hasAccessByCodes(accessControlCodes.update)}
+						disabled={!canAccess(accessControlCodes.update)}
 						onClick={async () => {
 							setIsOpen(true);
 							setTitle(t("system.dept.editDept"));
@@ -63,7 +64,7 @@ export default function Dept() {
 						okText={t("common.confirm")}
 						cancelText={t("common.cancel")}
 					>
-						<BasicButton type="link" size="small" disabled={!hasAccessByCodes(accessControlCodes.delete)}>{t("common.delete")}</BasicButton>
+						<BasicButton type="link" size="small" disabled={!canAccess(accessControlCodes.delete)}>{t("common.delete")}</BasicButton>
 					</Popconfirm>,
 				];
 			},
@@ -81,18 +82,18 @@ export default function Dept() {
 
 	return (
 		<BasicContent className="h-full">
-			<BasicTable<DeptItemType>
+			<BasicTable<DepartmentEntity>
 				adaptive
 				columns={columns}
 				actionRef={actionRef}
 				request={async (params) => {
 					const responseData = await fetchDeptList(params);
-					const deptTree = handleTree(responseData.result.list);
-					setFlatDeptList(responseData.result.list);
+					const deptTree = handleTree(responseData.result);
+					setFlatDeptList(responseData.result);
 					return {
 						...responseData,
 						data: deptTree,
-						total: responseData.result.total,
+						total: responseData.result.length,
 					};
 				}}
 				headerTitle={t("common.menu.dept")}
@@ -101,7 +102,7 @@ export default function Dept() {
 						key="add-dept"
 						icon={<PlusCircleOutlined />}
 						type="primary"
-						disabled={!hasAccessByCodes(accessControlCodes.add)}
+						disabled={!canAccess(PermissionType.CreateDeparment)}
 						onClick={() => {
 							setIsOpen(true);
 							setTitle(t("system.dept.addDept"));
