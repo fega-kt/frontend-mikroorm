@@ -30,4 +30,7 @@ interface ApiTableRequest extends Record<string, any> {
 	current?: number
 }
 
+interface ApiListAllResponse<T> extends ApiResponse<T> {
+	result: T[]
+}
 type Recordable<T = any> = Record<string, T>;
