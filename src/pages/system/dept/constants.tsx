@@ -1,10 +1,10 @@
-import type { DeptItemType } from "#src/api/system/dept";
+import type { DepartmentEntity } from "#src/api/system/dept";
 import type { ProColumns } from "@ant-design/pro-components";
 import type { TFunction } from "i18next";
 
 import { Tag } from "antd";
 
-export function getConstantColumns(t: TFunction<"translation", undefined>): ProColumns<DeptItemType>[] {
+export function getConstantColumns(t: TFunction<"translation", undefined>): ProColumns<DepartmentEntity>[] {
 	return [
 		{
 			dataIndex: "index",
@@ -78,15 +78,15 @@ export function getConstantColumns(t: TFunction<"translation", undefined>): ProC
 		},
 		{
 			title: t("common.createTime"),
-			dataIndex: "createTime",
+			dataIndex: "createdAt",
 			valueType: "date",
 			width: 150,
 			search: false,
 		},
 		{
 			title: t("common.updateTime"),
-			dataIndex: "updateTime",
-			valueType: "dateTime",
+			dataIndex: "updatedAt",
+			valueType: "date",
 			width: 170,
 			search: false,
 		},

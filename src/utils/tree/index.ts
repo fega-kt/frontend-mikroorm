@@ -42,7 +42,7 @@ export function handleTree(data: any[], id?: string, parentId?: string, children
 	}
 
 	function adaptToChildrenList(o: Record<string, any>) {
-		if (childrenListMap[o[config.id]] !== null) {
+		if (childrenListMap[o[config.id]]) {
 			o[config.childrenList] = childrenListMap[o[config.id]];
 		}
 		if (o[config.childrenList]) {
