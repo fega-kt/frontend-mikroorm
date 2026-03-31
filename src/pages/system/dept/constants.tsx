@@ -6,12 +6,7 @@ import { Tag } from "antd";
 
 export function getConstantColumns(t: TFunction<"translation", undefined>): ProColumns<DepartmentEntity>[] {
 	return [
-		{
-			dataIndex: "index",
-			title: t("common.index"),
-			valueType: "indexBorder",
-			width: 80,
-		},
+
 		{
 			title: t("system.dept.name"),
 			dataIndex: "name",

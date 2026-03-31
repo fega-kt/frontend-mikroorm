@@ -34,7 +34,7 @@ export function Detail({
 
 	const onFinish = async (values: DepartmentEntity) => {
 		if (detailData.id) {
-			await fetchUpdateDeptItem(values);
+			await fetchUpdateDeptItem(detailData.id, values);
 			window.$message?.success(t("common.updateSuccess"));
 		}
 		else {
@@ -76,7 +76,6 @@ export function Detail({
 			<ProFormText
 				allowClear
 				rules={[{ required: true }]}
-				width="md"
 				name="name"
 				label={t("system.dept.name")}
 				tooltip={t("form.length", { length: 50 })}
@@ -85,16 +84,15 @@ export function Detail({
 			<ProFormText
 				allowClear
 				rules={[{ required: true }]}
-				width="md"
 				name="code"
 				label={t("system.dept.code")}
 			/>
 
 			<ProFormCascader
-				name="parent"
+				name="parentId"
 				label={t("system.dept.parentDept")}
 				transform={(value: DepartmentEntity[]) => ({
-					parent: value?.[value.length - 1],
+					parentId: value?.[value.length - 1],
 				})}
 				fieldProps={{
 					showSearch: true,

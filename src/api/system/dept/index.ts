@@ -14,8 +14,8 @@ export function fetchAddDeptItem(data: DepartmentEntity) {
 }
 
 /* 修改部门 */
-export function fetchUpdateDeptItem(data: DepartmentEntity) {
-	return request.put<ApiResponse<string>>("dept-item", { json: data, ignoreLoading: true }).json();
+export function fetchUpdateDeptItem(id: string, data: DepartmentEntity) {
+	return request.patch<ApiResponse<string>>(`department/${id}`, { json: data, ignoreLoading: true }).json();
 }
 
 /* 删除部门 */

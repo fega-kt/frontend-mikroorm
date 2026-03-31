@@ -5,7 +5,7 @@ import { fetchDeleteDeptItem, fetchDeptList } from "#src/api/system/dept";
 import { BasicButton } from "#src/components/basic-button";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
-import { accessControlCodes, useAccess } from "#src/hooks/use-access";
+import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
 
 import { handleTree } from "#src/utils/tree";
@@ -48,7 +48,7 @@ export default function Dept() {
 						key="editable"
 						type="link"
 						size="small"
-						disabled={!canAccess(accessControlCodes.update)}
+						disabled={!canAccess(PermissionType.UpdateDeparment)}
 						onClick={async () => {
 							setIsOpen(true);
 							setTitle(t("system.dept.editDept"));
@@ -64,7 +64,13 @@ export default function Dept() {
 						okText={t("common.confirm")}
 						cancelText={t("common.cancel")}
 					>
-						<BasicButton type="link" size="small" disabled={!canAccess(accessControlCodes.delete)}>{t("common.delete")}</BasicButton>
+						<BasicButton
+							type="link"
+							size="small"
+							disabled={!canAccess(PermissionType.DeleteDeparment)}
+						>
+							{t("common.delete")}
+						</BasicButton>
 					</Popconfirm>,
 				];
 			},
