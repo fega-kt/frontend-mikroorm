@@ -25,8 +25,12 @@
 
 	"dept": {
 		"name": "Tên phòng ban",
+		"code": "Mã phòng ban",
 		"id": "ID phòng ban",
 		"addDept": "Thêm phòng ban",
-		"editDept": "Sửa phòng ban"
+		"editDept": "Sửa phòng ban",
+		"parentDept": "Phòng ban cha",
+		"parentCode": "Đường dẫn mã",
+		"userCount": "Số nhân viên"
 	}
 }

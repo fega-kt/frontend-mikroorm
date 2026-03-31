@@ -35,8 +35,12 @@
 	},
 	"dept": {
 		"name": "Department Name",
+		"code": "Department Code",
 		"id": "Department Id",
 		"addDept": "Add Department",
-		"editDept": "Edit Department"
+		"editDept": "Edit Department",
+		"parentDept": "Parent Department",
+		"parentCode": "Path Code",
+		"userCount": "User Count"
 	}
 }
