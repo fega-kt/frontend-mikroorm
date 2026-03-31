@@ -1,17 +1,10 @@
-export interface UserInDept {
-	id: number
-	fullName: string
-	loginName: string
-}
+import type { EntityBase } from "#src/api/entity-base.js";
+import type { UserInfoType } from "../../user";
 
-export interface DeptItemType {
-	id: number
+export interface DepartmentEntity extends EntityBase {
 	code: string
 	name: string
-	parentId?: number
-	parentCode?: string
 	status: 1 | 0
-	users?: UserInDept[]
-	createTime: number
-	updateTime: number
+	parent?: DepartmentEntity
+	users?: UserInfoType[]
 }
