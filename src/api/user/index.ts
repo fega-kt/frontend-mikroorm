@@ -1,4 +1,3 @@
-import type { AppRouteRecordRaw } from "#src/router/types";
 import type { LoginInfo, UserInfoType } from "./types";
 
 import { supabase } from "#src/store/supabaseClient";
@@ -15,7 +14,7 @@ export function fetchLogout() {
 }
 
 export async function fetchUserInfo() {
-	return request.get("user/current-user").json<ApiResponse<UserInfoType>>();
+	return request.get<UserInfoType>("user/current-user").json();
 }
 
 export interface RefreshTokenResult {

@@ -131,8 +131,8 @@ export function AuthGuard({ children }: AuthGuardProps) {
 		 * @zh 启用了后端路由且路由从单独接口中获取
 		 * @en If backend routing is enabled and the route is obtained from a separate interface
 		 */
-		if (enableBackendAccess && isSendRoutingRequest && routeResult.status === "fulfilled" && "result" in routeResult.value) {
-			routes.push(...await generateRoutesFromBackend(routeResult.value?.result ?? []));
+		if (enableBackendAccess && isSendRoutingRequest && routeResult.status === "fulfilled" && Array.isArray(routeResult.value)) {
+			routes.push(...await generateRoutesFromBackend(routeResult.value ?? []));
 		}
 
 		/**

@@ -27,11 +27,9 @@ export const useUserStore = create<UserState & UserAction>()(
 		...initialState,
 
 		getUserInfo: async () => {
-			const response = await fetchUserInfo();
-			set({
-				...response.result,
-			});
-			return response.result;
+			const userInfo = await fetchUserInfo();
+			set({ ...userInfo });
+			return userInfo;
 		},
 
 		reset: () => {
