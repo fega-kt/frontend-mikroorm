@@ -23,8 +23,8 @@ export default function Role() {
 	const { data: menuItems } = useQuery({
 		queryKey: ["role-menu"],
 		queryFn: async () => {
-			const responseData = await fetchRoleMenu();
-			return responseData?.result.map(item => ({
+			const roleMenuList = await fetchRoleMenu();
+			return roleMenuList?.map(item => ({
 				...item,
 				title: item.name,
 				key: item.id,
@@ -43,9 +43,9 @@ export default function Role() {
 	const actionRef = useRef<ActionType>(null);
 
 	const handleDeleteRow = async (id: number, action?: ProCoreActionType<object>) => {
-		const responseData = await deleteRoleItemMutation.mutateAsync(id);
+		await deleteRoleItemMutation.mutateAsync(id);
 		await action?.reload?.();
-		window.$message?.success(`${t("common.deleteSuccess")} id = ${responseData.result}`);
+		window.$message?.success(t("common.deleteSuccess"));
 	};
 
 	const columns: ProColumns<RoleItemType>[] = [
@@ -65,10 +65,10 @@ export default function Role() {
 						disabled={!hasAccessByCodes(accessControlCodes.update)}
 						onClick={async () => {
 							/* 请求角色菜单权限 */
-							const responseData = await fetchMenuByRoleId({ id: record.id });
+							const menus = await fetchMenuByRoleId({ id: record.id });
 							setIsOpen(true);
 							setTitle(t("system.role.editRole"));
-							setDetailData({ ...record, menus: responseData.result });
+							setDetailData({ ...record, menus });
 						}}
 					>
 						{t("common.edit")}
@@ -102,12 +102,11 @@ export default function Role() {
 				columns={columns}
 				actionRef={actionRef}
 				request={async (params) => {
-					// console.log(sort, filter);
 					const responseData = await fetchRoleList(params);
 					return {
-						...responseData,
-						data: responseData.result.list,
-						total: responseData.result.total,
+						data: responseData.list,
+						total: responseData.total,
+						success: true,
 					};
 				}}
 				headerTitle={`${t("common.menu.role")} （${t("common.demoOnly")}）`}

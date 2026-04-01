@@ -54,8 +54,8 @@ export default function LineChart() {
 
 	useEffect(() => {
 		if (value) {
-			fetchLine({ range: value }).then(({ result }) => {
-				setData(result);
+			fetchLine({ range: value }).then((data) => {
+				setData(data);
 			});
 		}
 	}, [value]);

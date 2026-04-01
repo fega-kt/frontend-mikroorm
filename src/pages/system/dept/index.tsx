@@ -1,16 +1,16 @@
 import type { DepartmentEntity } from "#src/api/system/dept";
 import type { ActionType, ProColumns, ProCoreActionType } from "@ant-design/pro-components";
 
+import type { DetailRef } from "./components/detail";
 import { fetchDeleteDeptItem, fetchDeptList } from "#src/api/system/dept";
-import { BasicButton } from "#src/components/basic-button";
+
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
-
 import { handleTree } from "#src/utils/tree";
-import { PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Popconfirm } from "antd";
+import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { Button, Popconfirm, Tooltip } from "antd";
 import { useRef, useState } from "react";
 
 import { useTranslation } from "react-i18next";
@@ -21,17 +21,51 @@ export default function Dept() {
 	const { t } = useTranslation();
 	const { canAccess } = useAccess();
 
-	const [isOpen, setIsOpen] = useState(false);
-	const [title, setTitle] = useState("");
-	const [detailData, setDetailData] = useState<Partial<DepartmentEntity>>({});
-	const [flatDeptList, setFlatDeptList] = useState<DepartmentEntity[]>([]);
-
 	const actionRef = useRef<ActionType>(null);
+	const detailRef = useRef<DetailRef>(null);
+	const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
+
+	/** Trả về IDs của tất cả node có depth <= maxDepth */
+	const getExpandedKeys = (list: DepartmentEntity[], maxDepth = 2): string[] => {
+		const depthMap = new Map<string, number>();
+		const result: string[] = [];
+		// Build depth map
+		const computeDepth = (id: string): number => {
+			if (depthMap.has(id)) {
+				return depthMap.get(id)!;
+			}
+			const node = list.find(d => d.id === id);
+			const parentId = node?.parent as unknown as string | null;
+			const depth = parentId ? computeDepth(parentId) + 1 : 0;
+			depthMap.set(id, depth);
+			return depth;
+		};
+		for (const item of list) {
+			if (computeDepth(item.id) <= maxDepth) {
+				result.push(item.id);
+			}
+		}
+		return result;
+	};
+
+	const handleAdd = async () => {
+		const res = await detailRef.current?.show();
+		if (res?.isChange) {
+			actionRef.current?.reload();
+		}
+	};
+
+	const handleEdit = async (id: string) => {
+		const res = await detailRef.current?.show(id);
+		if (res?.isChange) {
+			actionRef.current?.reload();
+		}
+	};
 
 	const handleDeleteRow = async (id: string, action?: ProCoreActionType<object>) => {
-		const responseData = await fetchDeleteDeptItem(id);
+		const deletedId = await fetchDeleteDeptItem(id);
 		await action?.reload?.();
-		window.$message?.success(`${t("common.deleteSuccess")} id = ${responseData.result}`);
+		window.$message?.success(`${t("common.deleteSuccess")} id = ${deletedId}`);
 	};
 
 	const columns: ProColumns<DepartmentEntity>[] = [
@@ -44,19 +78,15 @@ export default function Dept() {
 			fixed: "right",
 			render: (text, record, _, action) => {
 				return [
-					<BasicButton
-						key="editable"
-						type="link"
-						size="small"
-						disabled={!canAccess(PermissionType.UpdateDeparment)}
-						onClick={async () => {
-							setIsOpen(true);
-							setTitle(t("system.dept.editDept"));
-							setDetailData({ ...record });
-						}}
-					>
-						{t("common.edit")}
-					</BasicButton>,
+					<Tooltip key="edit" title={t("common.edit")}>
+						<Button
+							type="text"
+							size="small"
+							icon={<EditOutlined />}
+							disabled={!canAccess(PermissionType.UpdateDeparment)}
+							onClick={() => handleEdit(record.id)}
+						/>
+					</Tooltip>,
 					<Popconfirm
 						key="delete"
 						title={t("common.confirmDelete")}
@@ -64,43 +94,41 @@ export default function Dept() {
 						okText={t("common.confirm")}
 						cancelText={t("common.cancel")}
 					>
-						<BasicButton
-							type="link"
-							size="small"
-							disabled={!canAccess(PermissionType.DeleteDeparment)}
-						>
-							{t("common.delete")}
-						</BasicButton>
+						<Tooltip title={t("common.delete")}>
+							<Button
+								type="text"
+								size="small"
+								danger
+								icon={<DeleteOutlined />}
+								disabled={!canAccess(PermissionType.DeleteDeparment)}
+							/>
+						</Tooltip>
 					</Popconfirm>,
 				];
 			},
 		},
 	];
 
-	const onCloseChange = () => {
-		setIsOpen(false);
-		setDetailData({});
-	};
-
-	const refreshTable = () => {
-		actionRef.current?.reload();
-	};
-
 	return (
 		<BasicContent className="h-full">
 			<BasicTable<DepartmentEntity>
 				adaptive
 				columns={columns}
+				scroll={{ x: "max-content" }}
 				actionRef={actionRef}
 				request={async (params) => {
-					const responseData = await fetchDeptList(params);
-					const deptTree = handleTree(responseData.result);
-					setFlatDeptList(responseData.result);
+					const list = await fetchDeptList(params);
+					const deptTree = handleTree(list);
+					setExpandedRowKeys(getExpandedKeys(list));
 					return {
-						...responseData,
 						data: deptTree,
-						total: responseData.result.length,
+						total: list.length,
+						success: true,
 					};
+				}}
+				expandable={{
+					expandedRowKeys,
+					onExpandedRowsChange: keys => setExpandedRowKeys(keys as string[]),
 				}}
 				headerTitle={t("common.menu.dept")}
 				toolBarRender={() => [
@@ -109,23 +137,13 @@ export default function Dept() {
 						icon={<PlusCircleOutlined />}
 						type="primary"
 						disabled={!canAccess(PermissionType.CreateDeparment)}
-						onClick={() => {
-							setIsOpen(true);
-							setTitle(t("system.dept.addDept"));
-						}}
+						onClick={handleAdd}
 					>
 						{t("common.add")}
 					</Button>,
 				]}
 			/>
-			<Detail
-				title={title}
-				open={isOpen}
-				flatDeptList={flatDeptList}
-				onCloseChange={onCloseChange}
-				detailData={detailData}
-				refreshTable={refreshTable}
-			/>
+			<Detail ref={detailRef} />
 		</BasicContent>
 	);
 }

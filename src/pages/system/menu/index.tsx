@@ -28,9 +28,9 @@ export default function Menu() {
 	const actionRef = useRef<ActionType>(null);
 
 	const handleDeleteRow = async (id: number, action?: ProCoreActionType<object>) => {
-		const responseData = await fetchDeleteMenuItem(id);
+		await fetchDeleteMenuItem(id);
 		await action?.reload?.();
-		window.$message?.success(`${t("common.deleteSuccess")} id = ${responseData.result}`);
+		window.$message?.success(t("common.deleteSuccess"));
 	};
 
 	const columns: ProColumns<MenuItemType>[] = [
@@ -86,19 +86,18 @@ export default function Menu() {
 				columns={columns}
 				actionRef={actionRef}
 				request={async (params) => {
-					// console.log(sort, filter);
 					const responseData = await fetchMenuList(params);
-					const menuTree = handleTree(responseData.result.list);
+					const menuTree = handleTree(responseData.list);
 					setFlatParentMenus(
-						responseData.result.list
+						responseData.list
 							.filter(
 								item => Number(item.menuType) === 0,
 							).map(item => ({ ...item, name: t(item.name) })),
 					);
 					return {
-						...responseData,
 						data: menuTree,
-						total: responseData.result.total,
+						total: responseData.total,
+						success: true,
 					};
 				}}
 				headerTitle={`${t("common.menu.menu")} （${t("common.demoOnly")}）`}

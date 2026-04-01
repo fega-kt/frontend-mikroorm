@@ -63,8 +63,13 @@ const defaultConfig: Options = {
 						return handleErrorResponse(response);
 					}
 				}
-				// request success
-				return response;
+				// request success: unwrap result field
+				const data = await response.clone().json() as { result: unknown };
+				return new Response(JSON.stringify(data.result), {
+					status: response.status,
+					statusText: response.statusText,
+					headers: response.headers,
+				});
 			},
 		],
 	},

@@ -1,8 +1,7 @@
 /**
- * 接口返回数据格式
- * data: 接口返回数据
+ * Raw server response wrapper (used internally by request hook)
  */
-interface ApiResponse<T> {
+interface ApiRawResponse<T> {
 	code: number
 	result: T
 	message: string
@@ -10,15 +9,12 @@ interface ApiResponse<T> {
 }
 
 /**
- * 数组形式的接口返回数据格式
- * list: 接口返回数据
+ * List response result shape
  */
-interface ApiListResponse<T> extends ApiResponse<T> {
-	result: {
-		list: T[]
-		total: number
-		current: number
-	}
+interface ApiListResult<T> {
+	list: T[]
+	total: number
+	current: number
 }
 
 /**
@@ -30,7 +26,4 @@ interface ApiTableRequest extends Record<string, any> {
 	current?: number
 }
 
-interface ApiListAllResponse<T> extends ApiResponse<T> {
-	result: T[]
-}
 type Recordable<T = any> = Record<string, T>;
