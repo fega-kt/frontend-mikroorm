@@ -1,5 +1,5 @@
 import type { DepartmentEntity } from "#src/api/system/dept";
-import type { UserInfoType } from "#src/api/user/types";
+import type { UserEntity } from "#src/api/user/types";
 import { fetchAddDeptItem, fetchDeptItem, fetchDeptList, fetchUpdateDeptItem } from "#src/api/system/dept";
 import { ModalForm } from "@ant-design/pro-components";
 import { Form, Spin, Tabs } from "antd";
@@ -62,7 +62,7 @@ export function Detail({ ref }: DetailProps) {
 	const [activeTab, setActiveTab] = useState("info");
 	const [editingId, setEditingId] = useState<string | null>(null);
 	const [flatDeptList, setFlatDeptList] = useState<DepartmentEntity[]>([]);
-	const [deptUsers, setDeptUsers] = useState<UserInfoType[]>([]);
+	const [deptUsers, setDeptUsers] = useState<UserEntity[]>([]);
 
 	const title = useMemo(
 		() => editingId ? t("system.dept.editDept") : t("system.dept.addDept"),
@@ -96,12 +96,21 @@ export function Detail({ ref }: DetailProps) {
 					const parent = parentString
 						? getAncestorPath(parentString, deptList)
 						: undefined;
-					form.setFieldsValue({ ...deptItem, parent } as any);
+					// manager/deputy dùng labelInValue: { label, value } để hiển thị ngay không cần pre-load options
+					const toSelectValue = (user: UserEntity | null | undefined) =>
+						user ? { label: user.fullName, value: user.id } : null;
+					form.setFieldsValue({
+						...deptItem,
+						parent,
+						manager: toSelectValue(deptItem.manager),
+						deputy: toSelectValue(deptItem.deputy),
+					} as any);
 					setDeptUsers(deptItem.users ?? []);
 				}
-			}
-			finally {
 				setLoading(false);
+			}
+			catch (error) {
+				window.$message?.error(error instanceof Error ? error.message : t("common.fetchError"));
 			}
 			return new Promise<{ isChange: boolean } | undefined>((resolve) => {
 				guard = resolve;

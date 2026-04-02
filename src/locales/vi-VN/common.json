@@ -91,5 +91,7 @@
 	"expandAll": "Mở rộng tất cả",
 	"collapseAll": "Thu gọn tất cả",
 	"checkAll": "Chọn tất cả",
-	"cancelAll": "Bỏ chọn tất cả"
+	"cancelAll": "Bỏ chọn tất cả",
+	"fetchError": "Tải dữ liệu thất bại",
+	"loading": "Đang tải dữ liệu..."
 }

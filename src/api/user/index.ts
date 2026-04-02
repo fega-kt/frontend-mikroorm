@@ -1,4 +1,4 @@
-import type { LoginInfo, UserInfoType } from "./types";
+import type { LoginInfo, UserEntity } from "./types";
 
 import { supabase } from "#src/store/supabaseClient";
 import { request } from "#src/utils/request";
@@ -14,7 +14,11 @@ export function fetchLogout() {
 }
 
 export async function fetchUserInfo() {
-	return request.get<UserInfoType>("user/current-user").json();
+	return request.get<UserEntity>("user/current-user").json();
+}
+
+export async function fetchUserList() {
+	return request.get<UserEntity[]>("user").json();
 }
 
 export interface RefreshTokenResult {
