@@ -1,16 +1,12 @@
 import type { DepartmentEntity } from "#src/api/system/dept";
+import type { UserInfoType } from "#src/api/user/types";
 import { fetchAddDeptItem, fetchDeptItem, fetchDeptList, fetchUpdateDeptItem } from "#src/api/system/dept";
-import { handleTree } from "#src/utils/tree";
-
-import {
-	ModalForm,
-	ProFormCascader,
-	ProFormRadio,
-	ProFormText,
-} from "@ant-design/pro-components";
-import { Form, Spin } from "antd";
+import { ModalForm } from "@ant-design/pro-components";
+import { Form, Spin, Tabs } from "antd";
 import { useImperativeHandle, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { DeptInfoTab } from "./dept-info-tab";
+import { DeptUsersTab } from "./dept-users-tab";
 
 export interface DetailRef {
 	show: (id?: string) => Promise<{ isChange: boolean } | undefined>
@@ -63,8 +59,10 @@ export function Detail({ ref }: DetailProps) {
 
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [activeTab, setActiveTab] = useState("info");
 	const [editingId, setEditingId] = useState<string | null>(null);
 	const [flatDeptList, setFlatDeptList] = useState<DepartmentEntity[]>([]);
+	const [deptUsers, setDeptUsers] = useState<UserInfoType[]>([]);
 
 	const title = useMemo(
 		() => editingId ? t("system.dept.editDept") : t("system.dept.addDept"),
@@ -83,6 +81,8 @@ export function Detail({ ref }: DetailProps) {
 		show: async (id?: string) => {
 			form.resetFields();
 			setEditingId(id ?? null);
+			setActiveTab("info");
+			setDeptUsers([]);
 			setOpen(true);
 			setLoading(true);
 			try {
@@ -97,6 +97,7 @@ export function Detail({ ref }: DetailProps) {
 						? getAncestorPath(parentString, deptList)
 						: undefined;
 					form.setFieldsValue({ ...deptItem, parent } as any);
+					setDeptUsers(deptItem.users ?? []);
 				}
 			}
 			finally {
@@ -144,61 +145,31 @@ export function Detail({ ref }: DetailProps) {
 			autoFocusFirstInput
 			modalProps={{
 				destroyOnHidden: true,
+				width: "min(720px, 90vw)",
 			}}
-			submitter={{ submitButtonProps: { disabled: loading } }}
+			submitter={activeTab === "users"
+				? false
+				: { submitButtonProps: { disabled: loading } }}
 			onFinish={onFinish}
 			initialValues={{
 				status: 1,
 			}}
 		>
 			<Spin spinning={loading}>
-				<ProFormText
-					allowClear
-					rules={[{ required: true }]}
-					name="name"
-					label={t("system.dept.name")}
-					tooltip={t("form.length", { length: 50 })}
-				/>
-
-				<ProFormText
-					allowClear
-					rules={[{ required: true }]}
-					disabled={!!editingId}
-					name="code"
-					label={t("system.dept.code")}
-				/>
-
-				<ProFormCascader
-					name="parent"
-					label={t("system.dept.parentDept")}
-					transform={(value: string[]) => ({
-						parent: value?.[value.length - 1] ?? null,
-					})}
-					fieldProps={{
-						showSearch: true,
-						autoClearSearchValue: true,
-						changeOnSelect: true,
-						options: handleTree(validParentList),
-						fieldNames: {
-							label: "name",
-							value: "id",
-							children: "children",
-						},
-					}}
-				/>
-
-				<ProFormRadio.Group
-					name="status"
-					label={t("common.status")}
-					radioType="button"
-					options={[
+				<Tabs
+					activeKey={activeTab}
+					onChange={setActiveTab}
+					items={[
 						{
-							label: t("common.enabled"),
-							value: 1,
+							key: "info",
+							label: t("system.dept.tabInfo"),
+							children: <DeptInfoTab isEditing={!!editingId} validParentList={validParentList} />,
 						},
 						{
-							label: t("common.deactivated"),
-							value: 0,
+							key: "users",
+							label: t("system.dept.tabUsers"),
+							disabled: !editingId,
+							children: <DeptUsersTab users={deptUsers} />,
 						},
 					]}
 				/>
