@@ -13,7 +13,7 @@ export function handleTree(data: any[], id?: string, parentId?: string, children
 	}
 	const config = {
 		id: id || "id",
-		parentId: parentId || "parentId",
+		parentId: parentId || "parent",
 		childrenList: children || "children",
 	};
 
