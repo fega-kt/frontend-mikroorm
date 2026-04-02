@@ -163,6 +163,7 @@ export function Detail({ ref }: DetailProps) {
 				<ProFormText
 					allowClear
 					rules={[{ required: true }]}
+					disabled={!!editingId}
 					name="code"
 					label={t("system.dept.code")}
 				/>
