@@ -12,7 +12,7 @@ export function NotificationContainer({ ...restProps }: ButtonProps) {
 	useEffect(() => {
 		fetchNotifications().then((res) => {
 			setNotifications(
-				Array.from({ length: 20 }).flatMap(() => res.result),
+				Array.from({ length: 20 }).flatMap(() => res),
 			);
 		});
 	}, []);
