@@ -11,7 +11,10 @@
 		"name": "Tên người dùng",
 		"id": "ID người dùng",
 		"addUser": "Thêm người dùng",
-		"editUser": "Sửa người dùng"
+		"editUser": "Sửa người dùng",
+		"loginName": "Tên đăng nhập",
+		"workEmail": "Email công việc",
+		"phoneNumber": "Số điện thoại"
 	},
 
 	"menu": {
@@ -31,6 +34,8 @@
 		"editDept": "Sửa phòng ban",
 		"parentDept": "Phòng ban cha",
 		"parentCode": "Đường dẫn mã",
-		"userCount": "Số nhân viên"
+		"userCount": "Số nhân viên",
+		"tabInfo": "Thông tin",
+		"tabUsers": "Nhân viên"
 	}
 }
