@@ -46,6 +46,8 @@
 		"parentCode": "Path Code",
 		"userCount": "User Count",
 		"tabInfo": "Info",
-		"tabUsers": "Users"
+		"tabUsers": "Users",
+		"manager": "Manager",
+		"deputy": "Deputy Manager"
 	}
 }
