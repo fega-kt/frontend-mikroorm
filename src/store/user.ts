@@ -1,4 +1,4 @@
-import type { UserInfoType } from "#src/api/user/types";
+import type { UserEntity } from "#src/api/user/types";
 import { fetchUserInfo } from "#src/api/user";
 
 import { create } from "zustand";
@@ -14,10 +14,10 @@ const initialState = {
 	permissions: [],
 };
 
-type UserState = UserInfoType;
+type UserState = UserEntity;
 
 interface UserAction {
-	getUserInfo: () => Promise<UserInfoType>
+	getUserInfo: () => Promise<UserEntity>
 	reset: () => void
 };
 

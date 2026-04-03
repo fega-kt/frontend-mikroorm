@@ -1,10 +1,12 @@
 import type { EntityBase } from "#src/api/entity-base.js";
-import type { UserInfoType } from "../../user";
+import type { UserEntity } from "../../user";
 
 export interface DepartmentEntity extends EntityBase {
 	code: string
 	name: string
 	status: 1 | 0
 	parent?: DepartmentEntity
-	users?: UserInfoType[]
+	manager?: UserEntity | null
+	deputy?: UserEntity | null
+	users?: UserEntity[]
 }

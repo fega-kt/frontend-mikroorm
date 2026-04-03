@@ -10,10 +10,11 @@ export interface LoginInfo {
 	password: string
 }
 
-export interface UserInfoType {
+export interface UserEntity {
 	id: string
 	avatar: string
 	loginName: string
+	fullName: string
 	workEmail: string
 	phoneNumber?: string
 	description: string
