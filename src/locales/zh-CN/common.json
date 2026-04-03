@@ -91,5 +91,7 @@
 	"expandAll": "展开所有",
 	"collapseAll": "折叠所有",
 	"checkAll": "选择所有",
-	"cancelAll": "取消所有"
+	"cancelAll": "取消所有",
+	"fetchError": "加载数据失败",
+	"loading": "加载中..."
 }

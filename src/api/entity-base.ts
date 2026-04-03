@@ -1,7 +1,7 @@
-import type { UserInfoType } from "./user";
+import type { UserEntity } from "./user";
 
 type User = Pick<
-	UserInfoType,
+	UserEntity,
   "id" | "avatar" | "loginName" | "workEmail" | "phoneNumber"
 >;
 

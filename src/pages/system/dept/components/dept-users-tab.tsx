@@ -1,16 +1,16 @@
-import type { UserInfoType } from "#src/api/user/types";
+import type { UserEntity } from "#src/api/user/types";
 import { ProTable } from "@ant-design/pro-components";
 import { useTranslation } from "react-i18next";
 
 interface DeptUsersTabProps {
-	users: UserInfoType[]
+	users: UserEntity[]
 }
 
 export function DeptUsersTab({ users }: DeptUsersTabProps) {
 	const { t } = useTranslation();
 
 	return (
-		<ProTable<UserInfoType>
+		<ProTable<UserEntity>
 			rowKey="id"
 			search={false}
 			options={false}

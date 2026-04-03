@@ -36,6 +36,8 @@
 		"parentCode": "Đường dẫn mã",
 		"userCount": "Số nhân viên",
 		"tabInfo": "Thông tin",
-		"tabUsers": "Nhân viên"
+		"tabUsers": "Nhân viên",
+		"manager": "Trưởng phòng",
+		"deputy": "Phó phòng"
 	}
 }

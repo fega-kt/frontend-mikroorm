@@ -91,5 +91,7 @@
 	"expandAll": "Expand All",
 	"collapseAll": "Collapse All",
 	"checkAll": "Check All",
-	"cancelAll": "Cancel All"
+	"cancelAll": "Cancel All",
+	"fetchError": "Failed to load data",
+	"loading": "Loading..."
 }

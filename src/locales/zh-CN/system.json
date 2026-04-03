@@ -46,6 +46,8 @@
 		"parentCode": "路径编码",
 		"userCount": "人员数量",
 		"tabInfo": "基本信息",
-		"tabUsers": "成员列表"
+		"tabUsers": "成员列表",
+		"manager": "部门主管",
+		"deputy": "副主管"
 	}
 }
