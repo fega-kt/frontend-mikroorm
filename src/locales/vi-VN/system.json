@@ -10,6 +10,7 @@
 		"group": {
 			"user": "Quản lý người dùng",
 			"role": "Quản lý vai trò",
+			"group": "Quản lý nhóm người dùng",
 			"department": "Quản lý phòng ban",
 			"project": "Quản lý dự án",
 			"task": "Quản lý công việc"
@@ -24,8 +25,18 @@
 			"role": "Vai trò",
 			"department": "Phòng ban",
 			"project": "Dự án",
-			"task": "Công việc"
+			"task": "Công việc",
+			"group": "Nhóm"
 		}
+	},
+
+	"userGroup": {
+		"title": "Quản lý nhóm người dùng",
+		"addGroup": "Thêm nhóm người dùng",
+		"editGroup": "Sửa nhóm người dùng",
+		"name": "Tên nhóm",
+		"users": "Thành viên",
+		"description": "Mô tả"
 	},
 
 	"user": {
@@ -41,15 +52,6 @@
 		"phone": "Số điện thoại",
 		"password": "Mật khẩu",
 		"avatar": "Ảnh đại diện"
-	},
-
-	"menu": {
-		"name": "Tên menu",
-		"routePath": "Đường dẫn route",
-		"addMenu": "Thêm menu",
-		"editMenu": "Sửa menu",
-		"menuType": "Loại menu",
-		"menuOrder": "Thứ tự menu"
 	},
 
 	"dept": {
