@@ -1,6 +1,15 @@
 import type { EntityBase } from "#src/api/entity-base.js";
 import type { UserEntity } from "../../user";
 
+export interface DepartmentSearchParams {
+	current?: number
+	pageSize?: number
+	name?: string
+	code?: string
+	status?: 0 | 1
+	keyword?: string
+}
+
 export interface DepartmentEntity extends EntityBase {
 	code: string
 	name: string

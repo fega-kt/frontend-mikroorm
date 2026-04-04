@@ -1,4 +1,4 @@
-import type { DepartmentEntity } from "./types";
+import type { DepartmentEntity, DepartmentSearchParams } from "./types";
 import { CrudServiceBase } from "../../service-base";
 
 export * from "./types";
@@ -9,8 +9,8 @@ export class DepartmentService extends CrudServiceBase<DepartmentEntity> {
 	}
 
 	/** Lấy danh sách bộ phận */
-	async fetchDeptList(searchParams?: any) {
-		return this.get<DepartmentEntity[]>("", { searchParams, ignoreLoading: true });
+	async fetchDeptList(searchParams?: DepartmentSearchParams) {
+		return this.get<DepartmentEntity[]>("", { searchParams: searchParams as any, ignoreLoading: true });
 	}
 
 	/**
@@ -20,7 +20,7 @@ export class DepartmentService extends CrudServiceBase<DepartmentEntity> {
 	 */
 	async fetchDeptByApi(path: string, keyword?: string) {
 		return this.get<DepartmentEntity[]>(path, {
-			searchParams: keyword ? { keyword } : undefined,
+			searchParams: (keyword ? { keyword } : undefined) as any,
 			ignoreLoading: true,
 		});
 	}

@@ -11,10 +11,11 @@ const initialState = {
 	phoneNumber: "",
 	workEmail: "",
 	description: "",
-	permissions: [],
+	permissions: [] as string[],
+	status: 1 as 0 | 1,
 };
 
-type UserState = UserEntity;
+type UserState = typeof initialState;
 
 interface UserAction {
 	getUserInfo: () => Promise<UserEntity>
