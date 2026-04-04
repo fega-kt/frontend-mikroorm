@@ -2,7 +2,7 @@ import type { DepartmentEntity } from "#src/api/system/dept";
 import type { ActionType, ProColumns, ProCoreActionType } from "@ant-design/pro-components";
 
 import type { DetailRef } from "./components/detail";
-import { fetchDeleteDeptItem, fetchDeptList } from "#src/api/system/dept";
+import { departmentService } from "#src/api/system/dept";
 
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
@@ -63,7 +63,7 @@ export default function Dept() {
 	};
 
 	const handleDeleteRow = async (id: string, action?: ProCoreActionType<object>) => {
-		const deletedId = await fetchDeleteDeptItem(id);
+		const deletedId = await departmentService.fetchDeleteDeptItem(id);
 		await action?.reload?.();
 		window.$message?.success(`${t("common.deleteSuccess")} id = ${deletedId}`);
 	};
@@ -117,7 +117,7 @@ export default function Dept() {
 				scroll={{ x: "max-content" }}
 				actionRef={actionRef}
 				request={async (params) => {
-					const list = await fetchDeptList(params);
+					const list = await departmentService.fetchDeptList(params);
 					const deptTree = handleTree(list);
 					setExpandedRowKeys(getExpandedKeys(list));
 					return {

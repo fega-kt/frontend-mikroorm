@@ -1,6 +1,6 @@
 import type { DepartmentEntity } from "#src/api/system/dept";
 import type { UserEntity } from "#src/api/user/types";
-import { fetchAddDeptItem, fetchDeptItem, fetchDeptList, fetchUpdateDeptItem } from "#src/api/system/dept";
+import { departmentService } from "#src/api/system/dept";
 import { ModalForm } from "@ant-design/pro-components";
 import { Form, Spin, Tabs } from "antd";
 import { useImperativeHandle, useMemo, useState } from "react";
@@ -87,8 +87,8 @@ export function Detail({ ref }: DetailProps) {
 			setLoading(true);
 			try {
 				const [deptList, deptItem] = await Promise.all([
-					fetchDeptList({}),
-					id ? fetchDeptItem(id) : Promise.resolve(null),
+					departmentService.fetchDeptList({}),
+					id ? departmentService.fetchDeptItem(id) : Promise.resolve(null),
 				]);
 				setFlatDeptList(deptList);
 				if (deptItem) {
@@ -120,11 +120,11 @@ export function Detail({ ref }: DetailProps) {
 
 	const onFinish = async (values: DepartmentEntity) => {
 		if (editingId) {
-			await fetchUpdateDeptItem(editingId, values);
+			await departmentService.fetchUpdateDeptItem(editingId, values);
 			window.$message?.success(t("common.updateSuccess"));
 		}
 		else {
-			await fetchAddDeptItem(values);
+			await departmentService.fetchAddDeptItem(values);
 			window.$message?.success(t("common.addSuccess"));
 		}
 		guard?.({ isChange: true });
