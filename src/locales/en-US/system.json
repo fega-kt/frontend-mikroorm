@@ -12,8 +12,13 @@
 		"addUser": "Add User",
 		"editUser": "Edit User",
 		"loginName": "Login Name",
+		"fullName": "Full Name",
 		"workEmail": "Work Email",
-		"phoneNumber": "Phone Number"
+		"email": "Email",
+		"phoneNumber": "Phone Number",
+		"phone": "Phone Number",
+		"password": "Password",
+		"avatar": "Avatar"
 	},
 	"menu": {
 		"name": "Menu Name",

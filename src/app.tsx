@@ -15,6 +15,7 @@ import { RouterProvider } from "react-router/dom";
 import { router } from "./router";
 import { customAntdDarkTheme, customAntdLightTheme } from "./styles/theme/antd/antd-theme";
 import "dayjs/locale/zh-cn";
+import "dayjs/locale/vi";
 
 export default function App() {
 	const { i18n } = useTranslation();
@@ -53,6 +54,9 @@ export default function App() {
 		}
 		else if (language === "zh-CN") {
 			dayjs.locale("zh-cn");
+		}
+		else if (language === "vi-VN") {
+			dayjs.locale("vi");
 		}
 	}, [language]);
 
