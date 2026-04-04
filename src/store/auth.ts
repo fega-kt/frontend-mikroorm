@@ -1,7 +1,7 @@
 import type { AuthType, LoginInfo } from "#src/api/user/types";
 
 import type { AuthTokenResponsePassword } from "@supabase/supabase-js";
-import { fetchLogin, fetchLogout } from "#src/api/user";
+import { userService } from "#src/api/user";
 import { useAccessStore } from "#src/store/access";
 import { useTabsStore } from "#src/store/tabs";
 import { useUserStore } from "#src/store/user";
@@ -29,7 +29,7 @@ export const useAuthStore = create<AuthState & AuthAction>()(
 		...initialState,
 
 		login: async (loginPayload) => {
-			return await fetchLogin(loginPayload);
+			return await userService.login(loginPayload);
 		},
 
 		logout: async () => {
@@ -37,7 +37,7 @@ export const useAuthStore = create<AuthState & AuthAction>()(
 			 * 1. 退出登录
 			 */
 
-			await fetchLogout();
+			await userService.logout();
 		},
 
 		reset: () => {
