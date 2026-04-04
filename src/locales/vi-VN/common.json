@@ -96,5 +96,7 @@
 	"checkAll": "Chọn tất cả",
 	"cancelAll": "Bỏ chọn tất cả",
 	"fetchError": "Tải dữ liệu thất bại",
-	"loading": "Đang tải dữ liệu..."
+	"loading": "Đang tải dữ liệu...",
+	"pleaseInput": "Vui lòng nhập",
+	"selectAll": "Chọn tất cả"
 }
