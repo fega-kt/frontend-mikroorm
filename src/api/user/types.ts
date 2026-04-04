@@ -19,7 +19,7 @@ export interface UserSearchParams {
 	loginName?: string
 	workEmail?: string
 	phoneNumber?: string
-	status?: 0 | 1
+	isActive?: boolean
 	keyword?: string
 }
 
@@ -31,7 +31,7 @@ export interface UserEntity extends EntityBase {
 	phoneNumber?: string
 	description: string
 	permissions: Array<string>
-	status: 0 | 1
+	isActive: boolean
 	department?: DepartmentEntity | null
 	role?: string
 	password?: string

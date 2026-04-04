@@ -23,12 +23,12 @@ export function getConstantColumns(t: any): ProColumns<UserEntity>[] {
 		},
 		{
 			title: t("common.status"),
-			dataIndex: "status",
-			width: 100,
+			dataIndex: "isActive",
+			width: 120,
 			valueType: "select",
 			valueEnum: {
-				1: { text: t("common.active"), status: "Success" },
-				0: { text: t("common.inactive"), status: "Default" },
+				true: { text: t("common.active"), status: "Success" },
+				false: { text: t("common.inactive"), status: "Default" },
 			},
 		},
 		{

@@ -3,7 +3,6 @@ import { userService } from "#src/api/user";
 import { ProFormDepartmentPicker } from "#src/components/department-picker";
 import {
 	ModalForm,
-	ProFormSelect,
 	ProFormSwitch,
 	ProFormText,
 } from "@ant-design/pro-components";
@@ -68,7 +67,7 @@ export function Detail({ ref }: DetailProps) {
 		const payload = {
 			...values,
 			department: values.department?.value || values.department,
-			status: values.status ? 1 : 0,
+			isActive: Boolean(values.isActive),
 		};
 
 		if (editingId) {
@@ -110,7 +109,7 @@ export function Detail({ ref }: DetailProps) {
 			}}
 			onFinish={onFinish}
 			initialValues={{
-				status: 1,
+				isActive: true,
 			}}
 		>
 			<Spin spinning={loading}>
@@ -146,20 +145,12 @@ export function Detail({ ref }: DetailProps) {
 					label={t("system.dept.name")}
 					labelInValue={true}
 				/>
-				<ProFormSelect
-					name="role"
-					label={t("system.role.name")}
-					options={[
-						{ label: "Admin", value: "ADMIN" },
-						{ label: "User", value: "USER" },
-					]}
-				/>
+
 				<ProFormSwitch
-					name="status"
+					name="isActive"
 					label={t("common.status")}
 					checkedChildren={t("common.active")}
 					unCheckedChildren={t("common.inactive")}
-					transform={value => (value ? 1 : 0)}
 				/>
 			</Spin>
 		</ModalForm>
