@@ -13,8 +13,13 @@
 		"addUser": "Thêm người dùng",
 		"editUser": "Sửa người dùng",
 		"loginName": "Tên đăng nhập",
+		"fullName": "Họ và tên",
 		"workEmail": "Email công việc",
-		"phoneNumber": "Số điện thoại"
+		"email": "Email",
+		"phoneNumber": "Số điện thoại",
+		"phone": "Số điện thoại",
+		"password": "Mật khẩu",
+		"avatar": "Ảnh đại diện"
 	},
 
 	"menu": {

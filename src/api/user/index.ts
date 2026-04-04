@@ -1,4 +1,4 @@
-import type { LoginInfo, UserEntity } from "./types";
+import type { LoginInfo, UserEntity, UserSearchParams } from "./types";
 
 import { supabase } from "#src/store/supabaseClient";
 import { CrudServiceBase } from "../service-base";
@@ -25,9 +25,12 @@ export class UserService extends CrudServiceBase<UserEntity> {
 		return this.get<UserEntity>("current-user");
 	}
 
-	/** Lấy danh sách user */
-	async fetchUserList() {
-		return this.get<UserEntity[]>("");
+	/** Lấy danh sách user có phân trang */
+	async fetchUserList(params?: UserSearchParams) {
+		return this.get<{ data: UserEntity[], total: number }>("", {
+			searchParams: params as any,
+			ignoreLoading: true,
+		});
 	}
 
 	/**
@@ -37,8 +40,29 @@ export class UserService extends CrudServiceBase<UserEntity> {
 	 */
 	async fetchUserByApi(path: string, keyword?: string) {
 		return this.get<UserEntity[]>(path, {
-			searchParams: keyword ? { keyword } : undefined,
+			searchParams: (keyword ? { keyword } : undefined) as any,
+			ignoreLoading: true,
 		});
+	}
+
+	/** Thêm user */
+	async fetchAddUser(data: Partial<UserEntity>) {
+		return this.post<void>("", { json: data, ignoreLoading: true });
+	}
+
+	/** Sửa user */
+	async fetchUpdateUser(id: string, data: Partial<UserEntity>) {
+		return this.patch<void>(id, { json: data, ignoreLoading: true });
+	}
+
+	/** Xóa user */
+	async fetchDeleteUser(id: string) {
+		return this.delete<void>(id, { ignoreLoading: true });
+	}
+
+	/** Lấy chi tiết user */
+	async fetchUserItem(id: string) {
+		return this.get<UserEntity>(id, { ignoreLoading: true });
 	}
 
 	/** Làm mới token */
