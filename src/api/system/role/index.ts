@@ -1,34 +1,40 @@
-import type { RoleItemType } from "./types";
-import { request } from "#src/utils/request";
+import type { RoleEntity, RoleSearchParams } from "./types";
+import { CrudServiceBase } from "../../service-base";
 
 export * from "./types";
 
-/* 获取角色列表 */
-export function fetchRoleList(data: any) {
-	return request.get<ApiListResult<RoleItemType>>("role-list", { searchParams: data, ignoreLoading: true }).json();
+export class RoleService extends CrudServiceBase<RoleEntity> {
+	constructor() {
+		super({ endpoint: "role" });
+	}
+
+	/** Lấy danh sách role có phân trang */
+	async fetchRoleList(params?: RoleSearchParams) {
+		return this.get<{ data: RoleEntity[], total: number }>("", {
+			searchParams: params as any,
+			ignoreLoading: true,
+		});
+	}
+
+	/** Thêm role */
+	async fetchAddRole(data: Partial<RoleEntity>) {
+		return this.post<void>("", { json: data, ignoreLoading: true });
+	}
+
+	/** Sửa role */
+	async fetchUpdateRole(id: string, data: Partial<RoleEntity>) {
+		return this.patch<void>(id, { json: data, ignoreLoading: true });
+	}
+
+	/** Xóa role */
+	async fetchDeleteRole(id: string) {
+		return this.delete<void>(id, { ignoreLoading: true });
+	}
+
+	/** Lấy chi tiết role */
+	async fetchRoleItem(id: string) {
+		return this.get<RoleEntity>(id, { ignoreLoading: true });
+	}
 }
 
-/* 新增角色 */
-export function fetchAddRoleItem(data: RoleItemType) {
-	return request.post<void>("role-item", { json: data, ignoreLoading: true }).json();
-}
-
-/* 修改角色 */
-export function fetchUpdateRoleItem(data: RoleItemType) {
-	return request.put<void>("role-item", { json: data, ignoreLoading: true }).json();
-}
-
-/* 删除角色 */
-export function fetchDeleteRoleItem(id: number) {
-	return request.delete<void>("role-item", { json: id, ignoreLoading: true }).json();
-}
-
-/* 获取菜单 */
-export function fetchRoleMenu() {
-	return request.get<RoleItemType[]>("role-menu", { ignoreLoading: true }).json();
-}
-
-/* 角色绑定的菜单 id */
-export function fetchMenuByRoleId(data: { id: number }) {
-	return request.get<string[]>("menu-by-role-id", { searchParams: data, ignoreLoading: false }).json();
-}
+export const roleService = new RoleService();

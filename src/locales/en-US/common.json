@@ -96,5 +96,7 @@
 	"checkAll": "Check All",
 	"cancelAll": "Cancel All",
 	"fetchError": "Failed to load data",
-	"loading": "Loading..."
+	"loading": "Loading...",
+	"pleaseInput": "Please input",
+	"selectAll": "Select All"
 }
