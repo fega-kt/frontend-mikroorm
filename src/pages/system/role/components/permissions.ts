@@ -38,4 +38,11 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.DeleteTask,
 		PermissionType.AssignTask,
 	],
+	GROUP: [
+		PermissionType.MenuGroup,
+		PermissionType.ViewGroupDetail,
+		PermissionType.CreateGroup,
+		PermissionType.UpdateGroup,
+		PermissionType.DeleteGroup,
+	],
 };

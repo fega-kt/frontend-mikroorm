@@ -36,6 +36,21 @@ export enum PermissionType {
 	UpdateTask = "permission:task:update",
 	DeleteTask = "permission:task:delete",
 	AssignTask = "permission:task:assign",
+
+	/** ===== GROUP ===== */
+
+	/** vào menu group */
+	MenuGroup = "permission:menu:group",
+
+	/** xem chi tiết group */
+	ViewGroupDetail = "permission:group:view",
+
+	/** tạo group */
+	CreateGroup = "permission:group:create",
+
+	/** cập nhật group */
+	UpdateGroup = "permission:group:update",
+	DeleteGroup = "permission:group:delete",
 }
 
 export interface RoleSearchParams {
