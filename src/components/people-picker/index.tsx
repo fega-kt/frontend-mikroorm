@@ -1,19 +1,19 @@
 import type { UserEntity } from "#src/api/user/types";
 import type { FormItemProps, SelectProps } from "antd";
 import { userService } from "#src/api/user";
+import { getAvatarColor } from "#src/utils/avatar/index";
 import { cn } from "#src/utils/cn";
 import { ProFormItem } from "@ant-design/pro-components";
 import { useDebounceFn } from "ahooks";
 import { Avatar, Select, Space, Spin, Tag, Typography } from "antd";
 import * as React from "react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const { Text } = Typography;
 
 /** UserDisplay: Static component to show user info consistently (avatar + name + subtext) */
 export function UserDisplay({ user, showAvatar = true, size = "middle" }: { user: UserEntity, showAvatar?: boolean, size?: "small" | "middle" }) {
-	const userStyle = getUserColor(user.id);
 	const avatarSize = size === "small" ? 18 : 22;
 	const nameSize = size === "small" ? "text-[12px]" : "text-[13px]";
 	const subSize = size === "small" ? "text-[9px]" : "text-[10px]";
@@ -26,37 +26,20 @@ export function UserDisplay({ user, showAvatar = true, size = "middle" }: { user
 					src={user.avatar}
 					className={cn("shrink-0 font-semibold border-solid", size === "small" ? "text-[10px]" : "text-[11px]")}
 					style={{
-						backgroundColor: userStyle.backgroundColor,
-						color: userStyle.color,
-						borderColor: userStyle.borderColor,
+						backgroundColor: getAvatarColor(user.id),
 					}}
 				>
-					{user.fullName?.[0]?.toUpperCase() || "?"}
+					{user.fullName?.[0]?.toUpperCase() || user.loginName?.[0]?.toUpperCase() || "?"}
 				</Avatar>
 			)}
 			<div className="flex flex-col overflow-hidden leading-none">
-				<Text strong className={cn(nameSize, "-mb-0.5")} ellipsis>{user.fullName}</Text>
+				<Text strong className={cn(nameSize, "-mb-0.5")} ellipsis>{user.fullName || user.loginName}</Text>
 				<Text type="secondary" className={subSize} ellipsis>
 					{user.workEmail || user.loginName}
 				</Text>
 			</div>
 		</Space>
 	);
-}
-
-/** Helper to generate a vivid, theme-safe color from a string (user id) */
-function getUserColor(id: string = "") {
-	let hash = 0;
-	for (let i = 0; i < id.length; i++) {
-		hash = id.charCodeAt(i) + ((hash << 5) - hash);
-	}
-	const h = Math.abs(hash % 360);
-	// Saturation 65%, Lightness 55% for a vivid but not over-saturated look
-	return {
-		color: `hsl(${h}, 70%, 45%)`,
-		backgroundColor: `hsla(${h}, 70%, 45%, 0.12)`,
-		borderColor: `hsla(${h}, 70%, 45%, 0.25)`,
-	};
 }
 
 /** Define the shape of our Select components options */
@@ -66,11 +49,18 @@ export interface PeopleOption {
 	user: UserEntity
 }
 
+/** Value type for PeoplePicker - can be IDs or full objects */
+export type PickerValueType = string | string[] | UserEntity | UserEntity[] | Record<string, unknown> | Record<string, unknown>[] | null | undefined;
+
 /** Specific props for the PeoplePicker component */
-export interface PeoplePickerProps extends Omit<SelectProps<string | string[], PeopleOption>, "options" | "mode" | "onDropdownVisibleChange"> {
+export interface PeoplePickerProps extends Omit<SelectProps<string | string[], PeopleOption>, "options" | "mode" | "onDropdownVisibleChange" | "value" | "onChange"> {
+	/** Current value (can be IDs or full UserEntity objects) */
+	value?: PickerValueType
+	/** Callback when value changes - returns full UserEntity objects */
+	onChange?: (value: PickerValueType, option?: PeopleOption | PeopleOption[]) => void
 	/** Manual list of users. If provided, filtering is local. */
 	dataSource?: UserEntity[]
-	/** API endpoint (string) to fetch users. If provided, it handles remote filtering by passing '?keyword=...' */
+	/** API endpoint (string) to fetch users. If provided, it handles remote filtering */
 	api?: string
 	/** Label to display logic: 'fullName' | 'loginName' | 'workEmail' */
 	labelKey?: keyof UserEntity
@@ -78,75 +68,64 @@ export interface PeoplePickerProps extends Omit<SelectProps<string | string[], P
 	showAvatar?: boolean
 	/** Selection mode */
 	mode?: "multiple" | "tags"
-	/** Callback when the dropdown open state changes (AntD 5.x renamed from onDropdownVisibleChange) */
+	/** Callback when the dropdown opens */
 	onOpenChange?: (open: boolean) => void
-	/** Readonly mode: only displays the user info without selection */
+	/** Readonly mode */
 	readonly?: boolean
-	/** Fixed user to display when in readonly mode (if not selecting from options) */
+	/** Fixed user for display in readonly mode */
 	user?: UserEntity
-	/** Ref to the internal Select component */
+	/** Ref to internal Select */
 	ref?: React.Ref<React.ComponentRef<typeof Select>>
 }
 
 /**
- * PeoplePicker: A premium, reusable user selection component
- * - 'dataSource' for local data
- * - 'api' (string endpoint) for remote fetching
- * - Dynamic color-coded Avatars based on User ID
- * - Optimized compact design using userService and TailwindCSS
+ * PeoplePicker: A premium, functional user selection component.
+ * Handles both ID-based and Object-based value flow with automatic hydration.
  */
 export function PeoplePicker(props: PeoplePickerProps) {
 	const {
 		dataSource,
-		api,
-		mode,
-		placeholder,
+		api = "user",
 		labelKey = "fullName",
 		showAvatar = true,
+		mode,
 		onOpenChange,
 		onSearch,
-		readonly,
-		user,
-		ref,
+		placeholder,
 		className,
+		readonly,
+		user: readonlyUser,
+		ref,
 		...restProps
 	} = props;
 
 	const { t } = useTranslation();
 	const [apiOptions, setApiOptions] = useState<UserEntity[]>([]);
 	const [loading, setLoading] = useState(false);
-	const fetchedRef = useRef(false);
+	const isRemote = !!api;
 
-	// Remote if 'api' (string) is provided and no 'dataSource'
-	const isRemote = useMemo(() => !!api && !dataSource, [api, dataSource]);
-
-	const fetchData = useCallback(async (searchKey?: string) => {
-		if (!api)
+	// Fetch remote users
+	const fetchData = async (keyword?: string) => {
+		if (!isRemote) {
 			return;
+		}
 		setLoading(true);
 		try {
-			const data = await userService.fetchUserByApi(api, searchKey);
-			setApiOptions(data || []);
-			fetchedRef.current = true;
+			const res = await userService.fetchUserByApi(api, keyword);
+			setApiOptions(res.data);
 		}
 		catch (error) {
-			console.error("[PeoplePicker] Failed to fetch users from:", api, error);
+			console.error("[PeoplePicker] Search Error:", error);
 		}
 		finally {
 			setLoading(false);
 		}
-	}, [api]);
+	};
 
-	const { run: runDebouncedSearch } = useDebounceFn(
-		(key: string) => {
-			if (isRemote)
-				fetchData(key);
-		},
-		{ wait: 350 },
-	);
+	const { run: runDebouncedSearch } = useDebounceFn(fetchData, { wait: 300 });
 
 	const handleOpenChange = (open: boolean) => {
-		if (open && !fetchedRef.current && api) {
+		if (open && isRemote && apiOptions.length === 0) {
 			fetchData();
 		}
 		onOpenChange?.(open);
@@ -159,26 +138,79 @@ export function PeoplePicker(props: PeoplePickerProps) {
 		onSearch?.(val);
 	};
 
-	const finalUsers = useMemo(() => dataSource || apiOptions, [dataSource, apiOptions]);
+	// --- DATA MAPPING ---
+	// Merge current value objects, data source, and api results to ensure we always have labels
+	const finalUsers = useMemo(() => {
+		const map = new Map<string, UserEntity>();
+
+		// 1. Start with data source / background options
+		(dataSource || []).forEach(u => map.set(u.id, u));
+		apiOptions.forEach(u => map.set(u.id, u));
+		if (readonlyUser) {
+			map.set(readonlyUser.id, readonlyUser);
+		}
+
+		// 2. Add objects from current value (most up-to-date labels)
+		const incoming = Array.isArray(restProps.value) ? restProps.value : (restProps.value ? [restProps.value] : []);
+		incoming.forEach((v: unknown) => {
+			if (v && typeof v === "object" && v !== null && "id" in v) {
+				const u = v as UserEntity;
+				if (u.fullName || u.loginName) {
+					map.set(u.id, u);
+				}
+			}
+		});
+
+		return Array.from(map.values());
+	}, [dataSource, apiOptions, restProps.value, readonlyUser]);
+
+	// Convert external value (Objects or Strings) into string IDs for AntD Select
+	const normalizedValue = useMemo(() => {
+		if (!restProps.value) {
+			return restProps.value;
+		}
+		const arr = Array.isArray(restProps.value) ? restProps.value : [restProps.value];
+		const mapped = arr.map((v: unknown) => {
+			if (v && typeof v === "object") {
+				const rec = v as Record<string, unknown>;
+				return (rec.id || rec.value || v) as string;
+			}
+			return v as string;
+		});
+		return (mode === "multiple" || mode === "tags") ? mapped : mapped[0];
+	}, [restProps.value, mode]);
 
 	const selectOptions = useMemo<PeopleOption[]>(() => {
 		return finalUsers.map(user => ({
-			label: user[labelKey] as string,
-			value: user.id,
+			label: (user[labelKey] || user.fullName || user.loginName || user.id) as string,
+			value: user.id as string,
 			user,
 		}));
 	}, [finalUsers, labelKey]);
 
-	const optionRender = (option: { data: PeopleOption }) => {
-		return <UserDisplay user={option.data.user} showAvatar={showAvatar} />;
+	const handleChange = (val: string | string[], options?: PeopleOption | PeopleOption[]) => {
+		if (!val || (Array.isArray(val) && val.length === 0)) {
+			props.onChange?.(val as any, options);
+			return;
+		}
+
+		// Reconstruct full UserEntity objects from options metadata
+		const opts = Array.isArray(options) ? options : (options ? [options] : []);
+		const resultObjects = opts.map(o => o.user || { id: o.value });
+
+		const finalVal = (mode === "multiple" || mode === "tags") ? resultObjects : resultObjects[0];
+		props.onChange?.(finalVal as any, options);
 	};
 
-	const tagRender = (tagProps: {
-		label: React.ReactNode
-		closable: boolean
-		onClose: (event?: React.MouseEvent<HTMLElement, MouseEvent>) => void
-	}) => {
-		const { label, closable, onClose } = tagProps;
+	const optionRender = (option: { data: PeopleOption }) => {
+		const u = option.data.user;
+		// Fallback for names in case of poor backend data
+		const safeUser = { ...u, fullName: u.fullName || u.loginName || u.id };
+		return <UserDisplay user={safeUser} showAvatar={showAvatar} />;
+	};
+
+	const tagRender = (tagProps: any) => {
+		const { label, closable, onClose, value } = tagProps;
 		return (
 			<Tag
 				color="blue"
@@ -188,14 +220,15 @@ export function PeoplePicker(props: PeoplePickerProps) {
 					"mr-1 flex items-center rounded bg-[#4f46e5]/5 px-1.5 h-5 text-[11px] font-medium text-[#4f46e5] border border-solid border-[#4f46e5]/25",
 				)}
 			>
-				{label}
+				{label || value || "..."}
 			</Tag>
 		);
 	};
 
 	const filterOption = (input: string, option?: PeopleOption) => {
-		if (isRemote || !option)
+		if (isRemote || !option) {
 			return true;
+		}
 		const { user } = option;
 		const searchStr = input.toLowerCase();
 		return (
@@ -206,15 +239,17 @@ export function PeoplePicker(props: PeoplePickerProps) {
 	};
 
 	if (readonly) {
+		const displayUser = readonlyUser || (Array.isArray(props.value) ? (props.value[0] as UserEntity) : (props.value as UserEntity));
 		return (
 			<div className={cn("flex min-h-[32px] items-center", className)}>
-				{user ? <UserDisplay user={user} showAvatar={showAvatar} /> : <div className="text-[12px] opacity-45">{t("common.noData")}</div>}
+				{displayUser ? <UserDisplay user={displayUser} showAvatar={showAvatar} /> : <div className="text-[12px] opacity-45">{t("common.noData")}</div>}
 			</div>
 		);
 	}
 
 	return (
 		<Select<string | string[], PeopleOption>
+			{...restProps}
 			ref={ref}
 			showSearch
 			allowClear
@@ -224,7 +259,9 @@ export function PeoplePicker(props: PeoplePickerProps) {
 			loading={loading}
 			onOpenChange={handleOpenChange}
 			onSearch={handleSearch}
-			options={selectOptions}
+			onChange={handleChange}
+			value={normalizedValue as any}
+			options={loading ? [] : selectOptions}
 			optionRender={optionRender}
 			tagRender={mode === "multiple" || mode === "tags" ? tagRender : undefined}
 			filterOption={filterOption}
@@ -239,7 +276,6 @@ export function PeoplePicker(props: PeoplePickerProps) {
 					</div>
 				)
 				: undefined}
-			{...(restProps as SelectProps<string | string[], PeopleOption>)}
 		/>
 	);
 }
@@ -248,6 +284,11 @@ export function PeoplePicker(props: PeoplePickerProps) {
 export interface ProFormPeoplePickerProps extends Omit<FormItemProps, "children" | "initialValue"> {
 	name: string
 	multiple?: boolean
+	api?: string
+	dataSource?: UserEntity[]
+	showAvatar?: boolean
+	placeholder?: string
+	readonly?: boolean
 	labelInValue?: boolean
 	fieldProps?: PeoplePickerProps
 	initialValue?: string | string[]
@@ -256,7 +297,7 @@ export interface ProFormPeoplePickerProps extends Omit<FormItemProps, "children"
 /**
  * ProFormPeoplePicker: Ready-to-use ProForm component
  */
-export function ProFormPeoplePicker({ name, label, rules, multiple, labelInValue = true, fieldProps, initialValue, readonly, ...rest }: ProFormPeoplePickerProps & { readonly?: boolean }) {
+export function ProFormPeoplePicker({ name, label, rules, multiple, fieldProps, initialValue, readonly, ...rest }: ProFormPeoplePickerProps) {
 	return (
 		<ProFormItem
 			name={name}
@@ -267,7 +308,6 @@ export function ProFormPeoplePicker({ name, label, rules, multiple, labelInValue
 		>
 			<PeoplePicker
 				mode={multiple ? "multiple" : undefined}
-				labelInValue={labelInValue}
 				readonly={readonly}
 				{...fieldProps}
 			/>

@@ -27,6 +27,7 @@
 		"system": "Quản lý hệ thống",
 		"user": "Quản lý người dùng",
 		"role": "Quản lý vai trò",
+		"group": "Quản lý nhóm người dùng",
 		"menu": "Quản lý menu",
 		"dept": "Quản lý phòng ban",
 		"personalCenter": "Trung tâm cá nhân",

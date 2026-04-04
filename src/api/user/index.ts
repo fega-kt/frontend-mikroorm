@@ -39,7 +39,7 @@ export class UserService extends CrudServiceBase<UserEntity> {
 	 * @param keyword Từ khóa tìm kiếm
 	 */
 	async fetchUserByApi(path: string, keyword?: string) {
-		return this.get<UserEntity[]>(path, {
+		return this.get<{ data: UserEntity[], total: number }>(path, {
 			searchParams: (keyword ? { keyword } : undefined) as any,
 			ignoreLoading: true,
 		});
