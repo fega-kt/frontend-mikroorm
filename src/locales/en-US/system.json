@@ -10,6 +10,7 @@
 		"group": {
 			"user": "User Management",
 			"role": "Role Management",
+			"group": "User Group Management",
 			"department": "Department Management",
 			"project": "Project Management",
 			"task": "Task Management"
@@ -24,8 +25,17 @@
 			"role": "Role",
 			"department": "Department",
 			"project": "Project",
-			"task": "Task"
+			"task": "Task",
+			"group": "Group"
 		}
+	},
+	"userGroup": {
+		"title": "User Group Management",
+		"addGroup": "Add User Group",
+		"editGroup": "Edit User Group",
+		"name": "Group Name",
+		"users": "Members",
+		"description": "Description"
 	},
 	"user": {
 		"name": "User Name",
