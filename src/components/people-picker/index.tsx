@@ -47,6 +47,10 @@ export interface PeoplePickerProps extends Omit<SelectProps<string | string[], P
 	mode?: "multiple" | "tags"
 	/** Callback when the dropdown open state changes (AntD 5.x renamed from onDropdownVisibleChange) */
 	onOpenChange?: (open: boolean) => void
+	/** Readonly mode: only displays the user info without selection */
+	readonly?: boolean
+	/** Fixed user to display when in readonly mode (if not selecting from options) */
+	user?: UserEntity
 	/** Ref to the internal Select component */
 	ref?: React.Ref<React.ComponentRef<typeof Select>>
 }
@@ -68,6 +72,8 @@ export function PeoplePicker(props: PeoplePickerProps) {
 		showAvatar = true,
 		onOpenChange,
 		onSearch,
+		readonly,
+		user,
 		ref,
 		className,
 		...restProps
@@ -235,7 +241,7 @@ export interface ProFormPeoplePickerProps extends Omit<FormItemProps, "children"
 /**
  * ProFormPeoplePicker: Ready-to-use ProForm component
  */
-export function ProFormPeoplePicker({ name, label, rules, multiple, labelInValue = true, fieldProps, initialValue, ...rest }: ProFormPeoplePickerProps) {
+export function ProFormPeoplePicker({ name, label, rules, multiple, labelInValue = true, fieldProps, initialValue, readonly, ...rest }: ProFormPeoplePickerProps & { readonly?: boolean }) {
 	return (
 		<ProFormItem
 			name={name}
@@ -247,6 +253,7 @@ export function ProFormPeoplePicker({ name, label, rules, multiple, labelInValue
 			<PeoplePicker
 				mode={multiple ? "multiple" : undefined}
 				labelInValue={labelInValue}
+				readonly={readonly}
 				{...fieldProps}
 			/>
 		</ProFormItem>
