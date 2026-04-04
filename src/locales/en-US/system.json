@@ -4,7 +4,28 @@
 		"id": "Role Id",
 		"addRole": "Add Role",
 		"editRole": "Edit Role",
-		"assignMenu": "Assign Menu"
+		"description": "Description",
+		"rights": "Permissions",
+		"assignMenu": "Assign Menu",
+		"group": {
+			"user": "User Management",
+			"role": "Role Management",
+			"department": "Department Management",
+			"project": "Project Management",
+			"task": "Task Management"
+		},
+		"permission": {
+			"user": "User",
+			"view": "View Detail",
+			"create": "Create",
+			"update": "Update",
+			"delete": "Delete",
+			"assign": "Assign",
+			"role": "Role",
+			"department": "Department",
+			"project": "Project",
+			"task": "Task"
+		}
 	},
 	"user": {
 		"name": "User Name",
