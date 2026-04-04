@@ -1,54 +1,46 @@
-import type { RoleItemType } from "#src/api/system/role";
-import type { ActionType, ProColumns, ProCoreActionType } from "@ant-design/pro-components";
+import type { RoleEntity } from "#src/api/system/role";
+import type { ActionType, ProColumns } from "@ant-design/pro-components";
+import type { DetailRef } from "./components/detail";
 
-import { fetchDeleteRoleItem, fetchMenuByRoleId, fetchRoleList, fetchRoleMenu } from "#src/api/system/role";
-import { BasicButton } from "#src/components/basic-button";
+import { roleService } from "#src/api/system/role";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
-import { accessControlCodes, useAccess } from "#src/hooks/use-access";
-import { handleTree } from "#src/utils/tree";
-
-import { PlusCircleOutlined } from "@ant-design/icons";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Button, Popconfirm } from "antd";
-import { useRef, useState } from "react";
+import { useAccess } from "#src/hooks/use-access";
+import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
+import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { Button, Popconfirm, Tooltip } from "antd";
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
-
 import { Detail } from "./components/detail";
 import { getConstantColumns } from "./constants";
 
 export default function Role() {
 	const { t } = useTranslation();
-	const { hasAccessByCodes } = useAccess();
-	const { data: menuItems } = useQuery({
-		queryKey: ["role-menu"],
-		queryFn: async () => {
-			const roleMenuList = await fetchRoleMenu();
-			return roleMenuList?.map(item => ({
-				...item,
-				title: item.name,
-				key: item.id,
-			}));
-		},
-		initialData: [],
-	});
-	const deleteRoleItemMutation = useMutation({
-		mutationFn: fetchDeleteRoleItem,
-	});
-	/* Detail Data */
-	const [isOpen, setIsOpen] = useState(false);
-	const [title, setTitle] = useState("");
-	const [detailData, setDetailData] = useState<Partial<RoleItemType> & { menus?: string[] }>({});
-
+	const { canAccess } = useAccess();
 	const actionRef = useRef<ActionType>(null);
+	const detailRef = useRef<DetailRef>(null);
 
-	const handleDeleteRow = async (id: number, action?: ProCoreActionType<object>) => {
-		await deleteRoleItemMutation.mutateAsync(id);
-		await action?.reload?.();
+	const handleAdd = async () => {
+		const res = await detailRef.current?.show();
+		if (res?.isChange) {
+			actionRef.current?.reload();
+		}
+	};
+
+	const handleEdit = async (id: string) => {
+		const res = await detailRef.current?.show(id);
+		if (res?.isChange) {
+			actionRef.current?.reload();
+		}
+	};
+
+	const handleDelete = async (id: string) => {
+		await roleService.fetchDeleteRole(id);
+		actionRef.current?.reload();
 		window.$message?.success(t("common.deleteSuccess"));
 	};
 
-	const columns: ProColumns<RoleItemType>[] = [
+	const columns: ProColumns<RoleEntity>[] = [
 		...getConstantColumns(t),
 		{
 			title: t("common.action"),
@@ -56,83 +48,64 @@ export default function Role() {
 			key: "option",
 			width: 120,
 			fixed: "right",
-			render: (text, record, _, action) => {
-				return [
-					<BasicButton
-						key="editable"
-						type="link"
+			render: (_, record) => [
+				<Tooltip key="edit" title={t("common.edit")}>
+					<Button
+						type="text"
 						size="small"
-						disabled={!hasAccessByCodes(accessControlCodes.update)}
-						onClick={async () => {
-							/* 请求角色菜单权限 */
-							const menus = await fetchMenuByRoleId({ id: record.id });
-							setIsOpen(true);
-							setTitle(t("system.role.editRole"));
-							setDetailData({ ...record, menus });
-						}}
-					>
-						{t("common.edit")}
-					</BasicButton>,
-					<Popconfirm
-						key="delete"
-						title={t("common.confirmDelete")}
-						onConfirm={() => handleDeleteRow(record.id, action)}
-						okText={t("common.confirm")}
-						cancelText={t("common.cancel")}
-					>
-						<BasicButton type="link" size="small" disabled={!hasAccessByCodes(accessControlCodes.delete)}>{t("common.delete")}</BasicButton>
-					</Popconfirm>,
-				];
-			},
+						icon={<EditOutlined />}
+						disabled={!canAccess(PermissionType.UpdateRole)}
+						onClick={() => handleEdit(record.id)}
+					/>
+				</Tooltip>,
+				<Popconfirm
+					key="delete"
+					title={t("common.confirmDelete")}
+					onConfirm={() => handleDelete(record.id)}
+					okText={t("common.confirm")}
+					cancelText={t("common.cancel")}
+				>
+					<Tooltip title={t("common.delete")}>
+						<Button
+							type="text"
+							size="small"
+							danger
+							icon={<DeleteOutlined />}
+							disabled={!canAccess(PermissionType.DeleteRole)}
+						/>
+					</Tooltip>
+				</Popconfirm>,
+			],
 		},
 	];
 
-	const onCloseChange = () => {
-		setIsOpen(false);
-		setDetailData({});
-	};
-
-	const refreshTable = () => {
-		actionRef.current?.reload();
-	};
 	return (
 		<BasicContent className="h-full">
-			<BasicTable<RoleItemType>
-				adaptive
+			<BasicTable<RoleEntity>
 				columns={columns}
 				actionRef={actionRef}
 				request={async (params) => {
-					const responseData = await fetchRoleList(params);
+					const { data, total } = await roleService.fetchRoleList(params);
 					return {
-						data: responseData.list,
-						total: responseData.total,
+						data,
+						total,
 						success: true,
 					};
 				}}
-				headerTitle={`${t("common.menu.role")} （${t("common.demoOnly")}）`}
+				headerTitle={t("common.menu.role")}
 				toolBarRender={() => [
 					<Button
 						key="add-role"
 						icon={<PlusCircleOutlined />}
 						type="primary"
-						disabled={!hasAccessByCodes(accessControlCodes.add)}
-						onClick={() => {
-							setIsOpen(true);
-							setTitle(t("system.role.addRole"));
-						}}
+						disabled={!canAccess(PermissionType.CreateRole)}
+						onClick={handleAdd}
 					>
 						{t("common.add")}
 					</Button>,
 				]}
 			/>
-			<Detail
-				title={title}
-				open={isOpen}
-				onCloseChange={onCloseChange}
-				detailData={detailData}
-				refreshTable={refreshTable}
-				treeData={handleTree(menuItems || [])}
-			/>
+			<Detail ref={detailRef} />
 		</BasicContent>
 	);
-};
+}

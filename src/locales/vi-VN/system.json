@@ -4,7 +4,28 @@
 		"id": "ID vai trò",
 		"addRole": "Thêm vai trò",
 		"editRole": "Sửa vai trò",
-		"assignMenu": "Phân quyền menu"
+		"description": "Mô tả",
+		"rights": "Quyền hạn",
+		"assignMenu": "Phân quyền menu",
+		"group": {
+			"user": "Quản lý người dùng",
+			"role": "Quản lý vai trò",
+			"department": "Quản lý phòng ban",
+			"project": "Quản lý dự án",
+			"task": "Quản lý công việc"
+		},
+		"permission": {
+			"user": "Người dùng",
+			"view": "Xem chi tiết",
+			"create": "Tạo mới",
+			"update": "Cập nhật",
+			"delete": "Xóa",
+			"assign": "Giao việc",
+			"role": "Vai trò",
+			"department": "Phòng ban",
+			"project": "Dự án",
+			"task": "Công việc"
+		}
 	},
 
 	"user": {
