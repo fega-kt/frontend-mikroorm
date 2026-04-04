@@ -11,6 +11,39 @@ import { useTranslation } from "react-i18next";
 
 const { Text } = Typography;
 
+/** UserDisplay: Static component to show user info consistently (avatar + name + subtext) */
+export function UserDisplay({ user, showAvatar = true, size = "middle" }: { user: UserEntity, showAvatar?: boolean, size?: "small" | "middle" }) {
+	const userStyle = getUserColor(user.id);
+	const avatarSize = size === "small" ? 18 : 22;
+	const nameSize = size === "small" ? "text-[12px]" : "text-[13px]";
+	const subSize = size === "small" ? "text-[9px]" : "text-[10px]";
+
+	return (
+		<Space size={size} className="p-0">
+			{showAvatar && (
+				<Avatar
+					size={avatarSize}
+					src={user.avatar}
+					className={cn("shrink-0 font-semibold border-solid", size === "small" ? "text-[10px]" : "text-[11px]")}
+					style={{
+						backgroundColor: userStyle.backgroundColor,
+						color: userStyle.color,
+						borderColor: userStyle.borderColor,
+					}}
+				>
+					{user.fullName?.[0]?.toUpperCase() || "?"}
+				</Avatar>
+			)}
+			<div className="flex flex-col overflow-hidden leading-none">
+				<Text strong className={cn(nameSize, "-mb-0.5")} ellipsis>{user.fullName}</Text>
+				<Text type="secondary" className={subSize} ellipsis>
+					{user.workEmail || user.loginName}
+				</Text>
+			</div>
+		</Space>
+	);
+}
+
 /** Helper to generate a vivid, theme-safe color from a string (user id) */
 function getUserColor(id: string = "") {
 	let hash = 0;
@@ -137,33 +170,7 @@ export function PeoplePicker(props: PeoplePickerProps) {
 	}, [finalUsers, labelKey]);
 
 	const optionRender = (option: { data: PeopleOption }) => {
-		const { user } = option.data;
-		const userStyle = getUserColor(user.id);
-
-		return (
-			<Space size="middle" className="p-0">
-				{showAvatar && (
-					<Avatar
-						size={22}
-						src={user.avatar}
-						className="shrink-0 text-[10px] font-semibold border-solid"
-						style={{
-							backgroundColor: userStyle.backgroundColor,
-							color: userStyle.color,
-							borderColor: userStyle.borderColor,
-						}}
-					>
-						{user.fullName?.[0]?.toUpperCase() || "?"}
-					</Avatar>
-				)}
-				<div className="flex flex-col overflow-hidden leading-none">
-					<Text strong className="text-[13px] -mb-0.5" ellipsis>{user.fullName}</Text>
-					<Text type="secondary" className="text-[10px]" ellipsis>
-						{user.workEmail || user.loginName}
-					</Text>
-				</div>
-			</Space>
-		);
+		return <UserDisplay user={option.data.user} showAvatar={showAvatar} />;
 	};
 
 	const tagRender = (tagProps: {
@@ -197,6 +204,14 @@ export function PeoplePicker(props: PeoplePickerProps) {
 			|| user.workEmail?.toLowerCase().includes(searchStr)
 		);
 	};
+
+	if (readonly) {
+		return (
+			<div className={cn("flex min-h-[32px] items-center", className)}>
+				{user ? <UserDisplay user={user} showAvatar={showAvatar} /> : <div className="text-[12px] opacity-45">{t("common.noData")}</div>}
+			</div>
+		);
+	}
 
 	return (
 		<Select<string | string[], PeopleOption>
