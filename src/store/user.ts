@@ -1,5 +1,5 @@
 import type { UserEntity } from "#src/api/user/types";
-import { fetchUserInfo } from "#src/api/user";
+import { userService } from "#src/api/user";
 
 import { create } from "zustand";
 
@@ -27,7 +27,7 @@ export const useUserStore = create<UserState & UserAction>()(
 		...initialState,
 
 		getUserInfo: async () => {
-			const userInfo = await fetchUserInfo();
+			const userInfo = await userService.fetchUserInfo();
 			set({ ...userInfo });
 			return userInfo;
 		},
