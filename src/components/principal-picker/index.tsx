@@ -1,12 +1,12 @@
 import type { PrincipalEntity } from "#src/api/system/principal";
 import type { FormItemProps, SelectProps } from "antd";
-import { principalService } from "#src/api/system/principal";
+import { principalService, PrincipalType } from "#src/api/system/principal";
 import { getAvatarColorStyle } from "#src/utils/avatar";
 import { cn } from "#src/utils/cn";
-import { TeamOutlined } from "@ant-design/icons";
+import { TeamOutlined, UserOutlined } from "@ant-design/icons";
 import { ProFormItem } from "@ant-design/pro-components";
 import { useDebounceFn } from "ahooks";
-import { Avatar, Select, Space, Spin, Tag, Typography } from "antd";
+import { Avatar, Select, Space, Spin, Tag, theme, Typography } from "antd";
 import * as React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -14,17 +14,21 @@ import { useTranslation } from "react-i18next";
 const { Text } = Typography;
 
 /** PrincipalDisplay: Show principal info consistently (avatar/icon + name + subtext) */
-export function PrincipalDisplay({ principal, showAvatar = true, size = "middle" }: { principal: PrincipalEntity, showAvatar?: boolean, size?: "small" | "middle" }) {
+export function PrincipalDisplay({
+	principal,
+	showAvatar = true,
+	size = "middle",
+}: {
+	principal: PrincipalEntity
+	showAvatar?: boolean
+	size?: "small" | "middle"
+}) {
 	const style = getAvatarColorStyle(principal.id);
 	const iconSize = size === "small" ? 18 : 22;
 	const nameSize = size === "small" ? "text-[12px]" : "text-[13px]";
-	const subSize = size === "small" ? "text-[9px]" : "text-[10px]";
 
-	const isUser = principal.type === "user";
+	const isUser = principal.type === PrincipalType.User;
 	const user = principal.user;
-
-	// fallback text if user has no avatar and we want to render initals
-	const initials = principal.name?.[0]?.toUpperCase() || "?";
 
 	return (
 		<Space size={size} className="p-0">
@@ -32,7 +36,7 @@ export function PrincipalDisplay({ principal, showAvatar = true, size = "middle"
 				<Avatar
 					size={iconSize}
 					src={isUser && user?.avatar ? user.avatar : undefined}
-					icon={!isUser ? <TeamOutlined className="text-[12px]" /> : undefined}
+					icon={!isUser ? <TeamOutlined className="text-[12px]" /> : (user?.avatar ? undefined : <UserOutlined className="text-[12px]" />)}
 					className={cn("shrink-0 font-semibold border-solid", size === "small" ? "text-[10px]" : "text-[11px]")}
 					style={(!isUser || !user?.avatar)
 						? {
@@ -42,14 +46,11 @@ export function PrincipalDisplay({ principal, showAvatar = true, size = "middle"
 						}
 						: undefined}
 				>
-					{isUser && !user?.avatar ? initials : ""}
+					{isUser && !user?.avatar ? (principal.name?.[0]?.toUpperCase() || "?") : ""}
 				</Avatar>
 			)}
 			<div className="flex flex-col overflow-hidden leading-none">
-				<Text strong className={cn(nameSize, "-mb-0.5")} ellipsis>{principal.name}</Text>
-				<Text type="secondary" className={subSize} ellipsis>
-					{isUser ? (user?.workEmail || user?.loginName) : "Group"}
-				</Text>
+				<Text strong className={cn(nameSize)} ellipsis>{principal.name}</Text>
 			</div>
 		</Space>
 	);
@@ -61,39 +62,45 @@ export interface PrincipalOption {
 	principal: PrincipalEntity
 }
 
-export interface PrincipalPickerProps extends Omit<SelectProps<string | string[], PrincipalOption>, "options" | "mode" | "onDropdownVisibleChange"> {
+export interface PrincipalPickerProps extends Omit<SelectProps<string | string[], PrincipalOption>, "options" | "mode" | "onDropdownVisibleChange" | "onChange" | "value"> {
 	dataSource?: PrincipalEntity[]
-	/** Label to display logic */
-	labelKey?: keyof PrincipalEntity
 	showAvatar?: boolean
 	mode?: "multiple" | "tags"
 	onOpenChange?: (open: boolean) => void
 	readonly?: boolean
 	principal?: PrincipalEntity
 	ref?: React.Ref<React.ComponentRef<typeof Select>>
+	value?: string | string[] | PrincipalEntity | PrincipalEntity[]
+	onChange?: (value: PrincipalEntity | PrincipalEntity[] | string | string[], options?: PrincipalOption | PrincipalOption[]) => void
+}
+
+interface CustomTagProps {
+	label: React.ReactNode
+	value: string
+	closable: boolean
+	onClose: (event?: React.MouseEvent<HTMLElement, MouseEvent>) => void
 }
 
 /**
  * PrincipalPicker: A flexible component to select Principals (Users or Groups)
- * Operates similarly to PeoplePicker but uses principalService.
  */
 export function PrincipalPicker(props: PrincipalPickerProps) {
 	const {
 		dataSource,
 		mode,
 		placeholder,
-		labelKey = "name",
 		showAvatar = true,
 		onOpenChange,
 		onSearch,
 		readonly,
-		principal,
+		principal: readonlyPrincipal,
 		ref,
 		className,
 		...restProps
 	} = props;
 
 	const { t } = useTranslation();
+	const { token } = theme.useToken();
 	const [apiOptions, setApiOptions] = useState<PrincipalEntity[]>([]);
 	const [loading, setLoading] = useState(false);
 	const fetchedRef = useRef(false);
@@ -103,7 +110,6 @@ export function PrincipalPicker(props: PrincipalPickerProps) {
 	const fetchData = useCallback(async (searchKey?: string) => {
 		setLoading(true);
 		try {
-			// By default fetch up to 50 items using keyword search
 			const { data } = await principalService.fetchPrincipalList({ keyword: searchKey, pageSize: 50 });
 			setApiOptions(data || []);
 			fetchedRef.current = true;
@@ -118,14 +124,15 @@ export function PrincipalPicker(props: PrincipalPickerProps) {
 
 	const { run: runDebouncedSearch } = useDebounceFn(
 		(key: string) => {
-			if (isRemote)
+			if (isRemote) {
 				fetchData(key);
+			}
 		},
 		{ wait: 350 },
 	);
 
 	const handleOpenChange = (open: boolean) => {
-		if (open && !fetchedRef.current) {
+		if (open && !fetchedRef.current && isRemote) {
 			fetchData();
 		}
 		onOpenChange?.(open);
@@ -138,68 +145,136 @@ export function PrincipalPicker(props: PrincipalPickerProps) {
 		onSearch?.(val);
 	};
 
-	const finalPrincipals = useMemo(() => dataSource || apiOptions, [dataSource, apiOptions]);
+	const finalPrincipals = useMemo(() => {
+		const map = new Map<string, PrincipalEntity>();
+		(dataSource || []).forEach(p => map.set(p.id, p));
+		apiOptions.forEach(p => map.set(p.id, p));
+		if (readonlyPrincipal) {
+			map.set(readonlyPrincipal.id, readonlyPrincipal);
+		}
+
+		// Extract from value
+		const val = restProps.value;
+		const incoming = Array.isArray(val) ? val : (val ? [val] : []);
+		incoming.forEach((v: any) => {
+			if (v && typeof v === "object") {
+				const id = v.id || v.value;
+				// Group name usually lives in group.name, User in name
+				const name = v.name || v.label || v.group?.name || v.user?.fullName;
+				if (id && name && !map.has(id)) {
+					map.set(id, { ...v, id, name } as PrincipalEntity);
+				}
+			}
+		});
+
+		return Array.from(map.values());
+	}, [dataSource, apiOptions, readonlyPrincipal, restProps.value]);
+
+	const normalizedValue = useMemo(() => {
+		if (!restProps.value) {
+			return restProps.value;
+		}
+		const arr = Array.isArray(restProps.value) ? restProps.value : [restProps.value];
+		const mapped = arr.map((v: any) => {
+			if (v && typeof v === "object") {
+				return (v.id || v.value || v) as string;
+			}
+			return v as string;
+		});
+		return (mode === "multiple" || mode === "tags") ? mapped : mapped[0];
+	}, [restProps.value, mode]);
 
 	const selectOptions = useMemo<PrincipalOption[]>(() => {
 		return finalPrincipals.map(p => ({
-			label: String(p[labelKey] || p.name),
+			label: String(p.name || p.group?.name || p.user?.fullName || p.id),
 			value: p.id,
 			principal: p,
 		}));
-	}, [finalPrincipals, labelKey]);
+	}, [finalPrincipals]);
 
 	const optionRender = (option: { data: PrincipalOption }) => {
 		return <PrincipalDisplay principal={option.data.principal} showAvatar={showAvatar} />;
 	};
 
-	const tagRender = (tagProps: {
-		label: React.ReactNode
-		closable: boolean
-		value: string
-		onClose: (event?: React.MouseEvent<HTMLElement, MouseEvent>) => void
-	}) => {
+	const labelRender = (labelProps: { label: React.ReactNode, value: string | number }) => {
+		const valStr = String(labelProps.value);
+		const p = finalPrincipals.find(item => String(item.id) === valStr);
+		if (!p) {
+			return labelProps.label || labelProps.value;
+		}
+		return <PrincipalDisplay principal={p} showAvatar={showAvatar} size="small" />;
+	};
+
+	const tagRender = (tagProps: CustomTagProps) => {
 		const { label, closable, onClose, value } = tagProps;
-		// Determine colour based on whether it is a User or Group tag (using finalPrincipals)
-		const targetPrincipal = finalPrincipals.find(p => p.id === value);
-		const tagColor = targetPrincipal?.type === "group" ? "orange" : "blue";
-		const bgColor = targetPrincipal?.type === "group" ? "bg-orange-50" : "bg-[#4f46e5]/5";
-		const textColor = targetPrincipal?.type === "group" ? "text-orange-600" : "text-[#4f46e5]";
-		const borderColor = targetPrincipal?.type === "group" ? "border-orange-500/25" : "border-[#4f46e5]/25";
+		const p = finalPrincipals.find(item => String(item.id) === String(value));
 
 		return (
 			<Tag
-				color={tagColor}
 				closable={closable}
 				onClose={onClose}
+				style={{
+					backgroundColor: token.colorFillAlter,
+					color: token.colorText,
+					borderColor: token.colorBorderSecondary,
+				}}
 				className={cn(
-					"mr-1 flex items-center rounded px-1.5 h-5 text-[11px] font-medium border border-solid",
-					bgColor,
-					textColor,
-					borderColor,
+					"mr-1 inline-flex items-center rounded pl-1 pr-1.5 h-6 text-[12px] font-medium border border-solid gap-1.5 transition-all hover:opacity-85",
 				)}
 			>
-				{label}
+				{p && showAvatar && (
+					<Avatar
+						size={16}
+						src={p.type === PrincipalType.User ? p.user?.avatar : undefined}
+						icon={p.type === PrincipalType.Group ? <TeamOutlined className="text-[10px]" /> : (p.user?.avatar ? undefined : <UserOutlined className="text-[10px]" />)}
+						className="shrink-0 font-bold border-none"
+						style={{
+							backgroundColor: getAvatarColorStyle(p.id).backgroundColor,
+							color: getAvatarColorStyle(p.id).color,
+							fontSize: "9px",
+						}}
+					>
+						{p.type === PrincipalType.User && !p.user?.avatar ? (p.name?.[0]?.toUpperCase() || "?") : ""}
+					</Avatar>
+				)}
+				<span className="max-w-[100px] truncate text-inherit">
+					{label || (p && (p.name || p.group?.name)) || value}
+				</span>
 			</Tag>
 		);
 	};
 
 	const filterOption = (input: string, option?: PrincipalOption) => {
-		if (isRemote || !option)
+		if (isRemote || !option) {
 			return true;
-		const searchStr = input.toLowerCase();
-		return option.label.toLowerCase().includes(searchStr);
+		}
+		return option.label.toLowerCase().includes(input.toLowerCase());
+	};
+
+	const handleChange = (val: string | string[], options?: PrincipalOption | PrincipalOption[]) => {
+		if (!val || (Array.isArray(val) && val.length === 0)) {
+			props.onChange?.(val, options);
+			return;
+		}
+
+		const opts = Array.isArray(options) ? options : (options ? [options] : []);
+		const resultObjects = opts.map(o => o.principal || { id: o.value });
+
+		const finalVal = (mode === "multiple" || mode === "tags") ? resultObjects : resultObjects[0];
+		props.onChange?.(finalVal, options);
 	};
 
 	if (readonly) {
 		return (
 			<div className={cn("flex min-h-[32px] items-center", className)}>
-				{principal ? <PrincipalDisplay principal={principal} showAvatar={showAvatar} /> : <div className="text-[12px] opacity-45">{t("common.noData")}</div>}
+				{readonlyPrincipal ? <PrincipalDisplay principal={readonlyPrincipal} showAvatar={showAvatar} /> : <div className="text-[12px] opacity-45">{t("common.noData")}</div>}
 			</div>
 		);
 	}
 
 	return (
 		<Select<string | string[], PrincipalOption>
+			{...restProps}
 			ref={ref}
 			showSearch
 			allowClear
@@ -209,8 +284,11 @@ export function PrincipalPicker(props: PrincipalPickerProps) {
 			loading={loading}
 			onOpenChange={handleOpenChange}
 			onSearch={handleSearch}
-			options={selectOptions}
+			onChange={handleChange}
+			value={normalizedValue}
+			options={loading ? [] : selectOptions}
 			optionRender={optionRender}
+			labelRender={mode === "multiple" || mode === "tags" ? undefined : labelRender}
 			tagRender={mode === "multiple" || mode === "tags" ? tagRender : undefined}
 			filterOption={filterOption}
 			listHeight={182}
@@ -220,11 +298,10 @@ export function PrincipalPicker(props: PrincipalPickerProps) {
 				? (
 					<div className="flex flex-col items-center justify-center gap-2 h-20">
 						<Spin size="small" />
-						<Text type="secondary" className="text-[11px]">{t("common.loading")}</Text>
+						<span className="text-[11px] opacity-45">{t("common.loading")}</span>
 					</div>
 				)
 				: undefined}
-			{...(restProps as SelectProps<string | string[], PrincipalOption>)}
 		/>
 	);
 }
@@ -234,21 +311,13 @@ export interface ProFormPrincipalPickerProps extends Omit<FormItemProps, "childr
 	multiple?: boolean
 	labelInValue?: boolean
 	fieldProps?: PrincipalPickerProps
-	initialValue?: string | string[]
+	initialValue?: any
+	readonly?: boolean
 }
 
-/**
- * ProFormPrincipalPicker: Ready-to-use ProForm component
- */
-export function ProFormPrincipalPicker({ name, label, rules, multiple, labelInValue = true, fieldProps, initialValue, readonly, ...rest }: ProFormPrincipalPickerProps & { readonly?: boolean }) {
+export function ProFormPrincipalPicker({ name, label, rules, multiple, labelInValue = true, fieldProps, initialValue, readonly, ...rest }: ProFormPrincipalPickerProps) {
 	return (
-		<ProFormItem
-			name={name}
-			label={label}
-			rules={rules}
-			initialValue={initialValue}
-			{...rest}
-		>
+		<ProFormItem name={name} label={label} rules={rules} initialValue={initialValue} {...rest}>
 			<PrincipalPicker
 				mode={multiple ? "multiple" : undefined}
 				labelInValue={labelInValue}

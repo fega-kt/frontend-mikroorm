@@ -31,7 +31,7 @@ export abstract class CrudServiceBase<T = Record<string, unknown>> {
 		const clone: Record<string, unknown> = { ...data };
 		this.populate.forEach((field) => {
 			const key = field as string;
-			if (clone[key] !== undefined) {
+			if (clone[key]) {
 				const val = clone[key];
 				if (Array.isArray(val)) {
 					clone[key] = val.map(item => (typeof item === "object" && item !== null && "id" in item ? (item as { id: string }).id : item));

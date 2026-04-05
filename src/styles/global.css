@@ -28,3 +28,23 @@ html.color-blind-mode {
 html.gray-mode {
 	@apply grayscale;
 }
+
+/* Custom Scrollbar Premium */
+:root {
+	--scrollbar-thumb: #eaeaea;
+	--scrollbar-track: transparent;
+}
+
+
+
+::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+
+/* Firefox */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
