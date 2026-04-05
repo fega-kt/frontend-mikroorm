@@ -96,14 +96,11 @@ export function Detail({ ref }: DetailProps) {
 					const parent = parentString
 						? getAncestorPath(parentString, deptList)
 						: undefined;
-					// manager/deputy dùng labelInValue: { label, value } để hiển thị ngay không cần pre-load options
-					const toSelectValue = (user: UserEntity | null | undefined) =>
-						user ? { label: user.fullName, value: user.id } : null;
+
 					form.setFieldsValue({
 						...deptItem,
 						parent,
-						manager: toSelectValue(deptItem.manager),
-						deputy: toSelectValue(deptItem.deputy),
+
 					} as any);
 					setDeptUsers(deptItem.users ?? []);
 				}
