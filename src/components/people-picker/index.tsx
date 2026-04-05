@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 const { Text } = Typography;
 
 /** UserDisplay: Static component to show user info consistently (avatar + name + subtext) */
-function UserDisplay({ user, showAvatar = true, size = "middle" }: { user: UserEntity, showAvatar?: boolean, size?: "small" | "middle" }) {
+function UserDisplay({ user, showAvatar = true, showEmail = true, size = "middle" }: { user: UserEntity, showAvatar?: boolean, showEmail?: boolean, size?: "small" | "middle" }) {
 	const avatarSize = size === "small" ? 18 : 22;
 	const nameSize = size === "small" ? "text-[12px]" : "text-[13px]";
 	const subSize = size === "small" ? "text-[9px]" : "text-[10px]";
@@ -34,9 +34,11 @@ function UserDisplay({ user, showAvatar = true, size = "middle" }: { user: UserE
 			)}
 			<div className="flex flex-col overflow-hidden leading-none">
 				<Text strong className={cn(nameSize, "-mb-0.5")} ellipsis>{user.fullName || user.loginName}</Text>
-				<Text type="secondary" className={subSize} ellipsis>
-					{user.workEmail || user.loginName}
-				</Text>
+				{showEmail && (
+					<Text type="secondary" className={subSize} ellipsis>
+						{user.workEmail || user.loginName}
+					</Text>
+				)}
 			</div>
 		</Space>
 	);
@@ -255,6 +257,17 @@ export function PeoplePicker(props: PeoplePickerProps) {
 		);
 	};
 
+	const labelRender = (props: { label: React.ReactNode, value: string | number }) => {
+		const valStr = String(props.value);
+		const u = finalUsers.find(user => String(user.id) === valStr);
+
+		if (!u) {
+			return props.label || props.value;
+		}
+		const safeUser = { ...u, fullName: u.fullName || u.loginName || u.id };
+		return <UserDisplay user={safeUser} showAvatar={showAvatar} showEmail={false} size="small" />;
+	};
+
 	const filterOption = (input: string, option?: PeopleOption) => {
 		if (isRemote || !option) {
 			return true;
@@ -293,6 +306,7 @@ export function PeoplePicker(props: PeoplePickerProps) {
 			value={normalizedValue}
 			options={loading ? [] : selectOptions}
 			optionRender={optionRender}
+			labelRender={mode === "multiple" || mode === "tags" ? undefined : labelRender}
 			tagRender={mode === "multiple" || mode === "tags" ? tagRender : undefined}
 			filterOption={filterOption}
 			listHeight={182}
