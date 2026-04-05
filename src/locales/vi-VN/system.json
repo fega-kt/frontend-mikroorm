@@ -7,6 +7,7 @@
 		"description": "Mô tả",
 		"rights": "Quyền hạn",
 		"assignMenu": "Phân quyền menu",
+		"usersAndGroups": "Người dùng và nhóm",
 		"group": {
 			"user": "Quản lý người dùng",
 			"role": "Quản lý vai trò",

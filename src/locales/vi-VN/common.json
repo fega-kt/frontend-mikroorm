@@ -28,6 +28,8 @@
 		"user": "Quản lý người dùng",
 		"role": "Quản lý vai trò",
 		"group": "Quản lý nhóm người dùng",
+		"assignMenu": "Phân quyền menu",
+		"usersAndGroups": "Người dùng và nhóm",
 		"menu": "Quản lý menu",
 		"dept": "Quản lý phòng ban",
 		"personalCenter": "Trung tâm cá nhân",
@@ -99,6 +101,7 @@
 	"fetchError": "Tải dữ liệu thất bại",
 	"loading": "Đang tải dữ liệu...",
 	"pleaseInput": "Vui lòng nhập",
+	"pleaseSelect": "Vui lòng chọn",
 	"selectAll": "Chọn tất cả",
 	"save": "Lưu lại",
 	"inputData": "Nhập dữ liệu"

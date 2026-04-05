@@ -5,7 +5,8 @@ export * from "./types";
 
 export class RoleService extends CrudServiceBase<RoleEntity> {
 	constructor() {
-		super({ endpoint: "role" });
+		super({ endpoint: "role", populate: ["usersAndGroups"],
+		});
 	}
 
 	/** Lấy danh sách role có phân trang */
