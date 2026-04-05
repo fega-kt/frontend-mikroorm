@@ -98,5 +98,6 @@
 	"fetchError": "Failed to load data",
 	"loading": "Loading...",
 	"pleaseInput": "Please input",
-	"selectAll": "Select All"
+	"selectAll": "Select All",
+	"save": "Save"
 }

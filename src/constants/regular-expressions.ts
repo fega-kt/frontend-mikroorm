@@ -29,3 +29,5 @@ export const UNIFIED_SOCIAL_CREDIT_CODE_REGEXP = /^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0
 export const MOBILE_PHONE_REGEXP = /^(?:(?:\+|00)86)?1\d{10}$/;
 
 export const TELEPHONE_REGEXP = /^(?:(?:\d{3}-)?\d{8}|(?:\d{4}-)?\d{7,8})(?:-\d+)?$/;
+
+export const VIETNAMESE_MOBILE_REGEXP = /^(0|\+84)(3[2-9]|5[689]|7[06-9]|8[1-9]|9\d)\d{7}$/;
