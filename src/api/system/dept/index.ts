@@ -5,7 +5,7 @@ export * from "./types";
 
 export class DepartmentService extends CrudServiceBase<DepartmentEntity> {
 	constructor() {
-		super({ endpoint: "department" });
+		super({ endpoint: "department", populate: ["manager", "deputy"] });
 	}
 
 	/** Lấy danh sách bộ phận */
@@ -20,7 +20,7 @@ export class DepartmentService extends CrudServiceBase<DepartmentEntity> {
 	 */
 	async fetchDeptByApi(path: string, keyword?: string) {
 		return this.get<DepartmentEntity[]>(path, {
-			searchParams: (keyword ? { keyword } : undefined) as any,
+			searchParams: (keyword ? { keyword } : undefined),
 			ignoreLoading: true,
 		});
 	}
