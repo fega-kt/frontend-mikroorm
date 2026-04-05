@@ -5,7 +5,7 @@ import { getAvatarColor } from "#src/utils/avatar/index";
 import { cn } from "#src/utils/cn";
 import { ProFormItem } from "@ant-design/pro-components";
 import { useDebounceFn } from "ahooks";
-import { Avatar, Select, Space, Spin, Tag, Typography } from "antd";
+import { Avatar, Select, Space, Spin, Tag, theme, Typography } from "antd";
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 const { Text } = Typography;
 
 /** UserDisplay: Static component to show user info consistently (avatar + name + subtext) */
-export function UserDisplay({ user, showAvatar = true, size = "middle" }: { user: UserEntity, showAvatar?: boolean, size?: "small" | "middle" }) {
+function UserDisplay({ user, showAvatar = true, size = "middle" }: { user: UserEntity, showAvatar?: boolean, size?: "small" | "middle" }) {
 	const avatarSize = size === "small" ? 18 : 22;
 	const nameSize = size === "small" ? "text-[12px]" : "text-[13px]";
 	const subSize = size === "small" ? "text-[9px]" : "text-[10px]";
@@ -78,6 +78,14 @@ export interface PeoplePickerProps extends Omit<SelectProps<string | string[], P
 	ref?: React.Ref<React.ComponentRef<typeof Select>>
 }
 
+/** Props for Select's tagRender */
+interface CustomTagProps {
+	label: React.ReactNode
+	value: string
+	closable: boolean
+	onClose: (event?: React.MouseEvent<HTMLElement, MouseEvent>) => void
+}
+
 /**
  * PeoplePicker: A premium, functional user selection component.
  * Handles both ID-based and Object-based value flow with automatic hydration.
@@ -100,6 +108,7 @@ export function PeoplePicker(props: PeoplePickerProps) {
 	} = props;
 
 	const { t } = useTranslation();
+	const { token } = theme.useToken();
 	const [apiOptions, setApiOptions] = useState<UserEntity[]>([]);
 	const [loading, setLoading] = useState(false);
 	const isRemote = !!api;
@@ -190,7 +199,7 @@ export function PeoplePicker(props: PeoplePickerProps) {
 
 	const handleChange = (val: string | string[], options?: PeopleOption | PeopleOption[]) => {
 		if (!val || (Array.isArray(val) && val.length === 0)) {
-			props.onChange?.(val as any, options);
+			props.onChange?.(val, options);
 			return;
 		}
 
@@ -199,7 +208,7 @@ export function PeoplePicker(props: PeoplePickerProps) {
 		const resultObjects = opts.map(o => o.user || { id: o.value });
 
 		const finalVal = (mode === "multiple" || mode === "tags") ? resultObjects : resultObjects[0];
-		props.onChange?.(finalVal as any, options);
+		props.onChange?.(finalVal, options);
 	};
 
 	const optionRender = (option: { data: PeopleOption }) => {
@@ -209,18 +218,39 @@ export function PeoplePicker(props: PeoplePickerProps) {
 		return <UserDisplay user={safeUser} showAvatar={showAvatar} />;
 	};
 
-	const tagRender = (tagProps: any) => {
+	const tagRender = (tagProps: CustomTagProps) => {
 		const { label, closable, onClose, value } = tagProps;
+		const user = finalUsers.find(u => u.id === value);
+
 		return (
 			<Tag
-				color="blue"
 				closable={closable}
 				onClose={onClose}
+				style={{
+					backgroundColor: token.colorFillAlter,
+					color: token.colorText,
+					borderColor: token.colorBorderSecondary,
+				}}
 				className={cn(
-					"mr-1 flex items-center rounded bg-[#4f46e5]/5 px-1.5 h-5 text-[11px] font-medium text-[#4f46e5] border border-solid border-[#4f46e5]/25",
+					"mr-1 inline-flex items-center rounded pl-0.5 pr-1.5 h-6 text-[12px] font-medium border border-solid gap-1.5 transition-all hover:opacity-85",
 				)}
 			>
-				{label || value || "..."}
+				{user && showAvatar && (
+					<Avatar
+						size={16}
+						src={user.avatar}
+						className="shrink-0 font-bold border-none"
+						style={{
+							backgroundColor: getAvatarColor(user.id),
+							fontSize: "9px",
+						}}
+					>
+						{user.fullName?.[0]?.toUpperCase() || user.loginName?.[0]?.toUpperCase() || "?"}
+					</Avatar>
+				)}
+				<span className="max-w-[100px] truncate text-inherit">
+					{label || value || "..."}
+				</span>
 			</Tag>
 		);
 	};
@@ -260,7 +290,7 @@ export function PeoplePicker(props: PeoplePickerProps) {
 			onOpenChange={handleOpenChange}
 			onSearch={handleSearch}
 			onChange={handleChange}
-			value={normalizedValue as any}
+			value={normalizedValue}
 			options={loading ? [] : selectOptions}
 			optionRender={optionRender}
 			tagRender={mode === "multiple" || mode === "tags" ? tagRender : undefined}
