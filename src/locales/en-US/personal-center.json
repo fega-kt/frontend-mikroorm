@@ -1,5 +1,22 @@
 {
 	"accountSecurity": "Account Security",
 	"generalSettings": "General Settings",
-	"notificationSettings": "Notification Settings"
+	"notificationSettings": "Notification Settings",
+	"myProfile": "My Profile",
+	"avatar": "Avatar",
+	"fullName": "Full Name",
+	"loginName": "Login Name",
+	"email": "Work Email",
+	"phoneNumber": "Phone Number",
+	"description": "About me",
+	"updateSuccess": "Update Profile success",
+	"updateAvatarSuccess": "Avatar updated successfully",
+	"uploadingAvatar": "Uploading avatar...",
+	"uploadError": "Upload avatar failed",
+	"pleaseInputFullName": "Please input your full name!",
+	"pleaseInputLoginName": "Please input your login name!",
+	"pleaseInputEmail": "Please input a valid work email!",
+	"pleaseInputPhoneNumber": "Please input your phone number!",
+	"pleaseInputValidPhoneNumber": "Please input a valid phone number!",
+	"descriptionPlaceholder": "Introduce yourself a bit..."
 }

@@ -1,5 +1,22 @@
 {
 	"accountSecurity": "Bảo mật tài khoản",
 	"generalSettings": "Cài đặt chung",
-	"notificationSettings": "Cài đặt thông báo"
+	"notificationSettings": "Cài đặt thông báo",
+	"myProfile": "Hồ sơ của tôi",
+	"avatar": "Ảnh đại diện",
+	"fullName": "Họ và tên",
+	"loginName": "Tên đăng nhập",
+	"email": "Email công việc",
+	"phoneNumber": "Số điện thoại",
+	"description": "Giới thiệu bản thân",
+	"updateSuccess": "Cập nhật hồ sơ thành công",
+	"updateAvatarSuccess": "Cập nhật ảnh đại diện thành công",
+	"uploadingAvatar": "Đang tải ảnh đại diện lên...",
+	"uploadError": "Tải ảnh lên thất bại",
+	"pleaseInputFullName": "Vui lòng nhập họ và tên!",
+	"pleaseInputLoginName": "Vui lòng nhập tên đăng nhập!",
+	"pleaseInputEmail": "Vui lòng nhập định dạng email hợp lệ!",
+	"pleaseInputPhoneNumber": "Vui lòng nhập số điện thoại!",
+	"pleaseInputValidPhoneNumber": "Vui lòng nhập số điện thoại hợp lệ!",
+	"descriptionPlaceholder": "Hãy giới thiệu một chút về bản thân bạn..."
 }

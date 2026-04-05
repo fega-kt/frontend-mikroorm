@@ -65,9 +65,25 @@ export class UserService extends CrudServiceBase<UserEntity> {
 		return this.get<UserEntity>(id, { ignoreLoading: true });
 	}
 
-	/** Làm mới token */
+	/** Làm mời token */
 	async fetchRefreshToken() {
 		return supabase.auth.refreshSession();
+	}
+
+	/** Cập nhật thông tin cá nhân */
+	async updateProfile(data: { fullName: string, workEmail: string, phoneNumber: string, description?: string }) {
+		return this.patch<void>("profile", { json: data });
+	}
+
+	/** Upload file */
+	async uploadAvatar(file: File) {
+		const formData = new FormData();
+		formData.append("file", file);
+		// Note: we call this on the base 'avatar' endpoint, not 'user/avatar'
+		await this.post<void>("avatar", {
+			body: formData,
+			// When using FormData, we should NOT send 'json' option
+		});
 	}
 }
 
