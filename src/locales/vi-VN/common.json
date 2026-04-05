@@ -99,5 +99,7 @@
 	"fetchError": "Tải dữ liệu thất bại",
 	"loading": "Đang tải dữ liệu...",
 	"pleaseInput": "Vui lòng nhập",
-	"selectAll": "Chọn tất cả"
+	"selectAll": "Chọn tất cả",
+	"save": "Lưu lại",
+	"inputData": "Nhập dữ liệu"
 }
