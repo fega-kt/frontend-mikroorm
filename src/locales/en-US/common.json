@@ -29,6 +29,9 @@
 		"role": "Role Management",
 		"menu": "Menu Management",
 		"dept": "Department Management",
+		"project": "Project List",
+		"task": "Task List",
+		"project_task": "Project & Task Management",
 		"personalCenter": "Personal Center",
 		"profile": "My Profile",
 		"settings": "Settings"

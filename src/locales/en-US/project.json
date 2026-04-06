@@ -1,0 +1,58 @@
+{
+	"status": {
+		"planning": "Planning Phase",
+		"active": "Active Project",
+		"completed": "Completed",
+		"on_hold": "On Hold"
+	},
+	"priority": {
+		"high": "High Impact",
+		"medium": "Medium Priority",
+		"low": "Low Overhead",
+		"urgent": "Critical Path"
+	},
+	"visibility": {
+		"private": "Private (Mission Only)",
+		"public": "Organization Public"
+	},
+	"fields": {
+		"status": "Execution Status",
+		"priority": "Strategic Priority",
+		"owner": "Mission Commander",
+		"start_date": "Commencement Date",
+		"due_date": "Estimated Deadline",
+		"budget": "Allocated Budget",
+		"visibility": "Privacy Governance",
+		"tags": "Strategic Tags"
+	},
+	"placeholder": {
+		"name": "Project focal point name...",
+		"description": "Describe the scope, goals, and key stakeholders...",
+		"owner": "Select mission leader",
+		"tags": "Add labels (e.g., Marketing, AI, 2024)"
+	},
+	"error": {
+		"name_required": "Project name is required",
+		"owner_required": "Please select mission lead"
+	},
+	"subtitle": {
+		"headline": "Define the clear, impactful objective for this strategic initiative"
+	},
+	"section": {
+		"description": "Detailed Roadmap & Context",
+		"governance": "Governance & Settings",
+		"financials": "Financials & Security"
+	},
+	"tabs": {
+		"tasks": "Task Structure (WBS)",
+		"collaboration": "Mission Collaboration"
+	},
+	"empty": {
+		"tasks": "Workflow will be automatically generated upon project launch",
+		"team": "Invite key stakeholders during the active phase"
+	},
+	"update_info": "Update Project Information",
+	"create_new": "Start New Strategic Project",
+	"drafted_by": "Drafted by",
+	"save_btn": "Launch Project"
+}
