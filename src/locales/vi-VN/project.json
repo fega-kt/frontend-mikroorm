@@ -26,14 +26,21 @@
 		"tags": "Tag"
 	},
 	"placeholder": {
-		"name": "Nhập tên tiêu điểm dự án...",
+		"name": "* Nhập tên tiêu điểm dự án...",
 		"description": "Mô tả phạm vi, mục tiêu và các bên liên quan chính...",
 		"owner": "Chọn người chỉ huy sứ mệnh",
 		"tags": "Thêm nhãn (vd: Marketing, AI, 2024)"
 	},
 	"error": {
 		"name_required": "Vui lòng nhập tên dự án",
-		"owner_required": "Vui lòng chọn người phụ trách"
+		"owner_required": "Vui lòng chọn người phụ trách",
+		"start_date_required": "Vui lòng chọn ngày bắt đầu",
+		"due_date_required": "Vui lòng chọn ngày kết thúc",
+		"status_required": "Vui lòng chọn trạng thái",
+		"priority_required": "Vui lòng chọn mức độ ưu tiên",
+		"start_after_due": "Ngày bắt đầu không được sau hạn chót",
+		"due_before_start": "Hạn chót không được trước ngày bắt đầu",
+		"visibility_required": "Vui lòng chọn chế độ bảo mật"
 	},
 	"subtitle": {
 		"headline": "Xác định mục tiêu rõ ràng và có tác động cho sáng kiến chiến lược này"
@@ -54,5 +61,6 @@
 	"update_info": "Cập nhật thông tin dự án",
 	"create_new": "Khởi tạo dự án chiến lược mới",
 	"drafted_by": "Soạn thảo bởi",
-	"save_btn": "Khởi chạy dự án"
+	"save_btn": "Khởi chạy dự án",
+	"update_btn": "Lưu thay đổi"
 }

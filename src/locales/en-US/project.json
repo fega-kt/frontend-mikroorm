@@ -26,14 +26,21 @@
 		"tags": "Strategic Tags"
 	},
 	"placeholder": {
-		"name": "Project focal point name...",
+		"name": "* Project focal point name...",
 		"description": "Describe the scope, goals, and key stakeholders...",
 		"owner": "Select mission leader",
 		"tags": "Add labels (e.g., Marketing, AI, 2024)"
 	},
 	"error": {
 		"name_required": "Project name is required",
-		"owner_required": "Please select mission lead"
+		"owner_required": "Please select mission lead",
+		"start_date_required": "Please select a start date",
+		"due_date_required": "Please select a due date",
+		"status_required": "Please select a status",
+		"priority_required": "Please select a priority",
+		"start_after_due": "Start date cannot be after due date",
+		"due_before_start": "Due date cannot be before start date",
+		"visibility_required": "Please select a visibility setting"
 	},
 	"subtitle": {
 		"headline": "Define the clear, impactful objective for this strategic initiative"
@@ -54,5 +61,6 @@
 	"update_info": "Update Project Information",
 	"create_new": "Start New Strategic Project",
 	"drafted_by": "Drafted by",
-	"save_btn": "Launch Project"
+	"save_btn": "Launch Project",
+	"update_btn": "Save Changes"
 }
