@@ -61,7 +61,14 @@ export function Detail({ ref }: DetailProps) {
 	}));
 
 	const onFinish = async (values: any) => {
-		const attachments = await attachmentRef.current?.sync() ?? (values.attachments as AttachmentEntity[] | undefined) ?? [];
+		let attachments: AttachmentEntity[];
+		try {
+			attachments = await attachmentRef.current?.sync() ?? (values.attachments as AttachmentEntity[] | undefined) ?? [];
+		}
+		catch {
+			return false;
+		}
+
 		const attachmentIds = attachments.map((a: AttachmentEntity) => a.id);
 
 		if (editingIdRef.current) {
@@ -69,7 +76,8 @@ export function Detail({ ref }: DetailProps) {
 			window.$message?.success(t("common.updateSuccess"));
 		}
 		else {
-			await projectService.fetchCreateProject({ ...values, folderId, attachments: attachmentIds });
+			const created = await projectService.fetchCreateProject({ ...values, folderId, attachments: attachmentIds });
+			editingIdRef.current = created.id;
 			window.$message?.success(t("common.addSuccess"));
 		}
 		resolveGuard?.({ isChange: true });

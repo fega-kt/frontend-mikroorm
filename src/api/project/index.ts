@@ -23,7 +23,7 @@ export class ProjectService extends CrudServiceBase<ProjectEntity> {
 
 	/** Tạo mới dự án */
 	async fetchCreateProject(data: ProjectPayload) {
-		return this.post<void>("", { json: data, ignoreLoading: true });
+		return this.post<ProjectEntity>("", { json: data, ignoreLoading: true });
 	}
 
 	/** Cập nhật dự án */
