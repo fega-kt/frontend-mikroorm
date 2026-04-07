@@ -34,7 +34,7 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 		mode = "auto",
 		storagePath,
 		multiple = true,
-		accept,
+		accept = ".pdf,.docx,.xlsx,.pptx,.png,.jpg,.zip,.mp3,.mp4,.txt",
 		maxCount,
 		maxSize = DEFAULT_MAX_SIZE,
 		disabled = false,
@@ -164,14 +164,22 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 				return valueRef.current;
 
 			const uploaded: AttachmentEntity[] = [];
+			let failedCount = 0;
 
 			await Promise.allSettled(
 				toUpload.map(async (item) => {
 					const result = await uploadItem(item.uid);
 					if (result)
 						uploaded.push(result);
+					else
+						failedCount++;
 				}),
 			);
+
+			if (failedCount > 0) {
+				message.error(`${failedCount} file upload thất bại. Vui lòng thử lại.`);
+				throw new Error("UPLOAD_FAILED");
+			}
 
 			if (uploaded.length > 0) {
 				const next = [...valueRef.current, ...uploaded];
