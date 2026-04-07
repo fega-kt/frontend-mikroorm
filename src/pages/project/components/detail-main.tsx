@@ -90,7 +90,6 @@ export function DetailMain({ attachmentRef, storagePath, isEditing }: DetailMain
 						ref={attachmentRef}
 						mode="manual"
 						storagePath={storagePath}
-						accept=".pdf,.docx,.xlsx,.pptx,.png,.jpg,.zip"
 						maxSize={50 * 1024 * 1024}
 					/>
 				</Form.Item>
