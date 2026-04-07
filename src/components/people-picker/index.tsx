@@ -78,6 +78,9 @@ export interface PeoplePickerProps extends Omit<SelectProps<string | string[], P
 	user?: UserEntity
 	/** Ref to internal Select */
 	ref?: React.Ref<React.ComponentRef<typeof Select>>
+
+	/** show email in readonly */
+	showEmail?: boolean
 }
 
 /** Props for Select's tagRender */
@@ -105,6 +108,7 @@ export function PeoplePicker(props: PeoplePickerProps) {
 		className,
 		readonly,
 		user: readonlyUser,
+		showEmail = true,
 		ref,
 		...restProps
 	} = props;
@@ -285,7 +289,7 @@ export function PeoplePicker(props: PeoplePickerProps) {
 		const displayUser = readonlyUser || (Array.isArray(props.value) ? (props.value[0] as UserEntity) : (props.value as UserEntity));
 		return (
 			<div className={cn("flex min-h-[32px] items-center", className)}>
-				{displayUser ? <UserDisplay user={displayUser} showAvatar={showAvatar} /> : <div className="text-[12px] opacity-45">{t("common.noData")}</div>}
+				{displayUser ? <UserDisplay user={displayUser} showAvatar={showAvatar} showEmail={showEmail} /> : <div className="text-[12px] opacity-45">{t("common.noData")}</div>}
 			</div>
 		);
 	}
