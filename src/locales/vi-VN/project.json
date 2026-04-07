@@ -1,0 +1,58 @@
+{
+	"status": {
+		"planning": "Đang lập kế hoạch",
+		"active": "Đang triển khai",
+		"completed": "Đã hoàn thành",
+		"on_hold": "Tạm dừng"
+	},
+	"priority": {
+		"high": "Tác động cao",
+		"medium": "Ưu tiên trung bình",
+		"low": "Tác động thấp",
+		"urgent": "Đường găng (Khẩn cấp)"
+	},
+	"visibility": {
+		"private": "Riêng tư (Chỉ thành viên)",
+		"public": "Công khai (Toàn tổ chức)"
+	},
+	"fields": {
+		"status": "Trạng thái thực thi",
+		"priority": "Ưu tiên chiến lược",
+		"owner": "Chủ sở hữu (Owner)",
+		"start_date": "Ngày khởi tạo",
+		"due_date": "Hạn chót dự kiến",
+		"budget": "Ngân sách phân bổ",
+		"visibility": "Chế độ bảo mật",
+		"tags": "Tag"
+	},
+	"placeholder": {
+		"name": "Nhập tên tiêu điểm dự án...",
+		"description": "Mô tả phạm vi, mục tiêu và các bên liên quan chính...",
+		"owner": "Chọn người chỉ huy sứ mệnh",
+		"tags": "Thêm nhãn (vd: Marketing, AI, 2024)"
+	},
+	"error": {
+		"name_required": "Vui lòng nhập tên dự án",
+		"owner_required": "Vui lòng chọn người phụ trách"
+	},
+	"subtitle": {
+		"headline": "Xác định mục tiêu rõ ràng và có tác động cho sáng kiến chiến lược này"
+	},
+	"section": {
+		"description": "Lộ trình chi tiết & Bối cảnh",
+		"governance": "Quản trị & Thiết lập",
+		"financials": "Tài chính & Bảo mật"
+	},
+	"tabs": {
+		"tasks": "Cấu trúc công việc (WBS)",
+		"collaboration": "Cộng tác sứ mệnh"
+	},
+	"empty": {
+		"tasks": "Quy trình công việc sẽ được tự động tạo khi dự án khởi chạy",
+		"team": "Mời các bên liên quan trong giai đoạn hoạt động"
+	},
+	"update_info": "Cập nhật thông tin dự án",
+	"create_new": "Khởi tạo dự án chiến lược mới",
+	"drafted_by": "Soạn thảo bởi",
+	"save_btn": "Khởi chạy dự án"
+}

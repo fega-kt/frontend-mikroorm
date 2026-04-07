@@ -32,6 +32,9 @@
 		"usersAndGroups": "Người dùng và nhóm",
 		"menu": "Quản lý menu",
 		"dept": "Quản lý phòng ban",
+		"project": "Danh sách dự án",
+		"task": "Danh sách công việc",
+		"project_task": "Quản lý dự án & công việc",
 		"personalCenter": "Trung tâm cá nhân",
 		"profile": "Hồ sơ của tôi",
 		"settings": "Cài đặt"
