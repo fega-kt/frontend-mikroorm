@@ -1,3 +1,4 @@
+import type { AttachmentEntity } from "../attachment/types";
 import type { EntityBase } from "../entity-base";
 import type { UserEntity } from "../user/types";
 
@@ -27,9 +28,17 @@ export interface ProjectEntity extends EntityBase {
 	status: ProjectStatus
 	priority: ProjectPriority
 	owner: UserEntity
-	startDate: string
-	dueDate: string
+	startDate: Date
+	dueDate: Date
 	budget?: number
 	tags?: string[]
 	visibility: ProjectVisibility
+	attachments?: AttachmentEntity[]
+	/** UUID do client sinh sẵn, dùng làm tên thư mục trên R2 */
+	folderId: string
+}
+
+/** Payload gửi lên khi tạo / cập nhật project */
+export interface ProjectPayload extends Omit<Partial<ProjectEntity>, "attachments"> {
+	attachments?: string[]
 }

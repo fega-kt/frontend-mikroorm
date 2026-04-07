@@ -5,6 +5,7 @@ import { projectService } from "#src/api/project";
 import { ProjectPriority, ProjectStatus } from "#src/api/project/types";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
+import { PeoplePicker } from "#src/components/people-picker";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
@@ -87,13 +88,16 @@ export default function Project() {
 					[ProjectPriority.LOW]: { color: "blue", text: "Thấp" },
 				};
 				const config = priorityMap[record.priority];
+				if (!config)
+					return null;
 				return <Tag color={config.color}>{config.text}</Tag>;
 			},
 		},
 		{
 			title: "Chủ sở hữu",
-			dataIndex: ["owner", "fullName"],
+			dataIndex: "owner",
 			hideInSearch: true,
+			render: (_, record) => <PeoplePicker readonly user={record.owner} showEmail={false} />,
 		},
 		{
 			title: "Hạn chót",
