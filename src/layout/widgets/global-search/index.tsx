@@ -183,7 +183,7 @@ export function GlobalSearch() {
 		if (!keyword.length && Array.isArray(searchHistory)) {
 			setResultOptions(searchMenuList.filter(item => searchHistory?.includes(item.key)));
 		}
-	}, [keyword, searchHistory]);
+	}, [keyword, searchHistory, searchMenuList]);
 
 	return (
 		<>
@@ -253,6 +253,9 @@ export function GlobalSearch() {
 					<ul
 						className="px-4 pb-4 md:pb-0"
 						ref={listRef}
+						onMouseLeave={() => {
+							setActiveKey("");
+						}}
 					>
 						{resultOptions.length === 0
 							? (
