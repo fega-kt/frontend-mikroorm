@@ -1,4 +1,5 @@
 import type { TaskEntity } from "#src/api/task/types";
+import type { TaskDetailRef } from "#src/pages/project/components/task-detail";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import { taskService } from "#src/api/task";
 import { TaskPriority, TaskStatus } from "#src/api/task/types";
@@ -6,6 +7,7 @@ import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
+import { TaskDetail } from "#src/pages/project/components/task-detail";
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Popconfirm, Tag, Tooltip } from "antd";
 import { useRef } from "react";
@@ -15,13 +17,18 @@ export default function Task() {
 	const { t } = useTranslation();
 	const { canAccess } = useAccess();
 	const actionRef = useRef<ActionType>(null);
+	const detailRef = useRef<TaskDetailRef>(null);
 
-	const handleAdd = () => {
-		window.$message?.info("Tính năng Thêm mới công việc đang được phát triển");
+	const handleAdd = async () => {
+		const res = await detailRef.current?.show();
+		if (res?.isChange)
+			actionRef.current?.reload();
 	};
 
-	const handleEdit = (id: string) => {
-		window.$message?.info(`Tính năng Chỉnh sửa công việc ${id} đang được phát triển`);
+	const handleEdit = async (id: string) => {
+		const res = await detailRef.current?.show(id);
+		if (res?.isChange)
+			actionRef.current?.reload();
 	};
 
 	const handleDelete = async (id: string) => {
@@ -82,15 +89,18 @@ export default function Task() {
 		{
 			title: "Dự án",
 			dataIndex: ["project", "name"],
+			hideInSearch: true,
 		},
 		{
 			title: "Người thực hiện",
 			dataIndex: ["assignee", "fullName"],
+			hideInSearch: true,
 		},
 		{
 			title: "Hạn chót",
 			dataIndex: "dueDate",
 			valueType: "date",
+			hideInSearch: true,
 		},
 		{
 			title: t("common.action"),
@@ -155,6 +165,7 @@ export default function Task() {
 					</Button>,
 				]}
 			/>
+			<TaskDetail ref={detailRef} />
 		</BasicContent>
 	);
 }
