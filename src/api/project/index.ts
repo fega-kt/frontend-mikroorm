@@ -1,4 +1,4 @@
-import type { ProjectEntity, ProjectPayload } from "./types";
+import type { ProjectEntity, ProjectPayload, ProjectStats } from "./types";
 import { CrudServiceBase } from "../service-base";
 
 export * from "./types";
@@ -34,6 +34,11 @@ export class ProjectService extends CrudServiceBase<ProjectEntity> {
 	/** Xóa dự án */
 	async fetchDeleteProject(id: string) {
 		return this.delete<void>(id, { ignoreLoading: true });
+	}
+
+	/** GET /project/:id/stats */
+	async fetchProjectStats(id: string) {
+		return this.get<ProjectStats>(`${id}/stats`, { ignoreLoading: true });
 	}
 }
 

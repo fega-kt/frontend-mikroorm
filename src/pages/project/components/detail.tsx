@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { DetailMain } from "./detail-main";
 import { DetailNavbar } from "./detail-navbar";
 import { DetailSidebar } from "./detail-sidebar";
+import { DetailTabs } from "./detail-tabs";
 
 export interface DetailRef {
 	show: (id?: string) => Promise<{ isChange: boolean } | undefined>
@@ -20,26 +21,29 @@ interface DetailProps {
 	ref: React.Ref<DetailRef>
 }
 
-let resolveGuard: (res?: { isChange: boolean }) => void;
-
 export function Detail({ ref }: DetailProps) {
 	const { t } = useTranslation();
 	const [form] = Form.useForm<ProjectEntity>();
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [saving, setSaving] = useState(false);
+	const [editingId, setEditingId] = useState<string>("");
 	const [folderId, setFolderId] = useState<string>(() => crypto.randomUUID());
-	const editingIdRef = useRef<string>("");
 	const attachmentRef = useRef<AttachmentUploadRef>(null);
+	const hasChangedRef = useRef(false);
+	const resolveRef = useRef<((res?: { isChange: boolean }) => void) | undefined>(undefined);
 
 	const storagePath = useMemo(() => buildProjectStoragePath(folderId), [folderId]);
 
 	useImperativeHandle(ref, () => ({
 		show: async (id?: string) => {
 			form.resetFields();
-			editingIdRef.current = id ?? "";
+			hasChangedRef.current = false;
+			setEditingId(id ?? "");
 			if (!id)
 				setFolderId(crypto.randomUUID());
 			setOpen(true);
+
 			if (id) {
 				setLoading(true);
 				try {
@@ -54,40 +58,50 @@ export function Detail({ ref }: DetailProps) {
 					setLoading(false);
 				}
 			}
+
 			return new Promise<{ isChange: boolean } | undefined>((resolve) => {
-				resolveGuard = resolve;
+				resolveRef.current = resolve;
 			});
 		},
 	}));
 
 	const onFinish = async (values: any) => {
-		let attachments: AttachmentEntity[];
+		setSaving(true);
 		try {
-			attachments = await attachmentRef.current?.sync() ?? (values.attachments as AttachmentEntity[] | undefined) ?? [];
-		}
-		catch {
-			return false;
-		}
+			let attachments: AttachmentEntity[];
+			try {
+				attachments = await attachmentRef.current?.sync() ?? (values.attachments as AttachmentEntity[] | undefined) ?? [];
+			}
+			catch {
+				return false;
+			}
 
-		const attachmentIds = attachments.map((a: AttachmentEntity) => a.id);
+			const attachmentIds = attachments.map((a: AttachmentEntity) => a.id);
 
-		if (editingIdRef.current) {
-			await projectService.fetchUpdateProject(editingIdRef.current, { ...values, attachments: attachmentIds });
-			window.$message?.success(t("common.updateSuccess"));
+			if (editingId) {
+				await projectService.fetchUpdateProject(editingId, { ...values, attachments: attachmentIds });
+				window.$message?.success(t("common.updateSuccess"));
+			}
+			else {
+				const created = await projectService.fetchCreateProject({ ...values, folderId, attachments: attachmentIds });
+				setEditingId(created.id);
+				window.$message?.success(t("common.addSuccess"));
+			}
+
+			hasChangedRef.current = true;
+			return false; // giữ modal mở sau khi save
 		}
-		else {
-			const created = await projectService.fetchCreateProject({ ...values, folderId, attachments: attachmentIds });
-			editingIdRef.current = created.id;
-			window.$message?.success(t("common.addSuccess"));
+		finally {
+			setSaving(false);
 		}
-		resolveGuard?.({ isChange: true });
-		return true;
 	};
 
 	const onCancel = () => {
 		setOpen(false);
 		form.resetFields();
-		resolveGuard?.();
+		setEditingId("");
+		resolveRef.current?.({ isChange: hasChangedRef.current });
+		hasChangedRef.current = false;
 	};
 
 	return (
@@ -101,7 +115,7 @@ export function Detail({ ref }: DetailProps) {
 			modalProps={{
 				destroyOnClose: true,
 				maskClosable: false,
-				width: 1200,
+				width: 1400,
 				styles: {
 					header: { display: "none" },
 					body: { height: "80vh", overflow: "hidden", padding: 0 },
@@ -112,7 +126,8 @@ export function Detail({ ref }: DetailProps) {
 			onFinish={onFinish}
 		>
 			<DetailNavbar
-				isEditing={!!editingIdRef.current}
+				isEditing={!!editingId}
+				saving={saving}
 				onCancel={onCancel}
 				onSave={() => form.submit()}
 			/>
@@ -122,18 +137,22 @@ export function Detail({ ref }: DetailProps) {
 					className="overflow-y-auto px-8 py-8 h-[calc(80vh-64px)] scroll-smooth"
 					style={{ background: "var(--ant-color-bg-layout)" }}
 				>
-					<Row gutter={32} className="max-w-full mx-auto">
+					<Row gutter={32} className="max-w-full mx-auto mb-6">
 						<Col span={16}>
 							<DetailMain
 								attachmentRef={attachmentRef}
 								storagePath={storagePath}
-								isEditing={!!editingIdRef.current}
 							/>
 						</Col>
 						<Col span={8}>
 							<DetailSidebar />
 						</Col>
 					</Row>
+
+					<DetailTabs
+						isEditing={!!editingId}
+						projectId={editingId || undefined}
+					/>
 				</div>
 			</Spin>
 		</ModalForm>

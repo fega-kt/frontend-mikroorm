@@ -42,3 +42,11 @@ export interface ProjectEntity extends EntityBase {
 export interface ProjectPayload extends Omit<Partial<ProjectEntity>, "attachments"> {
 	attachments?: string[]
 }
+
+export interface ProjectStats {
+	total: number
+	completed: number
+	overdue: number
+	completionRate: number
+	byAssignee: Array<{ assigneeId: string, assigneeName: string, count: number }>
+}

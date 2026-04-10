@@ -1,19 +1,30 @@
-import { IconLabel } from "#src/components/icon-label";
 import { CloseOutlined, ProjectOutlined, SaveOutlined } from "@ant-design/icons";
-import { Button, Space, theme, Typography } from "antd";
+import { Button, Form, Space, theme, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 
 const { Text } = Typography;
 
+const STATUS_LABEL: Record<string, { icon: string, color: string, label: string }> = {
+	PLANNING: { icon: "📍", color: "orange", label: "Lên kế hoạch" },
+	ACTIVE: { icon: "⚡", color: "blue", label: "Đang hoạt động" },
+	COMPLETED: { icon: "✅", color: "green", label: "Hoàn thành" },
+	ON_HOLD: { icon: "⏳", color: "default", label: "Tạm dừng" },
+	ARCHIVED: { icon: "📦", color: "default", label: "Lưu trữ" },
+};
+
 interface DetailNavbarProps {
 	isEditing: boolean
+	saving?: boolean
 	onCancel: () => void
 	onSave: () => void
 }
 
-export function DetailNavbar({ isEditing, onCancel, onSave }: DetailNavbarProps) {
+export function DetailNavbar({ isEditing, saving, onCancel, onSave }: DetailNavbarProps) {
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
+	const form = Form.useFormInstance();
+	const status: string = form.getFieldValue("status") || "PLANNING";
+	const statusCfg = STATUS_LABEL[status] ?? STATUS_LABEL.PLANNING;
 
 	return (
 		<div
@@ -36,7 +47,11 @@ export function DetailNavbar({ isEditing, onCancel, onSave }: DetailNavbarProps)
 						<Text type="secondary" className="text-[10px] font-bold uppercase tracking-widest leading-none">
 							Project Studio
 						</Text>
-						<IconLabel variant="badge" icon="📍" label={t("project.status.planning")} color="orange" />
+						<span className="text-[11px]">
+							{statusCfg.icon}
+							{" "}
+							<Text type="secondary" className="text-[11px]">{statusCfg.label}</Text>
+						</span>
 					</div>
 					<Text strong className="text-sm leading-none">
 						{isEditing ? t("project.update_info") : t("project.create_new")}
@@ -56,6 +71,7 @@ export function DetailNavbar({ isEditing, onCancel, onSave }: DetailNavbarProps)
 					type="primary"
 					icon={<SaveOutlined />}
 					size="large"
+					loading={saving}
 					onClick={onSave}
 					className="shadow-md font-bold border-none h-10 rounded-lg"
 				>
