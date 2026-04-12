@@ -1,35 +1,38 @@
 import type { Dayjs } from "dayjs";
-import { ProjectPriority, ProjectVisibility } from "#src/api/project/types";
+import { ProjectPriority } from "#src/api/project/types";
+import { FieldTitle } from "#src/components/field-title";
 import { IconLabel } from "#src/components/icon-label";
 import { ProFormPeoplePicker } from "#src/components/people-picker";
 import {
 	CalendarOutlined,
-	DollarOutlined,
 	FlagOutlined,
-	InfoCircleOutlined,
+	HeartOutlined,
+	SettingOutlined,
 	TeamOutlined,
+	UserOutlined,
 } from "@ant-design/icons";
 import {
 	ProFormDatePicker,
 	ProFormSelect,
-	ProFormText,
 } from "@ant-design/pro-components";
-import { Collapse, Form, Space, theme, Typography } from "antd";
+import { Form, Space, theme, Typography } from "antd";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 const { Text } = Typography;
 
-function FieldTitle({ icon, text }: { icon: React.ReactNode, text: string }) {
+/* ── Section Header with bottom border ── */
+function SectionHeader({ icon, text }: { icon: React.ReactNode, text: string }) {
 	const { token } = theme.useToken();
 	return (
-		<Space size={6}>
-			<span style={{ fontSize: 13, display: "flex", alignItems: "center", color: token.colorTextDescription }}>
-				{icon}
-			</span>
-			<span style={{ fontSize: 13 }}>{text}</span>
-		</Space>
+		<div
+			className="flex items-center gap-2 pb-3 mb-3"
+			style={{ borderBottom: `1px solid ${token.colorBorderSecondary}` }}
+		>
+			<span style={{ fontSize: 14, display: "flex", color: token.colorTextSecondary }}>{icon}</span>
+			<Text strong style={{ fontSize: 14 }}>{text}</Text>
+		</div>
 	);
 }
 
@@ -52,28 +55,19 @@ export function DetailSidebar() {
 		{ label: <IconLabel icon="🟢" label={t("project.priority.low")} color="green" />, value: ProjectPriority.LOW },
 	], [t]);
 
-	const visibilityOptions = useMemo(() => [
-		{ label: <IconLabel icon="🔒" label={t("project.visibility.private")} color="default" />, value: ProjectVisibility.PRIVATE },
-		{ label: <IconLabel icon="🌐" label={t("project.visibility.public")} color="blue" />, value: ProjectVisibility.PUBLIC },
-	], [t]);
-
-	const panelStyle = {
-		borderColor: token.colorBorderSecondary,
+	const sectionStyle: React.CSSProperties = {
+		borderRadius: 12,
+		border: `1px solid ${token.colorBorderSecondary}`,
 		backgroundColor: token.colorBgContainer,
+		padding: "16px 20px",
 	};
 
 	return (
-		<Collapse
-			defaultActiveKey={["governance", "admin", "financials"]}
-			expandIconPosition="start"
-			className="w-full bg-transparent border-none"
-		>
-			<Collapse.Panel
-				key="governance"
-				header={<Text strong className="text-[13px] uppercase tracking-wider">{t("project.section.governance")}</Text>}
-				className="mb-3 border border-solid rounded-lg overflow-hidden"
-				style={panelStyle}
-			>
+		<Space direction="vertical" size={16} className="w-full">
+			{/* ── Quản trị & Thiết lập ── */}
+			<div style={sectionStyle}>
+				<SectionHeader icon={<SettingOutlined />} text={t("project.section.governance")} />
+
 				<ProFormSelect
 					name="status"
 					label={<FieldTitle icon={<FlagOutlined />} text={t("project.fields.status")} />}
@@ -89,20 +83,19 @@ export function DetailSidebar() {
 					initialValue={ProjectPriority.MEDIUM}
 					rules={[{ required: true, message: t("project.error.priority_required") }]}
 				/>
-			</Collapse.Panel>
+			</div>
 
-			<Collapse.Panel
-				key="admin"
-				header={<Text strong className="text-[13px] uppercase tracking-wider">Quản trị & Thời gian</Text>}
-				className="mb-3 border border-solid rounded-lg overflow-hidden"
-				style={panelStyle}
-			>
+			{/* ── Thành viên ── */}
+			<div style={sectionStyle}>
+				<SectionHeader icon={<TeamOutlined />} text="Thành viên" />
+
 				<ProFormPeoplePicker
 					name="owner"
-					label={<FieldTitle icon={<TeamOutlined style={{ fontSize: 13 }} />} text={t("project.fields.owner")} />}
+					label={<FieldTitle icon={<UserOutlined />} text={t("project.fields.owner")} />}
 					rules={[{ required: true, message: t("project.error.owner_required") }]}
 					placeholder={t("project.placeholder.owner")}
 				/>
+
 				<ProFormDatePicker
 					name="startDate"
 					label={<FieldTitle icon={<CalendarOutlined />} text={t("project.fields.start_date")} />}
@@ -148,35 +141,20 @@ export function DetailSidebar() {
 						},
 					]}
 				/>
-			</Collapse.Panel>
+			</div>
 
-			<Collapse.Panel
-				key="financials"
-				header={<Text strong className="text-[13px] uppercase tracking-wider">{t("project.section.financials")}</Text>}
-				className="mb-3 border border-solid rounded-lg overflow-hidden"
-				style={panelStyle}
-			>
-				<ProFormText
-					name="budget"
-					label={<FieldTitle icon={<DollarOutlined />} text={t("project.fields.budget")} />}
-					placeholder="0.00"
-					fieldProps={{ prefix: "₫", suffix: "VNĐ", className: "rounded-lg" }}
-				/>
-				<ProFormSelect
-					name="visibility"
-					label={<FieldTitle icon={<InfoCircleOutlined />} text={t("project.fields.visibility")} />}
-					options={visibilityOptions}
-					initialValue={ProjectVisibility.PRIVATE}
-					rules={[{ required: true, message: t("project.error.visibility_required") }]}
-				/>
+			{/* ── Tag ── */}
+			<div style={sectionStyle}>
+				<SectionHeader icon={<HeartOutlined />} text={t("project.fields.tags")} />
+
 				<ProFormSelect
 					name="tags"
-					label={t("project.fields.tags")}
 					mode="tags"
 					placeholder={t("project.placeholder.tags")}
 					fieldProps={{ className: "rounded-lg" }}
+					formItemProps={{ className: "mb-0" }}
 				/>
-			</Collapse.Panel>
-		</Collapse>
+			</div>
+		</Space>
 	);
 }

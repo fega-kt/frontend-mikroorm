@@ -16,7 +16,6 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { Button, Empty, Input, Modal, Spin, theme } from "antd";
-import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TaskDetail } from "../task-detail";
 import { KanbanCardOverlay } from "./kanban-card";
@@ -35,11 +34,13 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
 	const [loading, setLoading] = useState(true);
 	const [activeDragTask, setActiveDragTask] = useState<TaskEntity | null>(null);
 	const [addSectionLoading, setAddSectionLoading] = useState(false);
+	const [sourceSectionId, setSourceSectionId] = useState<string | null>(null);
 	const taskDetailRef = useRef<TaskDetailRef>(null);
 
 	// Load sections + tasks
-	const loadData = useCallback(async () => {
-		setLoading(true);
+	const loadData = useCallback(async (silent = false) => {
+		if (!silent)
+			setLoading(true);
 		try {
 			const [sectionsRes, tasksData] = await Promise.all([
 				sectionService.fetchSectionsByProject(projectId),
@@ -66,7 +67,8 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
 			setTaskMap(map);
 		}
 		finally {
-			setLoading(false);
+			if (!silent)
+				setLoading(false);
 		}
 	}, [projectId]);
 
@@ -86,7 +88,9 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
 
 	const onDragStart = ({ active }: DragStartEvent) => {
 		if (active.data.current?.type === "task") {
-			setActiveDragTask(active.data.current.task);
+			const task = active.data.current.task as TaskEntity;
+			setActiveDragTask(task);
+			setSourceSectionId(findSectionIdByTaskId(task.id) || null);
 		}
 	};
 
@@ -120,34 +124,39 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
 	};
 
 	const onDragEnd = async ({ active, over }: DragEndEvent) => {
+		const sourceId = sourceSectionId;
 		setActiveDragTask(null);
-		if (!over)
+		setSourceSectionId(null);
+
+		if (!over || !sourceId)
 			return;
 
 		const activeId = String(active.id);
 		const overId = String(over.id);
 
-		const activeSectionId = findSectionIdByTaskId(activeId);
-		const overSectionId = taskMap[overId] !== undefined ? overId : findSectionIdByTaskId(overId);
-		if (!activeSectionId || !overSectionId)
+		// Now find where it ended up
+		const destinationSectionId = taskMap[overId] !== undefined ? overId : findSectionIdByTaskId(overId);
+		if (!destinationSectionId)
 			return;
 
-		if (activeSectionId === overSectionId) {
+		if (sourceId === destinationSectionId) {
 			// Reorder within same section
-			const tasks = taskMap[activeSectionId];
+			const tasks = taskMap[sourceId];
 			const oldIndex = tasks.findIndex(t => t.id === activeId);
 			const newIndex = tasks.findIndex(t => t.id === overId);
 			if (oldIndex === newIndex)
 				return;
 
 			const reordered = arrayMove(tasks, oldIndex, newIndex).map((t, i) => ({ ...t, order: i }));
-			setTaskMap(prev => ({ ...prev, [activeSectionId]: reordered }));
+			setTaskMap(prev => ({ ...prev, [sourceId]: reordered }));
 
 			await taskService.fetchReorderTasks(reordered.map(t => ({ id: t.id, order: t.order })));
 		}
 		else {
-			// Move to another section — backend chỉ nhận sectionId
-			await taskService.fetchMoveTask(activeId, overSectionId);
+			// Move to another section
+			await taskService.fetchMoveTask(activeId, destinationSectionId);
+			// Silent refresh to sync final state
+			loadData(true);
 		}
 	};
 

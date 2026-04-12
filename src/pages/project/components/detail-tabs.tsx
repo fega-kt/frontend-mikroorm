@@ -1,16 +1,19 @@
 import type { ProjectEntity } from "#src/api/project/types";
 import { IconLabel } from "#src/components/icon-label";
+import { SectionCard } from "#src/components/section-card";
 import {
+	AppstoreOutlined,
 	CalendarOutlined,
 	ClockCircleOutlined,
-	DeploymentUnitOutlined,
 	EditOutlined,
 	PlusCircleOutlined,
+	PlusOutlined,
 	TeamOutlined,
 } from "@ant-design/icons";
-import { Card, Form, Tabs, theme, Timeline, Typography } from "antd";
+import { Button, Form, Space, Tabs, theme, Timeline, Typography } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
+import { EmptyTasksIcon } from "../constants/icons";
 import { KanbanBoard } from "./kanban";
 
 const { Text } = Typography;
@@ -25,6 +28,39 @@ export function DetailTabs({ isEditing, projectId }: DetailTabsProps) {
 	const { token } = theme.useToken();
 	const form = Form.useFormInstance<ProjectEntity>();
 
+	/* ── "+ Thêm section" button for header extra ── */
+	const addSectionBtn = (
+		<Button
+			type="text"
+			icon={<PlusOutlined />}
+			size="small"
+			className="text-xs font-medium"
+			style={{ color: token.colorPrimary }}
+		>
+			Thêm section
+		</Button>
+	);
+
+	/* ── Empty state for new project ── */
+	const emptyState = (
+		<div className="py-10 text-center">
+			<div className="mb-3 opacity-40">
+				<EmptyTasksIcon size={64} />
+			</div>
+			<Text type="secondary" className="block mb-4 text-sm">Chưa có công việc</Text>
+			<Space size={12}>
+				<Button
+					type="primary"
+					className="font-semibold border-none rounded-lg"
+				>
+					Tạo section đầu tiên
+				</Button>
+				<Button className="rounded-lg">Dùng template...</Button>
+			</Space>
+		</div>
+	);
+
+	/* ── Tab items ── */
 	const items = [
 		{
 			key: "tasks",
@@ -35,14 +71,7 @@ export function DetailTabs({ isEditing, projectId }: DetailTabsProps) {
 						<KanbanBoard projectId={projectId} />
 					</div>
 				)
-				: (
-					<div className="py-16 text-center">
-						<div className="mb-4 text-4xl opacity-20" style={{ color: token.colorTextDescription }}>
-							<DeploymentUnitOutlined />
-						</div>
-						<Text type="secondary">Lưu project trước để quản lý tasks</Text>
-					</div>
-				),
+				: emptyState,
 		},
 		{
 			key: "team",
@@ -108,16 +137,21 @@ export function DetailTabs({ isEditing, projectId }: DetailTabsProps) {
 	];
 
 	return (
-		<Card
-			className="border-none shadow-sm"
-			bodyStyle={{ padding: 0 }}
-			style={{ borderRadius: 12, backgroundColor: token.colorBgContainer }}
+		<SectionCard
+			icon={<AppstoreOutlined />}
+			title={t("project.tabs.tasks")}
+			extra={addSectionBtn}
+			bodyClassName=""
 		>
-			<Tabs
-				defaultActiveKey="tasks"
-				className="px-6"
-				items={items}
-			/>
-		</Card>
+			{isEditing
+				? (
+					<Tabs
+						defaultActiveKey="tasks"
+						className="px-6"
+						items={items}
+					/>
+				)
+				: emptyState}
+		</SectionCard>
 	);
 }
