@@ -3,7 +3,8 @@
 		"planning": "Đang lập kế hoạch",
 		"active": "Đang triển khai",
 		"completed": "Đã hoàn thành",
-		"on_hold": "Tạm dừng"
+		"on_hold": "Tạm dừng",
+		"archived": "Lưu trữ"
 	},
 	"priority": {
 		"high": "Tác động cao",
@@ -16,6 +17,8 @@
 		"public": "Công khai (Toàn tổ chức)"
 	},
 	"fields": {
+		"name": "Tên dự án",
+		"description": "Mô tả dự án",
 		"status": "Trạng thái thực thi",
 		"priority": "Ưu tiên chiến lược",
 		"owner": "Chủ sở hữu (Owner)",
@@ -48,7 +51,9 @@
 	"section": {
 		"description": "Lộ trình chi tiết & Bối cảnh",
 		"governance": "Quản trị & Thiết lập",
-		"financials": "Tài chính & Bảo mật"
+		"financials": "Tài chính & Bảo mật",
+		"general": "Thông tin chung",
+		"attachments": "Tài liệu đính kèm"
 	},
 	"tabs": {
 		"tasks": "Cấu trúc công việc (WBS)",

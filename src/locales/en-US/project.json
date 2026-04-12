@@ -3,7 +3,8 @@
 		"planning": "Planning Phase",
 		"active": "Active Project",
 		"completed": "Completed",
-		"on_hold": "On Hold"
+		"on_hold": "On Hold",
+		"archived": "Archived"
 	},
 	"priority": {
 		"high": "High Impact",
@@ -16,6 +17,8 @@
 		"public": "Organization Public"
 	},
 	"fields": {
+		"name": "Project Name",
+		"description": "Project Description",
 		"status": "Execution Status",
 		"priority": "Strategic Priority",
 		"owner": "Mission Commander",
@@ -48,7 +51,9 @@
 	"section": {
 		"description": "Detailed Roadmap & Context",
 		"governance": "Governance & Settings",
-		"financials": "Financials & Security"
+		"financials": "Financials & Security",
+		"general": "General Information",
+		"attachments": "Attachments"
 	},
 	"tabs": {
 		"tasks": "Task Structure (WBS)",

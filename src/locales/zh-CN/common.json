@@ -29,6 +29,9 @@
 		"role": "角色管理",
 		"menu": "菜单管理",
 		"dept": "部门管理",
+		"project": "项目列表",
+		"task": "任务列表",
+		"project_task": "项目与任务管理",
 		"personalCenter": "个人中心",
 		"profile": "我的资料",
 		"settings": "设置"
@@ -93,5 +96,19 @@
 	"checkAll": "选择所有",
 	"cancelAll": "取消所有",
 	"fetchError": "加载数据失败",
-	"loading": "加载中..."
+	"loading": "加载中...",
+	"attachment": {
+		"exceedsLimit": "超过限制",
+		"maxAllowed": "最多",
+		"alreadyExists": "已存在",
+		"failToUpload": "文件上传失败。请重试。",
+		"dragText": "点击或将文件拖拽到这里上传",
+		"maxSize": "最大",
+		"maxCount": "最多",
+		"statusDone": "已上传",
+		"statusPendingSync": "等待同步",
+		"statusPending": "等待中",
+		"statusUploading": "上传中",
+		"retry": "重试"
+	}
 }
