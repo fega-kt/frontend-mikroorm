@@ -127,6 +127,7 @@ export function Detail({ ref }: DetailProps) {
 		>
 			<DetailNavbar
 				isEditing={!!editingId}
+				loading={loading}
 				saving={saving}
 				onCancel={onCancel}
 				onSave={() => form.submit()}
@@ -134,25 +135,26 @@ export function Detail({ ref }: DetailProps) {
 
 			<Spin spinning={loading}>
 				<div
-					className="overflow-y-auto px-8 py-8 h-[calc(80vh-64px)] scroll-smooth"
+					className="overflow-y-auto px-8 py-8 h-[calc(80vh-64px)] scroll-smooth pb-12"
 					style={{ background: "var(--ant-color-bg-layout)" }}
 				>
-					<Row gutter={32} className="max-w-full mx-auto mb-6">
-						<Col span={16}>
-							<DetailMain
-								attachmentRef={attachmentRef}
-								storagePath={storagePath}
-							/>
+					<Row gutter={24} className="mb-4">
+						<Col span={18}>
+							<div className="flex flex-col gap-4">
+								<DetailMain
+									attachmentRef={attachmentRef}
+									storagePath={storagePath}
+								/>
+								<DetailTabs
+									isEditing={!!editingId}
+									projectId={editingId || undefined}
+								/>
+							</div>
 						</Col>
-						<Col span={8}>
+						<Col span={6}>
 							<DetailSidebar />
 						</Col>
 					</Row>
-
-					<DetailTabs
-						isEditing={!!editingId}
-						projectId={editingId || undefined}
-					/>
 				</div>
 			</Spin>
 		</ModalForm>

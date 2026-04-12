@@ -1,0 +1,106 @@
+/* ── TipTap RichTextEditor styles ── */
+
+.rich-text-editor-content .tiptap {
+	outline: none;
+	min-height: inherit;
+	font-size: 14px;
+	line-height: 1.7;
+	color: var(--ant-color-text);
+}
+
+/* Placeholder */
+.rich-text-editor-content .tiptap p.is-editor-empty:first-child::before {
+	content: attr(data-placeholder);
+	float: left;
+	color: var(--ant-color-text-placeholder);
+	pointer-events: none;
+	height: 0;
+}
+
+/* Headings */
+.rich-text-editor-content .tiptap h1 { font-size: 1.6em; font-weight: 700; margin: 0.6em 0 0.4em; }
+.rich-text-editor-content .tiptap h2 { font-size: 1.35em; font-weight: 700; margin: 0.5em 0 0.3em; }
+.rich-text-editor-content .tiptap h3 { font-size: 1.15em; font-weight: 600; margin: 0.4em 0 0.25em; }
+
+/* Paragraphs */
+.rich-text-editor-content .tiptap p {
+	margin: 0.4em 0;
+}
+
+/* Blockquote */
+.rich-text-editor-content .tiptap blockquote {
+	border-left: 3px solid var(--ant-color-primary);
+	padding-left: 14px;
+	margin: 0.6em 0;
+	color: var(--ant-color-text-secondary);
+	font-style: italic;
+}
+
+/* Code */
+.rich-text-editor-content .tiptap code {
+	background: var(--ant-color-fill-quaternary);
+	border-radius: 4px;
+	padding: 2px 5px;
+	font-size: 0.9em;
+	font-family: "SF Mono", "Fira Code", monospace;
+}
+
+.rich-text-editor-content .tiptap pre {
+	background: var(--ant-color-fill-quaternary);
+	border-radius: 8px;
+	padding: 12px 16px;
+	margin: 0.6em 0;
+	overflow-x: auto;
+}
+
+.rich-text-editor-content .tiptap pre code {
+	background: none;
+	padding: 0;
+	border-radius: 0;
+}
+
+/* Lists */
+.rich-text-editor-content .tiptap ul,
+.rich-text-editor-content .tiptap ol {
+	padding-left: 24px;
+	margin: 0.4em 0;
+}
+
+.rich-text-editor-content .tiptap li {
+	margin: 2px 0;
+}
+
+/* Task list */
+.rich-text-editor-content .tiptap ul[data-type="taskList"] {
+	list-style: none;
+	padding-left: 4px;
+}
+
+.rich-text-editor-content .tiptap ul[data-type="taskList"] li {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+}
+
+.rich-text-editor-content .tiptap ul[data-type="taskList"] li label {
+	flex-shrink: 0;
+	margin-top: 3px;
+}
+
+.rich-text-editor-content .tiptap ul[data-type="taskList"] li > div {
+	flex: 1;
+}
+
+/* Links */
+.rich-text-editor-content .tiptap a {
+	color: var(--ant-color-primary);
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+/* Horizontal rule */
+.rich-text-editor-content .tiptap hr {
+	border: none;
+	border-top: 1px solid var(--ant-color-border);
+	margin: 1em 0;
+}
