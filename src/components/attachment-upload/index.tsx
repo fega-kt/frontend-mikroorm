@@ -6,6 +6,10 @@ import { Button, message, Tag, Upload } from "antd";
 import * as React from "react";
 import { useCallback, useImperativeHandle, useRef, useState } from "react";
 
+// ─── Component ────────────────────────────────────────────────────────────────
+
+import { useTranslation } from "react-i18next";
+
 export type { AttachmentEntity, AttachmentUploadProps, AttachmentUploadRef };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -25,9 +29,8 @@ function genUid(): string {
 	return `att-${Date.now()}-${++_uidCounter}`;
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
 export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { ref?: React.RefObject<AttachmentUploadRef | null> }) {
+	const { t } = useTranslation();
 	const {
 		value = [],
 		onChange,
@@ -66,14 +69,14 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 				return attachment;
 			}
 			catch (err) {
-				const errMsg = err instanceof Error ? err.message : "Upload thất bại";
+				const errMsg = err instanceof Error ? err.message : t("common.error", "Upload thất bại");
 				setPendingItems(prev =>
 					prev.map(p => p.uid === uid ? { ...p, status: "error" as PendingStatus, error: errMsg } : p),
 				);
 				return null;
 			}
 		},
-		[storagePath],
+		[storagePath, t],
 	);
 
 	// ── Validate + enqueue ────────────────────────────────────────────────
@@ -81,26 +84,26 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 	const enqueueFile = useCallback(
 		(file: File): PendingItem | null => {
 			if (file.size > maxSize) {
-				message.error(`${file.name}: vượt quá ${formatBytes(maxSize)}`);
+				message.error(`${file.name}: ${t("common.attachment.exceedsLimit", "vượt quá")} ${formatBytes(maxSize)}`);
 				return null;
 			}
 			if (maxCount !== undefined) {
 				const countPending = pendingRef.current.filter(p => p.status !== "error").length;
 				const active = valueRef.current.length + countPending;
 				if (active >= maxCount) {
-					message.warning(`Tối đa ${maxCount} file`);
+					message.warning(`${t("common.attachment.maxAllowed", "Tối đa")} ${maxCount} file`);
 					return null;
 				}
 			}
 			const alreadyUploaded = valueRef.current.some(a => a.filename === file.name);
 			const alreadyPending = pendingRef.current.some(p => p.status !== "error" && p.file.name === file.name);
 			if (alreadyUploaded || alreadyPending) {
-				message.warning(`"${file.name}" đã tồn tại`);
+				message.warning(`"${file.name}" ${t("common.attachment.alreadyExists", "đã tồn tại")}`);
 				return null;
 			}
 			return { uid: genUid(), file, status: "pending" };
 		},
-		[maxSize, maxCount],
+		[maxSize, maxCount, t],
 	);
 
 	// ── beforeUpload (gọi per-file bởi antd) ─────────────────────────────
@@ -177,7 +180,7 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 			);
 
 			if (failedCount > 0) {
-				message.error(`${failedCount} file upload thất bại. Vui lòng thử lại.`);
+				message.error(`${failedCount} ${t("common.attachment.failToUpload", "file upload thất bại. Vui lòng thử lại.")}`);
 				throw new Error("UPLOAD_FAILED");
 			}
 
@@ -188,7 +191,7 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 			}
 			return valueRef.current;
 		},
-	}), [uploadItem, onChange]);
+	}), [uploadItem, onChange, t]);
 
 	// ── Derived ───────────────────────────────────────────────────────────
 
@@ -211,10 +214,10 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 					<p className="ant-upload-drag-icon">
 						<UploadOutlined style={{ fontSize: 28 }} />
 					</p>
-					<p className="ant-upload-text text-sm">Kéo thả hoặc nhấn để chọn file</p>
+					<p className="ant-upload-text text-sm">{t("common.attachment.dragText", "Kéo thả hoặc nhấn để chọn file")}</p>
 					<p className="ant-upload-hint text-xs">
-						{`Tối đa ${formatBytes(maxSize)}/file`}
-						{maxCount ? ` · tối đa ${maxCount} file` : ""}
+						{`${t("common.attachment.maxSize", "Tối đa")} ${formatBytes(maxSize)}/file`}
+						{maxCount ? ` · ${t("common.attachment.maxCount", "tối đa")} ${maxCount} file` : ""}
 					</p>
 				</Upload.Dragger>
 			)}
@@ -228,6 +231,7 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 					previewUrl={att.url}
 					disabled={disabled}
 					onRemove={() => handleRemoveDone(att.id)}
+					t={t}
 				/>
 			))}
 
@@ -241,6 +245,7 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 					error={item.error}
 					onRemove={item.status !== "uploading" ? () => handleRemovePending(item.uid) : undefined}
 					onRetry={item.status === "error" ? () => handleRetry(item.uid) : undefined}
+					t={t}
 				/>
 			))}
 		</div>
@@ -259,9 +264,10 @@ interface FileRowProps {
 	disabled?: boolean
 	onRemove?: () => void
 	onRetry?: () => void
+	t: any
 }
 
-function FileRow({ name, size, status, mode, previewUrl, error, disabled, onRemove, onRetry }: FileRowProps) {
+function FileRow({ name, size, status, mode, previewUrl, error, disabled, onRemove, onRetry, t }: FileRowProps) {
 	return (
 		<div className="flex flex-col gap-1 px-3 py-2 rounded border border-dashed">
 			<div className="flex items-center gap-2">
@@ -272,21 +278,21 @@ function FileRow({ name, size, status, mode, previewUrl, error, disabled, onRemo
 				<span className="flex-1 text-sm truncate min-w-0">{name}</span>
 				<span className="text-xs text-gray-400 shrink-0">{formatBytes(size)}</span>
 
-				{status === "done" && <Tag color="success" className="m-0 shrink-0">Đã upload</Tag>}
+				{status === "done" && <Tag color="success" className="m-0 shrink-0">{t("common.attachment.statusDone", "Đã upload")}</Tag>}
 				{status === "pending" && (
 					<Tag color="default" className="m-0 shrink-0">
-						{mode === "manual" ? "Chờ sync" : "Đang chờ"}
+						{mode === "manual" ? t("common.attachment.statusPendingSync", "Chờ sync") : t("common.attachment.statusPending", "Đang chờ")}
 					</Tag>
 				)}
-				{status === "uploading" && <Tag color="processing" className="m-0 shrink-0">Đang upload</Tag>}
-				{status === "error" && <Tag color="error" className="m-0 shrink-0">Lỗi</Tag>}
+				{status === "uploading" && <Tag color="processing" className="m-0 shrink-0">{t("common.attachment.statusUploading", "Đang upload")}</Tag>}
+				{status === "error" && <Tag color="error" className="m-0 shrink-0">{t("common.error", "Lỗi")}</Tag>}
 
 				<div className="flex gap-1 shrink-0">
 					{previewUrl && (
 						<Button type="text" size="small" icon={<EyeOutlined />} href={previewUrl} target="_blank" />
 					)}
 					{onRetry && (
-						<Button type="text" size="small" onClick={onRetry}>Thử lại</Button>
+						<Button type="text" size="small" onClick={onRetry}>{t("common.attachment.retry", "Thử lại")}</Button>
 					)}
 					{onRemove && !disabled && (
 						<Button type="text" size="small" danger icon={<DeleteOutlined />} onClick={onRemove} />

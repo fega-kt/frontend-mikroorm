@@ -1,0 +1,71 @@
+{
+	"status": {
+		"planning": "计划中",
+		"active": "进行中",
+		"completed": "已完成",
+		"on_hold": "已暂停",
+		"archived": "已归档"
+	},
+	"priority": {
+		"high": "高影响",
+		"medium": "中等优先级",
+		"low": "低影响",
+		"urgent": "紧急 (关键路径)"
+	},
+	"visibility": {
+		"private": "私有 (仅成员)",
+		"public": "公开 (全员可见)"
+	},
+	"fields": {
+		"name": "项目名称",
+		"description": "项目描述",
+		"status": "执行状态",
+		"priority": "战略优先级",
+		"owner": "项目负责人/所有者",
+		"start_date": "开始日期",
+		"due_date": "预计截止日期",
+		"budget": "分配预算",
+		"visibility": "隐私设置",
+		"tags": "标签"
+	},
+	"placeholder": {
+		"name": "* 输入项目名称...",
+		"description": "描述范围、目标和主要利益相关者...",
+		"owner": "选择任务领导者",
+		"tags": "添加标签 (如: Marketing, AI, 2024)"
+	},
+	"error": {
+		"name_required": "请输入项目名称",
+		"owner_required": "请选择负责人",
+		"start_date_required": "请选择开始日期",
+		"due_date_required": "请选择截止日期",
+		"status_required": "请选择状态",
+		"priority_required": "请选择优先级",
+		"start_after_due": "开始日期不能在截止日期之后",
+		"due_before_start": "截止日期不能在开始日期之前",
+		"visibility_required": "请选择隐私设置"
+	},
+	"subtitle": {
+		"headline": "为这一战略举措定义清晰且有影响力的目标"
+	},
+	"section": {
+		"description": "详细路线图及背景",
+		"governance": "治理与设置",
+		"financials": "财务与安全",
+		"general": "基本信息",
+		"attachments": "附件"
+	},
+	"tabs": {
+		"tasks": "工作分解结构 (WBS)",
+		"collaboration": "任务协作"
+	},
+	"empty": {
+		"tasks": "项目启动后将自动生成工作流程",
+		"team": "在活动阶段邀请主要利益相关者"
+	},
+	"update_info": "更新项目信息",
+	"create_new": "启动新战略项目",
+	"drafted_by": "起草者",
+	"save_btn": "启动项目",
+	"update_btn": "保存更改"
+}

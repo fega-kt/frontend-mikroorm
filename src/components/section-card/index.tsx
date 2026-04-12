@@ -25,28 +25,43 @@ interface SectionCardProps {
  * A reusable card with an icon + title header.
  * Used for sections like Attachments, WBS, etc.
  */
-export function SectionCard({ icon, title, extra, children, className, bodyClassName = "px-6 pb-5", noPadding }: SectionCardProps) {
+export function SectionCard({ icon, title, extra, children, className, bodyClassName, noPadding }: SectionCardProps) {
 	const { token } = theme.useToken();
 	return (
 		<Card
 			className={cn("border-none shadow-sm overflow-hidden", className)}
-			bodyStyle={{ padding: noPadding ? 0 : "16px 20px" }}
+			bodyStyle={{ padding: 0 }}
 			style={{ borderRadius: token.borderRadiusLG, backgroundColor: token.colorBgContainer }}
 		>
-			<div className="flex items-center justify-between px-6 pt-5 pb-3">
-				<div className="flex items-center gap-2">
+			<div
+				className="flex items-center justify-between px-5 py-3"
+				style={{
+					borderBottom: `1px solid ${token.colorBorderSecondary}`,
+					backgroundColor: token.colorPrimaryBg,
+				}}
+			>
+				<div className="flex items-center gap-3">
 					{icon && (
-						<span style={{ fontSize: 15, display: "flex", color: token.colorTextSecondary }}>
+						<span
+							className="flex items-center justify-center rounded-md"
+							style={{
+								width: 28,
+								height: 28,
+								fontSize: 15,
+								backgroundColor: token.colorFillAlter,
+								color: token.colorTextHeading,
+							}}
+						>
 							{icon}
 						</span>
 					)}
-					<Title level={5} className="m-0" style={{ fontSize: 14, fontWeight: 600 }}>
+					<Title level={5} className="m-0 tracking-tight" style={{ fontSize: 15, fontWeight: 600 }}>
 						{title}
 					</Title>
 				</div>
 				{extra}
 			</div>
-			<div className={bodyClassName}>
+			<div className={cn(noPadding ? "" : "px-5 pt-5 pb-5", bodyClassName)}>
 				{children}
 			</div>
 		</Card>

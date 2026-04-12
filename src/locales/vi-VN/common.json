@@ -107,5 +107,19 @@
 	"pleaseSelect": "Vui lòng chọn",
 	"selectAll": "Chọn tất cả",
 	"save": "Lưu lại",
-	"inputData": "Nhập dữ liệu"
+	"inputData": "Nhập dữ liệu",
+	"attachment": {
+		"exceedsLimit": "vượt quá",
+		"maxAllowed": "Tối đa",
+		"alreadyExists": "đã tồn tại",
+		"failToUpload": "file upload thất bại. Vui lòng thử lại.",
+		"dragText": "Kéo thả hoặc nhấn để chọn file",
+		"maxSize": "Tối đa",
+		"maxCount": "tối đa",
+		"statusDone": "Đã upload",
+		"statusPendingSync": "Chờ sync",
+		"statusPending": "Đang chờ",
+		"statusUploading": "Đang upload",
+		"retry": "Thử lại"
+	}
 }

@@ -102,5 +102,19 @@
 	"loading": "Loading...",
 	"pleaseInput": "Please input",
 	"selectAll": "Select All",
-	"save": "Save"
+	"save": "Save",
+	"attachment": {
+		"exceedsLimit": "exceeds limit",
+		"maxAllowed": "Max",
+		"alreadyExists": "already exists",
+		"failToUpload": "file upload failed. Please try again.",
+		"dragText": "Click or drag file to this area to upload",
+		"maxSize": "Max",
+		"maxCount": "up to",
+		"statusDone": "Uploaded",
+		"statusPendingSync": "Pending Sync",
+		"statusPending": "Pending",
+		"statusUploading": "Uploading",
+		"retry": "Retry"
+	}
 }

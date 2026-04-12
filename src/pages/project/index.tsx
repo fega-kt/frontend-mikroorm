@@ -52,40 +52,40 @@ export default function Project() {
 			dataIndex: "status",
 			valueType: "select",
 			valueEnum: {
-				[ProjectStatus.PLANNING]: { text: "Lên kế hoạch", status: "Default" },
-				[ProjectStatus.ACTIVE]: { text: "Đang hoạt động", status: "Processing" },
-				[ProjectStatus.COMPLETED]: { text: "Đã hoàn thành", status: "Success" },
-				[ProjectStatus.ON_HOLD]: { text: "Tạm dừng", status: "Warning" },
-				[ProjectStatus.ARCHIVED]: { text: "Lưu trữ", status: "Default" },
+				[ProjectStatus.PLANNING]: { text: t("project.status.planning", "Lên kế hoạch"), status: "Default" },
+				[ProjectStatus.ACTIVE]: { text: t("project.status.active", "Đang hoạt động"), status: "Processing" },
+				[ProjectStatus.COMPLETED]: { text: t("project.status.completed", "Đã hoàn thành"), status: "Success" },
+				[ProjectStatus.ON_HOLD]: { text: t("project.status.on_hold", "Tạm dừng"), status: "Warning" },
+				[ProjectStatus.ARCHIVED]: { text: t("project.status.archived", "Lưu trữ"), status: "Default" },
 			},
 			render: (_, record) => {
 				const statusMap: Record<ProjectStatus, { color: string, text: string }> = {
-					[ProjectStatus.PLANNING]: { color: "default", text: "Lên kế hoạch" },
-					[ProjectStatus.ACTIVE]: { color: "processing", text: "Đang hoạt động" },
-					[ProjectStatus.COMPLETED]: { color: "success", text: "Đã hoàn thành" },
-					[ProjectStatus.ON_HOLD]: { color: "warning", text: "Tạm dừng" },
-					[ProjectStatus.ARCHIVED]: { color: "default", text: "Lưu trữ" },
+					[ProjectStatus.PLANNING]: { color: "default", text: t("project.status.planning", "Lên kế hoạch") },
+					[ProjectStatus.ACTIVE]: { color: "processing", text: t("project.status.active", "Đang hoạt động") },
+					[ProjectStatus.COMPLETED]: { color: "success", text: t("project.status.completed", "Đã hoàn thành") },
+					[ProjectStatus.ON_HOLD]: { color: "warning", text: t("project.status.on_hold", "Tạm dừng") },
+					[ProjectStatus.ARCHIVED]: { color: "default", text: t("project.status.archived", "Lưu trữ") },
 				};
 				const config = statusMap[record.status] || { color: "default", text: record.status };
 				return <Tag color={config.color}>{config.text}</Tag>;
 			},
 		},
 		{
-			title: "Độ ưu tiên",
+			title: t("project.fields.priority", "Độ ưu tiên"),
 			dataIndex: "priority",
 			valueType: "select",
 			valueEnum: {
-				[ProjectPriority.URGENT]: { text: "Khẩn cấp", status: "Error" },
-				[ProjectPriority.HIGH]: { text: "Cao", status: "Warning" },
-				[ProjectPriority.MEDIUM]: { text: "Trung bình", status: "Processing" },
-				[ProjectPriority.LOW]: { text: "Thấp", status: "Default" },
+				[ProjectPriority.URGENT]: { text: t("project.priority.urgent", "Khẩn cấp"), status: "Error" },
+				[ProjectPriority.HIGH]: { text: t("project.priority.high", "Cao"), status: "Warning" },
+				[ProjectPriority.MEDIUM]: { text: t("project.priority.medium", "Trung bình"), status: "Processing" },
+				[ProjectPriority.LOW]: { text: t("project.priority.low", "Thấp"), status: "Default" },
 			},
 			render: (_, record) => {
 				const priorityMap: Record<ProjectPriority, { color: string, text: string }> = {
-					[ProjectPriority.URGENT]: { color: "error", text: "Khẩn cấp" },
-					[ProjectPriority.HIGH]: { color: "volcano", text: "Cao" },
-					[ProjectPriority.MEDIUM]: { color: "orange", text: "Trung bình" },
-					[ProjectPriority.LOW]: { color: "blue", text: "Thấp" },
+					[ProjectPriority.URGENT]: { color: "error", text: t("project.priority.urgent", "Khẩn cấp") },
+					[ProjectPriority.HIGH]: { color: "volcano", text: t("project.priority.high", "Cao") },
+					[ProjectPriority.MEDIUM]: { color: "orange", text: t("project.priority.medium", "Trung bình") },
+					[ProjectPriority.LOW]: { color: "blue", text: t("project.priority.low", "Thấp") },
 				};
 				const config = priorityMap[record.priority];
 				if (!config)
@@ -94,13 +94,13 @@ export default function Project() {
 			},
 		},
 		{
-			title: "Chủ sở hữu",
+			title: t("project.fields.owner", "Chủ sở hữu"),
 			dataIndex: "owner",
 			hideInSearch: true,
 			render: (_, record) => <PeoplePicker readonly user={record.owner} showEmail={false} />,
 		},
 		{
-			title: "Hạn chót",
+			title: t("project.fields.due_date", "Hạn chót"),
 			dataIndex: "dueDate",
 			valueType: "date",
 			hideInSearch: true,

@@ -83,14 +83,14 @@ export function RichTextEditor({
 	return (
 		<div
 			className={`rounded-lg overflow-hidden ${className ?? ""}`}
-			style={{ border: `1px solid ${token.colorBorder}` }}
+			style={{ border: readOnly ? "none" : `1px solid ${token.colorBorder}` }}
 		>
-			{!hideToolbar && <Toolbar editor={editor} />}
+			{(!hideToolbar && !readOnly) && <Toolbar editor={editor} />}
 
 			<EditorContent
 				editor={editor}
 				className="rich-text-editor-content"
-				style={{ minHeight, padding: "12px 16px" }}
+				style={{ minHeight, padding: readOnly ? 0 : "12px 16px" }}
 			/>
 		</div>
 	);

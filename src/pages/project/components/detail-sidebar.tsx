@@ -3,6 +3,7 @@ import { ProjectPriority } from "#src/api/project/types";
 import { FieldTitle } from "#src/components/field-title";
 import { IconLabel } from "#src/components/icon-label";
 import { ProFormPeoplePicker } from "#src/components/people-picker";
+import { SectionCard } from "#src/components/section-card";
 import {
 	CalendarOutlined,
 	FlagOutlined,
@@ -15,30 +16,13 @@ import {
 	ProFormDatePicker,
 	ProFormSelect,
 } from "@ant-design/pro-components";
-import { Form, Space, theme, Typography } from "antd";
+import { Form } from "antd";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-const { Text } = Typography;
-
-/* ── Section Header with bottom border ── */
-function SectionHeader({ icon, text }: { icon: React.ReactNode, text: string }) {
-	const { token } = theme.useToken();
-	return (
-		<div
-			className="flex items-center gap-2 pb-3 mb-3"
-			style={{ borderBottom: `1px solid ${token.colorBorderSecondary}` }}
-		>
-			<span style={{ fontSize: 14, display: "flex", color: token.colorTextSecondary }}>{icon}</span>
-			<Text strong style={{ fontSize: 14 }}>{text}</Text>
-		</div>
-	);
-}
-
 export function DetailSidebar() {
 	const { t } = useTranslation();
-	const { token } = theme.useToken();
 	const form = Form.useFormInstance();
 
 	const statusOptions = useMemo(() => [
@@ -55,22 +39,14 @@ export function DetailSidebar() {
 		{ label: <IconLabel icon="🟢" label={t("project.priority.low")} color="green" />, value: ProjectPriority.LOW },
 	], [t]);
 
-	const sectionStyle: React.CSSProperties = {
-		borderRadius: 12,
-		border: `1px solid ${token.colorBorderSecondary}`,
-		backgroundColor: token.colorBgContainer,
-		padding: "16px 20px",
-	};
-
 	return (
-		<Space direction="vertical" size={16} className="w-full">
+		<div className="flex flex-col gap-4 w-full">
 			{/* ── Quản trị & Thiết lập ── */}
-			<div style={sectionStyle}>
-				<SectionHeader icon={<SettingOutlined />} text={t("project.section.governance")} />
+			<SectionCard icon={<SettingOutlined />} title={t("project.section.governance")}>
 
 				<ProFormSelect
 					name="status"
-					label={<FieldTitle icon={<FlagOutlined />} text={t("project.fields.status")} />}
+					label={<FieldTitle icon={<FlagOutlined />} title={t("project.fields.status")} />}
 					options={statusOptions}
 					initialValue="PLANNING"
 					rules={[{ required: true, message: t("project.error.status_required") }]}
@@ -78,27 +54,27 @@ export function DetailSidebar() {
 				/>
 				<ProFormSelect
 					name="priority"
-					label={<FieldTitle icon={<FlagOutlined />} text={t("project.fields.priority")} />}
+					label={<FieldTitle icon={<FlagOutlined />} title={t("project.fields.priority")} />}
 					options={priorityOptions}
 					initialValue={ProjectPriority.MEDIUM}
 					rules={[{ required: true, message: t("project.error.priority_required") }]}
+					formItemProps={{ className: "mb-0" }}
 				/>
-			</div>
+			</SectionCard>
 
 			{/* ── Thành viên ── */}
-			<div style={sectionStyle}>
-				<SectionHeader icon={<TeamOutlined />} text="Thành viên" />
+			<SectionCard icon={<TeamOutlined />} title="Thành viên">
 
 				<ProFormPeoplePicker
 					name="owner"
-					label={<FieldTitle icon={<UserOutlined />} text={t("project.fields.owner")} />}
+					label={<FieldTitle icon={<UserOutlined />} title={t("project.fields.owner")} />}
 					rules={[{ required: true, message: t("project.error.owner_required") }]}
 					placeholder={t("project.placeholder.owner")}
 				/>
 
 				<ProFormDatePicker
 					name="startDate"
-					label={<FieldTitle icon={<CalendarOutlined />} text={t("project.fields.start_date")} />}
+					label={<FieldTitle icon={<CalendarOutlined />} title={t("project.fields.start_date")} />}
 					className="w-full"
 					fieldProps={{ className: "w-full rounded-lg" }}
 					rules={[
@@ -119,7 +95,7 @@ export function DetailSidebar() {
 				/>
 				<ProFormDatePicker
 					name="dueDate"
-					label={<FieldTitle icon={<CalendarOutlined />} text={t("project.fields.due_date")} />}
+					label={<FieldTitle icon={<CalendarOutlined />} title={t("project.fields.due_date")} />}
 					className="w-full"
 					fieldProps={{
 						className: "w-full rounded-lg",
@@ -140,12 +116,12 @@ export function DetailSidebar() {
 							},
 						},
 					]}
+					formItemProps={{ className: "mb-0" }}
 				/>
-			</div>
+			</SectionCard>
 
 			{/* ── Tag ── */}
-			<div style={sectionStyle}>
-				<SectionHeader icon={<HeartOutlined />} text={t("project.fields.tags")} />
+			<SectionCard icon={<HeartOutlined />} title={t("project.fields.tags")}>
 
 				<ProFormSelect
 					name="tags"
@@ -154,7 +130,7 @@ export function DetailSidebar() {
 					fieldProps={{ className: "rounded-lg" }}
 					formItemProps={{ className: "mb-0" }}
 				/>
-			</div>
-		</Space>
+			</SectionCard>
+		</div>
 	);
 }
