@@ -24,7 +24,7 @@ const isDev = process.env.NODE_ENV === "development";
 // https://vitejs.dev/config/
 export default defineConfig({
 
-	base: isDev ? "/" : "/react-antd-admin/",
+	base: "/",
 	plugins: [
 		// https://github.com/pd4d10/vite-plugin-svgr#options
 		svgrPlugin({
