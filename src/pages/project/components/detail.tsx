@@ -4,7 +4,7 @@ import type { AttachmentUploadRef } from "#src/components/attachment-upload/type
 import { projectService } from "#src/api/project";
 import { buildProjectStoragePath } from "#src/constants/storage-path";
 import { ModalForm } from "@ant-design/pro-components";
-import { Col, Form, Row, Spin } from "antd";
+import { Col, Form, Grid, Row, Spin } from "antd";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -23,6 +23,9 @@ interface DetailProps {
 
 export function Detail({ ref }: DetailProps) {
 	const { t } = useTranslation();
+	const screens = Grid.useBreakpoint();
+	const isMobile = (screens.xs || screens.sm) && !screens.md;
+
 	const [form] = Form.useForm<ProjectEntity>();
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
@@ -115,10 +118,11 @@ export function Detail({ ref }: DetailProps) {
 			modalProps={{
 				destroyOnClose: true,
 				maskClosable: false,
-				width: 1400,
+				width: isMobile ? "100vw" : 1400,
+				style: isMobile ? { top: 0, padding: 0, margin: 0, maxWidth: "100vw" } : undefined,
 				styles: {
 					header: { display: "none" },
-					body: { height: "80vh", overflow: "hidden", padding: 0 },
+					body: { height: isMobile ? "100vh" : "80vh", overflow: "hidden", padding: 0 },
 				},
 				closeIcon: null,
 			}}
@@ -135,11 +139,11 @@ export function Detail({ ref }: DetailProps) {
 
 			<Spin spinning={loading}>
 				<div
-					className="overflow-y-auto px-8 py-8 h-[calc(80vh-64px)] scroll-smooth pb-12"
+					className={`overflow-y-auto px-4 md:px-8 py-6 md:py-8 scroll-smooth pb-12 ${isMobile ? "h-[calc(100vh-64px)]" : "h-[calc(80vh-64px)]"}`}
 					style={{ background: "var(--ant-color-bg-layout)" }}
 				>
-					<Row gutter={24} className="mb-4">
-						<Col span={18}>
+					<Row gutter={[24, 24]} className="mb-4">
+						<Col xs={24} md={16} lg={17} xl={18}>
 							<div className="flex flex-col gap-4">
 								<DetailMain
 									attachmentRef={attachmentRef}
@@ -151,7 +155,7 @@ export function Detail({ ref }: DetailProps) {
 								/>
 							</div>
 						</Col>
-						<Col span={6}>
+						<Col xs={24} md={8} lg={7} xl={6}>
 							<DetailSidebar />
 						</Col>
 					</Row>
