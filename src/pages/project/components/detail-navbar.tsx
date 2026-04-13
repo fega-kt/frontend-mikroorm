@@ -19,7 +19,7 @@ export function DetailNavbar({ isEditing, loading, saving, onCancel, onSave }: D
 
 	return (
 		<div
-			className="px-8 flex items-center justify-between z-50 sticky top-0"
+			className="px-4 md:px-8 flex flex-row items-center justify-between z-50 sticky top-0"
 			style={{
 				backgroundColor: token.colorBgContainer,
 				borderBottom: `1px solid ${token.colorBorderSecondary}`,
@@ -43,31 +43,31 @@ export function DetailNavbar({ isEditing, loading, saving, onCancel, onSave }: D
 					<Breadcrumb
 						className="mb-0.5"
 						items={[
-							{ title: <Text type="secondary" className="text-xs">Projects</Text> },
+							{ title: <Text type="secondary" className="text-xs truncate max-w-[100px]">{t("common.menu.project")}</Text> },
 							{
 								title: (
-									<Text className="text-xs">
-										{isEditing ? t("project.update_info") : "Create Project"}
+									<Text className="text-xs truncate max-w-[120px] md:max-w-none inline-block align-bottom">
+										{isEditing ? t("project.update_info") : t("project.create_new")}
 									</Text>
 								),
 							},
 						]}
 					/>
-					<Text strong style={{ fontSize: 18, lineHeight: 1.2 }}>
-						{isEditing ? t("project.update_info") : "Create Project"}
+					<Text strong className="text-base md:text-lg leading-tight line-clamp-2 md:line-clamp-1">
+						{isEditing ? t("project.update_info") : t("project.create_new")}
 					</Text>
 				</div>
 			</div>
 
 			{/* Right – Hủy / Lưu */}
-			<Space size={12}>
+			<Space size={8} className="shrink-0">
 				<BasicButton
 					type="default"
 					disabled={loading || saving}
 					onClick={onCancel}
-					className="rounded-lg font-medium min-w-[80px]"
+					className="rounded-lg font-medium min-w-[60px] md:min-w-[80px]"
 				>
-					Hủy
+					{t("common.cancel")}
 				</BasicButton>
 				<BasicButton
 					type="primary"
@@ -75,9 +75,9 @@ export function DetailNavbar({ isEditing, loading, saving, onCancel, onSave }: D
 					loading={saving}
 					disabled={loading}
 					onClick={onSave}
-					className="rounded-lg font-bold border-none min-w-[80px]"
+					className="rounded-lg font-bold border-none min-w-[60px] md:min-w-[80px]"
 				>
-					Lưu
+					{t("common.save")}
 				</BasicButton>
 			</Space>
 		</div>
