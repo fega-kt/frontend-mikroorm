@@ -1,5 +1,5 @@
 import type { Dayjs } from "dayjs";
-import { ProjectPriority } from "#src/api/project/types";
+import { ProjectPriority, ProjectVisibility } from "#src/api/project/types";
 import { FieldTitle } from "#src/components/field-title";
 import { IconLabel } from "#src/components/icon-label";
 import { ProFormPeoplePicker } from "#src/components/people-picker";
@@ -8,6 +8,7 @@ import {
 	CalendarOutlined,
 	FlagOutlined,
 	HeartOutlined,
+	LockOutlined,
 	SettingOutlined,
 	TeamOutlined,
 	UserOutlined,
@@ -39,6 +40,11 @@ export function DetailSidebar() {
 		{ label: <IconLabel icon="🟢" label={t("project.priority.low")} color="green" />, value: ProjectPriority.LOW },
 	], [t]);
 
+	const visibilityOptions = useMemo(() => [
+		{ label: <IconLabel icon="🌍" label={t("project.visibility.public")} color="blue" />, value: ProjectVisibility.PUBLIC },
+		{ label: <IconLabel icon="🔒" label={t("project.visibility.private")} color="red" />, value: ProjectVisibility.PRIVATE },
+	], [t]);
+
 	return (
 		<div className="flex flex-col gap-4 w-full">
 			{/* ── Quản trị & Thiết lập ── */}
@@ -58,6 +64,13 @@ export function DetailSidebar() {
 					options={priorityOptions}
 					initialValue={ProjectPriority.MEDIUM}
 					rules={[{ required: true, message: t("project.error.priority_required") }]}
+				/>
+				<ProFormSelect
+					name="visibility"
+					label={<FieldTitle icon={<LockOutlined />} title={t("project.fields.visibility")} />}
+					options={visibilityOptions}
+					initialValue={ProjectVisibility.PUBLIC}
+					rules={[{ required: true, message: t("project.error.visibility_required") }]}
 					formItemProps={{ className: "mb-0" }}
 				/>
 			</SectionCard>
