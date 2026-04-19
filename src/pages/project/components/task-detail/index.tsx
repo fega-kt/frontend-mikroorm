@@ -5,6 +5,7 @@ import { taskService } from "#src/api/task";
 import { CheckCircleOutlined, CloseOutlined, SaveOutlined, ThunderboltOutlined } from "@ant-design/icons";
 import { ModalForm } from "@ant-design/pro-components";
 import { Button, Col, Form, Row, Space, Spin, theme, Typography } from "antd";
+import dayjs from "dayjs";
 import * as React from "react";
 import { useImperativeHandle, useRef, useState } from "react";
 import { TaskDetailMain } from "./task-detail-main";
@@ -94,6 +95,17 @@ export function TaskDetail({ ref }: TaskDetailProps) {
 	};
 
 	const onFinish = async (values: any) => {
+		if (editingIdRef.current && values.dueDate) {
+			const subtasksRes = await taskService.fetchSubtasks(editingIdRef.current);
+			const violating = (subtasksRes.data ?? []).filter(
+				st => st.dueDate && dayjs(st.dueDate).isAfter(dayjs(values.dueDate), "day"),
+			);
+			if (violating.length > 0) {
+				window.$message?.error(`${violating.length} sub-task có hạn chót sau task cha. Vui lòng điều chỉnh trước khi lưu.`);
+				return false;
+			}
+		}
+
 		const payload = {
 			...values,
 			project: defaultsRef.current.projectId ?? (values.project?.id || values.project),

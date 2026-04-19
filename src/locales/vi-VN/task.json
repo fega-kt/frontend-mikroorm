@@ -1,0 +1,23 @@
+{
+	"fields": {
+		"title": "Tiêu đề",
+		"status": "Trạng thái",
+		"priority": "Độ ưu tiên",
+		"project": "Dự án",
+		"assignee": "Người thực hiện",
+		"due_date": "Hạn chót"
+	},
+	"status": {
+		"todo": "Cần làm",
+		"in_progress": "Đang thực hiện",
+		"done": "Hoàn thành",
+		"cancelled": "Hủy bỏ",
+		"rejected": "Từ chối"
+	},
+	"priority": {
+		"low": "Thấp",
+		"medium": "Trung bình",
+		"high": "Cao"
+	},
+	"deleteWarning": "Nếu task có sub-task, tất cả sub-task cũng sẽ bị xóa."
+}

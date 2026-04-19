@@ -1,0 +1,23 @@
+{
+	"fields": {
+		"title": "标题",
+		"status": "状态",
+		"priority": "优先级",
+		"project": "项目",
+		"assignee": "负责人",
+		"due_date": "截止日期"
+	},
+	"status": {
+		"todo": "待处理",
+		"in_progress": "进行中",
+		"done": "已完成",
+		"cancelled": "已取消",
+		"rejected": "已拒绝"
+	},
+	"priority": {
+		"low": "低",
+		"medium": "中",
+		"high": "高"
+	},
+	"deleteWarning": "如果该任务有子任务，所有子任务也将被删除。"
+}

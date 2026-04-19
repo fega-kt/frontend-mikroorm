@@ -39,6 +39,11 @@ export class TaskService extends CrudServiceBase<TaskEntity> {
 		return this.post<TaskEntity>("", { json: data, ignoreLoading: true });
 	}
 
+	/** Tạo subtask — POST /task/:id/subtasks */
+	async fetchCreateSubtask(parentTaskId: string, title: string) {
+		return this.post<TaskEntity>(`${parentTaskId}/subtasks`, { json: { title }, ignoreLoading: true });
+	}
+
 	/** Cập nhật task */
 	async fetchUpdateTask(id: string, data: TaskPayload) {
 		return this.patch<void>(id, { json: data, ignoreLoading: true });

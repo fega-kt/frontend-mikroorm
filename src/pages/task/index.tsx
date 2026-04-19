@@ -1,8 +1,10 @@
 import type { TaskEntity } from "#src/api/task/types";
 import type { TaskDetailRef } from "#src/pages/project/components/task-detail";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
+import { projectService } from "#src/api/project";
 import { taskService } from "#src/api/task";
 import { TaskPriority, TaskStatus } from "#src/api/task/types";
+import { userService } from "#src/api/user";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
 import { useAccess } from "#src/hooks/use-access";
@@ -39,65 +41,89 @@ export default function Task() {
 
 	const columns: ProColumns<TaskEntity>[] = [
 		{
-			title: "Tiêu đề",
+			title: t("task.fields.title"),
 			dataIndex: "title",
 			copyable: true,
 			ellipsis: true,
 		},
 		{
-			title: t("common.status"),
+			title: t("task.fields.status"),
 			dataIndex: "status",
 			valueType: "select",
 			valueEnum: {
-				[TaskStatus.TODO]: { text: "Cần làm", status: "Default" },
-				[TaskStatus.IN_PROGRESS]: { text: "Đang thực hiện", status: "Processing" },
-				[TaskStatus.DONE]: { text: "Hoàn thành", status: "Success" },
-				[TaskStatus.CANCELLED]: { text: "Hủy bỏ", status: "Default" },
-				[TaskStatus.REJECTED]: { text: "Từ chối", status: "Error" },
+				[TaskStatus.TODO]: { text: t("task.status.todo"), status: "Default" },
+				[TaskStatus.IN_PROGRESS]: { text: t("task.status.in_progress"), status: "Processing" },
+				[TaskStatus.DONE]: { text: t("task.status.done"), status: "Success" },
+				[TaskStatus.CANCELLED]: { text: t("task.status.cancelled"), status: "Default" },
+				[TaskStatus.REJECTED]: { text: t("task.status.rejected"), status: "Error" },
 			},
 			render: (_, record) => {
-				const statusMap: Record<TaskStatus, { color: string, text: string }> = {
-					[TaskStatus.TODO]: { color: "default", text: "Cần làm" },
-					[TaskStatus.IN_PROGRESS]: { color: "processing", text: "Đang thực hiện" },
-					[TaskStatus.DONE]: { color: "success", text: "Hoàn thành" },
-					[TaskStatus.CANCELLED]: { color: "default", text: "Hủy bỏ" },
-					[TaskStatus.REJECTED]: { color: "error", text: "Từ chối" },
+				const statusMap: Record<TaskStatus, { color: string, key: string }> = {
+					[TaskStatus.TODO]: { color: "default", key: "task.status.todo" },
+					[TaskStatus.IN_PROGRESS]: { color: "processing", key: "task.status.in_progress" },
+					[TaskStatus.DONE]: { color: "success", key: "task.status.done" },
+					[TaskStatus.CANCELLED]: { color: "default", key: "task.status.cancelled" },
+					[TaskStatus.REJECTED]: { color: "error", key: "task.status.rejected" },
 				};
 				const config = statusMap[record.status];
-				return <Tag color={config.color}>{config.text}</Tag>;
+				return <Tag color={config.color}>{t(config.key)}</Tag>;
 			},
 		},
 		{
-			title: "Độ ưu tiên",
+			title: t("task.fields.priority"),
 			dataIndex: "priority",
 			valueType: "select",
 			valueEnum: {
-				[TaskPriority.LOW]: { text: "Thấp", status: "Default" },
-				[TaskPriority.MEDIUM]: { text: "Trung bình", status: "Warning" },
-				[TaskPriority.HIGH]: { text: "Cao", status: "Error" },
+				[TaskPriority.LOW]: { text: t("task.priority.low"), status: "Default" },
+				[TaskPriority.MEDIUM]: { text: t("task.priority.medium"), status: "Warning" },
+				[TaskPriority.HIGH]: { text: t("task.priority.high"), status: "Error" },
 			},
 			render: (_, record) => {
-				const priorityMap: Record<TaskPriority, { color: string, text: string }> = {
-					[TaskPriority.LOW]: { color: "blue", text: "Thấp" },
-					[TaskPriority.MEDIUM]: { color: "orange", text: "Trung bình" },
-					[TaskPriority.HIGH]: { color: "volcano", text: "Cao" },
+				const priorityMap: Record<TaskPriority, { color: string, key: string }> = {
+					[TaskPriority.LOW]: { color: "blue", key: "task.priority.low" },
+					[TaskPriority.MEDIUM]: { color: "orange", key: "task.priority.medium" },
+					[TaskPriority.HIGH]: { color: "volcano", key: "task.priority.high" },
 				};
 				const config = priorityMap[record.priority];
-				return <Tag color={config.color}>{config.text}</Tag>;
+				return <Tag color={config.color}>{t(config.key)}</Tag>;
 			},
 		},
 		{
-			title: "Dự án",
+			title: t("task.fields.project"),
 			dataIndex: ["project", "name"],
 			hideInSearch: true,
 		},
 		{
-			title: "Người thực hiện",
+			title: t("task.fields.project"),
+			key: "projectId",
+			dataIndex: "projectId",
+			hideInTable: true,
+			valueType: "select",
+			fieldProps: { placeholder: t("task.fields.project"), allowClear: true, showSearch: true },
+			request: async () => {
+				const res = await projectService.fetchProjectList({ pageSize: 200 });
+				return (res.data ?? []).map(p => ({ label: p.name, value: p.id }));
+			},
+		},
+		{
+			title: t("task.fields.assignee"),
 			dataIndex: ["assignee", "fullName"],
 			hideInSearch: true,
 		},
 		{
-			title: "Hạn chót",
+			title: t("task.fields.assignee"),
+			key: "assigneeId",
+			dataIndex: "assigneeId",
+			hideInTable: true,
+			valueType: "select",
+			fieldProps: { placeholder: t("task.fields.assignee"), allowClear: true, showSearch: true },
+			request: async () => {
+				const res = await userService.fetchUserList({ pageSize: 200, isActive: true });
+				return (res.data ?? []).map(u => ({ label: u.fullName || u.loginName, value: u.id }));
+			},
+		},
+		{
+			title: t("task.fields.due_date"),
 			dataIndex: "dueDate",
 			valueType: "date",
 			hideInSearch: true,
@@ -121,6 +147,7 @@ export default function Task() {
 				<Popconfirm
 					key="delete"
 					title={t("common.confirmDelete")}
+					description={t("task.deleteWarning")}
 					onConfirm={() => handleDelete(record.id)}
 					okText={t("common.confirm")}
 					cancelText={t("common.cancel")}

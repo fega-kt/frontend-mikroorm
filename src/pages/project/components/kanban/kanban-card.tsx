@@ -6,6 +6,7 @@ import {
 	CalendarOutlined,
 	CheckCircleOutlined,
 	ClockCircleOutlined,
+	NodeIndexOutlined,
 } from "@ant-design/icons";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -22,11 +23,12 @@ const PRIORITY_CONFIG: Record<TaskPriority, { color: string, icon: string }> = {
 
 interface KanbanCardProps {
 	task: TaskEntity
+	subtaskCount?: number
 	onClick: (task: TaskEntity) => void
 	isDragging?: boolean
 }
 
-export function KanbanCard({ task, onClick, isDragging }: KanbanCardProps) {
+export function KanbanCard({ task, subtaskCount = 0, onClick, isDragging }: KanbanCardProps) {
 	const { token } = theme.useToken();
 	const {
 		attributes,
@@ -119,17 +121,27 @@ export function KanbanCard({ task, onClick, isDragging }: KanbanCardProps) {
 					)}
 				</div>
 
-				{/* Assignee avatar */}
-				{task.assignee && (
-					<Avatar
-						size={20}
-						src={task.assignee.avatar}
-						className="shrink-0 text-[9px] font-bold border-none"
-						style={{ backgroundColor: getAvatarColor(task.assignee.id) }}
-					>
-						{task.assignee.loginName?.[0]?.toUpperCase()}
-					</Avatar>
-				)}
+				<div className="flex items-center gap-1.5">
+					{/* Subtask count */}
+					{subtaskCount > 0 && (
+						<span className="flex items-center gap-0.5 text-[11px] text-gray-400">
+							<NodeIndexOutlined />
+							{subtaskCount}
+						</span>
+					)}
+
+					{/* Assignee avatar */}
+					{task.assignee && (
+						<Avatar
+							size={20}
+							src={task.assignee.avatar}
+							className="shrink-0 text-[9px] font-bold border-none"
+							style={{ backgroundColor: getAvatarColor(task.assignee.id) }}
+						>
+							{task.assignee.loginName?.[0]?.toUpperCase()}
+						</Avatar>
+					)}
+				</div>
 			</div>
 		</div>
 	);

@@ -4,11 +4,12 @@ import { cn } from "#src/utils/cn";
 import {
 	DeleteOutlined,
 	EditOutlined,
+	HolderOutlined,
 	MoreOutlined,
 	PlusOutlined,
 } from "@ant-design/icons";
-import { useDroppable } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Button, Dropdown, Input, theme, Typography } from "antd";
 import * as React from "react";
 import { useState } from "react";
@@ -19,6 +20,7 @@ const { Text } = Typography;
 interface KanbanColumnProps {
 	section: SectionEntity
 	tasks: TaskEntity[]
+	subtaskCountMap: Record<string, number>
 	onAddTask: (sectionId: string) => void
 	onEditTask: (task: TaskEntity) => void
 	onRenameSection: (id: string, name: string) => Promise<void>
@@ -28,6 +30,7 @@ interface KanbanColumnProps {
 export function KanbanColumn({
 	section,
 	tasks,
+	subtaskCountMap,
 	onAddTask,
 	onEditTask,
 	onRenameSection,
@@ -37,7 +40,15 @@ export function KanbanColumn({
 	const [isRenaming, setIsRenaming] = useState(false);
 	const [nameInput, setNameInput] = useState(section.name);
 
-	const { setNodeRef, isOver } = useDroppable({
+	const {
+		setNodeRef,
+		attributes,
+		listeners,
+		transform,
+		transition,
+		isDragging,
+		isOver,
+	} = useSortable({
 		id: section.id,
 		data: { type: "section", section },
 	});
@@ -74,16 +85,30 @@ export function KanbanColumn({
 
 	return (
 		<div
+			ref={setNodeRef}
 			className="flex flex-col rounded-2xl min-h-[200px] w-[260px] shrink-0"
 			style={{
+				transform: CSS.Transform.toString(transform),
+				transition: transition ?? "background 0.15s, border 0.15s",
+				opacity: isDragging ? 0.35 : 1,
 				backgroundColor: isOver ? token.colorPrimaryBg : token.colorFillQuaternary,
 				border: `1.5px solid ${isOver ? token.colorPrimaryBorder : token.colorBorderSecondary}`,
-				transition: "background 0.15s, border 0.15s",
 			}}
 		>
 			{/* Column header */}
 			<div className="flex items-center justify-between px-3 pt-3 pb-2">
-				<div className="flex items-center gap-2 flex-1 min-w-0">
+				{/* Drag handle */}
+				<Button
+					type="text"
+					size="small"
+					icon={<HolderOutlined />}
+					className="opacity-0 group-hover:opacity-100 h-6 w-6 cursor-grab active:cursor-grabbing shrink-0"
+					style={{ color: token.colorTextQuaternary }}
+					{...attributes}
+					{...listeners}
+				/>
+
+				<div className="flex items-center gap-2 flex-1 min-w-0 mx-1">
 					{isRenaming
 						? (
 							<Input
@@ -114,7 +139,7 @@ export function KanbanColumn({
 					</Text>
 				</div>
 
-				<div className="flex items-center gap-1 ml-1">
+				<div className="flex items-center gap-1">
 					<Button
 						type="text"
 						size="small"
@@ -129,13 +154,10 @@ export function KanbanColumn({
 			</div>
 
 			{/* Task list */}
-			<div
-				ref={setNodeRef}
-				className={cn("flex flex-col gap-2 px-3 flex-1 min-h-[60px] pb-2")}
-			>
+			<div className={cn("flex flex-col gap-2 px-3 flex-1 min-h-[60px] pb-2")}>
 				<SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
 					{tasks.map(task => (
-						<KanbanCard key={task.id} task={task} onClick={onEditTask} />
+						<KanbanCard key={task.id} task={task} subtaskCount={subtaskCountMap[task.id] ?? 0} onClick={onEditTask} />
 					))}
 				</SortableContext>
 			</div>
@@ -152,6 +174,37 @@ export function KanbanColumn({
 				>
 					Thêm task
 				</Button>
+			</div>
+		</div>
+	);
+}
+
+export function KanbanColumnOverlay({ section, taskCount }: { section: SectionEntity, taskCount: number }) {
+	const { token } = theme.useToken();
+	return (
+		<div
+			className="rounded-2xl w-[260px] shadow-2xl rotate-2"
+			style={{
+				backgroundColor: token.colorPrimaryBg,
+				border: `2px solid ${token.colorPrimary}`,
+				opacity: 0.9,
+			}}
+		>
+			<div className="flex items-center gap-2 px-3 py-3">
+				<HolderOutlined style={{ color: token.colorPrimary }} />
+				<Text strong className="text-[13px] flex-1 truncate">{section.name}</Text>
+				<Text
+					type="secondary"
+					className="text-[11px] shrink-0"
+					style={{
+						backgroundColor: token.colorFillSecondary,
+						padding: "0 6px",
+						borderRadius: 20,
+						lineHeight: "18px",
+					}}
+				>
+					{taskCount}
+				</Text>
 			</div>
 		</div>
 	);

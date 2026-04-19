@@ -14,30 +14,32 @@ import {
 	useSensor,
 	useSensors,
 } from "@dnd-kit/core";
-import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { arrayMove, horizontalListSortingStrategy, SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { Button, Empty, Input, Modal, Spin, theme } from "antd";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TaskDetail } from "../task-detail";
 import { KanbanCardOverlay } from "./kanban-card";
-import { KanbanColumn } from "./kanban-column";
+import { KanbanColumn, KanbanColumnOverlay } from "./kanban-column";
 
 interface KanbanBoardProps {
 	projectId: string
 }
 
 type TaskMap = Record<string, TaskEntity[]>;
+type SubtaskCountMap = Record<string, number>;
 
 export function KanbanBoard({ projectId }: KanbanBoardProps) {
 	const { token } = theme.useToken();
 	const [sections, setSections] = useState<SectionEntity[]>([]);
 	const [taskMap, setTaskMap] = useState<TaskMap>({});
+	const [subtaskCountMap, setSubtaskCountMap] = useState<SubtaskCountMap>({});
 	const [loading, setLoading] = useState(true);
 	const [activeDragTask, setActiveDragTask] = useState<TaskEntity | null>(null);
+	const [activeDragSection, setActiveDragSection] = useState<SectionEntity | null>(null);
 	const [addSectionLoading, setAddSectionLoading] = useState(false);
 	const [sourceSectionId, setSourceSectionId] = useState<string | null>(null);
 	const taskDetailRef = useRef<TaskDetailRef>(null);
 
-	// Load sections + tasks
 	const loadData = useCallback(async (silent = false) => {
 		if (!silent)
 			setLoading(true);
@@ -50,21 +52,25 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
 			const sectionsData = sectionsRes.data ?? [];
 			setSections(sectionsData);
 
-			// Group tasks by section id
 			const map: TaskMap = {};
 			sectionsData.forEach(s => (map[s.id] = []));
 
+			const countMap: SubtaskCountMap = {};
 			tasksData.data.forEach((task) => {
+				if (task.parentTask) {
+					const pid = typeof task.parentTask === "string" ? task.parentTask : task.parentTask.id;
+					countMap[pid] = (countMap[pid] ?? 0) + 1;
+					return;
+				}
 				const sectionId = task.section?.id;
 				if (sectionId && map[sectionId]) {
 					map[sectionId].push(task);
 				}
 			});
 
-			// Sort by order
 			Object.keys(map).forEach(sid => map[sid].sort((a, b) => a.order - b.order));
-
 			setTaskMap(map);
+			setSubtaskCountMap(countMap);
 		}
 		finally {
 			if (!silent)
@@ -76,7 +82,6 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
 		loadData();
 	}, [loadData]);
 
-	// --- DnD sensors ---
 	const sensors = useSensors(
 		useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
 		useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
@@ -92,20 +97,25 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
 			setActiveDragTask(task);
 			setSourceSectionId(findSectionIdByTaskId(task.id) || null);
 		}
+		else if (active.data.current?.type === "section") {
+			setActiveDragSection(active.data.current.section as SectionEntity);
+		}
 	};
 
 	const onDragOver = ({ active, over }: DragOverEvent) => {
+		if (active.data.current?.type === "section")
+			return;
 		if (!over)
 			return;
+
 		const activeId = String(active.id);
 		const overId = String(over.id);
 		if (activeId === overId)
 			return;
 
 		const activeSectionId = findSectionIdByTaskId(activeId);
-		// over could be a section or another task
 		const overSectionId = taskMap[overId] !== undefined
-			? overId // dropped over a section container
+			? overId
 			: findSectionIdByTaskId(overId);
 
 		if (!activeSectionId || !overSectionId || activeSectionId === overSectionId)
@@ -118,7 +128,6 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
 			const insertAt = overIndex >= 0 ? overIndex : prev[overSectionId].length;
 			const newOverTasks = [...prev[overSectionId]];
 			newOverTasks.splice(insertAt, 0, { ...activeTask, section: sections.find(s => s.id === overSectionId) });
-
 			return { ...prev, [activeSectionId]: newActiveTasks, [overSectionId]: newOverTasks };
 		});
 	};
@@ -126,36 +135,49 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
 	const onDragEnd = async ({ active, over }: DragEndEvent) => {
 		const sourceId = sourceSectionId;
 		setActiveDragTask(null);
+		setActiveDragSection(null);
 		setSourceSectionId(null);
 
-		if (!over || !sourceId)
+		if (!over)
 			return;
 
 		const activeId = String(active.id);
 		const overId = String(over.id);
 
-		// Now find where it ended up
+		// Section reorder
+		if (active.data.current?.type === "section") {
+			if (activeId === overId)
+				return;
+			const oldIndex = sections.findIndex(s => s.id === activeId);
+			const newIndex = sections.findIndex(s => s.id === overId);
+			if (oldIndex === -1 || newIndex === -1)
+				return;
+			const reordered = arrayMove(sections, oldIndex, newIndex).map((s, i) => ({ ...s, order: i }));
+			setSections(reordered);
+			await sectionService.fetchReorderSections(projectId, reordered.map(s => ({ id: s.id, order: s.order })));
+			return;
+		}
+
+		// Task reorder / move
+		if (!sourceId)
+			return;
+
 		const destinationSectionId = taskMap[overId] !== undefined ? overId : findSectionIdByTaskId(overId);
 		if (!destinationSectionId)
 			return;
 
 		if (sourceId === destinationSectionId) {
-			// Reorder within same section
 			const tasks = taskMap[sourceId];
 			const oldIndex = tasks.findIndex(t => t.id === activeId);
 			const newIndex = tasks.findIndex(t => t.id === overId);
 			if (oldIndex === newIndex)
 				return;
-
 			const reordered = arrayMove(tasks, oldIndex, newIndex).map((t, i) => ({ ...t, order: i }));
 			setTaskMap(prev => ({ ...prev, [sourceId]: reordered }));
-
 			await taskService.fetchReorderTasks(reordered.map(t => ({ id: t.id, order: t.order })));
 		}
 		else {
-			// Move to another section
 			await taskService.fetchMoveTask(activeId, destinationSectionId);
-			// Silent refresh to sync final state
 			loadData(true);
 		}
 	};
@@ -230,7 +252,6 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
 
 	return (
 		<div className="flex flex-col gap-4">
-			{/* Add section button */}
 			<div className="flex justify-end">
 				<Button
 					icon={<PlusOutlined />}
@@ -254,22 +275,31 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
 						onDragOver={onDragOver}
 						onDragEnd={onDragEnd}
 					>
-						<div className="flex gap-4 overflow-x-auto pb-4 group">
-							{sections.map(section => (
-								<KanbanColumn
-									key={section.id}
-									section={section}
-									tasks={taskMap[section.id] ?? []}
-									onAddTask={handleAddTask}
-									onEditTask={handleEditTask}
-									onRenameSection={handleRenameSection}
-									onDeleteSection={handleDeleteSection}
-								/>
-							))}
-						</div>
+						<SortableContext items={sections.map(s => s.id)} strategy={horizontalListSortingStrategy}>
+							<div className="flex gap-4 overflow-x-auto pb-4 group">
+								{sections.map(section => (
+									<KanbanColumn
+										key={section.id}
+										section={section}
+										tasks={taskMap[section.id] ?? []}
+										subtaskCountMap={subtaskCountMap}
+										onAddTask={handleAddTask}
+										onEditTask={handleEditTask}
+										onRenameSection={handleRenameSection}
+										onDeleteSection={handleDeleteSection}
+									/>
+								))}
+							</div>
+						</SortableContext>
 
 						<DragOverlay>
 							{activeDragTask && <KanbanCardOverlay task={activeDragTask} />}
+							{activeDragSection && (
+								<KanbanColumnOverlay
+									section={activeDragSection}
+									taskCount={taskMap[activeDragSection.id]?.length ?? 0}
+								/>
+							)}
 						</DragOverlay>
 					</DndContext>
 				)}

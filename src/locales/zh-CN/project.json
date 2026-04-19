@@ -56,8 +56,32 @@
 		"attachments": "附件"
 	},
 	"tabs": {
+		"panel_title": "计划与进度",
+		"overview": "概览",
 		"tasks": "工作分解结构 (WBS)",
-		"collaboration": "任务协作"
+		"collaboration": "任务协作",
+		"history": "历史记录",
+		"add_section": "添加分区",
+		"create_first_section": "创建第一个分区",
+		"use_template": "使用模板...",
+		"last_updated": "最后更新",
+		"created": "项目创建",
+		"by": "由"
+	},
+	"stats": {
+		"total": "总任务数",
+		"completed": "已完成",
+		"overdue": "已逾期",
+		"completion_rate": "完成率",
+		"by_assignee": "按负责人分布",
+		"tasks": "个任务",
+		"no_assignee": "暂无分配数据"
+	},
+	"team": {
+		"owner_label": "项目负责人",
+		"contributors": "任务参与者",
+		"no_contributors": "该项目尚未分配任何任务",
+		"tasks_assigned": "个任务已分配"
 	},
 	"empty": {
 		"tasks": "项目启动后将自动生成工作流程",
