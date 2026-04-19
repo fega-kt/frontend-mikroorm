@@ -58,7 +58,7 @@ export default function ContainerLayout() {
 		else if (screens.xs || (screens.sm && !screens.md)) {
 			setPreferences("sidebarCollapsed", false);
 		}
-	}, [screens]);
+	}, [screens, setPreferences]);
 
 	const sidebarEnableState = useMemo(() => !isTopNav && sidebarEnable, [isTopNav, sidebarEnable]);
 	const computedSidebarWidth = useMemo(() => {
@@ -96,15 +96,15 @@ export default function ContainerLayout() {
 			height += tabbarHeight;
 		}
 		return height;
-	}, [tabbarEnable, tabbarHeight]);
+	}, [tabbarEnable]);
 
 	useEffect(() => {
 		setLayoutHeaderHeight(isMaximize ? tabbarHeight : headerWrapperHeight);
-	}, [headerWrapperHeight, isMaximize]);
+	}, [headerWrapperHeight, isMaximize, setLayoutHeaderHeight]);
 
 	useEffect(() => {
 		setLayoutFooterHeight(footerHeight);
-	}, []);
+	}, [setLayoutFooterHeight]);
 
 	return (
 		<Watermark content={watermark ? watermarkContent : ""}>
