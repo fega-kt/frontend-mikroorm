@@ -56,8 +56,32 @@
 		"attachments": "Tài liệu đính kèm"
 	},
 	"tabs": {
+		"panel_title": "Kế hoạch & Tiến độ",
+		"overview": "Tổng quan",
 		"tasks": "Cấu trúc công việc (WBS)",
-		"collaboration": "Cộng tác sứ mệnh"
+		"collaboration": "Cộng tác sứ mệnh",
+		"history": "Lịch sử",
+		"add_section": "Thêm section",
+		"create_first_section": "Tạo section đầu tiên",
+		"use_template": "Dùng template...",
+		"last_updated": "Cập nhật lần cuối",
+		"created": "Khởi tạo dự án",
+		"by": "bởi"
+	},
+	"stats": {
+		"total": "Tổng công việc",
+		"completed": "Đã hoàn thành",
+		"overdue": "Quá hạn",
+		"completion_rate": "Tỉ lệ hoàn thành",
+		"by_assignee": "Phân bổ theo người phụ trách",
+		"tasks": "công việc",
+		"no_assignee": "Chưa có dữ liệu phân công"
+	},
+	"team": {
+		"owner_label": "Chủ sở hữu dự án",
+		"contributors": "Người tham gia công việc",
+		"no_contributors": "Chưa có ai được phân công công việc trong dự án này",
+		"tasks_assigned": "công việc được phân công"
 	},
 	"empty": {
 		"tasks": "Quy trình công việc sẽ được tự động tạo khi dự án khởi chạy",

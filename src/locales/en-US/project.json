@@ -56,8 +56,32 @@
 		"attachments": "Attachments"
 	},
 	"tabs": {
+		"panel_title": "Plan & Progress",
+		"overview": "Overview",
 		"tasks": "Task Structure (WBS)",
-		"collaboration": "Mission Collaboration"
+		"collaboration": "Mission Collaboration",
+		"history": "History",
+		"add_section": "Add section",
+		"create_first_section": "Create first section",
+		"use_template": "Use template...",
+		"last_updated": "Last updated",
+		"created": "Project created",
+		"by": "by"
+	},
+	"stats": {
+		"total": "Total Tasks",
+		"completed": "Completed",
+		"overdue": "Overdue",
+		"completion_rate": "Completion Rate",
+		"by_assignee": "Distribution by Assignee",
+		"tasks": "tasks",
+		"no_assignee": "No assignment data yet"
+	},
+	"team": {
+		"owner_label": "Project Owner",
+		"contributors": "Task Contributors",
+		"no_contributors": "No one has been assigned tasks in this project yet",
+		"tasks_assigned": "tasks assigned"
 	},
 	"empty": {
 		"tasks": "Workflow will be automatically generated upon project launch",

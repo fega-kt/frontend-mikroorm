@@ -11,7 +11,8 @@ import {
 	PlusOutlined,
 } from "@ant-design/icons";
 import { ProFormText, ProFormTextArea } from "@ant-design/pro-components";
-import { Avatar, Button, Card, Checkbox, Input, Spin, theme, Typography } from "antd";
+import { Avatar, Button, Card, Checkbox, Spin, theme, Tooltip, Typography } from "antd";
+import dayjs from "dayjs";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 
@@ -29,7 +30,9 @@ interface SubtaskRowProps {
 }
 
 function SubtaskRow({ task, onToggle, onDelete }: SubtaskRowProps) {
+	const { token } = theme.useToken();
 	const isDone = task.status === TaskStatus.DONE;
+	const isOverdue = !isDone && !!task.dueDate && dayjs(task.dueDate).isBefore(dayjs(), "day");
 
 	return (
 		<div
@@ -47,16 +50,27 @@ function SubtaskRow({ task, onToggle, onDelete }: SubtaskRowProps) {
 				>
 					{task.title}
 				</Text>
+				{task.dueDate && (
+					<Text
+						className="text-[11px] block leading-none mt-0.5"
+						style={{ color: isOverdue ? token.colorError : token.colorTextQuaternary }}
+					>
+						{isOverdue ? "⚠ " : ""}
+						{dayjs(task.dueDate).format("DD/MM/YYYY")}
+					</Text>
+				)}
 			</div>
 			{task.assignee && (
-				<Avatar
-					size={18}
-					src={task.assignee.avatar}
-					className="shrink-0 text-[8px] font-bold"
-					style={{ backgroundColor: getAvatarColor(task.assignee.id) }}
-				>
-					{task.assignee.loginName?.[0]?.toUpperCase()}
-				</Avatar>
+				<Tooltip title={task.assignee.fullName || task.assignee.loginName}>
+					<Avatar
+						size={18}
+						src={task.assignee.avatar}
+						className="shrink-0 text-[8px] font-bold"
+						style={{ backgroundColor: getAvatarColor(task.assignee.id) }}
+					>
+						{task.assignee.loginName?.[0]?.toUpperCase()}
+					</Avatar>
+				</Tooltip>
 			)}
 			<Button
 				type="text"
@@ -72,11 +86,12 @@ function SubtaskRow({ task, onToggle, onDelete }: SubtaskRowProps) {
 
 export function TaskDetailMain({ taskId, isEditing }: TaskDetailMainProps) {
 	const { token } = theme.useToken();
+
 	const [subtasks, setSubtasks] = useState<TaskEntity[]>([]);
 	const [subtasksLoading, setSubtasksLoading] = useState(false);
-	const [newSubtaskTitle, setNewSubtaskTitle] = useState("");
-	const [addingSubtask, setAddingSubtask] = useState(false);
 	const [showSubtaskInput, setShowSubtaskInput] = useState(false);
+	const [addingSubtask, setAddingSubtask] = useState(false);
+	const [newTitle, setNewTitle] = useState("");
 
 	const loadSubtasks = useCallback(async () => {
 		if (!taskId)
@@ -111,24 +126,25 @@ export function TaskDetailMain({ taskId, isEditing }: TaskDetailMainProps) {
 	};
 
 	const handleAddSubtask = async () => {
-		const title = newSubtaskTitle.trim();
+		const title = newTitle.trim();
 		if (!title)
 			return;
+
 		setAddingSubtask(true);
 		try {
-			const created = await taskService.fetchCreateTask({
-				title,
-				parentTask: taskId,
-				status: TaskStatus.TODO,
-				priority: "MEDIUM" as any,
-			});
+			const created = await taskService.fetchCreateSubtask(taskId, title);
 			setSubtasks(prev => [...prev, created]);
-			setNewSubtaskTitle("");
+			setNewTitle("");
 			setShowSubtaskInput(false);
 		}
 		finally {
 			setAddingSubtask(false);
 		}
+	};
+
+	const resetAddForm = () => {
+		setNewTitle("");
+		setShowSubtaskInput(false);
 	};
 
 	const doneCount = subtasks.filter(t => t.status === TaskStatus.DONE).length;
@@ -174,7 +190,7 @@ export function TaskDetailMain({ taskId, isEditing }: TaskDetailMainProps) {
 				/>
 			</Card>
 
-			{/* Subtasks — chỉ hiển thị khi đang edit */}
+			{/* Subtasks */}
 			{isEditing && (
 				<Card
 					className="border-none shadow-sm"
@@ -207,7 +223,6 @@ export function TaskDetailMain({ taskId, isEditing }: TaskDetailMainProps) {
 						</Button>
 					</div>
 
-					{/* Progress bar */}
 					{subtasks.length > 0 && (
 						<div className="mb-3 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: token.colorFillSecondary }}>
 							<div
@@ -230,27 +245,35 @@ export function TaskDetailMain({ taskId, isEditing }: TaskDetailMainProps) {
 						</div>
 					</Spin>
 
-					{/* Inline add input */}
+					{/* Inline add form */}
 					{showSubtaskInput && (
-						<div className="flex gap-2 mt-3">
-							<Input
+						<div
+							className="mt-3 p-3 rounded-xl flex items-center gap-2"
+							style={{ background: token.colorFillAlter, border: `1px solid ${token.colorBorderSecondary}` }}
+						>
+							<input
 								autoFocus
-								size="small"
+								className="flex-1 text-[13px] bg-transparent outline-none border-none px-1"
+								style={{ color: token.colorText }}
 								placeholder="Tên sub-task..."
-								value={newSubtaskTitle}
-								onChange={e => setNewSubtaskTitle(e.target.value)}
-								onPressEnter={handleAddSubtask}
-								onKeyDown={e => e.key === "Escape" && setShowSubtaskInput(false)}
-								className="flex-1"
+								value={newTitle}
+								onChange={e => setNewTitle(e.target.value)}
+								onKeyDown={(e) => {
+									if (e.key === "Enter")
+										handleAddSubtask();
+									else if (e.key === "Escape")
+										resetAddForm();
+								}}
 							/>
 							<Button
 								size="small"
 								type="primary"
 								icon={<CheckOutlined />}
 								loading={addingSubtask}
+								disabled={!newTitle.trim()}
 								onClick={handleAddSubtask}
 							/>
-							<Button size="small" onClick={() => setShowSubtaskInput(false)}>Hủy</Button>
+							<Button size="small" onClick={resetAddForm}>Hủy</Button>
 						</div>
 					)}
 

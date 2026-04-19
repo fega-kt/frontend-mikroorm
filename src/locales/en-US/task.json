@@ -1,0 +1,23 @@
+{
+	"fields": {
+		"title": "Title",
+		"status": "Status",
+		"priority": "Priority",
+		"project": "Project",
+		"assignee": "Assignee",
+		"due_date": "Due Date"
+	},
+	"status": {
+		"todo": "To Do",
+		"in_progress": "In Progress",
+		"done": "Done",
+		"cancelled": "Cancelled",
+		"rejected": "Rejected"
+	},
+	"priority": {
+		"low": "Low",
+		"medium": "Medium",
+		"high": "High"
+	},
+	"deleteWarning": "If this task has subtasks, all subtasks will also be deleted."
+}
