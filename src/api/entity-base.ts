@@ -7,7 +7,7 @@ type User = Pick<
 
 export interface EntityBase {
 	id: string
-	created: Date
+	createdAt: Date
 	createdBy: User
 	updatedAt: Date
 	updatedBy: User
