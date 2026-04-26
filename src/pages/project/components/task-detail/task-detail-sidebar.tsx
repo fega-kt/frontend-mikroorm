@@ -39,6 +39,7 @@ function FieldTitle({ icon, text }: { icon: React.ReactNode, text: string }) {
 }
 
 const STATUS_OPTIONS: Array<{ label: string, value: TaskStatus }> = [
+	{ label: "✏️ Nháp", value: "DRAFT" as TaskStatus },
 	{ label: "📋 Chưa làm", value: "TODO" as TaskStatus },
 	{ label: "⚡ Đang làm", value: "IN_PROGRESS" as TaskStatus },
 	{ label: "✅ Hoàn thành", value: "DONE" as TaskStatus },
