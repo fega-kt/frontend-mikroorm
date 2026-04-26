@@ -87,6 +87,29 @@
 		"tasks": "Quy trình công việc sẽ được tự động tạo khi dự án khởi chạy",
 		"team": "Mời các bên liên quan trong giai đoạn hoạt động"
 	},
+	"history": {
+		"title": "Lịch sử thay đổi",
+		"records": "bản ghi",
+		"no_records": "Chưa có lịch sử thay đổi",
+		"system": "Hệ thống",
+		"user": "Người dùng",
+		"before": "Trước",
+		"after": "Sau",
+		"empty_value": "(trống)",
+		"assigned_to": "Giao cho: {{name}}",
+		"assigned_updated": "Đã cập nhật người được giao",
+		"reject_reason": "Lý do: {{reason}}",
+		"action": {
+			"CREATE": "Tạo mới",
+			"UPDATE": "Cập nhật",
+			"DELETE": "Xóa",
+			"RESTORE": "Khôi phục",
+			"STATUS_CHANGE": "Đổi trạng thái",
+			"ASSIGN": "Phân công",
+			"APPROVE": "Phê duyệt",
+			"REJECT": "Từ chối"
+		}
+	},
 	"update_info": "Cập nhật thông tin dự án",
 	"create_new": "Khởi tạo dự án chiến lược mới",
 	"drafted_by": "Soạn thảo bởi",

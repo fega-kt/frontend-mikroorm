@@ -51,6 +51,7 @@ export default function Task() {
 			dataIndex: "status",
 			valueType: "select",
 			valueEnum: {
+				[TaskStatus.DRAFT]: { text: t("task.status.draft", "Nháp"), status: "Default" },
 				[TaskStatus.TODO]: { text: t("task.status.todo"), status: "Default" },
 				[TaskStatus.IN_PROGRESS]: { text: t("task.status.in_progress"), status: "Processing" },
 				[TaskStatus.DONE]: { text: t("task.status.done"), status: "Success" },
@@ -59,6 +60,7 @@ export default function Task() {
 			},
 			render: (_, record) => {
 				const statusMap: Record<TaskStatus, { color: string, key: string }> = {
+					[TaskStatus.DRAFT]: { color: "default", key: "task.status.draft" },
 					[TaskStatus.TODO]: { color: "default", key: "task.status.todo" },
 					[TaskStatus.IN_PROGRESS]: { color: "processing", key: "task.status.in_progress" },
 					[TaskStatus.DONE]: { color: "success", key: "task.status.done" },

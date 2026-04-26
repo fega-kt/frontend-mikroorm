@@ -10,7 +10,7 @@ import {
 } from "@ant-design/icons";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Avatar, Badge, Tag, theme, Typography } from "antd";
+import { Avatar, Tag, theme, Typography } from "antd";
 import dayjs from "dayjs";
 
 const { Text } = Typography;
@@ -115,10 +115,6 @@ export function KanbanCard({ task, subtaskCount = 0, onClick, isDragging }: Kanb
 						</span>
 					)}
 
-					{/* Milestone badge */}
-					{task.isMilestone && (
-						<Badge color="purple" text={<span className="text-[10px]">Milestone</span>} />
-					)}
 				</div>
 
 				<div className="flex items-center gap-1.5">

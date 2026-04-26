@@ -79,10 +79,13 @@ export function useAccess() {
 		permission = permission.map(item => item.toLowerCase());
 
 		if (import.meta.env.DEV) {
-			// 校验权限代码是否合法，不合法的权限代码会打印警告信息
+			const validCodes = new Set([
+				...Object.values(accessControlCodes),
+				...Object.values(PermissionType),
+			]);
 			for (const code of permission) {
-				if (!Object.values(accessControlCodes).includes(code)) {
-					console.warn(`[hasAccessByCodes]: '${code}' is not a valid permission code`);
+				if (!validCodes.has(code)) {
+					console.warn(`[canAccess]: '${code}' is not a valid permission code`);
 				}
 			}
 		}

@@ -11,10 +11,11 @@ import {
 	PlusOutlined,
 } from "@ant-design/icons";
 import { ProFormText, ProFormTextArea } from "@ant-design/pro-components";
-import { Avatar, Button, Card, Checkbox, Spin, theme, Tooltip, Typography } from "antd";
+import { Avatar, Button, Card, Checkbox, Form, Spin, theme, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
+import { TimeLogPanel } from "./time-log-panel";
 
 const { Text } = Typography;
 
@@ -86,6 +87,7 @@ function SubtaskRow({ task, onToggle, onDelete }: SubtaskRowProps) {
 
 export function TaskDetailMain({ taskId, isEditing }: TaskDetailMainProps) {
 	const { token } = theme.useToken();
+	const form = Form.useFormInstance<TaskEntity>();
 
 	const [subtasks, setSubtasks] = useState<TaskEntity[]>([]);
 	const [subtasksLoading, setSubtasksLoading] = useState(false);
@@ -280,6 +282,20 @@ export function TaskDetailMain({ taskId, isEditing }: TaskDetailMainProps) {
 					{!subtasksLoading && subtasks.length === 0 && !showSubtaskInput && (
 						<Text type="secondary" className="text-[12px] italic">Chưa có sub-task nào.</Text>
 					)}
+				</Card>
+			)}
+
+			{/* Time Log */}
+			{isEditing && (
+				<Card
+					className="border-none shadow-sm mt-4"
+					bodyStyle={{ padding: "20px" }}
+					style={{ borderRadius: 12, backgroundColor: token.colorBgContainer }}
+				>
+					<TimeLogPanel
+						taskId={taskId}
+						estimatedHours={form.getFieldValue("estimatedHours")}
+					/>
 				</Card>
 			)}
 		</>

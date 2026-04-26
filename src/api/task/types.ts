@@ -2,9 +2,11 @@ import type { AttachmentEntity } from "../attachment/types";
 import type { EntityBase } from "../entity-base";
 import type { ProjectEntity } from "../project/types";
 import type { SectionEntity } from "../section/types";
+import type { SprintEntity } from "../sprint/types";
 import type { UserEntity } from "../user/types";
 
 export enum TaskStatus {
+	DRAFT = "DRAFT",
 	TODO = "TODO",
 	IN_PROGRESS = "IN_PROGRESS",
 	DONE = "DONE",
@@ -23,6 +25,7 @@ export interface TaskEntity extends EntityBase {
 	description: string
 	project: ProjectEntity
 	section?: SectionEntity
+	sprint?: SprintEntity
 	parentTask?: TaskEntity
 	status: TaskStatus
 	priority: TaskPriority
@@ -35,12 +38,12 @@ export interface TaskEntity extends EntityBase {
 	actualHours?: number
 	labels?: string[]
 	attachments?: AttachmentEntity[]
-	isMilestone?: boolean
 }
 
-export interface TaskPayload extends Omit<Partial<TaskEntity>, "attachments" | "section" | "project" | "assignee" | "parentTask"> {
+export interface TaskPayload extends Omit<Partial<TaskEntity>, "attachments" | "section" | "project" | "assignee" | "parentTask" | "sprint"> {
 	project?: string
 	section?: string
+	sprint?: string
 	assignee?: string
 	parentTask?: string
 	attachments?: string[]

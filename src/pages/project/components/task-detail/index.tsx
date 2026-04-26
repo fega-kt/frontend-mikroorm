@@ -53,10 +53,10 @@ export function TaskDetail({ ref }: TaskDetailProps) {
 					const data = await taskService.fetchTaskDetail(id);
 					form.setFieldsValue({
 						...data,
-						project: data.project?.id as any,
-						section: data.section?.id as any,
+						project: data.project?.id,
+						section: data.section?.id,
 						assignee: data.assignee,
-						parentTask: data.parentTask?.id as any,
+						parentTask: data.parentTask?.id,
 					} as any);
 
 					if (data.project?.id) {

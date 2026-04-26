@@ -83,4 +83,62 @@ export enum PermissionType {
 
 	/** xóa task */
 	DeleteTask = "permission:task:delete",
+
+	/** phân công task */
+	AssignTask = "permission:task:assign",
+
+	/** ===== SECTION ===== */
+
+	CreateSection = "permission:section:create",
+	UpdateSection = "permission:section:update",
+	DeleteSection = "permission:section:delete",
+
+	/** ===== PROJECT MEMBER ===== */
+
+	ViewProjectMember = "permission:project-member:view",
+	AddProjectMember = "permission:project-member:add",
+	UpdateProjectMember = "permission:project-member:update",
+	RemoveProjectMember = "permission:project-member:remove",
+
+	/** ===== SPRINT ===== */
+
+	MenuSprint = "permission:menu:sprint",
+	ViewSprintDetail = "permission:sprint:view",
+	CreateSprint = "permission:sprint:create",
+	UpdateSprint = "permission:sprint:update",
+	DeleteSprint = "permission:sprint:delete",
+
+	/** ===== MILESTONE ===== */
+
+	MenuMilestone = "permission:menu:milestone",
+	ViewMilestoneDetail = "permission:milestone:view",
+	CreateMilestone = "permission:milestone:create",
+	UpdateMilestone = "permission:milestone:update",
+	DeleteMilestone = "permission:milestone:delete",
+
+	/** ===== TIME LOG ===== */
+
+	MenuTimeLog = "permission:menu:timelog",
+	ViewTimeLog = "permission:timelog:view",
+	CreateTimeLog = "permission:timelog:create",
+	ApproveTimeLog = "permission:timelog:approve",
+	DeleteTimeLog = "permission:timelog:delete",
+
+	/** ===== COMMENT ===== */
+
+	CreateComment = "permission:comment:create",
+	UpdateComment = "permission:comment:update",
+	DeleteComment = "permission:comment:delete",
+
+	/** ===== GROUP ===== */
+
+	MenuGroup = "permission:menu:group",
+	ViewGroupDetail = "permission:group:view",
+	CreateGroup = "permission:group:create",
+	UpdateGroup = "permission:group:update",
+	DeleteGroup = "permission:group:delete",
+
+	/** ===== NOTIFICATION ===== */
+
+	MenuNotification = "permission:menu:notification",
 }

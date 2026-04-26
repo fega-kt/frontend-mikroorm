@@ -87,6 +87,29 @@
 		"tasks": "项目启动后将自动生成工作流程",
 		"team": "在活动阶段邀请主要利益相关者"
 	},
+	"history": {
+		"title": "变更历史",
+		"records": "条记录",
+		"no_records": "暂无变更历史",
+		"system": "系统",
+		"user": "用户",
+		"before": "之前",
+		"after": "之后",
+		"empty_value": "(空)",
+		"assigned_to": "分配给: {{name}}",
+		"assigned_updated": "已更新负责人",
+		"reject_reason": "原因: {{reason}}",
+		"action": {
+			"CREATE": "创建",
+			"UPDATE": "更新",
+			"DELETE": "删除",
+			"RESTORE": "恢复",
+			"STATUS_CHANGE": "状态变更",
+			"ASSIGN": "分配",
+			"APPROVE": "审批通过",
+			"REJECT": "拒绝"
+		}
+	},
 	"update_info": "更新项目信息",
 	"create_new": "启动新战略项目",
 	"drafted_by": "起草者",

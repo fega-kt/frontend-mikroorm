@@ -8,6 +8,7 @@
 		"due_date": "Hạn chót"
 	},
 	"status": {
+		"draft": "Nháp",
 		"todo": "Cần làm",
 		"in_progress": "Đang thực hiện",
 		"done": "Hoàn thành",

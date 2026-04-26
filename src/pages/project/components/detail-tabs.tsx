@@ -1,23 +1,28 @@
-import type { ProjectEntity } from "#src/api/project/types";
 import { IconLabel } from "#src/components/icon-label";
 import { SectionCard } from "#src/components/section-card";
 import {
 	BarChartOutlined,
 	CalendarOutlined,
 	ClockCircleOutlined,
-	EditOutlined,
-	PlusCircleOutlined,
+	DollarOutlined,
+	FlagOutlined,
+	NodeIndexOutlined,
 	PlusOutlined,
 	TeamOutlined,
+	ThunderboltOutlined,
 } from "@ant-design/icons";
-import { Button, Form, Space, Tabs, theme, Timeline, Typography } from "antd";
-import dayjs from "dayjs";
+import { Button, Space, Tabs, theme, Typography } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EmptyTasksIcon } from "../constants/icons";
+import { ActivityHistoryTab } from "./activity-history-tab";
+import { BudgetTab } from "./budget-tab";
+import { GanttTab } from "./gantt-tab";
 import { KanbanBoard } from "./kanban";
+import { MilestoneTab } from "./milestone-tab";
 import { ProjectStatsPanel } from "./project-stats";
 import { ProjectTeam } from "./project-team";
+import { SprintTab } from "./sprint-tab";
 
 const { Text } = Typography;
 
@@ -29,7 +34,6 @@ interface DetailTabsProps {
 export function DetailTabs({ isEditing, projectId }: DetailTabsProps) {
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
-	const form = Form.useFormInstance<ProjectEntity>();
 	const [activeTab, setActiveTab] = useState("overview");
 
 	const addSectionBtn = (
@@ -101,53 +105,54 @@ export function DetailTabs({ isEditing, projectId }: DetailTabsProps) {
 					</div>
 				),
 		},
+		...(isEditing && projectId
+			? [
+				{
+					key: "milestone",
+					label: <IconLabel icon={<FlagOutlined />} label="Milestone" />,
+					children: (
+						<div className="py-2 px-2">
+							<MilestoneTab projectId={projectId} />
+						</div>
+					),
+				},
+				{
+					key: "sprint",
+					label: <IconLabel icon={<ThunderboltOutlined />} label="Sprint" />,
+					children: (
+						<div className="py-2 px-2">
+							<SprintTab projectId={projectId} />
+						</div>
+					),
+				},
+				{
+					key: "gantt",
+					label: <IconLabel icon={<NodeIndexOutlined />} label="Gantt" />,
+					children: (
+						<div className="py-2 px-2">
+							<GanttTab projectId={projectId} />
+						</div>
+					),
+				},
+				{
+					key: "budget",
+					label: <IconLabel icon={<DollarOutlined />} label="Ngân sách" />,
+					children: (
+						<div className="py-2 px-2">
+							<BudgetTab projectId={projectId} />
+						</div>
+					),
+				},
+			]
+			: []),
 		...(isEditing
 			? [
 				{
 					key: "history",
 					label: <IconLabel icon={<ClockCircleOutlined />} label={t("project.tabs.history")} />,
 					children: (
-						<div className="py-6 px-4">
-							<Timeline
-								items={[
-									{
-										dot: <EditOutlined style={{ color: token.colorPrimary }} />,
-										children: (
-											<div className="flex flex-col gap-0.5">
-												<Text strong className="text-sm">{t("project.tabs.last_updated")}</Text>
-												<Text type="secondary" className="text-xs">
-													{dayjs(form.getFieldValue("updatedAt")).format("DD/MM/YYYY HH:mm")}
-												</Text>
-												{form.getFieldValue("updatedBy") && (
-													<Text type="secondary" className="text-xs">
-														{t("project.tabs.by")}
-														{" "}
-														{form.getFieldValue("updatedBy")?.workEmail || form.getFieldValue("updatedBy")?.loginName}
-													</Text>
-												)}
-											</div>
-										),
-									},
-									{
-										dot: <PlusCircleOutlined style={{ color: token.colorSuccess }} />,
-										children: (
-											<div className="flex flex-col gap-0.5">
-												<Text strong className="text-sm">{t("project.tabs.created")}</Text>
-												<Text type="secondary" className="text-xs">
-													{dayjs(form.getFieldValue("created")).format("DD/MM/YYYY HH:mm")}
-												</Text>
-												{form.getFieldValue("createdBy") && (
-													<Text type="secondary" className="text-xs">
-														{t("project.tabs.by")}
-														{" "}
-														{form.getFieldValue("createdBy")?.workEmail || form.getFieldValue("createdBy")?.loginName}
-													</Text>
-												)}
-											</div>
-										),
-									},
-								]}
-							/>
+						<div className="py-2 px-4">
+							<ActivityHistoryTab projectId={projectId!} active={activeTab === "history"} />
 						</div>
 					),
 				},

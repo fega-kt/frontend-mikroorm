@@ -8,6 +8,7 @@
 		"due_date": "截止日期"
 	},
 	"status": {
+		"draft": "草稿",
 		"todo": "待处理",
 		"in_progress": "进行中",
 		"done": "已完成",
