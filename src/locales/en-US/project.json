@@ -87,6 +87,29 @@
 		"tasks": "Workflow will be automatically generated upon project launch",
 		"team": "Invite key stakeholders during the active phase"
 	},
+	"history": {
+		"title": "Change History",
+		"records": "records",
+		"no_records": "No change history yet",
+		"system": "System",
+		"user": "User",
+		"before": "Before",
+		"after": "After",
+		"empty_value": "(empty)",
+		"assigned_to": "Assigned to: {{name}}",
+		"assigned_updated": "Assignee updated",
+		"reject_reason": "Reason: {{reason}}",
+		"action": {
+			"CREATE": "Created",
+			"UPDATE": "Updated",
+			"DELETE": "Deleted",
+			"RESTORE": "Restored",
+			"STATUS_CHANGE": "Status Changed",
+			"ASSIGN": "Assigned",
+			"APPROVE": "Approved",
+			"REJECT": "Rejected"
+		}
+	},
 	"update_info": "Update Project Information",
 	"create_new": "Start New Strategic Project",
 	"drafted_by": "Drafted by",

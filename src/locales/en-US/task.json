@@ -8,6 +8,7 @@
 		"due_date": "Due Date"
 	},
 	"status": {
+		"draft": "Draft",
 		"todo": "To Do",
 		"in_progress": "In Progress",
 		"done": "Done",
