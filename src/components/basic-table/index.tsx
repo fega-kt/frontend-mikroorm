@@ -10,6 +10,7 @@ import { isObject, isUndefined } from "#src/utils/is";
 import { LoadingOutlined } from "@ant-design/icons";
 import { ProTable } from "@ant-design/pro-components";
 import { useSize } from "ahooks";
+import { useEffectOnActive } from "keepalive-for-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -39,6 +40,10 @@ export function BasicTable<
 	const { adaptive } = props;
 	const tableWrapperRef = useRef<HTMLDivElement>(null);
 	const size = useSize(tableWrapperRef);
+
+	useEffectOnActive(() => {
+		(props.actionRef as any)?.current?.reload();
+	}, [], true);
 	const {
 		enableFooter,
 		fixedFooter,

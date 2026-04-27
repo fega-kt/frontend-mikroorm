@@ -82,6 +82,7 @@ export default function Group() {
 	return (
 		<BasicContent className="h-full">
 			<BasicTable<GroupEntity>
+				adaptive
 				columns={columns}
 				actionRef={actionRef}
 				request={async (params) => {
