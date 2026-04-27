@@ -81,6 +81,7 @@ export default function User() {
 	return (
 		<BasicContent className="h-full">
 			<BasicTable<UserEntity>
+				adaptive
 				columns={columns}
 				actionRef={actionRef}
 				request={async (params) => {

@@ -145,6 +145,7 @@ export default function Project() {
 	return (
 		<BasicContent className="h-full">
 			<BasicTable<ProjectEntity>
+				adaptive
 				columns={columns}
 				actionRef={actionRef}
 				request={async (params) => {

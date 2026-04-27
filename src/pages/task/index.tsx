@@ -169,6 +169,7 @@ export default function Task() {
 	return (
 		<BasicContent className="h-full">
 			<BasicTable<TaskEntity>
+				adaptive
 				columns={columns}
 				actionRef={actionRef}
 				request={async (params) => {
