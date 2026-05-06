@@ -17,7 +17,9 @@ import {
 	SettingOutlined,
 	SisternodeOutlined,
 	SubnodeOutlined,
+	TagsOutlined,
 	TeamOutlined,
+	ToolOutlined,
 	UserOutlined,
 } from "@ant-design/icons";
 import { EmbeddedIcon, ExternalIcon, OutsidePageIcon, ProfileCardIcon } from "./local-icons";
@@ -54,4 +56,6 @@ export const menuIcons: Record<string, any> = {
 	FieldTimeOutlined,
 	ProjectOutlined,
 	FundProjectionScreenOutlined,
+	ToolOutlined,
+	TagsOutlined,
 };

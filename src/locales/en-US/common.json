@@ -37,7 +37,9 @@
 		"project_task": "Project & Task Management",
 		"personalCenter": "Personal Center",
 		"profile": "My Profile",
-		"settings": "Settings"
+		"settings": "Settings",
+		"setting": "General Settings",
+		"category": "Category Management"
 	},
 	"appLoading": "Loading Resources...",
 	"back": "Back",

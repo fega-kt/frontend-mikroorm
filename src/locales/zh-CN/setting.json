@@ -1,0 +1,10 @@
+{
+	"category": {
+		"code": "分类编码",
+		"name": "分类名称",
+		"department": "所属部门",
+		"icon": "图标",
+		"addCategory": "新增分类",
+		"editCategory": "编辑分类"
+	}
+}
