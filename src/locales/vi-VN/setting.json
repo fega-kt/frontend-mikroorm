@@ -1,0 +1,10 @@
+{
+	"category": {
+		"code": "Mã danh mục",
+		"name": "Tên danh mục",
+		"department": "Phòng ban",
+		"icon": "Icon",
+		"addCategory": "Thêm danh mục",
+		"editCategory": "Sửa danh mục"
+	}
+}

@@ -141,4 +141,12 @@ export enum PermissionType {
 	/** ===== NOTIFICATION ===== */
 
 	MenuNotification = "permission:menu:notification",
+
+	/** ===== CATEGORY ===== */
+
+	MenuCategory = "permission:menu:category",
+	ViewCategoryDetail = "permission:category:view",
+	CreateCategory = "permission:category:create",
+	UpdateCategory = "permission:category:update",
+	DeleteCategory = "permission:category:delete",
 }

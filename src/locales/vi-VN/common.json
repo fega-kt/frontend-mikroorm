@@ -40,7 +40,9 @@
 		"project_task": "Quản lý dự án & công việc",
 		"personalCenter": "Trung tâm cá nhân",
 		"profile": "Hồ sơ của tôi",
-		"settings": "Cài đặt"
+		"settings": "Cài đặt",
+		"setting": "Cài đặt chung",
+		"category": "Danh mục"
 	},
 	"appLoading": "Đang tải tài nguyên...",
 	"back": "Quay lại",
