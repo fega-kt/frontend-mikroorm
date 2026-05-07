@@ -68,7 +68,7 @@ export default function About() {
 					rel="noreferrer noopener"
 					copyable
 					target="_blank"
-					href="https://github.com/condorheroblog/react-antd-admin"
+					href="https://github.com/fega-kt/frontend-mikroorm"
 				>
 					{import.meta.env.VITE_GLOB_APP_TITLE}
 				</Link>
@@ -81,7 +81,7 @@ export default function About() {
 				<Link
 					rel="noreferrer noopener"
 					target="_blank"
-					href="https://github.com/condorheroblog/"
+					href="https://github.com/fega-kt/"
 				>
 					{__APP_INFO__.pkg.author}
 				</Link>
