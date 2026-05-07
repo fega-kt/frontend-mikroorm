@@ -5,6 +5,8 @@
 		"department": "Phòng ban",
 		"icon": "Icon",
 		"addCategory": "Thêm danh mục",
-		"editCategory": "Sửa danh mục"
+		"editCategory": "Sửa danh mục",
+		"codeMinLength": "Mã phải có ít nhất 3 ký tự",
+		"codePattern": "Mã chỉ được chứa chữ cái và chữ số"
 	}
 }

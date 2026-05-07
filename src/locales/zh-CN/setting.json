@@ -5,6 +5,8 @@
 		"department": "所属部门",
 		"icon": "图标",
 		"addCategory": "新增分类",
-		"editCategory": "编辑分类"
+		"editCategory": "编辑分类",
+		"codeMinLength": "编码至少需要3个字符",
+		"codePattern": "编码只能包含字母和数字"
 	}
 }
