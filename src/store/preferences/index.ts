@@ -64,7 +64,7 @@ export const DEFAULT_PREFERENCES = {
 	enableFooter: true,
 	fixedFooter: true,
 	companyName: "zhizhu",
-	companyWebsite: "http://github.com/condorheroblog/",
+	companyWebsite: "https://github.com/fega-kt/",
 	copyrightDate: "2023",
 	ICPNumber: "",
 	ICPLink: "",
