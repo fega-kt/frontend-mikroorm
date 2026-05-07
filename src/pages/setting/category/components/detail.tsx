@@ -40,7 +40,7 @@ export function Detail({ ref }: DetailProps) {
 					const data = await categoryService.fetchCategoryItem(id);
 					form.setFieldsValue({
 						...data,
-						department: data.department?.id as any,
+						department: data.department,
 					});
 				}
 				catch {

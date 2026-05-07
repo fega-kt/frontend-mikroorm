@@ -68,6 +68,9 @@ export function DepartmentPicker(props: DepartmentPickerProps) {
 		multiple,
 		placeholder,
 		ref,
+		value,
+		onChange,
+		labelInValue: _labelInValue,
 		...restProps
 	} = props;
 
@@ -112,12 +115,35 @@ export function DepartmentPicker(props: DepartmentPickerProps) {
 		[dataSource, apiDepartments],
 	);
 
+	const normalizedValue = useMemo(() => {
+		if (!value)
+			return value;
+		const toInternal = (v: unknown) => {
+			if (v && typeof v === "object" && "id" in v)
+				return { value: (v as DepartmentEntity).id, label: (v as DepartmentEntity).name };
+			return v;
+		};
+		return Array.isArray(value) ? value.map(toInternal) : toInternal(value);
+	}, [value]);
+
+	const handleChange: TreeSelectProps["onChange"] = (selected, ...args) => {
+		if (!onChange)
+			return;
+		const toEntity = (s: { value: string, label: React.ReactNode }) => ({ id: s.value, name: String(s.label) });
+		const result = !selected
+			? selected
+			: Array.isArray(selected)
+				? selected.map(toEntity)
+				: toEntity(selected as { value: string, label: React.ReactNode });
+		onChange(result, ...args);
+	};
 	return (
 		<TreeSelect
 			ref={ref}
 			showSearch
 			allowClear
 			treeDefaultExpandAll
+			labelInValue
 			placeholder={placeholder || t("common.keywordSearch")}
 			loading={loading}
 			treeData={treeData}
@@ -129,6 +155,8 @@ export function DepartmentPicker(props: DepartmentPickerProps) {
 			notFoundContent={loading ? <div className="flex justify-center p-4"><Spin size="small" /></div> : undefined}
 			className="w-full"
 			dropdownStyle={{ maxHeight: 360, overflow: "auto" }}
+			value={normalizedValue as TreeSelectProps["value"]}
+			onChange={handleChange}
 			{...restProps}
 		/>
 	);
