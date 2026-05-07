@@ -7,7 +7,7 @@ export * from "./types";
 
 export class UserService extends CrudServiceBase<UserEntity> {
 	constructor() {
-		super({ endpoint: "user" });
+		super({ endpoint: "user", populate: ["department"] });
 	}
 
 	/** Đăng nhập */
