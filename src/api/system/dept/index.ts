@@ -25,6 +25,14 @@ export class DepartmentService extends CrudServiceBase<DepartmentEntity> {
 		});
 	}
 
+	/** Lấy toàn bộ cây phòng ban (có populate parent để build tree) */
+	async fetchDeptTree(keyword?: string) {
+		return this.get<DepartmentEntity[]>("", {
+			searchParams: (keyword ? { keyword } : undefined),
+			ignoreLoading: true,
+		});
+	}
+
 	/** Thêm bộ phận */
 	async fetchAddDeptItem(data: DepartmentEntity) {
 		return this.post<void>("", { json: data, ignoreLoading: true });
