@@ -107,15 +107,23 @@ export function Detail({ ref }: DetailProps) {
 					name="code"
 					label={t("setting.category.code")}
 					placeholder={t("common.pleaseInput")}
-					rules={[{ required: true }]}
-					disabled={!!editingId}
+					normalize={v => v?.toUpperCase()}
+					rules={[
+						{ required: true },
+						{ min: 3, message: t("setting.category.codeMinLength") },
+						{ max: 50 },
+						{ pattern: /^[A-Z0-9]+$/, message: t("setting.category.codePattern") },
+					]}
 				/>
 
 				<ProFormText
 					name="name"
 					label={t("setting.category.name")}
 					placeholder={t("common.pleaseInput")}
-					rules={[{ required: true }]}
+					rules={[
+						{ required: true },
+						{ max: 255 },
+					]}
 				/>
 
 				<ProFormText

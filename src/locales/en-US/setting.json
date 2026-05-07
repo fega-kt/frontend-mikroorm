@@ -5,6 +5,8 @@
 		"department": "Department",
 		"icon": "Icon",
 		"addCategory": "Add Category",
-		"editCategory": "Edit Category"
+		"editCategory": "Edit Category",
+		"codeMinLength": "Code must be at least 3 characters",
+		"codePattern": "Code must contain only letters and digits"
 	}
 }
