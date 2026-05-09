@@ -14,7 +14,9 @@
 			"group": "Quản lý nhóm người dùng",
 			"department": "Quản lý phòng ban",
 			"project": "Quản lý dự án",
-			"task": "Quản lý công việc"
+			"task": "Quản lý công việc",
+			"category": "Quản lý danh mục",
+			"request_type": "Quản lý loại yêu cầu"
 		},
 		"permission": {
 			"user": "Người dùng",
@@ -27,7 +29,9 @@
 			"department": "Phòng ban",
 			"project": "Dự án",
 			"task": "Công việc",
-			"group": "Nhóm"
+			"group": "Nhóm",
+			"category": "Danh mục",
+			"request-type": "Loại yêu cầu"
 		}
 	},
 

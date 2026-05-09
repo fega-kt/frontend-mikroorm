@@ -42,7 +42,8 @@
 		"profile": "Hồ sơ của tôi",
 		"settings": "Cài đặt",
 		"setting": "Cài đặt chung",
-		"category": "Danh mục"
+		"category": "Nhóm danh mục",
+		"requestType": "Loại yêu cầu"
 	},
 	"appLoading": "Đang tải tài nguyên...",
 	"back": "Quay lại",
