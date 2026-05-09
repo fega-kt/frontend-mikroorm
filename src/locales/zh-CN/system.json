@@ -4,7 +4,35 @@
 		"id": "角色标识",
 		"addRole": "新增角色",
 		"editRole": "编辑角色",
-		"assignMenu": "分配菜单"
+		"description": "描述",
+		"rights": "权限",
+		"assignMenu": "分配菜单",
+		"usersAndGroups": "用户和用户组",
+		"group": {
+			"user": "用户管理",
+			"role": "角色管理",
+			"group": "用户组管理",
+			"department": "部门管理",
+			"project": "项目管理",
+			"task": "任务管理",
+			"category": "分类管理",
+			"request_type": "请求类型管理"
+		},
+		"permission": {
+			"user": "用户",
+			"view": "查看详情",
+			"create": "新增",
+			"update": "更新",
+			"delete": "删除",
+			"assign": "分配",
+			"role": "角色",
+			"department": "部门",
+			"project": "项目",
+			"task": "任务",
+			"group": "用户组",
+			"category": "分类",
+			"request-type": "请求类型"
+		}
 	},
 	"user": {
 		"name": "用户名称",

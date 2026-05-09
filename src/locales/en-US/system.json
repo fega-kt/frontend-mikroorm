@@ -13,7 +13,9 @@
 			"group": "User Group Management",
 			"department": "Department Management",
 			"project": "Project Management",
-			"task": "Task Management"
+			"task": "Task Management",
+			"category": "Category Management",
+			"request_type": "Request Type Management"
 		},
 		"permission": {
 			"user": "User",
@@ -26,7 +28,9 @@
 			"department": "Department",
 			"project": "Project",
 			"task": "Task",
-			"group": "Group"
+			"group": "Group",
+			"category": "Category",
+			"request-type": "Request Type"
 		}
 	},
 	"userGroup": {

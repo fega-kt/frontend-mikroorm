@@ -39,7 +39,8 @@
 		"profile": "My Profile",
 		"settings": "Settings",
 		"setting": "General Settings",
-		"category": "Category Management"
+		"category": "Category Management",
+		"requestType": "Request Type Management"
 	},
 	"appLoading": "Loading Resources...",
 	"back": "Back",

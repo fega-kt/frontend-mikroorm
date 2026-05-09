@@ -5,6 +5,7 @@ import { setting } from "#src/router/extra-info";
 import { lazy } from "react";
 
 const Category = lazy(() => import("#src/pages/setting/category"));
+const RequestType = lazy(() => import("#src/pages/setting/request-type"));
 
 const routes: AppRouteRecordRaw[] = [
 	{
@@ -22,6 +23,19 @@ const routes: AppRouteRecordRaw[] = [
 				handle: {
 					icon: "TagsOutlined",
 					title: "common.menu.category",
+					permissions: [
+						"permission:button:add",
+						"permission:button:update",
+						"permission:button:delete",
+					],
+				},
+			},
+			{
+				path: "/setting/request-type",
+				Component: RequestType,
+				handle: {
+					icon: "FileTextOutlined",
+					title: "common.menu.requestType",
 					permissions: [
 						"permission:button:add",
 						"permission:button:update",

@@ -8,5 +8,22 @@
 		"editCategory": "Sửa danh mục",
 		"codeMinLength": "Mã phải có ít nhất 3 ký tự",
 		"codePattern": "Mã chỉ được chứa chữ cái và chữ số"
+	},
+	"requestType": {
+		"code": "Mã loại yêu cầu",
+		"name": "Tên loại yêu cầu",
+		"category": "Danh mục",
+		"prefix": "Tiền tố",
+		"description": "Mô tả",
+		"status": "Trạng thái",
+		"addRequestType": "Thêm loại yêu cầu",
+		"editRequestType": "Sửa loại yêu cầu",
+		"codePattern": "Mã chỉ được chứa chữ cái, chữ số và dấu gạch dưới",
+		"prefixPattern": "Tiền tố chỉ được chứa chữ cái và chữ số",
+		"statusOptions": {
+			"draft": "Nháp",
+			"published": "Đã xuất bản",
+			"cancelled": "Đã hủy"
+		}
 	}
 }

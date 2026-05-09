@@ -8,5 +8,22 @@
 		"editCategory": "Edit Category",
 		"codeMinLength": "Code must be at least 3 characters",
 		"codePattern": "Code must contain only letters and digits"
+	},
+	"requestType": {
+		"code": "Request Type Code",
+		"name": "Request Type Name",
+		"category": "Category",
+		"prefix": "Prefix",
+		"description": "Description",
+		"status": "Status",
+		"addRequestType": "Add Request Type",
+		"editRequestType": "Edit Request Type",
+		"codePattern": "Code must contain only letters, digits and underscores",
+		"prefixPattern": "Prefix must contain only letters and digits",
+		"statusOptions": {
+			"draft": "Draft",
+			"published": "Published",
+			"cancelled": "Cancelled"
+		}
 	}
 }

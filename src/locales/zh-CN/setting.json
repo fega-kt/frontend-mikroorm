@@ -8,5 +8,22 @@
 		"editCategory": "编辑分类",
 		"codeMinLength": "编码至少需要3个字符",
 		"codePattern": "编码只能包含字母和数字"
+	},
+	"requestType": {
+		"code": "请求类型编码",
+		"name": "请求类型名称",
+		"category": "所属分类",
+		"prefix": "前缀",
+		"description": "描述",
+		"status": "状态",
+		"addRequestType": "新增请求类型",
+		"editRequestType": "编辑请求类型",
+		"codePattern": "编码只能包含字母、数字和下划线",
+		"prefixPattern": "前缀只能包含字母和数字",
+		"statusOptions": {
+			"draft": "草稿",
+			"published": "已发布",
+			"cancelled": "已取消"
+		}
 	}
 }
