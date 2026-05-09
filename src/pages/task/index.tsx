@@ -120,7 +120,7 @@ export default function Task() {
 			valueType: "select",
 			fieldProps: { placeholder: t("task.fields.assignee"), allowClear: true, showSearch: true },
 			request: async () => {
-				const res = await userService.fetchUserList({ pageSize: 200, isActive: true });
+				const res = await userService.fetchUserList({ limit: 200, isActive: true });
 				return (res.data ?? []).map(u => ({ label: u.fullName || u.loginName, value: u.id }));
 			},
 		},
