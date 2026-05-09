@@ -33,7 +33,7 @@ export default function Resource() {
 			try {
 				const [userRes, taskRes] = await Promise.all([
 					userService.fetchUserList({ limit: 200, isActive: true }),
-					taskService.fetchTaskList({ pageSize: 500, ...(selectedProject ? { projectId: selectedProject } : {}) }),
+					taskService.fetchTaskList({ limit: 500, ...(selectedProject ? { projectId: selectedProject } : {}) }),
 				]);
 				setUsers(userRes.data ?? []);
 				setTasks(taskRes.data ?? []);
