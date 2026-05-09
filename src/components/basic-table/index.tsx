@@ -37,7 +37,17 @@ export function BasicTable<
 ) {
 	const classes = useStyles();
 	const { t } = useTranslation();
-	const { adaptive } = props;
+	const { adaptive, request: originalRequest } = props;
+
+	const request = useMemo<typeof originalRequest>(() => {
+		if (!originalRequest)
+			return undefined;
+		return (params, sort, filter) => {
+			const { current, pageSize, ...rest } = params;
+			return originalRequest({ ...rest, page: current, limit: pageSize } as typeof params, sort, filter);
+		};
+	}, [originalRequest]);
+
 	const tableWrapperRef = useRef<HTMLDivElement>(null);
 	const size = useSize(tableWrapperRef);
 
@@ -172,6 +182,7 @@ export function BasicTable<
 				rowKey="id"
 				dateFormatter="string"
 				{...props}
+				request={request}
 				options={{
 					fullScreen: true,
 					...props.options,
