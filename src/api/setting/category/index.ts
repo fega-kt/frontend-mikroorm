@@ -10,7 +10,7 @@ export class CategoryService extends CrudServiceBase<CategoryEntity> {
 
 	async fetchCategoryList(params?: CategorySearchParams) {
 		return this.get<{ data: CategoryEntity[], total: number }>("", {
-			searchParams: params as any,
+			searchParams: params,
 			ignoreLoading: true,
 		});
 	}

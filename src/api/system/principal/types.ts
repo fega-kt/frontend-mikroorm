@@ -1,4 +1,5 @@
 import type { EntityBase } from "../../entity-base";
+import type { SearchParamsBase } from "../../service-base";
 import type { UserEntity } from "../../user/types";
 import type { GroupEntity } from "../group/types";
 
@@ -15,9 +16,9 @@ export interface PrincipalEntity extends EntityBase {
 	description?: string
 }
 
-export interface PrincipalSearchParams {
-	current?: number
-	pageSize?: number
+export interface PrincipalSearchParams extends SearchParamsBase {
+	page?: number
+	limit?: number
 	name?: string
 	keyword?: string
 }

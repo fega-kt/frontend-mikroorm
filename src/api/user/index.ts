@@ -28,7 +28,7 @@ export class UserService extends CrudServiceBase<UserEntity> {
 	/** Lấy danh sách user có phân trang */
 	async fetchUserList(params?: UserSearchParams) {
 		return this.get<{ data: UserEntity[], total: number }>("", {
-			searchParams: params as any,
+			searchParams: params,
 			ignoreLoading: true,
 		});
 	}

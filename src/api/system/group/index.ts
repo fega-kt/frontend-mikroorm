@@ -13,7 +13,7 @@ export class GroupService extends CrudServiceBase<GroupEntity> {
 
 	async fetchGroupList(params?: GroupSearchParams) {
 		return this.get<{ data: GroupEntity[], total: number }>("", {
-			searchParams: params as any,
+			searchParams: params,
 			ignoreLoading: true,
 		});
 	}

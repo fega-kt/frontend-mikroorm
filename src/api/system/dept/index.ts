@@ -10,7 +10,7 @@ export class DepartmentService extends CrudServiceBase<DepartmentEntity> {
 
 	/** Lấy danh sách bộ phận */
 	async fetchDeptList(searchParams?: DepartmentSearchParams) {
-		return this.get<DepartmentEntity[]>("", { searchParams: searchParams as any, ignoreLoading: true });
+		return this.get<DepartmentEntity[]>("", { searchParams, ignoreLoading: true });
 	}
 
 	/**
