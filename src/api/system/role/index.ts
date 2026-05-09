@@ -12,7 +12,7 @@ export class RoleService extends CrudServiceBase<RoleEntity> {
 	/** Lấy danh sách role có phân trang */
 	async fetchRoleList(params?: RoleSearchParams) {
 		return this.get<{ data: RoleEntity[], total: number }>("", {
-			searchParams: params as any,
+			searchParams: params,
 			ignoreLoading: true,
 		});
 	}

@@ -1,5 +1,6 @@
 import type { AppRouteRecordRaw } from "#src/router/types";
 import type { EntityBase } from "../entity-base";
+import type { SearchParamsBase } from "../service-base";
 import type { DepartmentEntity } from "../system/dept/types";
 
 export interface AuthType {
@@ -12,9 +13,9 @@ export interface LoginInfo {
 	password: string
 }
 
-export interface UserSearchParams {
-	current?: number
-	pageSize?: number
+export interface UserSearchParams extends SearchParamsBase {
+	page?: number
+	limit?: number
 	fullName?: string
 	loginName?: string
 	workEmail?: string

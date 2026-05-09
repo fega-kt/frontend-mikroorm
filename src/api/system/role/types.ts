@@ -1,4 +1,5 @@
 import type { EntityBase } from "../../entity-base";
+import type { SearchParamsBase } from "../../service-base";
 
 export enum PermissionType {
 	/** ===== USER ===== */
@@ -53,9 +54,9 @@ export enum PermissionType {
 	DeleteGroup = "permission:group:delete",
 }
 
-export interface RoleSearchParams {
-	current?: number
-	pageSize?: number
+export interface RoleSearchParams extends SearchParamsBase {
+	page?: number
+	limit?: number
 	name?: string
 	keyword?: string
 }
