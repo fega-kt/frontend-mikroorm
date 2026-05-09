@@ -32,7 +32,7 @@ export default function Resource() {
 			setLoading(true);
 			try {
 				const [userRes, taskRes] = await Promise.all([
-					userService.fetchUserList({ pageSize: 200, isActive: true }),
+					userService.fetchUserList({ limit: 200, isActive: true }),
 					taskService.fetchTaskList({ pageSize: 500, ...(selectedProject ? { projectId: selectedProject } : {}) }),
 				]);
 				setUsers(userRes.data ?? []);
