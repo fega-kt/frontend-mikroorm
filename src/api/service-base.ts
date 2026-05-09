@@ -1,6 +1,8 @@
 import type { Options } from "ky";
 import { request } from "#src/utils/request";
 
+export type SearchParamsBase = Record<string, string | number | boolean | undefined>;
+
 export interface ServiceOptions {
 	endpoint: string
 	populate?: string[]

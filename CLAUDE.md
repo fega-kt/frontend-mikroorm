@@ -133,4 +133,4 @@ Enforced by commitlint (`@commitlint/config-conventional`):
 feat | fix | perf | style | docs | test | refactor | build | ci | chore | revert | wip | workflow | types | release
 ```
 
-Commit messages should contain only the subject line and optional body. No trailer lines.
+Commit messages should contain only the subject line and optional body. No trailer lines of any kind.

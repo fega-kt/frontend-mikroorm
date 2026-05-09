@@ -10,7 +10,7 @@ export class PrincipalService extends CrudServiceBase<PrincipalEntity> {
 
 	async fetchPrincipalList(params?: PrincipalSearchParams) {
 		return this.get<{ data: PrincipalEntity[], total: number }>("", {
-			searchParams: params as any,
+			searchParams: params,
 			ignoreLoading: true,
 		});
 	}

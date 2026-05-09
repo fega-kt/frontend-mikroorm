@@ -1,9 +1,10 @@
 import type { EntityBase } from "#src/api/entity-base.js";
+import type { SearchParamsBase } from "#src/api/service-base.js";
 import type { UserEntity } from "../../user";
 
-export interface DepartmentSearchParams {
-	current?: number
-	pageSize?: number
+export interface DepartmentSearchParams extends SearchParamsBase {
+	page?: number
+	limit?: number
 	name?: string
 	code?: string
 	status?: 0 | 1
