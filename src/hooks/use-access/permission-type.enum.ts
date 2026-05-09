@@ -149,4 +149,21 @@ export enum PermissionType {
 	CreateCategory = "permission:category:create",
 	UpdateCategory = "permission:category:update",
 	DeleteCategory = "permission:category:delete",
+
+	/** ===== REQUEST TYPE ===== */
+
+	/** vào menu request type */
+	MenuRequestType = "permission:menu:request-type",
+
+	/** xem chi tiết request type */
+	ViewRequestTypeDetail = "permission:request-type:view",
+
+	/** tạo request type */
+	CreateRequestType = "permission:request-type:create",
+
+	/** cập nhật request type */
+	UpdateRequestType = "permission:request-type:update",
+
+	/** xóa request type */
+	DeleteRequestType = "permission:request-type:delete",
 }

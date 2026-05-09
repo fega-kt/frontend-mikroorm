@@ -52,6 +52,22 @@ export enum PermissionType {
 	/** cập nhật group */
 	UpdateGroup = "permission:group:update",
 	DeleteGroup = "permission:group:delete",
+
+	/** ===== CATEGORY ===== */
+
+	MenuCategory = "permission:menu:category",
+	ViewCategoryDetail = "permission:category:view",
+	CreateCategory = "permission:category:create",
+	UpdateCategory = "permission:category:update",
+	DeleteCategory = "permission:category:delete",
+
+	/** ===== REQUEST TYPE ===== */
+
+	MenuRequestType = "permission:menu:request-type",
+	ViewRequestTypeDetail = "permission:request-type:view",
+	CreateRequestType = "permission:request-type:create",
+	UpdateRequestType = "permission:request-type:update",
+	DeleteRequestType = "permission:request-type:delete",
 }
 
 export interface RoleSearchParams extends SearchParamsBase {

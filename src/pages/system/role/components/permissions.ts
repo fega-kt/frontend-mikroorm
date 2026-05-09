@@ -45,4 +45,18 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.UpdateGroup,
 		PermissionType.DeleteGroup,
 	],
+	CATEGORY: [
+		PermissionType.MenuCategory,
+		PermissionType.ViewCategoryDetail,
+		PermissionType.CreateCategory,
+		PermissionType.UpdateCategory,
+		PermissionType.DeleteCategory,
+	],
+	REQUEST_TYPE: [
+		PermissionType.MenuRequestType,
+		PermissionType.ViewRequestTypeDetail,
+		PermissionType.CreateRequestType,
+		PermissionType.UpdateRequestType,
+		PermissionType.DeleteRequestType,
+	],
 };
