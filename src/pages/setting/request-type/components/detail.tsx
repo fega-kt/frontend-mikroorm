@@ -3,7 +3,7 @@ import type { FullscreenModalRef } from "#src/components/fullscreen-modal";
 import type { Tab } from "./tab-bar";
 import { requestTypeService, RequestTypeStatus } from "#src/api/setting/request-type";
 import { FullscreenModal } from "#src/components/fullscreen-modal";
-import { Button, Form, Tag } from "antd";
+import { Button, Form, Spin, Tag } from "antd";
 import * as React from "react";
 import { useImperativeHandle, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -53,10 +53,7 @@ export function Detail({ ref }: DetailProps) {
 				setLoading(true);
 				try {
 					const data = await requestTypeService.fetchRequestTypeItem(id);
-					form.setFieldsValue({
-						...data,
-						category: data.category?.id as any,
-					});
+					form.setFieldsValue(data);
 				}
 				catch {
 					window.$message?.error(t("common.fetchError"));
@@ -118,14 +115,12 @@ export function Detail({ ref }: DetailProps) {
 	);
 
 	const tabs: Tab[] = [
-		{ key: "general", label: t("setting.requestType.tabs.general"), children: <GeneralTab form={form} loading={loading} onFinish={onFinish} /> },
+		{ key: "general", label: t("setting.requestType.tabs.general"), children: <GeneralTab form={form} onFinish={onFinish} /> },
 		{ key: "formDoc", label: t("setting.requestType.tabs.formDoc"), children: <FormDocTab /> },
 		{ key: "permission", label: t("setting.requestType.tabs.permission"), children: <PermissionTab /> },
 		{ key: "workflow", label: t("setting.requestType.tabs.workflow"), children: <WorkflowTab /> },
 		{ key: "integration", label: t("setting.requestType.tabs.integration"), children: <IntegrationTab /> },
 	];
-
-	const activeContent = tabs.find(tab => tab.key === activeTab)?.children;
 
 	return (
 		<FullscreenModal
@@ -141,8 +136,17 @@ export function Detail({ ref }: DetailProps) {
 			)}
 		>
 			<TabBar tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
-			<div className="flex-1 overflow-y-auto p-6">
-				{activeContent}
+			<div className="flex-1 overflow-y-auto p-6 relative">
+				{loading && (
+					<div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60">
+						<Spin size="large" />
+					</div>
+				)}
+				{tabs.map(tab => (
+					<div key={tab.key} className={tab.key === activeTab ? undefined : "hidden"}>
+						{tab.children}
+					</div>
+				))}
 			</div>
 		</FullscreenModal>
 	);
