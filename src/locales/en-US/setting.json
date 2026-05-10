@@ -16,8 +16,17 @@
 		"prefix": "Prefix",
 		"description": "Description",
 		"status": "Status",
+		"detailTitle": "Request Type Detail",
 		"addRequestType": "Add Request Type",
 		"editRequestType": "Edit Request Type",
+		"basicInfo": "Basic Information",
+		"tabs": {
+			"general": "General",
+			"formDoc": "Forms / Documents",
+			"permission": "Permissions / Sharing",
+			"workflow": "Workflow",
+			"integration": "Integration"
+		},
 		"codePattern": "Code must contain only letters, digits and underscores",
 		"prefixPattern": "Prefix must contain only letters and digits",
 		"statusOptions": {

@@ -1,11 +1,19 @@
 import type { RequestTypeEntity } from "#src/api/setting/request-type";
-import { categoryService } from "#src/api/setting/category";
+import type { FullscreenModalRef } from "#src/components/fullscreen-modal";
+import type { Tab } from "./tab-bar";
 import { requestTypeService, RequestTypeStatus } from "#src/api/setting/request-type";
-import { ModalForm, ProFormSelect, ProFormText, ProFormTextArea } from "@ant-design/pro-components";
-import { Form, Spin } from "antd";
+import { FullscreenModal } from "#src/components/fullscreen-modal";
+import { Button, Form, Tag } from "antd";
 import * as React from "react";
-import { useImperativeHandle, useMemo, useState } from "react";
+import { useImperativeHandle, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { FormDocTab } from "./form-doc-tab";
+import { GeneralTab } from "./general-tab";
+import { Header } from "./header";
+import { IntegrationTab } from "./integration-tab";
+import { PermissionTab } from "./permission-tab";
+import { TabBar } from "./tab-bar";
+import { WorkflowTab } from "./workflow-tab";
 
 export interface DetailRef {
 	show: (id?: string) => Promise<{ isChange: boolean } | undefined>
@@ -17,23 +25,30 @@ interface DetailProps {
 
 let guard: (res?: { isChange: boolean }) => void;
 
+const statusColorMap: Record<RequestTypeStatus, string> = {
+	[RequestTypeStatus.Draft]: "default",
+	[RequestTypeStatus.Published]: "success",
+	[RequestTypeStatus.Cancelled]: "error",
+};
+
 export function Detail({ ref }: DetailProps) {
 	const { t } = useTranslation();
 	const [form] = Form.useForm<RequestTypeEntity>();
-	const [open, setOpen] = useState(false);
+	const modalRef = useRef<FullscreenModalRef>(null);
 	const [loading, setLoading] = useState(false);
+	const [submitting, setSubmitting] = useState(false);
 	const [editingId, setEditingId] = useState<string | null>(null);
+	const [activeTab, setActiveTab] = useState("general");
 
-	const title = useMemo(
-		() => (editingId ? t("setting.requestType.editRequestType") : t("setting.requestType.addRequestType")),
-		[editingId, t],
-	);
+	const watchedName = Form.useWatch("name", form);
+	const watchedStatus = Form.useWatch("status", form);
 
 	useImperativeHandle(ref, () => ({
 		show: async (id?: string) => {
 			form.resetFields();
 			setEditingId(id ?? null);
-			setOpen(true);
+			setActiveTab("general");
+			modalRef.current?.open();
 			if (id) {
 				setLoading(true);
 				try {
@@ -57,106 +72,78 @@ export function Detail({ ref }: DetailProps) {
 	}));
 
 	const onFinish = async (values: RequestTypeEntity) => {
-		if (editingId) {
-			await requestTypeService.fetchUpdateRequestType(editingId, values);
-			window.$message?.success(t("common.updateSuccess"));
+		setSubmitting(true);
+		try {
+			if (editingId) {
+				await requestTypeService.fetchUpdateRequestType(editingId, values);
+				window.$message?.success(t("common.updateSuccess"));
+			}
+			else {
+				await requestTypeService.fetchAddRequestType(values);
+				window.$message?.success(t("common.addSuccess"));
+			}
+			guard?.({ isChange: true });
+			modalRef.current?.close();
 		}
-		else {
-			await requestTypeService.fetchAddRequestType(values);
-			window.$message?.success(t("common.addSuccess"));
+		catch {
+			// error handled by global interceptor
 		}
-		guard?.({ isChange: true });
-		return true;
+		finally {
+			setSubmitting(false);
+		}
 	};
 
 	const onClose = () => {
-		setOpen(false);
+		modalRef.current?.close();
 		setEditingId(null);
 		form.resetFields();
 		guard?.();
 	};
 
+	const statusBadge = watchedStatus
+		? (
+			<Tag color={statusColorMap[watchedStatus as RequestTypeStatus]}>
+				{t(`setting.requestType.statusOptions.${watchedStatus}`)}
+			</Tag>
+		)
+		: null;
+
+	const extra = (
+		<>
+			<Button onClick={onClose}>{t("common.cancel")}</Button>
+			<Button type="primary" loading={submitting} onClick={() => form.submit()}>
+				{t("common.save")}
+			</Button>
+		</>
+	);
+
+	const tabs: Tab[] = [
+		{ key: "general", label: t("setting.requestType.tabs.general"), children: <GeneralTab form={form} loading={loading} onFinish={onFinish} /> },
+		{ key: "formDoc", label: t("setting.requestType.tabs.formDoc"), children: <FormDocTab /> },
+		{ key: "permission", label: t("setting.requestType.tabs.permission"), children: <PermissionTab /> },
+		{ key: "workflow", label: t("setting.requestType.tabs.workflow"), children: <WorkflowTab /> },
+		{ key: "integration", label: t("setting.requestType.tabs.integration"), children: <IntegrationTab /> },
+	];
+
+	const activeContent = tabs.find(tab => tab.key === activeTab)?.children;
+
 	return (
-		<ModalForm<RequestTypeEntity>
-			title={title}
-			open={open}
-			onOpenChange={(visible) => {
-				if (!visible) {
-					onClose();
-				}
-			}}
-			layout="vertical"
-			form={form}
-			autoFocusFirstInput
-			modalProps={{
-				destroyOnHidden: true,
-				width: 520,
-			}}
-			onFinish={onFinish}
+		<FullscreenModal
+			ref={modalRef}
+			header={(
+				<Header
+					onClose={onClose}
+					title={t("setting.requestType.detailTitle")}
+					statusBadge={statusBadge}
+					subtitle={watchedName}
+					extra={extra}
+				/>
+			)}
 		>
-			<Spin spinning={loading}>
-				<ProFormSelect
-					name="category"
-					label={t("setting.requestType.category")}
-					rules={[{ required: true }]}
-					fieldProps={{ placeholder: t("common.pleaseSelect"), showSearch: true }}
-					request={async () => {
-						const res = await categoryService.fetchCategoryList({ limit: 500 });
-						return (res.data ?? []).map(c => ({ label: c.name, value: c.id }));
-					}}
-				/>
-
-				<ProFormText
-					name="code"
-					label={t("setting.requestType.code")}
-					placeholder={t("common.pleaseInput")}
-					normalize={v => v?.toUpperCase()}
-					rules={[
-						{ required: true },
-						{ min: 2 },
-						{ max: 50 },
-						{ pattern: /^[A-Z0-9_]+$/, message: t("setting.requestType.codePattern") },
-					]}
-				/>
-
-				<ProFormText
-					name="name"
-					label={t("setting.requestType.name")}
-					placeholder={t("common.pleaseInput")}
-					rules={[{ required: true }, { max: 255 }]}
-				/>
-
-				<ProFormText
-					name="prefix"
-					label={t("setting.requestType.prefix")}
-					placeholder={t("common.pleaseInput")}
-					normalize={v => v?.toUpperCase()}
-					rules={[
-						{ required: true },
-						{ max: 10 },
-						{ pattern: /^[A-Z0-9]+$/, message: t("setting.requestType.prefixPattern") },
-					]}
-				/>
-
-				<ProFormSelect
-					name="status"
-					label={t("setting.requestType.status")}
-					rules={[{ required: true }]}
-					initialValue={RequestTypeStatus.Draft}
-					options={Object.values(RequestTypeStatus).map(s => ({
-						label: t(`setting.requestType.statusOptions.${s}`),
-						value: s,
-					}))}
-				/>
-
-				<ProFormTextArea
-					name="description"
-					label={t("setting.requestType.description")}
-					placeholder={t("common.pleaseInput")}
-					fieldProps={{ rows: 3 }}
-					rules={[{ max: 500 }]}
-				/>
-			</Spin>
-		</ModalForm>
+			<TabBar tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
+			<div className="flex-1 overflow-y-auto p-6">
+				{activeContent}
+			</div>
+		</FullscreenModal>
 	);
 }
