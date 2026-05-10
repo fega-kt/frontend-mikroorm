@@ -16,8 +16,17 @@
 		"prefix": "前缀",
 		"description": "描述",
 		"status": "状态",
+		"detailTitle": "请求类型详情",
 		"addRequestType": "新增请求类型",
 		"editRequestType": "编辑请求类型",
+		"basicInfo": "基本信息",
+		"tabs": {
+			"general": "基本信息",
+			"formDoc": "表单 / 文档",
+			"permission": "权限 / 共享",
+			"workflow": "工作流",
+			"integration": "集成"
+		},
 		"codePattern": "编码只能包含字母、数字和下划线",
 		"prefixPattern": "前缀只能包含字母和数字",
 		"statusOptions": {

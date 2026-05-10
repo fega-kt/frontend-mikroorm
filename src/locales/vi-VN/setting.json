@@ -16,8 +16,17 @@
 		"prefix": "Tiền tố",
 		"description": "Mô tả",
 		"status": "Trạng thái",
+		"detailTitle": "Chi tiết Loại yêu cầu",
 		"addRequestType": "Thêm loại yêu cầu",
 		"editRequestType": "Sửa loại yêu cầu",
+		"basicInfo": "Thông tin cơ bản",
+		"tabs": {
+			"general": "Thông tin chung",
+			"formDoc": "Biểu mẫu / Tài liệu",
+			"permission": "Phân quyền / Chia sẻ",
+			"workflow": "Quy trình",
+			"integration": "Tích hợp"
+		},
 		"codePattern": "Mã chỉ được chứa chữ cái, chữ số và dấu gạch dưới",
 		"prefixPattern": "Tiền tố chỉ được chứa chữ cái và chữ số",
 		"statusOptions": {
