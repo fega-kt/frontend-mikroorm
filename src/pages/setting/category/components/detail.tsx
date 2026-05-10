@@ -1,10 +1,13 @@
 import type { CategoryEntity } from "#src/api/setting/category";
+import type { ImageUploadRef } from "#src/components/image-upload";
 import { categoryService } from "#src/api/setting/category";
 import { ProFormDepartmentPicker } from "#src/components/department-picker";
+import { ProFormImageUpload } from "#src/components/image-upload";
+import { STORAGE_PATH } from "#src/constants/storage-path";
 import { ModalForm, ProFormText } from "@ant-design/pro-components";
 import { Form, Spin } from "antd";
 import * as React from "react";
-import { useImperativeHandle, useMemo, useState } from "react";
+import { useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export interface DetailRef {
@@ -23,6 +26,7 @@ export function Detail({ ref }: DetailProps) {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [editingId, setEditingId] = useState<string | null>(null);
+	const iconUploadRef = useRef<ImageUploadRef>(null);
 
 	const title = useMemo(
 		() => (editingId ? t("setting.category.editCategory") : t("setting.category.addCategory")),
@@ -57,12 +61,16 @@ export function Detail({ ref }: DetailProps) {
 	}));
 
 	const onFinish = async (values: CategoryEntity) => {
+		const icon = iconUploadRef.current?.hasPending
+			? await iconUploadRef.current.flush()
+			: iconUploadRef.current?.uploadedUrl ?? values.icon;
+		const payload = { ...values, icon };
 		if (editingId) {
-			await categoryService.fetchUpdateCategory(editingId, values);
+			await categoryService.fetchUpdateCategory(editingId, payload);
 			window.$message?.success(t("common.updateSuccess"));
 		}
 		else {
-			await categoryService.fetchAddCategory(values);
+			await categoryService.fetchAddCategory(payload);
 			window.$message?.success(t("common.addSuccess"));
 		}
 		guard?.({ isChange: true });
@@ -126,10 +134,11 @@ export function Detail({ ref }: DetailProps) {
 					]}
 				/>
 
-				<ProFormText
+				<ProFormImageUpload
 					name="icon"
 					label={t("setting.category.icon")}
-					placeholder={t("common.pleaseInput")}
+					storagePath={STORAGE_PATH.CATEGORY}
+					uploadRef={iconUploadRef}
 				/>
 			</Spin>
 		</ModalForm>

@@ -4,6 +4,13 @@ import type { ProColumns } from "@ant-design/pro-components";
 export function getConstantColumns(t: (key: string) => string): ProColumns<CategoryEntity>[] {
 	return [
 		{
+			title: t("setting.category.icon"),
+			dataIndex: "icon",
+			width: 120,
+			hideInSearch: true,
+			render: (_, entity) => entity.icon ? <img src={entity.icon} alt="icon" className="w-5 h-5 object-contain" /> : null,
+		},
+		{
 			title: t("setting.category.code"),
 			dataIndex: "code",
 			width: 150,
@@ -19,12 +26,7 @@ export function getConstantColumns(t: (key: string) => string): ProColumns<Categ
 			width: 180,
 			hideInSearch: true,
 		},
-		{
-			title: t("setting.category.icon"),
-			dataIndex: "icon",
-			width: 120,
-			hideInSearch: true,
-		},
+
 		{
 			title: t("common.createdAt"),
 			dataIndex: "createdAt",
