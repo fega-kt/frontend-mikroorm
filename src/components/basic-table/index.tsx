@@ -7,9 +7,10 @@ import { usePreferencesStore } from "#src/store/preferences";
 import { cn } from "#src/utils/cn";
 import { isObject, isUndefined } from "#src/utils/is";
 
-import { LoadingOutlined } from "@ant-design/icons";
+import { DownOutlined, LoadingOutlined, UpOutlined } from "@ant-design/icons";
 import { ProTable } from "@ant-design/pro-components";
 import { useSize } from "ahooks";
+import { Grid } from "antd";
 import { useEffectOnActive } from "keepalive-for-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -37,7 +38,29 @@ export function BasicTable<
 ) {
 	const classes = useStyles();
 	const { t } = useTranslation();
+	const screens = Grid.useBreakpoint();
 	const { adaptive, request: originalRequest } = props;
+
+	const collapseRender = useCallback((collapsed: boolean) => {
+		if (screens.lg) {
+			return collapsed
+				? (
+					<>
+						{t("common.expand")}
+						{" "}
+						<DownOutlined />
+					</>
+				)
+				: (
+					<>
+						{t("common.collapse")}
+						{" "}
+						<UpOutlined />
+					</>
+				);
+		}
+		return collapsed ? <DownOutlined /> : <UpOutlined />;
+	}, [screens.lg, t]);
 
 	const request = useMemo<typeof originalRequest>(() => {
 		if (!originalRequest)
@@ -183,6 +206,7 @@ export function BasicTable<
 				dateFormatter="string"
 				{...props}
 				request={request}
+				search={props.search === false ? false : { layout: screens.lg ? "horizontal" : "vertical", labelWidth: screens.lg ? "auto" : undefined, collapseRender, ...props.search }}
 				options={{
 					fullScreen: true,
 					...props.options,

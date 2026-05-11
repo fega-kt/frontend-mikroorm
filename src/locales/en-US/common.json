@@ -102,6 +102,8 @@
 	"pagination": "Total {{total}} items",
 	"expandAll": "Expand All",
 	"collapseAll": "Collapse All",
+	"expand": "Expand",
+	"collapse": "Collapse",
 	"checkAll": "Check All",
 	"cancelAll": "Cancel All",
 	"fetchError": "Failed to load data",
