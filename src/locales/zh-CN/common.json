@@ -99,6 +99,8 @@
 	"pagination": "共 {{total}} 条",
 	"expandAll": "展开所有",
 	"collapseAll": "折叠所有",
+	"expand": "展开",
+	"collapse": "折叠",
 	"checkAll": "选择所有",
 	"cancelAll": "取消所有",
 	"fetchError": "加载数据失败",

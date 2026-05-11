@@ -6,6 +6,7 @@ import { AppVersionMonitor } from "#src/layout/widgets/version-monitor";
 import { ANT_DESIGN_LOCALE } from "#src/locales";
 
 import { StyleProvider } from "@ant-design/cssinjs";
+import { enUSIntl, ProConfigProvider, viVNIntl, zhCNIntl } from "@ant-design/pro-components";
 import { theme as antdTheme, ConfigProvider } from "antd";
 import dayjs from "dayjs";
 import { Suspense, useCallback, useEffect } from "react";
@@ -16,6 +17,17 @@ import { router } from "./router";
 import { customAntdDarkTheme, customAntdLightTheme } from "./styles/theme/antd/antd-theme";
 import "dayjs/locale/zh-cn";
 import "dayjs/locale/vi";
+
+const customViVNIntl = {
+	...viVNIntl,
+	getMessage: (id: string, defaultMessage: string) => {
+		if (id === "tableForm.inputPlaceholder")
+			return "Nhập dữ liệu";
+		return viVNIntl.getMessage(id, defaultMessage);
+	},
+};
+
+const proIntlMap = { "vi-VN": customViVNIntl, "zh-CN": zhCNIntl, "en-US": enUSIntl };
 
 export default function App() {
 	const { i18n } = useTranslation();
@@ -43,6 +55,8 @@ export default function App() {
 	const getAntdLocale = () => {
 		return ANT_DESIGN_LOCALE[language as keyof typeof ANT_DESIGN_LOCALE];
 	};
+
+	const getProIntl = () => proIntlMap[language as keyof typeof proIntlMap] ?? customViVNIntl;
 
 	/**
 	 * day.js internationalization
@@ -122,44 +136,46 @@ export default function App() {
 
 	return (
 		<StyleProvider layer>
-			<ConfigProvider
-				input={{ autoComplete: "off" }}
-				locale={getAntdLocale()}
-				theme={{
-					cssVar: {},
-					hashed: false,
-					algorithm:
+			<ProConfigProvider intl={getProIntl()}>
+				<ConfigProvider
+					input={{ autoComplete: "off" }}
+					locale={getAntdLocale()}
+					theme={{
+						cssVar: {},
+						hashed: false,
+						algorithm:
 						isDark
 							? antdTheme.darkAlgorithm
 							: antdTheme.defaultAlgorithm,
-					...(isDark ? customAntdDarkTheme : customAntdLightTheme),
-					token: {
-						...(isDark ? customAntdDarkTheme.token : customAntdLightTheme.token),
-						borderRadius: themeRadius,
-						colorPrimary: themeColorPrimary,
-					},
-					components: {
-						...(isDark ? customAntdDarkTheme.components : customAntdLightTheme.components),
-						Menu: {
-							darkItemBg: "#141414",
-							itemBg: "#fff",
-							...(isDark
-								? customAntdDarkTheme.components?.Menu
-								: customAntdLightTheme.components?.Menu),
-							collapsedWidth: sideCollapsedWidth,
+						...(isDark ? customAntdDarkTheme : customAntdLightTheme),
+						token: {
+							...(isDark ? customAntdDarkTheme.token : customAntdLightTheme.token),
+							borderRadius: themeRadius,
+							colorPrimary: themeColorPrimary,
 						},
-					},
-				}}
-			>
-				<AntdApp>
-					<JSSThemeProvider>
-						<Suspense fallback={null}>
-							{enableCheckUpdates ? <AppVersionMonitor checkUpdatesInterval={checkUpdatesInterval} /> : null}
-							<RouterProvider router={router} />
-						</Suspense>
-					</JSSThemeProvider>
-				</AntdApp>
-			</ConfigProvider>
+						components: {
+							...(isDark ? customAntdDarkTheme.components : customAntdLightTheme.components),
+							Menu: {
+								darkItemBg: "#141414",
+								itemBg: "#fff",
+								...(isDark
+									? customAntdDarkTheme.components?.Menu
+									: customAntdLightTheme.components?.Menu),
+								collapsedWidth: sideCollapsedWidth,
+							},
+						},
+					}}
+				>
+					<AntdApp>
+						<JSSThemeProvider>
+							<Suspense fallback={null}>
+								{enableCheckUpdates ? <AppVersionMonitor checkUpdatesInterval={checkUpdatesInterval} /> : null}
+								<RouterProvider router={router} />
+							</Suspense>
+						</JSSThemeProvider>
+					</AntdApp>
+				</ConfigProvider>
+			</ProConfigProvider>
 		</StyleProvider>
 	);
 }

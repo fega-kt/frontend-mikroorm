@@ -105,6 +105,8 @@
 	"pagination": "Tổng {{total}} mục",
 	"expandAll": "Mở rộng tất cả",
 	"collapseAll": "Thu gọn tất cả",
+	"expand": "Mở rộng",
+	"collapse": "Thu gọn",
 	"checkAll": "Chọn tất cả",
 	"cancelAll": "Bỏ chọn tất cả",
 	"fetchError": "Tải dữ liệu thất bại",
