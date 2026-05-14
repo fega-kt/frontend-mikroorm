@@ -8,18 +8,21 @@ import { useUserStore } from "#src/store/user";
 import { cn } from "#src/utils/cn";
 import { isWindowsOs } from "#src/utils/is-windows-os";
 
-import { LogoutOutlined } from "@ant-design/icons";
+import { KeyOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useKeyPress } from "ahooks";
 import { Avatar, Dropdown } from "antd";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
+
+import { ChangePasswordModal } from "./change-password-modal";
 
 export function UserMenu({ ...restProps }: ButtonProps) {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const avatar = useUserStore(state => state.avatar);
 	const logout = useAuthStore(state => state.logout);
+	const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
 	const onClick: MenuProps["onClick"] = async ({ key }) => {
 		if (key === "logout") {
@@ -29,15 +32,24 @@ export function UserMenu({ ...restProps }: ButtonProps) {
 		if (key === "personal-center") {
 			navigate("/personal-center/my-profile");
 		}
+		if (key === "change-password") {
+			setChangePasswordOpen(true);
+		}
 	};
 
-	const altView = useMemo(() => isWindowsOs() ? "Alt" : "⌥", [isWindowsOs]);
+	const altView = useMemo(() => isWindowsOs() ? "Alt" : "⌥", []);
 	const items: MenuProps["items"] = [
 		{
 			label: t("common.menu.personalCenter"),
 			key: "personal-center",
 			icon: <RiAccountCircleLine />,
 			extra: `${altView}P`,
+		},
+		{
+			label: t("authority.changePassword"),
+			key: "change-password",
+			icon: <KeyOutlined />,
+			extra: `${altView}W`,
 		},
 		{
 			label: t("authority.logout"),
@@ -51,24 +63,31 @@ export function UserMenu({ ...restProps }: ButtonProps) {
 		navigate("/personal-center/my-profile");
 	});
 
+	useKeyPress(["alt.W"], () => {
+		setChangePasswordOpen(true);
+	});
+
 	useKeyPress(["alt.Q"], () => {
 		onClick({ key: "logout" } as any);
 	});
 
 	return (
-		<Dropdown
-			menu={{ items, onClick }}
-			arrow={false}
-			placement="bottomRight"
-			trigger={["click"]}
-		>
-			<BasicButton
-				type="text"
-				{...restProps}
-				className={cn(restProps.className, "rounded-full px-1")}
+		<>
+			<Dropdown
+				menu={{ items, onClick }}
+				arrow={false}
+				placement="bottomRight"
+				trigger={["click"]}
 			>
-				<Avatar src={avatar} />
-			</BasicButton>
-		</Dropdown>
+				<BasicButton
+					type="text"
+					{...restProps}
+					className={cn(restProps.className, "rounded-full px-1")}
+				>
+					<Avatar src={avatar} />
+				</BasicButton>
+			</Dropdown>
+			<ChangePasswordModal open={changePasswordOpen} onOpenChange={setChangePasswordOpen} />
+		</>
 	);
 }
