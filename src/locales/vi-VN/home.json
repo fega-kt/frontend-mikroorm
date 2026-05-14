@@ -15,5 +15,21 @@
 	"thursday": "Thứ năm",
 	"friday": "Thứ sáu",
 	"saturday": "Thứ bảy",
-	"sunday": "Chủ nhật"
+	"sunday": "Chủ nhật",
+
+	"views": "Lượt xem",
+	"directAccess": "Truy cập trực tiếp",
+	"emailMarketing": "Email Marketing",
+	"affiliateAdvertise": "Quảng cáo liên kết",
+	"videoAdvertise": "Quảng cáo video",
+
+	"salesCategoryProportion": "Tỷ lệ danh mục doanh số",
+	"allChannels": "Tất cả kênh",
+	"online": "Trực tuyến",
+	"site": "Cửa hàng",
+	"electronics": "Điện tử",
+	"homeGoods": "Đồ gia dụng",
+	"apparelAccessories": "Thời trang & Phụ kiện",
+	"foodBeverages": "Thực phẩm & Đồ uống",
+	"beautySkincare": "Làm đẹp & Chăm sóc da"
 }
