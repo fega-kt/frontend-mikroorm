@@ -33,6 +33,12 @@
 	"noAccountYet": "Chưa có tài khoản?",
 	"confirmPassword": "Xác nhận mật khẩu",
 	"logoutConfirm": "Bạn có chắc chắn muốn đăng xuất?",
+	"changePassword": "Đổi mật khẩu",
+	"currentPassword": "Mật khẩu hiện tại",
+	"newPassword": "Mật khẩu mới",
+	"changePasswordSuccess": "Đổi mật khẩu thành công",
+	"currentPasswordInvalid": "Mật khẩu hiện tại không đúng",
+	"newPasswordSameAsOld": "Mật khẩu mới không được trùng mật khẩu cũ",
 	"agree": "Tôi đã đọc và đồng ý với <0>Chính sách quyền riêng tư</0> và <1>Điều khoản dịch vụ</1>",
 	"privacyPolicy": "Chính sách quyền riêng tư",
 	"termsOfService": "Điều khoản dịch vụ"

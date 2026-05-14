@@ -33,6 +33,12 @@
 	"noAccountYet": "还没有账号？",
 	"confirmPassword": "确认密码",
 	"logoutConfirm": "确认退出登录吗？",
+	"changePassword": "修改密码",
+	"currentPassword": "当前密码",
+	"newPassword": "新密码",
+	"changePasswordSuccess": "修改密码成功",
+	"currentPasswordInvalid": "当前密码不正确",
+	"newPasswordSameAsOld": "新密码不能与旧密码相同",
 	"agree": "我已阅读并同意《<0>隐私政策</0>》和《<1>服务条款</1>》",
 	"privacyPolicy": "隐私政策",
 	"termsOfService": "服务条款"

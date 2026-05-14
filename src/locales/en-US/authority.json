@@ -33,6 +33,12 @@
 	"noAccountYet": "No account yet?",
 	"confirmPassword": "Confirm Password",
 	"logoutConfirm": "Are you sure to logout?",
+	"changePassword": "Change Password",
+	"currentPassword": "Current Password",
+	"newPassword": "New Password",
+	"changePasswordSuccess": "Password changed successfully",
+	"currentPasswordInvalid": "Current password is incorrect",
+	"newPasswordSameAsOld": "New password must be different from old password",
 	"agree": "I have read and agree to <0>Privacy Policy</0> and <1>Terms of Service</1>",
 	"privacyPolicy": "Privacy Policy",
 	"termsOfService": "Terms of Service"
