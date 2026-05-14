@@ -146,6 +146,7 @@ export function AppVersionMonitor({
 			stop();
 			document.removeEventListener("visibilitychange", handleVisibilitychange);
 		};
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 	return null;
 }

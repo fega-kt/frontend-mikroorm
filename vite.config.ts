@@ -19,8 +19,6 @@ const __APP_INFO__ = {
 	lastBuildTime: dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss"),
 };
 
-const isDev = process.env.NODE_ENV === "development";
-
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
 	const env = loadEnv(mode, process.cwd(), "");
@@ -36,6 +34,16 @@ export default defineConfig(({ mode }) => {
 	return {
 		base: "/",
 		plugins: [
+			{
+				name: "generate-version-json",
+				generateBundle() {
+					this.emitFile({
+						type: "asset",
+						fileName: "version.json",
+						source: JSON.stringify({ version: env.GIT_COMMIT || env.BUILD_TIME || Date.now() }),
+					});
+				},
+			},
 			{
 				name: "inject-build-info",
 				transformIndexHtml() {
