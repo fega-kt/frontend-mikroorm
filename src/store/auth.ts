@@ -25,10 +25,12 @@ interface AuthAction {
 
 export const useAuthStore = create<AuthState & AuthAction>()(
 
-	persist(set => ({
+	persist((set, get) => ({
 		...initialState,
 
 		login: async (loginPayload) => {
+			// ✅ reset trước khi login
+			get().reset();
 			return await userService.login(loginPayload);
 		},
 
@@ -38,6 +40,8 @@ export const useAuthStore = create<AuthState & AuthAction>()(
 			 */
 
 			await userService.logout();
+			// ✅ reset sau khi logout
+			get().reset();
 		},
 
 		reset: () => {
