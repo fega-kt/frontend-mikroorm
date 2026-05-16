@@ -31,6 +31,7 @@
 	"goToLogin": "Go to Login",
 	"goToRegister": "Go to Register",
 	"noAccountYet": "No account yet?",
+	"registerContactAdmin": "To get an account, please contact the administrator.",
 	"confirmPassword": "Confirm Password",
 	"logoutConfirm": "Are you sure to logout?",
 	"changePassword": "Change Password",

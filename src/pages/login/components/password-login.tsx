@@ -136,7 +136,7 @@ export function PasswordLogin() {
 						type="link"
 						className="px-1"
 						onPointerDown={() => {
-							setFormMode("register");
+							window.$message?.info(t("authority.registerContactAdmin"));
 						}}
 					>
 						{t("authority.goToRegister")}
