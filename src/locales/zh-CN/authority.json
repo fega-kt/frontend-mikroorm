@@ -31,6 +31,8 @@
 	"goToLogin": "去登录",
 	"goToRegister": "去注册",
 	"noAccountYet": "还没有账号？",
+	"registerContactAdminTitle": "注册账号",
+	"registerContactAdmin": "如需注册账号，请联系管理员。",
 	"confirmPassword": "确认密码",
 	"logoutConfirm": "确认退出登录吗？",
 	"changePassword": "修改密码",

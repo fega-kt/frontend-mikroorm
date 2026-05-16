@@ -31,6 +31,8 @@
 	"goToLogin": "Đăng nhập",
 	"goToRegister": "Đăng ký",
 	"noAccountYet": "Chưa có tài khoản?",
+	"registerContactAdminTitle": "Đăng ký tài khoản",
+	"registerContactAdmin": "Để được cấp tài khoản, vui lòng liên hệ quản trị viên.",
 	"confirmPassword": "Xác nhận mật khẩu",
 	"logoutConfirm": "Bạn có chắc chắn muốn đăng xuất?",
 	"changePassword": "Đổi mật khẩu",
