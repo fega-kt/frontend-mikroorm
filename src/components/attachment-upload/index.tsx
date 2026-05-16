@@ -1,6 +1,8 @@
+import type { FilePreviewModalRef } from "#src/components/file-preview-modal";
 import type { AttachmentEntity, AttachmentUploadProps, AttachmentUploadRef, PendingItem, PendingStatus } from "./types";
 
 import { attachmentService } from "#src/api/attachment";
+import { FilePreviewModal } from "#src/components/file-preview-modal";
 import { DeleteOutlined, EyeOutlined, LoadingOutlined, PaperClipOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, message, Tag, Upload } from "antd";
 import * as React from "react";
@@ -44,6 +46,7 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 	} = props;
 
 	const [pendingItems, setPendingItems] = useState<PendingItem[]>([]);
+	const previewRef = useRef<FilePreviewModalRef>(null);
 
 	// Refs để tránh stale closure bên trong callbacks
 	const valueRef = useRef<AttachmentEntity[]>(value);
@@ -202,53 +205,57 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 	// ─── Render ───────────────────────────────────────────────────────────
 
 	return (
-		<div className="flex flex-col gap-2 w-full">
-			{showDropzone && (
-				<Upload.Dragger
-					multiple={multiple}
-					accept={accept}
-					showUploadList={false}
-					beforeUpload={handleBeforeUpload}
-					disabled={disabled}
-				>
-					<p className="ant-upload-drag-icon">
-						<UploadOutlined style={{ fontSize: 28 }} />
-					</p>
-					<p className="ant-upload-text text-sm">{t("common.attachment.dragText", "Kéo thả hoặc nhấn để chọn file")}</p>
-					<p className="ant-upload-hint text-xs">
-						{`${t("common.attachment.maxSize", "Tối đa")} ${formatBytes(maxSize)}/file`}
-						{maxCount ? ` · ${t("common.attachment.maxCount", "tối đa")} ${maxCount} file` : ""}
-					</p>
-				</Upload.Dragger>
-			)}
+		<>
+			<div className="flex flex-col gap-2 w-full">
+				{showDropzone && (
+					<Upload.Dragger
+						multiple={multiple}
+						accept={accept}
+						showUploadList={false}
+						beforeUpload={handleBeforeUpload}
+						disabled={disabled}
+					>
+						<p className="ant-upload-drag-icon">
+							<UploadOutlined style={{ fontSize: 28 }} />
+						</p>
+						<p className="ant-upload-text text-sm">{t("common.attachment.dragText", "Kéo thả hoặc nhấn để chọn file")}</p>
+						<p className="ant-upload-hint text-xs">
+							{`${t("common.attachment.maxSize", "Tối đa")} ${formatBytes(maxSize)}/file`}
+							{maxCount ? ` · ${t("common.attachment.maxCount", "tối đa")} ${maxCount} file` : ""}
+						</p>
+					</Upload.Dragger>
+				)}
 
-			{value.map(att => (
-				<FileRow
-					key={att.id}
-					name={att.filename}
-					size={att.size}
-					status="done"
-					previewUrl={att.url}
-					disabled={disabled}
-					onRemove={() => handleRemoveDone(att.id)}
-					t={t}
-				/>
-			))}
+				{value.map(att => (
+					<FileRow
+						key={att.id}
+						name={att.filename}
+						size={att.size}
+						status="done"
+						previewUrl={att.url}
+						disabled={disabled}
+						onRemove={() => handleRemoveDone(att.id)}
+						onPreview={att.url ? () => previewRef.current?.show(att.url, att.filename) : undefined}
+						t={t}
+					/>
+				))}
 
-			{pendingItems.map(item => (
-				<FileRow
-					key={item.uid}
-					name={item.file.name}
-					size={item.file.size}
-					status={item.status}
-					mode={mode}
-					error={item.error}
-					onRemove={item.status !== "uploading" ? () => handleRemovePending(item.uid) : undefined}
-					onRetry={item.status === "error" ? () => handleRetry(item.uid) : undefined}
-					t={t}
-				/>
-			))}
-		</div>
+				{pendingItems.map(item => (
+					<FileRow
+						key={item.uid}
+						name={item.file.name}
+						size={item.file.size}
+						status={item.status}
+						mode={mode}
+						error={item.error}
+						onRemove={item.status !== "uploading" ? () => handleRemovePending(item.uid) : undefined}
+						onRetry={item.status === "error" ? () => handleRetry(item.uid) : undefined}
+						t={t}
+					/>
+				))}
+			</div>
+			<FilePreviewModal ref={previewRef} />
+		</>
 	);
 }
 
@@ -264,10 +271,11 @@ interface FileRowProps {
 	disabled?: boolean
 	onRemove?: () => void
 	onRetry?: () => void
+	onPreview?: () => void
 	t: any
 }
 
-function FileRow({ name, size, status, mode, previewUrl, error, disabled, onRemove, onRetry, t }: FileRowProps) {
+function FileRow({ name, size, status, mode, previewUrl, error, disabled, onRemove, onRetry, onPreview, t }: FileRowProps) {
 	return (
 		<div className="flex flex-col gap-1 px-3 py-2 rounded border border-dashed">
 			<div className="flex items-center gap-2">
@@ -289,7 +297,7 @@ function FileRow({ name, size, status, mode, previewUrl, error, disabled, onRemo
 
 				<div className="flex gap-1 shrink-0">
 					{previewUrl && (
-						<Button type="text" size="small" icon={<EyeOutlined />} href={previewUrl} target="_blank" />
+						<Button type="text" size="small" icon={<EyeOutlined />} onClick={onPreview} />
 					)}
 					{onRetry && (
 						<Button type="text" size="small" onClick={onRetry}>{t("common.attachment.retry", "Thử lại")}</Button>

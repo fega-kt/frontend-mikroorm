@@ -129,5 +129,9 @@
 		"statusPending": "Đang chờ",
 		"statusUploading": "Đang upload",
 		"retry": "Thử lại"
+	},
+	"filePreview": {
+		"unsupported": "Loại file này chưa được hỗ trợ xem trước",
+		"loadError": "Không thể tải file, vui lòng thử lại"
 	}
 }

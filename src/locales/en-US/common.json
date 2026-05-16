@@ -124,5 +124,9 @@
 		"statusPending": "Pending",
 		"statusUploading": "Uploading",
 		"retry": "Retry"
+	},
+	"filePreview": {
+		"unsupported": "This file type is not supported for preview yet",
+		"loadError": "Failed to load file, please try again"
 	}
 }
