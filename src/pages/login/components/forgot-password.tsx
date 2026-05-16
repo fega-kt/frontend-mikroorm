@@ -1,3 +1,4 @@
+import { authService } from "#src/api/auth";
 import { BasicButton } from "#src/components/basic-button";
 
 import { LeftOutlined } from "@ant-design/icons";
@@ -6,6 +7,8 @@ import {
 	Button,
 	Form,
 	Input,
+	message,
+	Modal,
 	Space,
 	Typography,
 } from "antd";
@@ -15,32 +18,68 @@ import { FormModeContext } from "../form-mode-context";
 
 const { Title } = Typography;
 
-const FORM_INITIAL_VALUES = {
-	email: "",
-};
-export type ForgotPasswordFormType = typeof FORM_INITIAL_VALUES;
-
 export function ForgotPassword() {
-	const [targetDate, setTargetDate] = useState<number>(0);
+	const [otpModalOpen, setOtpModalOpen] = useState(false);
+	const [submittedEmail, setSubmittedEmail] = useState("");
 
-	const [countdown] = useCountDown({
-		targetDate,
-		onEnd: () => {
-			setTargetDate(0);
-		},
+	const [resendTargetDate, setResendTargetDate] = useState<number>(0);
+	const [resendCountdown] = useCountDown({
+		targetDate: resendTargetDate,
+		onEnd: () => setResendTargetDate(0),
 	});
 
-	const [loading, setLoading] = useState(false);
-	const [forgotForm] = Form.useForm();
+	const [emailLoading, setEmailLoading] = useState(false);
+	const [otpLoading, setOtpLoading] = useState(false);
+
+	const [emailForm] = Form.useForm();
 	const { t } = useTranslation();
 	const { setFormMode } = use(FormModeContext);
 
-	const handleFinish = async () => {
-		setLoading(true);
-		setTargetDate(new Date().getTime() + 1000 * 30);
-		setTimeout(() => {
-			setLoading(false);
-		}, 1000);
+	const handleEmailFinish = async ({ email }: { email: string }) => {
+		setEmailLoading(true);
+		try {
+			await authService.forgotPassword({ email });
+			setSubmittedEmail(email);
+			setResendTargetDate(Date.now() + 1000 * 60);
+			setOtpModalOpen(true);
+		}
+		catch {
+			// error handled by request interceptor
+		}
+		finally {
+			setEmailLoading(false);
+		}
+	};
+
+	const handleOtpFinish = async ({ otp }: { otp: string }) => {
+		setOtpLoading(true);
+		try {
+			await authService.verifyOtp({ email: submittedEmail, otp });
+			message.success(t("authority.resetPasswordSuccess"));
+			setOtpModalOpen(false);
+			setFormMode("login");
+		}
+		catch {
+			setOtpModalOpen(false);
+		}
+		finally {
+			setOtpLoading(false);
+		}
+	};
+
+	const handleResend = async () => {
+		try {
+			await authService.forgotPassword({ email: submittedEmail });
+			setResendTargetDate(Date.now() + 1000 * 60);
+			message.success(t("authority.otpResent"));
+		}
+		catch {
+			// error handled by request interceptor
+		}
+	};
+
+	const handleModalCancel = () => {
+		setOtpModalOpen(false);
 	};
 
 	return (
@@ -56,22 +95,16 @@ export function ForgotPassword() {
 
 			<Form
 				name="forgotForm"
-				form={forgotForm}
+				form={emailForm}
 				layout="vertical"
-				initialValues={FORM_INITIAL_VALUES}
-				onFinish={handleFinish}
+				onFinish={handleEmailFinish}
 			>
 				<Form.Item
 					label={t("authority.email")}
 					name="email"
 					rules={[
-						{
-							required: true,
-						},
-						{
-							type: "email",
-							message: t("form.email.invalid"),
-						},
+						{ required: true },
+						{ type: "email", message: t("form.email.invalid") },
 					]}
 				>
 					<Input placeholder={t("form.email.required")} />
@@ -82,12 +115,9 @@ export function ForgotPassword() {
 						block
 						type="primary"
 						htmlType="submit"
-						loading={loading}
-						disabled={countdown > 0}
+						loading={emailLoading}
 					>
-						{countdown > 0
-							? t("authority.retryAfterText", { count: Math.floor(countdown / 1000) })
-							: t("authority.sendResetLink")}
+						{t("authority.sendOtp")}
 					</Button>
 				</Form.Item>
 
@@ -96,14 +126,53 @@ export function ForgotPassword() {
 						type="link"
 						icon={<LeftOutlined />}
 						className="px-1"
-						onPointerDown={() => {
-							setFormMode("login");
-						}}
+						onPointerDown={() => setFormMode("login")}
 					>
 						{t("common.back")}
 					</BasicButton>
 				</div>
 			</Form>
+
+			<Modal
+				open={otpModalOpen}
+				title={t("authority.enterOtpTitle")}
+				footer={null}
+				onCancel={handleModalCancel}
+				destroyOnHidden
+			>
+				<p className="text-sm text-gray-500 mb-4">
+					{t("authority.otpSubtitle", { email: submittedEmail })}
+				</p>
+
+				<div className="flex flex-col items-center gap-4">
+					<div>
+						<Input.OTP
+							length={6}
+							autoFocus
+							disabled={otpLoading}
+							onChange={(value) => {
+								if (value.length === 6) {
+									handleOtpFinish({ otp: value });
+								}
+							}}
+						/>
+					</div>
+
+					{otpLoading && (
+						<p className="text-xs text-gray-400">{t("authority.verifying")}</p>
+					)}
+
+					<BasicButton
+						type="link"
+						disabled={resendCountdown > 0}
+						onClick={handleResend}
+					>
+						{resendCountdown > 0
+							? t("authority.retryAfterText", { count: Math.floor(resendCountdown / 1000) })
+							: t("authority.resendOtp")}
+					</BasicButton>
+				</div>
+			</Modal>
 		</>
 	);
 }
