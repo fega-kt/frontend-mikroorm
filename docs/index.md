@@ -2,12 +2,12 @@
 layout: home
 
 hero:
-  name: React Antd Admin
+  name: zhizhu system
   text: 企业级管理系统框架
   tagline: 开箱即用，简单高效
   image:
     src: logo.svg
-    alt: React Antd Admin
+    alt: zhizhu system
   actions:
     - theme: brand
       text: 快速开始 ->

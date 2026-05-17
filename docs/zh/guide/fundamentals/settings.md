@@ -51,7 +51,7 @@ VITE_API_BASE_URL = "/api"
 VITE_BASE_HOME_PATH = "/home"
 
 # 网站标题
-VITE_GLOB_APP_TITLE = "React Antd Admin"
+VITE_GLOB_APP_TITLE = "zhizhu system"
 
 ```
 
