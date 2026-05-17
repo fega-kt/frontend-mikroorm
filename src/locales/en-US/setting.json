@@ -9,6 +9,25 @@
 		"codeMinLength": "Code must be at least 3 characters",
 		"codePattern": "Code must contain only letters and digits"
 	},
+	"workflowSetting": {
+		"name": "Workflow Name",
+		"category": "Request Type Group",
+		"status": "Status",
+		"description": "Description",
+		"detailTitle": "Workflow Detail",
+		"addWorkflowSetting": "Add Workflow",
+		"editWorkflowSetting": "Edit Workflow",
+		"basicInfo": "Basic Information",
+		"tabs": {
+			"general": "General",
+			"workflow": "Workflow Design"
+		},
+		"statusOptions": {
+			"draft": "Draft",
+			"published": "Published",
+			"cancelled": "Cancelled"
+		}
+	},
 	"requestType": {
 		"code": "Request Type Code",
 		"name": "Request Type Name",

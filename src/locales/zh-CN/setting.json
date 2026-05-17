@@ -9,6 +9,25 @@
 		"codeMinLength": "编码至少需要3个字符",
 		"codePattern": "编码只能包含字母和数字"
 	},
+	"workflowSetting": {
+		"name": "流程名称",
+		"category": "需求类型组",
+		"status": "状态",
+		"description": "描述",
+		"detailTitle": "流程配置详情",
+		"addWorkflowSetting": "新增流程",
+		"editWorkflowSetting": "编辑流程",
+		"basicInfo": "基本信息",
+		"tabs": {
+			"general": "基本信息",
+			"workflow": "流程设计"
+		},
+		"statusOptions": {
+			"draft": "草稿",
+			"published": "已发布",
+			"cancelled": "已取消"
+		}
+	},
 	"requestType": {
 		"code": "请求类型编码",
 		"name": "请求类型名称",

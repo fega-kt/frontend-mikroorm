@@ -12,6 +12,7 @@ import {
 	LockOutlined,
 	MenuOutlined,
 	NodeExpandOutlined,
+	NodeIndexOutlined,
 	ProjectOutlined,
 	SafetyOutlined,
 	SettingOutlined,
@@ -58,4 +59,5 @@ export const menuIcons: Record<string, any> = {
 	FundProjectionScreenOutlined,
 	ToolOutlined,
 	TagsOutlined,
+	NodeIndexOutlined,
 };

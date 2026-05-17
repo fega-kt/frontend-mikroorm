@@ -9,6 +9,25 @@
 		"codeMinLength": "Mã phải có ít nhất 3 ký tự",
 		"codePattern": "Mã chỉ được chứa chữ cái và chữ số"
 	},
+	"workflowSetting": {
+		"name": "Tên quy trình",
+		"category": "Nhóm yêu cầu",
+		"status": "Trạng thái",
+		"description": "Mô tả",
+		"detailTitle": "Chi tiết Quy trình",
+		"addWorkflowSetting": "Thêm quy trình",
+		"editWorkflowSetting": "Sửa quy trình",
+		"basicInfo": "Thông tin cơ bản",
+		"tabs": {
+			"general": "Thông tin chung",
+			"workflow": "Quy trình"
+		},
+		"statusOptions": {
+			"draft": "Nháp",
+			"published": "Đã xuất bản",
+			"cancelled": "Đã hủy"
+		}
+	},
 	"requestType": {
 		"code": "Mã loại yêu cầu",
 		"name": "Tên loại yêu cầu",

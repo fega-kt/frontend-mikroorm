@@ -40,7 +40,8 @@
 		"settings": "Settings",
 		"setting": "General Settings",
 		"category": "Category Management",
-		"requestType": "Request Type Management"
+		"requestType": "Request Type Management",
+		"workflowSetting": "Workflow Settings"
 	},
 	"appLoading": "Loading Resources...",
 	"back": "Back",

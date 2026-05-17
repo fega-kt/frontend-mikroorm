@@ -166,4 +166,21 @@ export enum PermissionType {
 
 	/** xóa request type */
 	DeleteRequestType = "permission:request-type:delete",
+
+	/** ===== WORKFLOW SETTING ===== */
+
+	/** vào menu workflow setting */
+	MenuWorkflowSetting = "permission:menu:workflow-setting",
+
+	/** xem chi tiết workflow setting */
+	ViewWorkflowSettingDetail = "permission:workflow-setting:view",
+
+	/** tạo workflow setting */
+	CreateWorkflowSetting = "permission:workflow-setting:create",
+
+	/** cập nhật workflow setting */
+	UpdateWorkflowSetting = "permission:workflow-setting:update",
+
+	/** xóa workflow setting */
+	DeleteWorkflowSetting = "permission:workflow-setting:delete",
 }
