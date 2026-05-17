@@ -110,7 +110,7 @@ export function PrincipalPicker(props: PrincipalPickerProps) {
 	const fetchData = useCallback(async (searchKey?: string) => {
 		setLoading(true);
 		try {
-			const { data } = await principalService.fetchPrincipalList({ keyword: searchKey, pageSize: 50 });
+			const { data } = await principalService.fetchPrincipalList({ keyword: searchKey, pageSize: 10 });
 			setApiOptions(data || []);
 			fetchedRef.current = true;
 		}
