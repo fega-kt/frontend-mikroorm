@@ -14,6 +14,7 @@
 	"loginInProgress": "Login in progress ...",
 	"loginSuccess": "Login Successful",
 	"loginFail": "Login fail",
+	"emailNotFound": "This email is not registered in the system",
 	"codeLogin": "Code Login",
 	"codeLoginSubtitle": "Enter your account email to receive a login code",
 	"forgotPassword": "Forgot Password",

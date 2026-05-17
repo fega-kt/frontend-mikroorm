@@ -44,15 +44,19 @@ export function CodeLogin() {
 	const handleSendOtp = async ({ email: emailValue }: { email: string }) => {
 		setSendLoading(true);
 		try {
-			const { error } = await supabase.auth.signInWithOtp({ email: emailValue });
+			const { error } = await supabase.auth.signInWithOtp({
+				email: emailValue,
+				options: { shouldCreateUser: false },
+			});
 			if (error)
 				throw error;
 			setEmail(emailValue);
 			setResendTargetDate(Date.now() + 60_000);
 			setStep(Step.Otp);
 		}
-		catch {
-			window.$message?.error(t("authority.loginFail"));
+		catch (err) {
+			const isNotFound = err instanceof Error && /signup/i.test(err.message);
+			window.$message?.error(t(isNotFound ? "authority.emailNotFound" : "authority.loginFail"));
 		}
 		finally {
 			setSendLoading(false);
