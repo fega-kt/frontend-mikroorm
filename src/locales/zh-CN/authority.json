@@ -15,6 +15,7 @@
 	"loginSuccess": "登录成功",
 	"loginFail": "登录失败",
 	"codeLogin": "验证码登录",
+	"codeLoginSubtitle": "输入账号邮箱以接收登录验证码",
 	"forgotPassword": "忘记密码",
 	"retryAfterText": "{{ count }} 秒后重试",
 	"code": "验证码",

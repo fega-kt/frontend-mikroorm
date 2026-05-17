@@ -76,6 +76,10 @@ export default function Login() {
 								className="h-64 motion-safe:animate-bounce-in-down-out-up"
 							/>
 							<div className="text-xl text-colorTextSecondary mt-6 font-sans lg:text-2xl">
+								<span className="uppercase font-bold tracking-widest text-colorText">
+									{import.meta.env.VITE_GLOB_APP_TITLE}
+								</span>
+								<span className="mx-2 opacity-40">—</span>
 								{t("authority.pageTitle")}
 							</div>
 							<div className="text-colorTextTertiary mt-2">

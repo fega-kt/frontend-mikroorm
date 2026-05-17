@@ -15,6 +15,7 @@
 	"loginSuccess": "Login Successful",
 	"loginFail": "Login fail",
 	"codeLogin": "Code Login",
+	"codeLoginSubtitle": "Enter your account email to receive a login code",
 	"forgotPassword": "Forgot Password",
 	"retryAfterText": "{{ count }} seconds later you can try again",
 	"code": "Security code",
