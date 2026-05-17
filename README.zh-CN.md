@@ -3,7 +3,7 @@
 		<img alt="React-antd-admin Logo" width="192" src="https://github.com/user-attachments/assets/1de76309-4cf5-4e34-a32f-92c361bace2a">
 	</a>
 	<br />
-	<h1>React Antd Admin</h1>
+	<h1>zhizhu system</h1>
 	<br />
 </div>
 

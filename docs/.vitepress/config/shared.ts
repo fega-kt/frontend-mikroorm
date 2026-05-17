@@ -2,7 +2,7 @@ import { defineConfig } from "vitepress";
 import { search as zhSearch } from "./zh";
 
 export const shared = defineConfig({
-	title: "React Antd Admin",
+	title: "zhizhu system",
 
 	base: "/react-antd-admin/docs/",
 
@@ -40,8 +40,8 @@ export const shared = defineConfig({
 		["meta", { name: "theme-color", content: "#5f67ee" }],
 		["meta", { property: "og:type", content: "website" }],
 		["meta", { property: "og:locale", content: "en" }],
-		["meta", { property: "og:title", content: "React Antd Admin | 企业级管理系统框架" }],
-		["meta", { property: "og:site_name", content: "React Antd Admin" }],
+		["meta", { property: "og:title", content: "zhizhu system | 企业级管理系统框架" }],
+		["meta", { property: "og:site_name", content: "zhizhu system" }],
 		["meta", { property: "og:image", content: "https://condorheroblog.github.io/react-antd-admin/docs/shared-og.png" }],
 		["meta", { property: "og:url", content: "https://condorheroblog.github.io/react-antd-admin/" }],
 	],
