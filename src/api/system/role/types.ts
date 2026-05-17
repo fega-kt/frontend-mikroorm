@@ -68,6 +68,14 @@ export enum PermissionType {
 	CreateRequestType = "permission:request-type:create",
 	UpdateRequestType = "permission:request-type:update",
 	DeleteRequestType = "permission:request-type:delete",
+
+	/** ===== WORKFLOW SETTING ===== */
+
+	MenuWorkflowSetting = "permission:menu:workflow-setting",
+	ViewWorkflowSettingDetail = "permission:workflow-setting:view",
+	CreateWorkflowSetting = "permission:workflow-setting:create",
+	UpdateWorkflowSetting = "permission:workflow-setting:update",
+	DeleteWorkflowSetting = "permission:workflow-setting:delete",
 }
 
 export interface RoleSearchParams extends SearchParamsBase {

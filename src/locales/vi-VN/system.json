@@ -16,7 +16,8 @@
 			"project": "Quản lý dự án",
 			"task": "Quản lý công việc",
 			"category": "Quản lý danh mục",
-			"request_type": "Quản lý loại yêu cầu"
+			"request_type": "Quản lý loại yêu cầu",
+			"workflow_setting": "Cài đặt quy trình"
 		},
 		"permission": {
 			"user": "Người dùng",
@@ -31,7 +32,8 @@
 			"task": "Công việc",
 			"group": "Nhóm",
 			"category": "Danh mục",
-			"request-type": "Loại yêu cầu"
+			"request-type": "Loại yêu cầu",
+			"workflow-setting": "Cài đặt quy trình"
 		}
 	},
 

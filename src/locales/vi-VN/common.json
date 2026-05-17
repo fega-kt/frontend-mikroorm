@@ -43,7 +43,8 @@
 		"settings": "Cài đặt",
 		"setting": "Cài đặt chung",
 		"category": "Nhóm danh mục",
-		"requestType": "Loại yêu cầu"
+		"requestType": "Loại yêu cầu",
+		"workflowSetting": "Cài đặt quy trình"
 	},
 	"appLoading": "Đang tải tài nguyên...",
 	"back": "Quay lại",

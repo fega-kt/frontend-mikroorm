@@ -59,4 +59,11 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.UpdateRequestType,
 		PermissionType.DeleteRequestType,
 	],
+	WORKFLOW_SETTING: [
+		PermissionType.MenuWorkflowSetting,
+		PermissionType.ViewWorkflowSettingDetail,
+		PermissionType.CreateWorkflowSetting,
+		PermissionType.UpdateWorkflowSetting,
+		PermissionType.DeleteWorkflowSetting,
+	],
 };

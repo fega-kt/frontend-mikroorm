@@ -15,7 +15,8 @@
 			"project": "Project Management",
 			"task": "Task Management",
 			"category": "Category Management",
-			"request_type": "Request Type Management"
+			"request_type": "Request Type Management",
+			"workflow_setting": "Workflow Settings"
 		},
 		"permission": {
 			"user": "User",
@@ -30,7 +31,8 @@
 			"task": "Task",
 			"group": "Group",
 			"category": "Category",
-			"request-type": "Request Type"
+			"request-type": "Request Type",
+			"workflow-setting": "Workflow Settings"
 		}
 	},
 	"userGroup": {

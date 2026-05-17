@@ -16,7 +16,8 @@
 			"project": "项目管理",
 			"task": "任务管理",
 			"category": "分类管理",
-			"request_type": "请求类型管理"
+			"request_type": "请求类型管理",
+			"workflow_setting": "工作流配置"
 		},
 		"permission": {
 			"user": "用户",
@@ -31,7 +32,8 @@
 			"task": "任务",
 			"group": "用户组",
 			"category": "分类",
-			"request-type": "请求类型"
+			"request-type": "请求类型",
+			"workflow-setting": "工作流配置"
 		}
 	},
 	"user": {
