@@ -118,5 +118,7 @@
 		"statusPending": "等待中",
 		"statusUploading": "上传中",
 		"retry": "重试"
-	}
+	},
+	"updateError": "更新失败",
+	"featureUpdating": "功能正在更新中"
 }

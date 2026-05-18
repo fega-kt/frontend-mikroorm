@@ -129,5 +129,7 @@
 		"statusPending": "Đang chờ",
 		"statusUploading": "Đang upload",
 		"retry": "Thử lại"
-	}
+	},
+	"updateError": "Cập nhật thất bại",
+	"featureUpdating": "Tính năng đang được cập nhật"
 }

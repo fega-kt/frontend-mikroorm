@@ -154,6 +154,15 @@ export default function Profile() {
 										label={t("personal-center.description")}
 										placeholder={t("personal-center.descriptionPlaceholder")}
 										fieldProps={{ autoSize: { minRows: 3, maxRows: 6 } }}
+										rules={[
+											{
+												validator: (_: unknown, value: string) => {
+													if (!value || value.trim().length <= 1000)
+														return Promise.resolve();
+													return Promise.reject(new Error(t("personal-center.descriptionMaxLength")));
+												},
+											},
+										]}
 									/>
 								</Col>
 							</Row>
