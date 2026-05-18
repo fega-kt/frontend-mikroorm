@@ -125,5 +125,7 @@
 		"statusPending": "Pending",
 		"statusUploading": "Uploading",
 		"retry": "Retry"
-	}
+	},
+	"updateError": "Update failed",
+	"featureUpdating": "This feature is being updated"
 }

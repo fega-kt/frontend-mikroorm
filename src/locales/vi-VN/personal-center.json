@@ -18,5 +18,6 @@
 	"pleaseInputEmail": "Vui lòng nhập định dạng email hợp lệ!",
 	"pleaseInputPhoneNumber": "Vui lòng nhập số điện thoại!",
 	"pleaseInputValidPhoneNumber": "Vui lòng nhập số điện thoại hợp lệ!",
-	"descriptionPlaceholder": "Hãy giới thiệu một chút về bản thân bạn..."
+	"descriptionPlaceholder": "Hãy giới thiệu một chút về bản thân bạn...",
+	"descriptionMaxLength": "Giới thiệu bản thân không được vượt quá 1000 ký tự"
 }
