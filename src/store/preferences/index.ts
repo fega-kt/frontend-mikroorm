@@ -65,7 +65,7 @@ export const DEFAULT_PREFERENCES = {
 	fixedFooter: true,
 	companyName: "zhizhu",
 	companyWebsite: "https://github.com/fega-kt/",
-	copyrightDate: "2023",
+	copyrightDate: "2026",
 	ICPNumber: "",
 	ICPLink: "",
 } satisfies PreferencesState;
