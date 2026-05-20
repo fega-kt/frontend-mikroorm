@@ -105,8 +105,20 @@ export default function Profile() {
 									<ProFormText
 										name="fullName"
 										label={t("personal-center.fullName")}
-										rules={[{ required: true, message: t("personal-center.pleaseInputFullName") }]}
 										placeholder={t("personal-center.fullName")}
+										rules={[
+											{
+												validator: (_: unknown, value: string) => {
+													if (!value || value.trim() === "")
+														return Promise.resolve();
+													if (value.trim().length > 255)
+														return Promise.reject(new Error(t("personal-center.fullNameMaxLength")));
+													if (!/^\p{L}+(?:\s\p{L}+)*$/u.test(value.trim()))
+														return Promise.reject(new Error(t("personal-center.fullNameInvalidFormat")));
+													return Promise.resolve();
+												},
+											},
+										]}
 									/>
 								</Col>
 								<Col xs={24} lg={12}>
@@ -137,8 +149,15 @@ export default function Profile() {
 										name="phoneNumber"
 										label={t("personal-center.phoneNumber")}
 										rules={[
-											{ required: true, message: t("personal-center.pleaseInputPhoneNumber") },
-											{ pattern: VIETNAMESE_MOBILE_REGEXP, message: t("personal-center.pleaseInputValidPhoneNumber") },
+											{
+												validator: (_: unknown, value: string) => {
+													if (!value || value.trim() === "")
+														return Promise.resolve();
+													if (!VIETNAMESE_MOBILE_REGEXP.test(value.trim()))
+														return Promise.reject(new Error(t("personal-center.pleaseInputValidPhoneNumber")));
+													return Promise.resolve();
+												},
+											},
 										]}
 										fieldProps={{
 											type: "tel",

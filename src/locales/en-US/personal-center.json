@@ -19,5 +19,8 @@
 	"pleaseInputPhoneNumber": "Please input your phone number!",
 	"pleaseInputValidPhoneNumber": "Please input a valid phone number!",
 	"descriptionPlaceholder": "Introduce yourself a bit...",
-	"descriptionMaxLength": "About me must not exceed 1000 characters"
+	"descriptionMaxLength": "About me must not exceed 1000 characters",
+	"fullNameMaxLength": "Full name must be less than 255 characters",
+	"fullNameInvalidFormat": "Full name must contain only letters and single spaces between words",
+	"phoneNumberInvalidFormat": "Invalid phone number format"
 }
