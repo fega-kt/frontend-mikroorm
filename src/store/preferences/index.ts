@@ -13,7 +13,7 @@ import { persist } from "zustand/middleware";
 export const DEFAULT_PREFERENCES = {
 	/* ================== General ================== */
 	watermark: false,
-	watermarkContent: "react-antd-admin",
+	watermarkContent: "zhizhu",
 	enableBackTopButton: true,
 	pageLayout: "layout-right",
 	enableBackendAccess: true,
