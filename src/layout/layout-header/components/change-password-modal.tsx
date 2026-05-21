@@ -40,6 +40,7 @@ export function ChangePasswordModal({ open, onOpenChange }: ChangePasswordModalP
 			<ProFormText.Password
 				name="newPassword"
 				label={t("authority.newPassword")}
+				dependencies={["currentPassword"]}
 				rules={[
 					{ required: true, message: t("form.password.required") },
 					{ min: 8, message: t("form.password.invalid") },
