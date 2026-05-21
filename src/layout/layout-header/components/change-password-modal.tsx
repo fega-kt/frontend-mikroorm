@@ -58,6 +58,7 @@ export function ChangePasswordModal({ open, onOpenChange }: ChangePasswordModalP
 			<ProFormText.Password
 				name="confirmPassword"
 				label={t("authority.confirmPassword")}
+				dependencies={["newPassword"]}
 				rules={[
 					{ required: true, message: t("form.confirmPassword.required") },
 					({ getFieldValue }) => ({
