@@ -1,13 +1,12 @@
 import type { DepartmentEntity } from "#src/api/system/dept/types.js";
 import { userService } from "#src/api/user";
 import { BasicContent } from "#src/components/basic-content";
-import { FormAvatarItem } from "#src/components/basic-form";
+import { FormAvatarItem, TrimInput, TrimTextArea } from "#src/components/basic-form";
 import { VIETNAMESE_MOBILE_REGEXP } from "#src/constants/regular-expressions";
 import { useUserStore } from "#src/store/user";
 import {
 	ProForm,
 	ProFormText,
-	ProFormTextArea,
 } from "@ant-design/pro-components";
 import { Card, Col, Form, Row, Space, Typography } from "antd";
 import { useTranslation } from "react-i18next";
@@ -102,10 +101,9 @@ export default function Profile() {
 						<Col xs={24} md={16}>
 							<Row gutter={[16, 0]}>
 								<Col span={24}>
-									<ProFormText
+									<Form.Item
 										name="fullName"
 										label={t("personal-center.fullName")}
-										placeholder={t("personal-center.fullName")}
 										rules={[
 											{
 												validator: (_: unknown, value: string) => {
@@ -119,7 +117,9 @@ export default function Profile() {
 												},
 											},
 										]}
-									/>
+									>
+										<TrimInput placeholder={t("personal-center.fullName")} />
+									</Form.Item>
 								</Col>
 								<Col xs={24} lg={12}>
 									<ProFormText
@@ -167,12 +167,9 @@ export default function Profile() {
 									/>
 								</Col>
 								<Col span={24}>
-									<ProFormTextArea
-										allowClear
+									<Form.Item
 										name="description"
 										label={t("personal-center.description")}
-										placeholder={t("personal-center.descriptionPlaceholder")}
-										fieldProps={{ autoSize: { minRows: 3, maxRows: 6 } }}
 										rules={[
 											{
 												validator: (_: unknown, value: string) => {
@@ -182,7 +179,13 @@ export default function Profile() {
 												},
 											},
 										]}
-									/>
+									>
+										<TrimTextArea
+											allowClear
+											placeholder={t("personal-center.descriptionPlaceholder")}
+											autoSize={{ minRows: 3, maxRows: 6 }}
+										/>
+									</Form.Item>
 								</Col>
 							</Row>
 						</Col>
