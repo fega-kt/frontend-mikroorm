@@ -9,6 +9,7 @@ import {
 	ProFormText,
 } from "@ant-design/pro-components";
 import { Card, Col, Form, Row, Space, Typography } from "antd";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const { Title, Text } = Typography;
@@ -23,12 +24,22 @@ interface ProfileFormValues {
 	avatar?: string | File
 }
 
+const DIRTY_FIELDS = ["fullName", "workEmail", "phoneNumber", "description"] as const;
+
 export default function Profile() {
 	const { t } = useTranslation();
 	const currentUser = useUserStore();
+	const [form] = Form.useForm<ProfileFormValues>();
+	const [isDirty, setIsDirty] = useState(false);
+	const [hasErrors, setHasErrors] = useState(false);
+
+	const checkDirty = () => {
+		const dirty = DIRTY_FIELDS.some(key => (form.getFieldValue(key) ?? "") !== ((currentUser)[key] ?? ""));
+		setIsDirty(dirty);
+		setHasErrors(form.getFieldsError().some(({ errors }) => errors.length > 0));
+	};
 
 	const handleFinish = async (values: ProfileFormValues) => {
-		// Only update specific fields as requested
 		const data = {
 			fullName: values.fullName,
 			workEmail: values.workEmail,
@@ -39,6 +50,8 @@ export default function Profile() {
 		try {
 			await userService.updateProfile(data);
 			await currentUser.getUserInfo();
+			setIsDirty(false);
+			setHasErrors(false);
 			window.$message?.success(t("personal-center.updateSuccess"));
 		}
 		catch (error) {
@@ -59,8 +72,10 @@ export default function Profile() {
 				className="w-full max-w-4xl shadow-md rounded-2xl overflow-hidden"
 			>
 				<ProForm
+					form={form}
 					layout="vertical"
 					onFinish={handleFinish}
+					onFieldsChange={checkDirty}
 					initialValues={currentUser}
 					submitter={{
 						render: (_, doms) => (
@@ -72,6 +87,8 @@ export default function Profile() {
 							submitText: t("common.save"),
 							resetText: t("common.reset"),
 						},
+						submitButtonProps: { disabled: !isDirty || hasErrors },
+						resetButtonProps: { disabled: !isDirty, onClick: () => setIsDirty(false) },
 					}}
 					requiredMark
 				>
