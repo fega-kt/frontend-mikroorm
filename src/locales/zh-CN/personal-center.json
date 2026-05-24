@@ -20,6 +20,7 @@
 	"pleaseInputValidPhoneNumber": "请输入有效的手机号码！",
 	"descriptionPlaceholder": "简单介绍一下自己...",
 	"descriptionMaxLength": "个人简介不能超过1000个字符",
+	"fullNameRequired": "姓名为必填项",
 	"fullNameMaxLength": "姓名不能超过255个字符",
 	"fullNameInvalidFormat": "姓名只能包含字母，单词之间只能有单个空格",
 	"phoneNumberInvalidFormat": "手机号码格式无效"
