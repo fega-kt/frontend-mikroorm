@@ -55,7 +55,20 @@
 		"phoneNumber": "Phone Number",
 		"phone": "Phone Number",
 		"password": "Password",
-		"avatar": "Avatar"
+		"avatar": "Avatar",
+		"fullNameRequired": "Full name is required",
+		"fullNameMaxLength": "Full name must be less than 255 characters",
+		"fullNameInvalidFormat": "Full name must contain only letters and single spaces between words",
+		"loginNameRequired": "Login name is required",
+		"loginNameInvalidEmail": "Login name must be a valid email address",
+		"passwordRequired": "Password is required",
+		"passwordMinLength": "Password must be at least 8 characters",
+		"passwordLowercase": "Password must contain at least one lowercase letter",
+		"passwordUppercase": "Password must contain at least one uppercase letter",
+		"passwordMaxLength": "Password must be at most 16 characters",
+		"passwordNumber": "Password must contain at least one number",
+		"emailInvalidFormat": "Invalid email format",
+		"phoneInvalidFormat": "Phone number can only contain digits, + and spaces"
 	},
 	"menu": {
 		"name": "Menu Name",
