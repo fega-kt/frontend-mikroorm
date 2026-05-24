@@ -20,6 +20,7 @@
 	"pleaseInputValidPhoneNumber": "Vui lòng nhập số điện thoại hợp lệ!",
 	"descriptionPlaceholder": "Hãy giới thiệu một chút về bản thân bạn...",
 	"descriptionMaxLength": "Giới thiệu bản thân không được vượt quá 1000 ký tự",
+	"fullNameRequired": "Họ và tên là bắt buộc",
 	"fullNameMaxLength": "Họ và tên không được vượt quá 255 ký tự",
 	"fullNameInvalidFormat": "Họ và tên chỉ được chứa chữ cái và dấu cách đơn giữa các từ",
 	"phoneNumberInvalidFormat": "Số điện thoại không hợp lệ"

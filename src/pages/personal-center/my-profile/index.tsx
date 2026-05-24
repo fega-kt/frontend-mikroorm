@@ -121,14 +121,16 @@ export default function Profile() {
 									<Form.Item
 										name="fullName"
 										label={t("personal-center.fullName")}
+										required
 										rules={[
 											{
 												validator: (_: unknown, value: string) => {
-													if (!value || value.trim() === "")
-														return Promise.resolve();
-													if (value.trim().length > 255)
+													const v = (value ?? "").trim();
+													if (!v)
+														return Promise.reject(new Error(t("personal-center.fullNameRequired")));
+													if (v.length > 255)
 														return Promise.reject(new Error(t("personal-center.fullNameMaxLength")));
-													if (!/^\p{L}+(?:\s\p{L}+)*$/u.test(value.trim()))
+													if (!/^\p{L}+(?:\s\p{L}+)*$/u.test(v))
 														return Promise.reject(new Error(t("personal-center.fullNameInvalidFormat")));
 													return Promise.resolve();
 												},

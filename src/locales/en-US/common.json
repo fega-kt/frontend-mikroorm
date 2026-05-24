@@ -41,6 +41,7 @@
 		"setting": "General Settings",
 		"category": "Category Management",
 		"requestType": "Request Type Management",
+		"group": "User Group Management",
 		"workflowSetting": "Workflow Settings"
 	},
 	"appLoading": "Loading Resources...",

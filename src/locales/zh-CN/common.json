@@ -41,6 +41,7 @@
 		"setting": "通用设置",
 		"category": "分类管理",
 		"requestType": "请求类型管理",
+		"group": "用户组管理",
 		"workflowSetting": "工作流配置"
 	},
 	"appLoading": "资源正在加载中...",
