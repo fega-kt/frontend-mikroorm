@@ -58,7 +58,20 @@
 		"phoneNumber": "Số điện thoại",
 		"phone": "Số điện thoại",
 		"password": "Mật khẩu",
-		"avatar": "Ảnh đại diện"
+		"avatar": "Ảnh đại diện",
+		"fullNameRequired": "Họ và tên là bắt buộc",
+		"fullNameMaxLength": "Họ và tên không được vượt quá 255 ký tự",
+		"fullNameInvalidFormat": "Họ và tên chỉ được chứa chữ cái và dấu cách đơn giữa các từ",
+		"loginNameRequired": "Tên đăng nhập là bắt buộc",
+		"loginNameInvalidEmail": "Tên đăng nhập phải là địa chỉ email hợp lệ",
+		"passwordRequired": "Mật khẩu là bắt buộc",
+		"passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự",
+		"passwordLowercase": "Mật khẩu phải chứa ít nhất một chữ thường",
+		"passwordUppercase": "Mật khẩu phải chứa ít nhất một chữ hoa",
+		"passwordMaxLength": "Mật khẩu không được vượt quá 16 ký tự",
+		"passwordNumber": "Mật khẩu phải chứa ít nhất một chữ số",
+		"emailInvalidFormat": "Định dạng email không hợp lệ",
+		"phoneInvalidFormat": "Số điện thoại chỉ được chứa chữ số, dấu + và khoảng trắng"
 	},
 
 	"dept": {
