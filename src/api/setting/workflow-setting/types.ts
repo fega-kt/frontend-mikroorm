@@ -1,6 +1,7 @@
 import type { EntityBase } from "#src/api/entity-base.js";
 import type { SearchParamsBase } from "#src/api/service-base.js";
 import type { CategoryEntity } from "#src/api/setting/category";
+import type { PrincipalEntity } from "#src/api/system/principal";
 
 export enum WorkflowSettingStatus {
 	Draft = "draft",
@@ -83,10 +84,8 @@ export interface ApproverConfig {
 	/** Single ID — used for dept, role */
 	id?: string
 	name?: string
-	/** Multiple user IDs — used when type = "user" */
-	approvers?: string[]
-	/** Display names matching approvers */
-	names?: string[]
+	/** Principal entities — used when type = "user" */
+	approvers?: PrincipalEntity[]
 	/** Field path — used when type = "dynamic" */
 	fieldPath?: string
 }
