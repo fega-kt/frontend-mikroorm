@@ -1,8 +1,7 @@
 import type { ApproverConfig, WfApprovalData } from "#src/api/setting/workflow-setting";
-import type { UserEntity } from "#src/api/user/types";
-import type { PickerValueType } from "#src/components/people-picker";
+import type { PrincipalEntity } from "#src/api/system/principal";
 import { ApproverType } from "#src/api/setting/workflow-setting";
-import { PeoplePicker } from "#src/components/people-picker";
+import { PrincipalPicker } from "#src/components/principal-picker";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Divider, Input, Radio, Select, theme, Tooltip, Typography } from "antd";
 
@@ -25,14 +24,9 @@ function ApproverRow({ approver, onChange, onRemove }: {
 }) {
 	const { token } = theme.useToken();
 
-	const handleUsersChange = (value: PickerValueType) => {
-		const arr = (Array.isArray(value) ? value : value ? [value] : []) as UserEntity[];
-		const users = arr.filter((u): u is UserEntity => typeof u === "object" && "id" in u);
-		onChange({
-			...approver,
-			approvers: users.map(u => u.id),
-			names: users.map(u => u.fullName || u.loginName || ""),
-		});
+	const handleUsersChange = (value: PrincipalEntity | PrincipalEntity[] | string | string[]) => {
+		const arr = (Array.isArray(value) ? value : value ? [value] : []).filter((v): v is PrincipalEntity => typeof v === "object");
+		onChange({ ...approver, approvers: arr });
 	};
 
 	return (
@@ -53,8 +47,8 @@ function ApproverRow({ approver, onChange, onRemove }: {
 				</Tooltip>
 			</div>
 
-			{approver.type === "user" && (
-				<PeoplePicker
+			{approver.type === ApproverType.User && (
+				<PrincipalPicker
 					mode="multiple"
 					value={approver.approvers ?? []}
 					onChange={handleUsersChange}
@@ -64,7 +58,7 @@ function ApproverRow({ approver, onChange, onRemove }: {
 				/>
 			)}
 
-			{approver.type === "dept" && (
+			{approver.type === ApproverType.Dept && (
 				<Input
 					size="small"
 					placeholder="Tên phòng ban"
@@ -73,7 +67,7 @@ function ApproverRow({ approver, onChange, onRemove }: {
 				/>
 			)}
 
-			{approver.type === "role" && (
+			{approver.type === ApproverType.Role && (
 				<Input
 					size="small"
 					placeholder="Tên role"
@@ -82,7 +76,7 @@ function ApproverRow({ approver, onChange, onRemove }: {
 				/>
 			)}
 
-			{approver.type === "dynamic" && (
+			{approver.type === ApproverType.Dynamic && (
 				<Input
 					size="small"
 					placeholder="VD: requester.directManager"
@@ -102,7 +96,7 @@ export function ApprovalPanel({ data, onChange }: ApprovalPanelProps) {
 	};
 
 	const addApprover = () => {
-		const next: ApproverConfig = { type: ApproverType.User, approvers: [], names: [] };
+		const next: ApproverConfig = { type: ApproverType.User, approvers: [] };
 		onChange({ ...data, approvers: [...(data.approvers || []), next] });
 	};
 
@@ -143,7 +137,7 @@ export function ApprovalPanel({ data, onChange }: ApprovalPanelProps) {
 				<div className="space-y-2">
 					{(data.approvers || []).map((a, i) => (
 						<ApproverRow
-							key={i}
+							key={`$approval-panel${(i + 1)}`}
 							approver={a}
 							onChange={approver => updateApprover(i, approver)}
 							onRemove={() => removeApprover(i)}
