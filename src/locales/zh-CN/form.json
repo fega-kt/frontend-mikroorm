@@ -7,7 +7,12 @@
 	},
 	"password": {
 		"required": "请输入密码",
-		"invalid": "8-16 位必须包含字母和数字"
+		"invalid": "密码必须为 8-16 位且包含大写、小写字母和数字",
+		"minLength": "密码至少需要 8 个字符",
+		"maxLength": "密码最多 16 个字符",
+		"lowercase": "密码必须包含至少一个小写字母",
+		"uppercase": "密码必须包含至少一个大写字母",
+		"number": "密码必须包含至少一个数字"
 	},
 	"code": {
 		"required": "请输入验证码"

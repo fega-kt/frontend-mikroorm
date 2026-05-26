@@ -1,4 +1,5 @@
 import { authService } from "#src/api/auth";
+import { PASSWORD_REGEXP } from "#src/constants/regular-expressions";
 import { loginPath } from "#src/router/extra-info";
 import { useAuthStore } from "#src/store/auth";
 import { ModalForm, ProFormText } from "@ant-design/pro-components";
@@ -14,6 +15,8 @@ export function ChangePasswordModal({ open, onOpenChange }: ChangePasswordModalP
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const logout = useAuthStore(state => state.logout);
+
+	const passwordRule = { pattern: PASSWORD_REGEXP, message: t("form.password.invalid") };
 
 	return (
 		<ModalForm
@@ -35,7 +38,10 @@ export function ChangePasswordModal({ open, onOpenChange }: ChangePasswordModalP
 			<ProFormText.Password
 				name="currentPassword"
 				label={t("authority.currentPassword")}
-				rules={[{ required: true, message: t("form.password.required") }]}
+				rules={[
+					{ required: true, message: t("form.password.required") },
+					passwordRule,
+				]}
 			/>
 			<ProFormText.Password
 				name="newPassword"
@@ -43,9 +49,7 @@ export function ChangePasswordModal({ open, onOpenChange }: ChangePasswordModalP
 				dependencies={["currentPassword"]}
 				rules={[
 					{ required: true, message: t("form.password.required") },
-					{ min: 8, message: t("form.password.invalid") },
-					{ pattern: /[a-z]/, message: t("form.password.invalid") },
-					{ pattern: /[A-Z]/, message: t("form.password.invalid") },
+					passwordRule,
 					({ getFieldValue }) => ({
 						validator(_, value) {
 							if (!value || getFieldValue("currentPassword") !== value)

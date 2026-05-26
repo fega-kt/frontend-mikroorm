@@ -7,7 +7,12 @@
 	},
 	"password": {
 		"required": "Please enter your password",
-		"invalid": "The password is 8-16 characters and must contain letters and numbers"
+		"invalid": "Password must be 8-16 characters and contain uppercase, lowercase letters and numbers",
+		"minLength": "Password must be at least 8 characters",
+		"maxLength": "Password must be at most 16 characters",
+		"lowercase": "Password must contain at least one lowercase letter",
+		"uppercase": "Password must contain at least one uppercase letter",
+		"number": "Password must contain at least one number"
 	},
 	"code": {
 		"required": "Please enter the security code"

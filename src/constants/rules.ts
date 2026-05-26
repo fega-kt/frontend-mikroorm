@@ -3,9 +3,9 @@ import type { TFunction } from "i18next";
 import {
 	ALPHA_NUMERIC_ONLY_REGEXP,
 	MOBILE_PHONE_REGEXP,
+	PASSWORD_REGEXP,
 	TELEPHONE_REGEXP,
 	UNIFIED_SOCIAL_CREDIT_CODE_REGEXP,
-	USERNAME_REGEXP,
 } from "./regular-expressions";
 
 export const FORM_REQUIRED = [{ required: true }]; // 表单必填校验
@@ -17,12 +17,12 @@ export function USERNAME_RULES(t: TFunction<"translation", undefined>) {
 	return [
 		{
 			required: true,
-			message: t("form.username.required"),
+			message: t("form.email.required"),
 		},
-		// {
-		// 	pattern: USERNAME_REGEXP,
-		// 	message: t("form.username.invalid"),
-		// },
+		{
+			type: "email" as const,
+			message: t("form.email.invalid"),
+		},
 	];
 }
 
@@ -37,7 +37,7 @@ export function PASSWORD_RULES(t: TFunction<"translation", undefined>) {
 			message: t("form.password.required"),
 		},
 		{
-			pattern: /^(?=.*\d)(?=.*[a-z])[\w~!@#$%^&*+.\-]{8,16}$/i,
+			pattern: PASSWORD_REGEXP,
 			message: t("form.password.invalid"),
 		},
 	];
