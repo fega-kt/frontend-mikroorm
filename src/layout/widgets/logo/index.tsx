@@ -1,10 +1,12 @@
-import logo from "#src/assets/svg/logo.svg?url";
+import localLogo from "#src/assets/svg/logo.svg?url";
 
 import { Typography } from "antd";
 import { clsx } from "clsx";
 import { useNavigate } from "react-router";
 
 import { headerHeight } from "../../constants";
+
+const logo = import.meta.env.VITE_GLOB_APP_LOGO_URL || localLogo;
 
 const { Title } = Typography;
 
@@ -31,6 +33,7 @@ export function Logo({ sidebarCollapsed, className }: LogoProps) {
 				alt="logo"
 				width={32}
 				height={32}
+				onError={(e) => { (e.currentTarget as HTMLImageElement).src = localLogo; }}
 			/>
 
 			<Title

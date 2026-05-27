@@ -1,8 +1,7 @@
 import type { FormComponentMapType } from "./form-mode-context";
 
-// import hero from "#src/assets/svg/hero.svg?url";
 import Banner from "#src/assets/svg/banner.svg?react";
-import logo from "#src/assets/svg/logo.svg?url";
+import localLogo from "#src/assets/svg/logo.svg?url";
 import { useLayoutMenu } from "#src/hooks/use-layout-menu";
 import { usePreferences } from "#src/hooks/use-preferences";
 import LayoutFooter from "#src/layout/layout-footer";
@@ -22,6 +21,8 @@ import { useTranslation } from "react-i18next";
 
 import { FORM_COMPONENT_MAP } from "./constants";
 import { FormModeContext } from "./form-mode-context";
+
+const logo = import.meta.env.VITE_GLOB_APP_LOGO_URL || localLogo;
 
 export default function Login() {
 	const { isDark } = usePreferences();
@@ -44,7 +45,7 @@ export default function Login() {
 				<div
 					className="text-colorText flex flex-1 items-center"
 				>
-					<img alt="App Logo" src={logo} className="mr-2 w-11" />
+					<img alt="App Logo" src={logo} className="mr-2 w-11" onError={(e) => { (e.currentTarget as HTMLImageElement).src = localLogo; }} />
 					<h1 className="m-0 text-xl font-medium">
 						{import.meta.env.VITE_GLOB_APP_TITLE}
 					</h1>
