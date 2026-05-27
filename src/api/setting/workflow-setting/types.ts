@@ -124,3 +124,24 @@ export interface WorkflowDefinition {
 	nodes: WfNode[]
 	edges: WfEdge[]
 }
+
+// ─── API payload types (approvers serialized to string IDs) ──────────────────
+
+export interface ApproverConfigPayload extends Omit<ApproverConfig, "approvers"> {
+	approvers?: string[]
+}
+
+export interface WfApprovalDataPayload extends Omit<WfApprovalData, "approvers"> {
+	approvers?: ApproverConfigPayload[]
+}
+
+export interface WfNodePayload extends Omit<WfNode, "data"> {
+	data: WfStartData | WfApprovalDataPayload | WfEndData
+}
+
+export interface WorkflowSettingPayload extends Omit<WorkflowSettingEntity, "workflowDefinition"> {
+	workflowDefinition?: {
+		nodes: WfNodePayload[]
+		edges: WfEdge[]
+	}
+}

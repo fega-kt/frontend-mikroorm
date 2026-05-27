@@ -1,7 +1,7 @@
-import type { WfApprovalData, WorkflowSettingEntity } from "#src/api/setting/workflow-setting";
+import type { WfApprovalData, WfNodePayload, WorkflowSettingEntity, WorkflowSettingPayload } from "#src/api/setting/workflow-setting";
 import type { FullscreenModalRef } from "#src/components/fullscreen-modal";
 import type { Tab } from "./tab-bar";
-import { workflowSettingService, WorkflowSettingStatus } from "#src/api/setting/workflow-setting";
+import { WfNodeType, workflowSettingService, WorkflowSettingStatus } from "#src/api/setting/workflow-setting";
 import { FullscreenModal } from "#src/components/fullscreen-modal";
 import { Button, Form, Spin, Tag } from "antd";
 import * as React from "react";
@@ -74,22 +74,38 @@ export function Detail({ ref }: DetailProps) {
 	const onFinish = async () => {
 		setSubmitting(true);
 		const values: WorkflowSettingEntity = form.getFieldsValue(true);
-		values.workflowDefinition?.nodes.forEach((node) => {
-			if (node.type === "approval") {
-				const data = node.data as WfApprovalData;
-				data.approvers = data.approvers?.map(cfg => ({
-					...cfg,
-					approvers: cfg.approvers?.map((p: unknown) => (typeof p === "object" ? p.id : p)),
-				}));
-			}
-		});
+
+		const payload: WorkflowSettingPayload = {
+			...values,
+			workflowDefinition: values.workflowDefinition
+				? {
+					...values.workflowDefinition,
+					nodes: values.workflowDefinition.nodes.map((node): WfNodePayload => {
+						if (node.type !== WfNodeType.Approval)
+							return node as WfNodePayload;
+						const data = node.data as WfApprovalData;
+						return {
+							...node,
+							data: {
+								...data,
+								approvers: data.approvers?.map(cfg => ({
+									...cfg,
+									approvers: cfg.approvers?.map(p => p.id),
+								})),
+							},
+						};
+					}),
+				}
+				: undefined,
+		};
+
 		try {
 			if (editingId) {
-				await workflowSettingService.fetchUpdateWorkflowSetting(editingId, values);
+				await workflowSettingService.fetchUpdateWorkflowSetting(editingId, payload);
 				window.$message?.success(t("common.updateSuccess"));
 			}
 			else {
-				await workflowSettingService.fetchAddWorkflowSetting(values);
+				await workflowSettingService.fetchAddWorkflowSetting(payload);
 				window.$message?.success(t("common.addSuccess"));
 			}
 			guard?.({ isChange: true });
