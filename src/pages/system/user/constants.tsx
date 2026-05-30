@@ -35,8 +35,9 @@ export function getConstantColumns(t: any): ProColumns<UserEntity>[] {
 			title: t("common.createdAt"),
 			dataIndex: "createdAt",
 			valueType: "dateTime",
+			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
 			hideInSearch: true,
-			width: 160,
+			width: 200,
 		},
 	];
 }

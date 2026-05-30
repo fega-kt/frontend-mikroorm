@@ -15,10 +15,11 @@ export function getConstantColumns(t: (key: string) => string): ProColumns<Group
 		},
 		{
 			title: t("common.createdAt"),
-			dataIndex: "created",
+			dataIndex: "createdAt",
 			valueType: "dateTime",
+			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
 			hideInSearch: true,
-			width: 160,
+			width: 200,
 		},
 	];
 }

@@ -74,15 +74,17 @@ export function getConstantColumns(t: TFunction<"translation", undefined>): ProC
 		{
 			title: t("common.createTime"),
 			dataIndex: "createdAt",
-			valueType: "date",
-			width: 150,
+			valueType: "dateTime",
+			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
+			width: 200,
 			search: false,
 		},
 		{
 			title: t("common.updateTime"),
 			dataIndex: "updatedAt",
-			valueType: "date",
-			width: 170,
+			valueType: "dateTime",
+			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
+			width: 200,
 			search: false,
 		},
 	];
