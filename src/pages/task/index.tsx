@@ -128,6 +128,7 @@ export default function Task() {
 			title: t("task.fields.due_date"),
 			dataIndex: "dueDate",
 			valueType: "date",
+			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
 			hideInSearch: true,
 		},
 		{

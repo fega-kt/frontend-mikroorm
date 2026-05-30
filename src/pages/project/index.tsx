@@ -103,6 +103,7 @@ export default function Project() {
 			title: t("project.fields.due_date", "Hạn chót"),
 			dataIndex: "dueDate",
 			valueType: "date",
+			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
 			hideInSearch: true,
 		},
 		{
