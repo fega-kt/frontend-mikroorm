@@ -1,8 +1,6 @@
-import type { DepartmentEntity } from "#src/api/system/dept";
+import { ProFormDepartmentPicker } from "#src/components/department-picker";
 import { ProFormPeoplePicker } from "#src/components/people-picker";
-import { handleTree } from "#src/utils/tree";
 import {
-	ProFormCascader,
 	ProFormRadio,
 	ProFormText,
 } from "@ant-design/pro-components";
@@ -10,10 +8,10 @@ import { useTranslation } from "react-i18next";
 
 interface DeptInfoTabProps {
 	isEditing: boolean
-	validParentList: DepartmentEntity[]
+	excludeRootId?: string
 }
 
-export function DeptInfoTab({ isEditing, validParentList }: DeptInfoTabProps) {
+export function DeptInfoTab({ isEditing, excludeRootId }: DeptInfoTabProps) {
 	const { t } = useTranslation();
 
 	return (
@@ -34,23 +32,10 @@ export function DeptInfoTab({ isEditing, validParentList }: DeptInfoTabProps) {
 				label={t("system.dept.code")}
 			/>
 
-			<ProFormCascader
+			<ProFormDepartmentPicker
 				name="parent"
 				label={t("system.dept.parentDept")}
-				transform={(value: string[]) => ({
-					parent: value?.[value.length - 1] ?? null,
-				})}
-				fieldProps={{
-					showSearch: true,
-					autoClearSearchValue: true,
-					changeOnSelect: true,
-					options: handleTree(validParentList),
-					fieldNames: {
-						label: "name",
-						value: "id",
-						children: "children",
-					},
-				}}
+				excludeRootId={excludeRootId}
 			/>
 
 			<ProFormPeoplePicker

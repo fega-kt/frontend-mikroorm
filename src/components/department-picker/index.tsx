@@ -1,17 +1,27 @@
-import type { DepartmentEntity } from "#src/api/system/dept/types";
+import type { DepartmentEntity, DepartmentTreeNode } from "#src/api/system/dept/types";
 import type { FormItemProps, TreeSelectProps } from "antd";
 import { departmentService } from "#src/api/system/dept";
 import { ProFormItem } from "@ant-design/pro-components";
 import { useDebounceFn } from "ahooks";
-import { Spin, TreeSelect } from "antd";
+import { Spin, TreeSelect, Typography } from "antd";
 import * as React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import styles from "./department-picker.module.scss";
 
 interface TreeNode {
 	value: string
-	title: string
+	title: React.ReactNode
+	name: string
 	children?: TreeNode[]
+}
+
+function makeTitleNode(text: string): React.ReactNode {
+	return (
+		<Typography.Text ellipsis={{ tooltip: text }} className="w-full block">
+			{text}
+		</Typography.Text>
+	);
 }
 
 function getParentId(parent: DepartmentEntity["parent"]): string | undefined {
@@ -22,13 +32,53 @@ function getParentId(parent: DepartmentEntity["parent"]): string | undefined {
 	return parent.id;
 }
 
+function filterTreeNodes(nodes: TreeNode[], excludeIds: Set<string>): TreeNode[] {
+	return nodes
+		.filter(n => !excludeIds.has(n.value))
+		.map(n => ({
+			...n,
+			children: n.children ? filterTreeNodes(n.children, excludeIds) : undefined,
+		}));
+}
+
+function collectAllTreeIds(nodes: TreeNode[], ids: Set<string>) {
+	for (const node of nodes) {
+		ids.add(node.value);
+		collectAllTreeIds(node.children ?? [], ids);
+	}
+}
+
+function getDescendantIdsFromTree(nodes: TreeNode[], rootId: string): Set<string> {
+	for (const node of nodes) {
+		if (node.value === rootId) {
+			const ids = new Set<string>([rootId]);
+			collectAllTreeIds(node.children ?? [], ids);
+			return ids;
+		}
+		const found = getDescendantIdsFromTree(node.children ?? [], rootId);
+		if (found.size > 0)
+			return found;
+	}
+	return new Set<string>();
+}
+
+function convertToTreeNodes(nodes: DepartmentTreeNode[]): TreeNode[] {
+	return nodes.map(n => ({
+		value: n.id,
+		name: n.name,
+		title: makeTitleNode(n.name),
+		children: n.children?.length ? convertToTreeNodes(n.children) : undefined,
+	}));
+}
+
 function buildTree(departments: DepartmentEntity[]): TreeNode[] {
 	const map = new Map<string, TreeNode & { _parentId?: string }>();
 
 	departments.forEach((dept) => {
 		map.set(dept.id, {
 			value: dept.id,
-			title: dept.name,
+			name: dept.name,
+			title: makeTitleNode(dept.name),
 			children: [],
 			_parentId: getParentId(dept.parent),
 		});
@@ -58,6 +108,7 @@ export interface DepartmentPickerProps extends Omit<TreeSelectProps, "treeData" 
 	dataSource?: DepartmentEntity[]
 	api?: string
 	multiple?: boolean
+	excludeRootId?: string
 	ref?: React.Ref<React.ComponentRef<typeof TreeSelect>>
 }
 
@@ -67,6 +118,7 @@ export function DepartmentPicker(props: DepartmentPickerProps) {
 		api: _api,
 		multiple,
 		placeholder,
+		excludeRootId,
 		ref,
 		value,
 		onChange,
@@ -75,17 +127,21 @@ export function DepartmentPicker(props: DepartmentPickerProps) {
 	} = props;
 
 	const { t } = useTranslation();
-	const [apiDepartments, setApiDepartments] = useState<DepartmentEntity[]>([]);
+	const [apiTreeData, setApiTreeData] = useState<TreeNode[]>([]);
 	const [loading, setLoading] = useState(false);
 	const fetchedRef = useRef(false);
 
 	const isRemote = !dataSource;
 
+	const [remoteExpandedKeys, setRemoteExpandedKeys] = useState<string[]>([]);
+
 	const fetchData = useCallback(async (keyword?: string) => {
 		setLoading(true);
 		try {
-			const data = await departmentService.fetchDeptTree(keyword);
-			setApiDepartments(data || []);
+			const data = await departmentService.fetchDeptTreeList({ keyword });
+			const nodes = convertToTreeNodes(data || []);
+			setApiTreeData(nodes);
+			setRemoteExpandedKeys(nodes.map(n => n.value));
 			fetchedRef.current = true;
 		}
 		catch (error) {
@@ -110,10 +166,15 @@ export function DepartmentPicker(props: DepartmentPickerProps) {
 		}
 	};
 
-	const treeData = useMemo(
-		() => buildTree(dataSource || apiDepartments),
-		[dataSource, apiDepartments],
-	);
+	const treeData = useMemo(() => {
+		const tree = dataSource ? buildTree(dataSource) : apiTreeData;
+		if (!excludeRootId)
+			return tree;
+		const excludeSet = getDescendantIdsFromTree(tree, excludeRootId);
+		return excludeSet.size > 0 ? filterTreeNodes(tree, excludeSet) : tree;
+	}, [dataSource, apiTreeData, excludeRootId]);
+
+	const localDefaultExpandedKeysRef = useRef(treeData.map(n => n.value));
 
 	const normalizedValue = useMemo(() => {
 		if (!value)
@@ -126,35 +187,49 @@ export function DepartmentPicker(props: DepartmentPickerProps) {
 		return Array.isArray(value) ? value.map(toInternal) : toInternal(value);
 	}, [value]);
 
+	const findNodeName = (nodes: TreeNode[], id: string): string | undefined => {
+		for (const n of nodes) {
+			if (n.value === id)
+				return n.name;
+			const found = n.children ? findNodeName(n.children, id) : undefined;
+			if (found)
+				return found;
+		}
+	};
+
 	const handleChange: TreeSelectProps["onChange"] = (selected, ...args) => {
 		if (!onChange)
 			return;
-		const toEntity = (s: { value: string, label: React.ReactNode }) => ({ id: s.value, name: String(s.label) });
+		const toEntity = (s: { value: string }) => ({ id: s.value, name: findNodeName(treeData, s.value) ?? s.value });
 		const result = !selected
 			? selected
 			: Array.isArray(selected)
 				? selected.map(toEntity)
-				: toEntity(selected as { value: string, label: React.ReactNode });
+				: toEntity(selected as { value: string });
 		onChange(result, ...args);
 	};
 	return (
 		<TreeSelect
 			ref={ref}
-			showSearch
+			showSearch={isRemote
+				? { onSearch: (keyword: string) => runDebouncedSearch(keyword), filterTreeNode: false }
+				: { treeNodeFilterProp: "name" }}
 			allowClear
-			treeDefaultExpandAll
 			labelInValue
 			placeholder={placeholder || t("common.keywordSearch")}
 			loading={loading}
 			treeData={treeData}
+			{...(isRemote
+				? { treeExpandedKeys: remoteExpandedKeys, onTreeExpand: keys => setRemoteExpandedKeys(keys as string[]) }
+				: { treeDefaultExpandedKeys: localDefaultExpandedKeysRef.current })}
 			multiple={multiple}
 			treeCheckable={multiple}
 			showCheckedStrategy={TreeSelect.SHOW_ALL}
 			onOpenChange={handleDropdownVisibleChange}
-			onSearch={keyword => runDebouncedSearch(keyword)}
 			notFoundContent={loading ? <div className="flex justify-center p-4"><Spin size="small" /></div> : undefined}
 			className="w-full"
-			dropdownStyle={{ maxHeight: 360, overflow: "auto" }}
+			classNames={{ popup: { root: styles.dropdown } }}
+			styles={{ popup: { root: { maxHeight: 360, overflow: "auto" } } }}
 			value={normalizedValue as TreeSelectProps["value"]}
 			onChange={handleChange}
 			{...restProps}
@@ -166,6 +241,7 @@ export interface ProFormDepartmentPickerProps extends Omit<FormItemProps, "child
 	name: string
 	multiple?: boolean
 	labelInValue?: boolean
+	excludeRootId?: string
 	fieldProps?: DepartmentPickerProps
 	initialValue?: string | string[]
 }
@@ -176,6 +252,7 @@ export function ProFormDepartmentPicker({
 	rules,
 	multiple,
 	labelInValue = true,
+	excludeRootId,
 	fieldProps,
 	initialValue,
 	...rest
@@ -191,6 +268,7 @@ export function ProFormDepartmentPicker({
 			<DepartmentPicker
 				multiple={multiple}
 				labelInValue={labelInValue}
+				excludeRootId={excludeRootId}
 				{...fieldProps}
 			/>
 		</ProFormItem>

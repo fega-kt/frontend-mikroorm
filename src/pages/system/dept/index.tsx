@@ -1,4 +1,4 @@
-import type { DepartmentEntity } from "#src/api/system/dept";
+import type { DepartmentTreeNode } from "#src/api/system/dept";
 import type { ActionType, ProColumns, ProCoreActionType } from "@ant-design/pro-components";
 
 import type { DetailRef } from "./components/detail";
@@ -8,7 +8,6 @@ import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
-import { handleTree } from "#src/utils/tree";
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Popconfirm, Tooltip } from "antd";
 import { useRef, useState } from "react";
@@ -25,27 +24,14 @@ export default function Dept() {
 	const detailRef = useRef<DetailRef>(null);
 	const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
-	/** Trả về IDs của tất cả node có depth <= maxDepth */
-	const getExpandedKeys = (list: DepartmentEntity[], maxDepth = 2): string[] => {
-		const depthMap = new Map<string, number>();
-		const result: string[] = [];
-		// Build depth map
-		const computeDepth = (id: string): number => {
-			if (depthMap.has(id)) {
-				return depthMap.get(id)!;
-			}
-			const node = list.find(d => d.id === id);
-			const parentId = node?.parent as unknown as string | null;
-			const depth = parentId ? computeDepth(parentId) + 1 : 0;
-			depthMap.set(id, depth);
-			return depth;
-		};
-		for (const item of list) {
-			if (computeDepth(item.id) <= maxDepth) {
-				result.push(item.id);
-			}
+	const getExpandedKeys = (nodes: DepartmentTreeNode[], depth = 0, maxDepth = 2): string[] => {
+		if (depth >= maxDepth) {
+			return [];
 		}
-		return result;
+		return nodes.flatMap(node => [
+			node.id,
+			...getExpandedKeys(node.children ?? [], depth + 1, maxDepth),
+		]);
 	};
 
 	const handleAdd = async () => {
@@ -68,7 +54,8 @@ export default function Dept() {
 		window.$message?.success(`${t("common.deleteSuccess")} id = ${deletedId}`);
 	};
 
-	const columns: ProColumns<DepartmentEntity>[] = [
+	const columns: ProColumns<DepartmentTreeNode>[] = [
+
 		...getConstantColumns(t),
 		{
 			title: t("common.action"),
@@ -111,18 +98,18 @@ export default function Dept() {
 
 	return (
 		<BasicContent className="h-full">
-			<BasicTable<DepartmentEntity>
+			<BasicTable<DepartmentTreeNode>
 				adaptive
+				tableLayout="fixed"
 				columns={columns}
-				scroll={{ x: "max-content" }}
+				scroll={{ x: "min-content" }}
 				actionRef={actionRef}
 				request={async (params) => {
-					const list = await departmentService.fetchDeptList(params);
-					const deptTree = handleTree(list);
-					setExpandedRowKeys(getExpandedKeys(list));
+					const tree = await departmentService.fetchDeptTreeList(params);
+					setExpandedRowKeys(getExpandedKeys(tree));
 					return {
-						data: deptTree,
-						total: list.length,
+						data: tree,
+						total: tree.length,
 						success: true,
 					};
 				}}

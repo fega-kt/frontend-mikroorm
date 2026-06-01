@@ -18,41 +18,6 @@ interface DetailProps {
 
 let guard: (res?: { isChange: boolean }) => void;
 
-// parent từ API là string ID (dù type khai báo DepartmentEntity)
-type ParentId = string | null | undefined;
-
-function getParentId(item: DepartmentEntity): string | undefined {
-	return (item.parent as unknown as ParentId) ?? undefined;
-}
-
-/** Trả về tập ID của node đó và toàn bộ con cháu */
-function getDescendantIds(id: string, list: DepartmentEntity[]): Set<string> {
-	const result = new Set<string>([id]);
-	const queue = [id];
-	while (queue.length > 0) {
-		const current = queue.shift()!;
-		for (const item of list) {
-			if (getParentId(item) === current && !result.has(item.id)) {
-				result.add(item.id);
-				queue.push(item.id);
-			}
-		}
-	}
-	return result;
-}
-
-/** Build path mảng ID từ root đến node (dùng cho Cascader) */
-function getAncestorPath(parentId: string, list: DepartmentEntity[]): string[] {
-	const path: string[] = [];
-	let current: string | undefined = parentId;
-	while (current) {
-		path.unshift(current);
-		const node = list.find(d => d.id === current);
-		current = getParentId(node!);
-	}
-	return path;
-}
-
 export function Detail({ ref }: DetailProps) {
 	const { t } = useTranslation();
 	const [form] = Form.useForm<DepartmentEntity>();
@@ -61,20 +26,11 @@ export function Detail({ ref }: DetailProps) {
 	const [loading, setLoading] = useState(false);
 	const [activeTab, setActiveTab] = useState("info");
 	const [editingId, setEditingId] = useState<string | null>(null);
-	const [flatDeptList, setFlatDeptList] = useState<DepartmentEntity[]>([]);
 	const [deptUsers, setDeptUsers] = useState<UserEntity[]>([]);
 
 	const title = useMemo(
 		() => editingId ? t("system.dept.editDept") : t("system.dept.addDept"),
 		[editingId, t],
-	);
-
-	/** Danh sách dept hợp lệ làm parent */
-	const validParentList = useMemo(
-		() => editingId
-			? flatDeptList.filter(d => !getDescendantIds(editingId, flatDeptList).has(d.id))
-			: flatDeptList,
-		[editingId, flatDeptList],
 	);
 
 	useImperativeHandle(ref, () => ({
@@ -86,22 +42,9 @@ export function Detail({ ref }: DetailProps) {
 			setOpen(true);
 			setLoading(true);
 			try {
-				const [deptList, deptItem] = await Promise.all([
-					departmentService.fetchDeptList({}),
-					id ? departmentService.fetchDeptItem(id) : Promise.resolve(null),
-				]);
-				setFlatDeptList(deptList);
+				const deptItem = id ? await departmentService.fetchDeptItem(id) : null;
 				if (deptItem) {
-					const parentString = getParentId(deptItem);
-					const parent = parentString
-						? getAncestorPath(parentString, deptList)
-						: undefined;
-
-					form.setFieldsValue({
-						...deptItem,
-						parent,
-
-					} as any);
+					form.setFieldsValue(deptItem);
 					setDeptUsers(deptItem.users ?? []);
 				}
 				setLoading(false);
@@ -169,7 +112,7 @@ export function Detail({ ref }: DetailProps) {
 						{
 							key: "info",
 							label: t("system.dept.tabInfo"),
-							children: <DeptInfoTab isEditing={!!editingId} validParentList={validParentList} />,
+							children: <DeptInfoTab isEditing={!!editingId} excludeRootId={editingId ?? undefined} />,
 						},
 						{
 							key: "users",
