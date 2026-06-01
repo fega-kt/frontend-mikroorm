@@ -27,3 +27,5 @@ interface ApiTableRequest extends Record<string, any> {
 }
 
 type Recordable<T = any> = Record<string, T>;
+
+type WithChildren<T, C extends string> = T & { [K in C]?: WithChildren<T, C>[] };

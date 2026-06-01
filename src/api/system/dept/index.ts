@@ -1,11 +1,11 @@
-import type { DepartmentEntity, DepartmentSearchParams } from "./types";
+import type { DepartmentEntity, DepartmentSearchParams, DepartmentTreeNode } from "./types";
 import { CrudServiceBase } from "../../service-base";
 
 export * from "./types";
 
 export class DepartmentService extends CrudServiceBase<DepartmentEntity> {
 	constructor() {
-		super({ endpoint: "department", populate: ["manager", "deputy"] });
+		super({ endpoint: "department", populate: ["manager", "deputy", "parent"] });
 	}
 
 	/** Lấy danh sách bộ phận */
@@ -31,6 +31,11 @@ export class DepartmentService extends CrudServiceBase<DepartmentEntity> {
 			searchParams: (keyword ? { keyword } : undefined),
 			ignoreLoading: true,
 		});
+	}
+
+	/** Lấy cây phòng ban từ endpoint department-tree (server đã build sẵn) */
+	async fetchDeptTreeList(params?: DepartmentSearchParams) {
+		return this.get<DepartmentTreeNode[]>("department-tree", { searchParams: params, ignoreLoading: true });
 	}
 
 	/** Thêm bộ phận */

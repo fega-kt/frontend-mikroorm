@@ -1,41 +1,22 @@
-import type { DepartmentEntity } from "#src/api/system/dept";
+import type { DepartmentTreeNode } from "#src/api/system/dept";
 import type { ProColumns } from "@ant-design/pro-components";
 import type { TFunction } from "i18next";
 
 import { Tag } from "antd";
 
-export function getConstantColumns(t: TFunction<"translation", undefined>): ProColumns<DepartmentEntity>[] {
+export function getConstantColumns(t: TFunction<"translation", undefined>): ProColumns<DepartmentTreeNode>[] {
 	return [
-
 		{
 			title: t("system.dept.name"),
 			dataIndex: "name",
 			ellipsis: true,
 			width: 200,
-			fieldProps: {
-				placeholder: t("common.name"),
-			},
-			formItemProps: {
-				label: t("common.name"),
-				rules: [
-					{
-						required: true,
-						message: t("form.required"),
-					},
-				],
-			},
 		},
 		{
 			title: t("system.dept.code"),
 			dataIndex: "code",
 			width: 150,
 			ellipsis: true,
-			fieldProps: {
-				placeholder: t("common.id"),
-			},
-			formItemProps: {
-				label: t("common.id"),
-			},
 		},
 		{
 			title: t("system.dept.parentCode"),
@@ -49,39 +30,19 @@ export function getConstantColumns(t: TFunction<"translation", undefined>): ProC
 			title: t("common.status"),
 			dataIndex: "status",
 			valueType: "select",
-			width: 80,
+			ellipsis: true,
+			width: 150,
 			render: (text, record) => {
 				return <Tag color={record.status === 1 ? "success" : "default"}>{text}</Tag>;
 			},
 			valueEnum: {
-				1: {
-					text: t("common.enabled"),
-				},
-				0: {
-					text: t("common.deactivated"),
-				},
-			},
-		},
-		{
-			title: t("system.dept.userCount"),
-			dataIndex: "users",
-			width: 120,
-			search: false,
-			render: (_, record) => {
-				return record.users?.length ?? 0;
+				1: { text: t("common.enabled") },
+				0: { text: t("common.deactivated") },
 			},
 		},
 		{
 			title: t("common.createTime"),
 			dataIndex: "createdAt",
-			valueType: "dateTime",
-			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
-			width: 200,
-			search: false,
-		},
-		{
-			title: t("common.updateTime"),
-			dataIndex: "updatedAt",
 			valueType: "dateTime",
 			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
 			width: 200,

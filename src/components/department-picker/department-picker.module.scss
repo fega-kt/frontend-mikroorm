@@ -1,0 +1,25 @@
+.dropdown {
+
+
+	:global {
+		.ant-select-tree-treenode-selected,
+		.ant-select-tree-treenode:hover {
+			background-color: var(--ant-color-primary-bg);
+			border-radius: var(--ant-border-radius);
+		}
+
+		.ant-select-tree-node-content-wrapper.ant-select-tree-node-selected,
+		.ant-select-tree-treenode:hover .ant-select-tree-node-content-wrapper {
+			background-color: transparent !important;
+		}
+
+		.ant-select-tree-switcher {
+			width: 16px;
+		}
+
+		.ant-select-tree-node-content-wrapper {
+			min-width: 0;
+			overflow: hidden;
+		}
+	}
+}

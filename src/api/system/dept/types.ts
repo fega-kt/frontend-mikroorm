@@ -20,3 +20,13 @@ export interface DepartmentEntity extends EntityBase {
 	deputy?: UserEntity | null
 	users?: UserEntity[]
 }
+
+export type DepartmentTreeNode = WithChildren<{
+	id: string
+	name: string
+	code: string
+	parentCode: string
+	status: 1 | 0
+	createdAt: Date
+	parent: string
+}, "children">;
