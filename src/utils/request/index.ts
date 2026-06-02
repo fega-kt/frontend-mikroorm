@@ -76,3 +76,4 @@ const defaultConfig: Options = {
 };
 
 export const request = ky.create(defaultConfig);
+export { parseErrorMessage } from "./error-response";
