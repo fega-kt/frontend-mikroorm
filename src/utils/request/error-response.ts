@@ -10,7 +10,7 @@ import { message } from "#src/utils/static-antd";
 export async function handleErrorResponse(response: Response) {
 	try {
 		// 将响应内容解析为 JSON 格式
-		const data = await response.json();
+		const data = await response.clone().json();
 
 		// 判断解析后的数据是否为对象类型
 		if (isObject(data)) {
@@ -36,4 +36,15 @@ export async function handleErrorResponse(response: Response) {
 
 	// 返回响应对象
 	return response;
+}
+
+export async function parseErrorMessage(err: unknown): Promise<string | null> {
+	try {
+		if (err && typeof err === "object" && "response" in err) {
+			const body = await (err as { response: Response }).response.json() as { message?: string };
+			return body.message ?? null;
+		}
+	}
+	catch {}
+	return null;
 }

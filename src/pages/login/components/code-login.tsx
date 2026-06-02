@@ -1,5 +1,7 @@
+import { authService } from "#src/api/auth";
 import { BasicButton } from "#src/components/basic-button";
 import { supabase } from "#src/store/supabaseClient";
+import { parseErrorMessage } from "#src/utils/request";
 
 import { LeftOutlined } from "@ant-design/icons";
 import { useCountDown } from "ahooks";
@@ -17,6 +19,8 @@ import { useNavigate, useSearchParams } from "react-router";
 import { FormModeContext } from "../form-mode-context";
 
 const { Title } = Typography;
+const OTP_LENGTH = 6;
+const RESEND_COOLDOWN_MS = 5 * 60 * 1000;
 
 enum Step {
 	Email = "email",
@@ -29,6 +33,7 @@ export function CodeLogin() {
 	const [otpValue, setOtpValue] = useState("");
 	const [sendLoading, setSendLoading] = useState(false);
 	const [verifyLoading, setVerifyLoading] = useState(false);
+	const [sendBlocked, setSendBlocked] = useState(false);
 
 	const [resendTargetDate, setResendTargetDate] = useState(0);
 	const [resendCountdown] = useCountDown({
@@ -41,22 +46,21 @@ export function CodeLogin() {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
 
+	const startCooldown = () => setResendTargetDate(Date.now() + RESEND_COOLDOWN_MS);
+
 	const handleSendOtp = async ({ email: emailValue }: { email: string }) => {
 		setSendLoading(true);
 		try {
-			const { error } = await supabase.auth.signInWithOtp({
-				email: emailValue,
-				options: { shouldCreateUser: false },
-			});
-			if (error)
-				throw error;
+			await authService.sendOtp({ email: emailValue });
 			setEmail(emailValue);
-			setResendTargetDate(Date.now() + 60_000);
+			startCooldown();
 			setStep(Step.Otp);
 		}
 		catch (err) {
-			const isNotFound = err instanceof Error && /signup/i.test(err.message);
-			window.$message?.error(t(isNotFound ? "authority.emailNotFound" : "authority.loginFail"));
+			const msg = await parseErrorMessage(err);
+			if (msg && /too many otp requests/i.test(msg)) {
+				setSendBlocked(true);
+			}
 		}
 		finally {
 			setSendLoading(false);
@@ -66,17 +70,21 @@ export function CodeLogin() {
 	const handleVerifyOtp = async (otp: string) => {
 		setVerifyLoading(true);
 		try {
-			const { error } = await supabase.auth.verifyOtp({ email, token: otp, type: "email" });
-			if (error)
-				throw error;
+			const result = await authService.otpLogin({ email, otp });
+			await supabase.auth.setSession({
+				access_token: result.access_token,
+				refresh_token: result.refresh_token,
+			});
 			window.$message?.success(t("authority.loginSuccess"));
 			const redirect = searchParams.get("redirect");
 			navigate(redirect ? `/${redirect.slice(1)}` : import.meta.env.VITE_BASE_HOME_PATH);
 		}
 		catch (err) {
-			const msg = err instanceof Error ? err.message : t("authority.loginFail");
-			window.$message?.error(msg);
+			const msg = await parseErrorMessage(err);
 			setOtpValue("");
+			if (msg && (/expired or not found/i.test(msg) || /too many failed/i.test(msg))) {
+				setStep(Step.Email);
+			}
 		}
 		finally {
 			setVerifyLoading(false);
@@ -85,14 +93,15 @@ export function CodeLogin() {
 
 	const handleResend = async () => {
 		try {
-			const { error } = await supabase.auth.signInWithOtp({ email });
-			if (error)
-				throw error;
-			setResendTargetDate(Date.now() + 60_000);
+			await authService.sendOtp({ email });
+			startCooldown();
 			window.$message?.success(t("authority.otpResent"));
 		}
-		catch {
-			window.$message?.error(t("authority.loginFail"));
+		catch (err) {
+			const msg = await parseErrorMessage(err);
+			if (msg && /already sent/i.test(msg)) {
+				startCooldown();
+			}
 		}
 	};
 
@@ -122,7 +131,13 @@ export function CodeLogin() {
 						</Form.Item>
 
 						<Form.Item>
-							<Button block type="primary" htmlType="submit" loading={sendLoading}>
+							<Button
+								block
+								type="primary"
+								htmlType="submit"
+								loading={sendLoading}
+								disabled={sendBlocked}
+							>
 								{t("authority.sendOtp")}
 							</Button>
 						</Form.Item>
@@ -147,13 +162,13 @@ export function CodeLogin() {
 
 						<div className="flex flex-col items-center gap-4">
 							<Input.OTP
-								length={8}
+								length={OTP_LENGTH}
 								autoFocus
 								value={otpValue}
 								disabled={verifyLoading}
 								onChange={(value) => {
 									setOtpValue(value);
-									if (value.length === 8)
+									if (value.length === OTP_LENGTH)
 										handleVerifyOtp(value);
 								}}
 							/>
@@ -168,7 +183,7 @@ export function CodeLogin() {
 								onClick={handleResend}
 							>
 								{resendCountdown > 0
-									? t("authority.retryAfterText", { count: Math.floor(resendCountdown / 1000) })
+									? t("authority.retryAfterText", { count: Math.ceil(resendCountdown / 1000) })
 									: t("authority.resendOtp")}
 							</BasicButton>
 						</div>
