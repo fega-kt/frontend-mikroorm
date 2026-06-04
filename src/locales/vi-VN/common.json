@@ -105,6 +105,7 @@
 	"remark": "Ghi chú",
 	"demoOnly": "Chỉ dành cho demo, thao tác không có hiệu lực",
 	"pagination": "Tổng {{total}} mục",
+	"paginationUser": "Tổng {{total}} người dùng",
 	"expandAll": "Mở rộng tất cả",
 	"collapseAll": "Thu gọn tất cả",
 	"expand": "Mở rộng",

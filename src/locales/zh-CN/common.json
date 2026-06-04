@@ -101,6 +101,7 @@
 	"remark": "备注",
 	"demoOnly": "仅演示，操作后不生效",
 	"pagination": "共 {{total}} 条",
+	"paginationUser": "共 {{total}} 位用户",
 	"expandAll": "展开所有",
 	"collapseAll": "折叠所有",
 	"expand": "展开",
