@@ -5,7 +5,6 @@ import { cleanupSVG, isEmptyColor, parseColors, runSVGO, SVG } from "@iconify/to
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { codeInspectorPlugin } from "code-inspector-plugin";
-import dayjs from "dayjs";
 import { FileSystemIconLoader } from "unplugin-icons/loaders";
 import Icons from "unplugin-icons/vite";
 import { defineConfig, loadEnv } from "vite";
@@ -16,7 +15,7 @@ import { author, dependencies, devDependencies, license, name, version } from ".
 
 const __APP_INFO__ = {
 	pkg: { dependencies, devDependencies, name, version, license, author },
-	lastBuildTime: dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss"),
+	lastBuildTime: new Date().toISOString(),
 };
 
 // https://vitejs.dev/config/

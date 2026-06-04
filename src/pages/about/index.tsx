@@ -1,6 +1,7 @@
 import { BasicContent } from "#src/components/basic-content";
 
 import { Badge, Card, Col, Descriptions, Row, Tag, theme, Typography } from "antd";
+import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
 import { dependenciesItems, devDependenciesItems } from "./constants";
@@ -25,7 +26,7 @@ export default function About() {
 		{
 			key: 2,
 			label: t("about.lastBuildTime"),
-			children: <Tag color="#55acee">{lastBuildTime}</Tag>,
+			children: <Tag color="#55acee">{dayjs(lastBuildTime).format("YYYY-MM-DD HH:mm:ss")}</Tag>,
 		},
 		{
 			key: 3,
