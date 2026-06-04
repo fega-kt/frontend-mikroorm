@@ -2,15 +2,20 @@ import type { DepartmentTreeNode } from "#src/api/system/dept";
 import type { ProColumns } from "@ant-design/pro-components";
 import type { TFunction } from "i18next";
 
-import { Tag } from "antd";
+import { Tag, Tooltip } from "antd";
 
 export function getConstantColumns(t: TFunction<"translation", undefined>): ProColumns<DepartmentTreeNode>[] {
 	return [
 		{
 			title: t("system.dept.name"),
 			dataIndex: "name",
-			ellipsis: true,
 			width: 200,
+			ellipsis: true,
+			render: (_, record) => (
+				<Tooltip title={record.name} placement="topLeft">
+					<span>{record.name}</span>
+				</Tooltip>
+			),
 		},
 		{
 			title: t("system.dept.code"),

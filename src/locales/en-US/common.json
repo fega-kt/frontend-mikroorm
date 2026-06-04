@@ -103,6 +103,7 @@
 	"remark": "Remark",
 	"demoOnly": "Demo only, operations do not take effect",
 	"pagination": "Total {{total}} items",
+	"paginationUser": "Total {{total}} users",
 	"expandAll": "Expand All",
 	"collapseAll": "Collapse All",
 	"expand": "Expand",
