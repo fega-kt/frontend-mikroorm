@@ -1,16 +1,19 @@
 import type { EChartsOption } from "echarts";
-import { fetchLine } from "#src/api/home";
+import { homeReportService } from "#src/api/home-report";
+import { useQuery } from "@tanstack/react-query";
 import { Card, Radio } from "antd";
 import ReactECharts from "echarts-for-react";
-import { useEffect, useState } from "react";
-
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function LineChart() {
 	const { t } = useTranslation();
 	const [value, setValue] = useState("week");
 
-	const [data, setData] = useState<string[]>([]);
+	const { data = [] } = useQuery({
+		queryKey: ["home-report", "line", value],
+		queryFn: () => homeReportService.fetchLine({ range: value }),
+	});
 
 	const DATA_KEYS = {
 		week: [
@@ -25,40 +28,17 @@ export default function LineChart() {
 	};
 
 	const option: EChartsOption = {
-		dataZoom: {
-			type: value === "week" ? "inside" : "slider",
-		},
-		title: {
-			text: "",
-			subtext: "",
-		},
+		dataZoom: { type: value === "week" ? "inside" : "slider" },
+		title: { text: "", subtext: "" },
 		xAxis: {
 			type: "category",
 			// @ts-expect-error: xxx
 			data: DATA_KEYS[value],
 		},
-		yAxis: {
-			type: "value",
-		},
-		tooltip: {
-			trigger: "axis",
-			axisPointer: { type: "cross" },
-		},
-		series: [
-			{
-				type: "line",
-				data,
-			},
-		],
+		yAxis: { type: "value" },
+		tooltip: { trigger: "axis", axisPointer: { type: "cross" } },
+		series: [{ type: "line", data }],
 	};
-
-	useEffect(() => {
-		if (value) {
-			fetchLine({ range: value }).then((data) => {
-				setData(data);
-			});
-		}
-	}, [value]);
 
 	return (
 		<Card
@@ -76,10 +56,7 @@ export default function LineChart() {
 				</Radio.Group>
 			)}
 		>
-			<ReactECharts
-				opts={{ height: "auto", width: "auto" }}
-				option={option}
-			/>
+			<ReactECharts opts={{ height: "auto", width: "auto" }} option={option} />
 		</Card>
 	);
 }
