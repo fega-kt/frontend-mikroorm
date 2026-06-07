@@ -54,5 +54,7 @@
 	"newPasswordSameAsOld": "Mật khẩu mới không được trùng mật khẩu cũ",
 	"agree": "Tôi đã đọc và đồng ý với <0>Chính sách quyền riêng tư</0> và <1>Điều khoản dịch vụ</1>",
 	"privacyPolicy": "Chính sách quyền riêng tư",
-	"termsOfService": "Điều khoản dịch vụ"
+	"termsOfService": "Điều khoản dịch vụ",
+	"orContinueWith": "Hoặc tiếp tục với",
+	"loginWithGoogle": "Đăng nhập bằng Google"
 }

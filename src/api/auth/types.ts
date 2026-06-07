@@ -25,6 +25,7 @@ export interface IAuthProvider {
 	onAuthStateChange: (callback: (session: { access_token: string } | null) => void) => () => void
 	getToken: () => Promise<string | undefined>
 	refreshSession: () => Promise<RefreshResult>
+	loginWithGoogle?: () => Promise<void>
 }
 
 export interface ChangePasswordParams {

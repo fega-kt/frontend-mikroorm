@@ -54,5 +54,7 @@
 	"newPasswordSameAsOld": "New password must be different from old password",
 	"agree": "I have read and agree to <0>Privacy Policy</0> and <1>Terms of Service</1>",
 	"privacyPolicy": "Privacy Policy",
-	"termsOfService": "Terms of Service"
+	"termsOfService": "Terms of Service",
+	"orContinueWith": "Or continue with",
+	"loginWithGoogle": "Sign in with Google"
 }
