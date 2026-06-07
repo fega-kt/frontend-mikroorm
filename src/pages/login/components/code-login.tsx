@@ -1,6 +1,5 @@
-import { authService } from "#src/api/auth";
+import { authProvider, authService } from "#src/api/auth";
 import { BasicButton } from "#src/components/basic-button";
-import { supabase } from "#src/store/supabaseClient";
 import { parseErrorMessage } from "#src/utils/request";
 
 import { LeftOutlined } from "@ant-design/icons";
@@ -71,7 +70,7 @@ export function CodeLogin() {
 		setVerifyLoading(true);
 		try {
 			const result = await authService.otpLogin({ email, otp });
-			await supabase.auth.setSession({
+			await authProvider.setSession({
 				access_token: result.access_token,
 				refresh_token: result.refresh_token,
 			});

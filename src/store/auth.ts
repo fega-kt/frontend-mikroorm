@@ -1,7 +1,5 @@
-import type { AuthType, LoginInfo } from "#src/api/user/types";
-
-import type { AuthTokenResponsePassword } from "@supabase/supabase-js";
-import { userService } from "#src/api/user";
+import type { AuthType, LoginInfo } from "#src/api/auth";
+import { authProvider } from "#src/api/auth";
 import { useAccessStore } from "#src/store/access";
 import { useTabsStore } from "#src/store/tabs";
 import { useUserStore } from "#src/store/user";
@@ -18,7 +16,7 @@ const initialState = {
 type AuthState = AuthType;
 
 interface AuthAction {
-	login: (loginPayload: LoginInfo) => Promise<AuthTokenResponsePassword>
+	login: (loginPayload: LoginInfo) => Promise<{ error?: Error | null }>
 	logout: () => Promise<void>
 	reset: () => void
 };
@@ -31,7 +29,7 @@ export const useAuthStore = create<AuthState & AuthAction>()(
 		login: async (loginPayload) => {
 			// ✅ reset trước khi login
 			get().reset();
-			return await userService.login(loginPayload);
+			return await authProvider.login(loginPayload);
 		},
 
 		logout: async () => {
@@ -39,7 +37,7 @@ export const useAuthStore = create<AuthState & AuthAction>()(
 			 * 1. 退出登录
 			 */
 
-			await userService.logout();
+			await authProvider.logout();
 			// ✅ reset sau khi logout
 			get().reset();
 		},

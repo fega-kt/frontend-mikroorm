@@ -1,3 +1,4 @@
+import { authProvider } from "#src/api/auth";
 import { fetchAsyncRoutes } from "#src/api/route";
 import { healthCheck } from "#src/api/system/health";
 import { useCurrentRoute } from "#src/hooks/use-current-route";
@@ -8,12 +9,11 @@ import { exception403Path, exception404Path, loginPath } from "#src/router/extra
 import { accessRoutes, whiteRouteNames } from "#src/router/routes";
 import { isSendRoutingRequest } from "#src/router/routes/config";
 import { generateRoutesFromBackend } from "#src/router/utils/generate-routes-from-backend";
+
 import { generateRoutesByFrontend } from "#src/router/utils/generate-routes-from-frontend";
-
 import { useAccessStore } from "#src/store/access";
-import { usePreferencesStore } from "#src/store/preferences";
 
-import { supabase } from "#src/store/supabaseClient";
+import { usePreferencesStore } from "#src/store/preferences";
 import { useUserStore } from "#src/store/user";
 import { useCallback, useEffect, useState } from "react";
 import { matchRoutes, Navigate, useLocation, useNavigate, useSearchParams } from "react-router";
@@ -53,11 +53,8 @@ export function AuthGuard({ children }: AuthGuardProps) {
 	const isPathInNoLoginWhiteList = noLoginWhiteList.includes(pathname);
 
 	useEffect(() => {
-		const { data: listener } = supabase.auth.onAuthStateChange((_, session) => {
-			setIsLogin(Boolean(session));
-		});
-
-		return () => listener.subscription.unsubscribe();
+		const unsubscribe = authProvider.onAuthStateChange(session => setIsLogin(Boolean(session)));
+		return unsubscribe;
 	}, []);
 
 	useEffect(() => {

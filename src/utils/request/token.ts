@@ -1,10 +1,5 @@
-import { supabase } from "#src/store/supabaseClient";
+import { authProvider } from "#src/api/auth/provider";
 
 export async function getToken(): Promise<string | undefined> {
-	const {
-		data: { session },
-	} = await supabase.auth.getSession();
-
-	const token = session?.access_token;
-	return token;
+	return authProvider.getToken();
 }
