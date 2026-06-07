@@ -1,9 +1,9 @@
+import { authProvider } from "#src/api/auth";
 import { PageError } from "#src/components/page-error";
 import { usePreferences } from "#src/hooks/use-preferences";
 import { AuthGuard } from "#src/router/guard";
 import { whiteRouteNames } from "#src/router/routes";
 import { useAccessStore } from "#src/store/access";
-import { supabase } from "#src/store/supabaseClient";
 import { useUserStore } from "#src/store/user";
 import { isString } from "#src/utils/is";
 import { NProgress } from "#src/utils/progress";
@@ -28,13 +28,8 @@ export default function LayoutRoot() {
 	const isAuthorized = useUserStore(state => Boolean(state.id));
 
 	useEffect(() => {
-		const { data: listener } = supabase.auth.onAuthStateChange(
-			(_, session) => {
-				setIsLogin(Boolean(session));
-			},
-		);
-
-		return () => listener.subscription.unsubscribe();
+		const unsubscribe = authProvider.onAuthStateChange(session => setIsLogin(Boolean(session)));
+		return unsubscribe;
 	}, []);
 
 	/* document title */

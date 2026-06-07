@@ -1,5 +1,5 @@
 import type { KyResponse, Options } from "ky";
-import { userService } from "#src/api/user";
+import { authProvider } from "#src/api/auth/provider";
 
 import ky from "ky";
 import { AUTH_HEADER } from "./constants";
@@ -19,8 +19,7 @@ export async function refreshTokenAndRetry(request: Request, options: Options) {
 	if (!isRefreshing) {
 		isRefreshing = true;
 		try {
-			// 调用 fetchRefreshToken 函数，使用 refreshSession 获取新的 token
-			const freshResponse = await userService.fetchRefreshToken();
+			const freshResponse = await authProvider.refreshSession();
 
 			if (freshResponse.error || !freshResponse.data.session) {
 				throw new Error(freshResponse.error?.message || "Có lỗi xảy ra");
@@ -41,7 +40,7 @@ export async function refreshTokenAndRetry(request: Request, options: Options) {
 			// refreshToken 认证未通过，拒绝所有等待的请求
 			onRefreshFailed(error);
 			// 跳转到登录页
-			goLogin();
+			void goLogin();
 			// 抛出错误
 			throw error;
 		}

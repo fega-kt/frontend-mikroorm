@@ -3,16 +3,6 @@ import type { EntityBase } from "../entity-base";
 import type { SearchParamsBase } from "../service-base";
 import type { DepartmentEntity } from "../system/dept/types";
 
-export interface AuthType {
-	token: string
-	refreshToken: string
-}
-
-export interface LoginInfo {
-	username: string
-	password: string
-}
-
 export interface UserSearchParams extends SearchParamsBase {
 	page?: number
 	limit?: number

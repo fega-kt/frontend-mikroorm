@@ -1,23 +1,12 @@
-import type { LoginInfo, UserEntity, UserSearchParams } from "./types";
-
-import { supabase } from "#src/store/supabaseClient";
+import type { UserEntity, UserSearchParams } from "./types";
 import { CrudServiceBase } from "../service-base";
 
+export type { LoginInfo } from "#src/api/auth";
 export * from "./types";
 
 export class UserService extends CrudServiceBase<UserEntity> {
 	constructor() {
 		super({ endpoint: "user", populate: ["department"] });
-	}
-
-	/** Đăng nhập */
-	login(data: LoginInfo) {
-		return supabase.auth.signInWithPassword({ email: data.username, password: data.password });
-	}
-
-	/** Đăng xuất */
-	logout() {
-		return supabase.auth.signOut();
 	}
 
 	/** Lấy thông tin user hiện tại */
@@ -65,25 +54,16 @@ export class UserService extends CrudServiceBase<UserEntity> {
 		return this.get<UserEntity>(id, { ignoreLoading: true });
 	}
 
-	/** Làm mời token */
-	async fetchRefreshToken() {
-		return supabase.auth.refreshSession();
-	}
-
 	/** Cập nhật thông tin cá nhân */
 	async updateProfile(data: { fullName: string, workEmail: string, phoneNumber: string, description?: string }) {
 		return this.patch<void>("profile", { json: data });
 	}
 
-	/** Upload file */
+	/** Upload avatar */
 	async uploadAvatar(file: File) {
 		const formData = new FormData();
 		formData.append("file", file);
-		// Note: we call this on the base 'avatar' endpoint, not 'user/avatar'
-		await this.post<void>("avatar", {
-			body: formData,
-			// When using FormData, we should NOT send 'json' option
-		});
+		await this.post<void>("avatar", { body: formData });
 	}
 }
 

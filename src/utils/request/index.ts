@@ -53,7 +53,7 @@ const defaultConfig: Options = {
 					if (response.status === 401) {
 						// 防止刷新 refresh-token 继续接收到的 401 错误，出现死循环
 						if ([`/${REFRESH_TOKEN_PATH}`].some(url => request.url.endsWith(url))) {
-							goLogin();
+							void goLogin();
 							return response;
 						}
 						// If the token is expired, refresh it and try again.
