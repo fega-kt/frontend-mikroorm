@@ -54,5 +54,7 @@
 	"newPasswordSameAsOld": "新密码不能与旧密码相同",
 	"agree": "我已阅读并同意《<0>隐私政策</0>》和《<1>服务条款</1>》",
 	"privacyPolicy": "隐私政策",
-	"termsOfService": "服务条款"
+	"termsOfService": "服务条款",
+	"orContinueWith": "或通过以下方式继续",
+	"loginWithGoogle": "使用 Google 登录"
 }
