@@ -96,6 +96,7 @@
 	"deactivated": "停用",
 	"activated": "激活",
 	"disabled": "禁用",
+	"stt": "序号",
 	"createTime": "创建时间",
 	"updateTime": "更新时间",
 	"remark": "备注",
