@@ -9,7 +9,7 @@ import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Popconfirm, Tooltip } from "antd";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Detail } from "./components/detail";
 import { getConstantColumns } from "./constants";
@@ -19,6 +19,7 @@ export default function Role() {
 	const { canAccess } = useAccess();
 	const actionRef = useRef<ActionType>(null);
 	const detailRef = useRef<DetailRef>(null);
+	const [pageInfo, setPageInfo] = useState({ current: 1, pageSize: 10 });
 
 	const handleAdd = async () => {
 		const res = await detailRef.current?.show();
@@ -41,7 +42,7 @@ export default function Role() {
 	};
 
 	const columns: ProColumns<RoleEntity>[] = [
-		...getConstantColumns(t),
+		...getConstantColumns(t, pageInfo),
 		{
 			title: t("common.action"),
 			valueType: "option",
@@ -83,6 +84,8 @@ export default function Role() {
 		<BasicContent className="h-full">
 			<BasicTable<RoleEntity>
 				columns={columns}
+				tableLayout="fixed"
+				scroll={{ x: 670 }}
 				actionRef={actionRef}
 				request={async (params) => {
 					const { data, total } = await roleService.fetchRoleList(params);
@@ -92,6 +95,7 @@ export default function Role() {
 						success: true,
 					};
 				}}
+				pagination={{ onChange: (page, pageSize) => setPageInfo({ current: page, pageSize }) }}
 				headerTitle={t("common.menu.role")}
 				toolBarRender={() => [
 					<Button
