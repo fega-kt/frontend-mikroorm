@@ -52,7 +52,7 @@ export function ThemeButton({ ...restProps }: ButtonProps) {
 	}, []);
 
 	function toggleTheme(event: React.PointerEvent<HTMLElement>) {
-		const isAppearanceTransition = !!document.startViewTransition && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		const isAppearanceTransition = !!document.startViewTransition;
 		if (!isAppearanceTransition || !event) {
 			changeSiteTheme(isDark ? "light" : "dark");
 			return;
