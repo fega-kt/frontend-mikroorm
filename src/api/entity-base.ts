@@ -2,7 +2,7 @@ import type { UserEntity } from "./user";
 
 type User = Pick<
 	UserEntity,
-  "id" | "avatar" | "loginName" | "workEmail" | "phoneNumber"
+	"id" | "avatar" | "fullName" | "loginName" | "workEmail" | "phoneNumber"
 >;
 
 export interface EntityBase {

@@ -1,5 +1,6 @@
 import type { RoleEntity } from "#src/api/system/role";
 import type { ProColumns } from "@ant-design/pro-components";
+import { PeoplePicker } from "#src/components/people-picker";
 
 export function getConstantColumns(
 	t: (key: string) => string,
@@ -16,14 +17,22 @@ export function getConstantColumns(
 		{
 			title: t("system.role.name"),
 			dataIndex: "name",
-			minWidth: 150,
+			width: 200,
+			disable: true,
 			ellipsis: true,
 		},
 		{
 			title: t("system.role.description"),
 			dataIndex: "description",
 			ellipsis: true,
-			minWidth: 200,
+			width: 300,
+		},
+		{
+			title: t("common.createdBy"),
+			dataIndex: "createdBy",
+			hideInSearch: true,
+			width: 180,
+			render: (_, record) => record.createdBy ? <PeoplePicker user={record.createdBy as any} readonly showEmail={false} /> : "-",
 		},
 		{
 			title: t("common.createdAt"),
@@ -32,7 +41,23 @@ export function getConstantColumns(
 			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
 			hideInSearch: true,
 			ellipsis: true,
-			width: 150,
+			width: 160,
+		},
+		{
+			title: t("common.updatedBy"),
+			dataIndex: "updatedBy",
+			hideInSearch: true,
+			width: 180,
+			render: (_, record) => record.updatedBy ? <PeoplePicker user={record.updatedBy as any} readonly showEmail={false} /> : "-",
+		},
+		{
+			title: t("common.updatedAt"),
+			dataIndex: "updatedAt",
+			valueType: "dateTime",
+			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
+			hideInSearch: true,
+			ellipsis: true,
+			width: 160,
 		},
 	];
 }
