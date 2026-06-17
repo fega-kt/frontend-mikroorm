@@ -28,5 +28,8 @@ export type DepartmentTreeNode = WithChildren<{
 	parentCode: string
 	status: 1 | 0
 	createdAt: Date
+	createdBy?: Pick<UserEntity, "id" | "fullName" | "avatar" | "loginName" | "workEmail" | "phoneNumber">
+	updatedAt?: Date
+	updatedBy?: Pick<UserEntity, "id" | "fullName" | "avatar" | "loginName" | "workEmail" | "phoneNumber">
 	parent: string
 }, "children">;

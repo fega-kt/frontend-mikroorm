@@ -1,7 +1,7 @@
 import type { DepartmentTreeNode } from "#src/api/system/dept";
 import type { ProColumns } from "@ant-design/pro-components";
 import type { TFunction } from "i18next";
-
+import { PeoplePicker } from "#src/components/people-picker";
 import { Tag, Tooltip } from "antd";
 
 export function getConstantColumns(t: TFunction<"translation", undefined>): ProColumns<DepartmentTreeNode>[] {
@@ -10,6 +10,7 @@ export function getConstantColumns(t: TFunction<"translation", undefined>): ProC
 			title: t("system.dept.name"),
 			dataIndex: "name",
 			width: 200,
+			disable: true,
 			ellipsis: true,
 			render: (_, record) => (
 				<Tooltip title={record.name} placement="topLeft">
@@ -46,11 +47,33 @@ export function getConstantColumns(t: TFunction<"translation", undefined>): ProC
 			},
 		},
 		{
-			title: t("common.createTime"),
+			title: t("common.createdBy"),
+			dataIndex: "createdBy",
+			search: false,
+			width: 180,
+			render: (_, record) => record.createdBy ? <PeoplePicker user={record.createdBy as any} readonly showEmail={false} /> : "-",
+		},
+		{
+			title: t("common.createdAt"),
 			dataIndex: "createdAt",
 			valueType: "dateTime",
 			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
-			width: 200,
+			width: 160,
+			search: false,
+		},
+		{
+			title: t("common.updatedBy"),
+			dataIndex: "updatedBy",
+			search: false,
+			width: 180,
+			render: (_, record) => record.updatedBy ? <PeoplePicker user={record.updatedBy as any} readonly showEmail={false} /> : "-",
+		},
+		{
+			title: t("common.updatedAt"),
+			dataIndex: "updatedAt",
+			valueType: "dateTime",
+			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
+			width: 160,
 			search: false,
 		},
 	];

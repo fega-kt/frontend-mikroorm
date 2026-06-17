@@ -8,6 +8,7 @@ export function getConstantColumns(t: any): ProColumns<UserEntity>[] {
 			title: t("system.user.fullName"),
 			dataIndex: "fullName",
 			width: 180,
+			disable: true,
 			render: (_, record) => <PeoplePicker user={record} readonly />,
 		},
 		{
@@ -24,7 +25,7 @@ export function getConstantColumns(t: any): ProColumns<UserEntity>[] {
 		{
 			title: t("common.status"),
 			dataIndex: "isActive",
-			width: 120,
+			width: 150,
 			valueType: "select",
 			valueEnum: {
 				true: { text: t("common.active"), status: "Success" },
@@ -32,12 +33,34 @@ export function getConstantColumns(t: any): ProColumns<UserEntity>[] {
 			},
 		},
 		{
+			title: t("common.createdBy"),
+			dataIndex: "createdBy",
+			hideInSearch: true,
+			width: 180,
+			render: (_, record) => record.createdBy ? <PeoplePicker user={record.createdBy as any} readonly showEmail={false} /> : "-",
+		},
+		{
 			title: t("common.createdAt"),
 			dataIndex: "createdAt",
 			valueType: "dateTime",
 			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
 			hideInSearch: true,
-			width: 200,
+			width: 160,
+		},
+		{
+			title: t("common.updatedBy"),
+			dataIndex: "updatedBy",
+			hideInSearch: true,
+			width: 180,
+			render: (_, record) => record.updatedBy ? <PeoplePicker user={record.updatedBy as any} readonly showEmail={false} /> : "-",
+		},
+		{
+			title: t("common.updatedAt"),
+			dataIndex: "updatedAt",
+			valueType: "dateTime",
+			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
+			hideInSearch: true,
+			width: 160,
 		},
 	];
 }
