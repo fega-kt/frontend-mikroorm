@@ -11,10 +11,9 @@ import { getLanguage, LanguageType } from "./helper";
 export * from "./t";
 
 export const ANT_DESIGN_LOCALE = {
-	[LanguageType.zh]: zhCN,
-	[LanguageType.en]: enUS,
-	[LanguageType.vi]: viVN,
-
+	[LanguageType.zh]: { ...zhCN, Pagination: { ...zhCN.Pagination, jump_to: "前往第", page: "" } },
+	[LanguageType.en]: { ...enUS, Pagination: { ...enUS.Pagination, jump_to: "Go to page", page: "" } },
+	[LanguageType.vi]: { ...viVN, Pagination: { ...viVN.Pagination, jump_to: "Đến trang", page: "" } },
 };
 
 export const i18nResources = {
