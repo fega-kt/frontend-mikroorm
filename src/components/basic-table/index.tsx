@@ -9,7 +9,7 @@ import { isObject, isUndefined } from "#src/utils/is";
 
 import { DownOutlined, LoadingOutlined, UpOutlined } from "@ant-design/icons";
 import { ProTable } from "@ant-design/pro-components";
-import { useSize } from "ahooks";
+import { useDebounceFn, useSize } from "ahooks";
 import { Grid } from "antd";
 import { useEffectOnActive } from "keepalive-for-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -40,6 +40,11 @@ export function BasicTable<
 	const { t } = useTranslation();
 	const screens = Grid.useBreakpoint();
 	const { adaptive, request: originalRequest } = props;
+	const searchFormRef = useRef<any>(null);
+	const { run: debouncedSubmit } = useDebounceFn(
+		() => searchFormRef.current?.submit(),
+		{ wait: 500 },
+	);
 
 	const collapseRender = useCallback((collapsed: boolean) => {
 		if (screens.lg) {
@@ -206,7 +211,8 @@ export function BasicTable<
 				dateFormatter="string"
 				{...props}
 				request={request}
-				search={props.search === false ? false : { layout: screens.lg ? "horizontal" : "vertical", labelWidth: screens.lg ? "auto" : undefined, collapseRender, ...props.search }}
+				formRef={searchFormRef}
+				search={props.search === false ? false : ({ layout: screens.lg ? "horizontal" : "vertical", labelWidth: screens.lg ? "auto" : undefined, collapseRender, onValuesChange: debouncedSubmit, optionRender: (_: any, __: any, dom: any[]) => [dom[0]], ...props.search } as any)}
 				options={{
 					fullScreen: true,
 					...props.options,
