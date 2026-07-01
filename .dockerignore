@@ -1,0 +1,14 @@
+node_modules
+build
+.git
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+*.log
+coverage/
+.claude/
+.vscode/
+.idea/
