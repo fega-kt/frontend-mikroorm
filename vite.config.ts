@@ -10,6 +10,7 @@ import Icons from "unplugin-icons/vite";
 import { defineConfig, loadEnv } from "vite";
 import { checker } from "vite-plugin-checker";
 import svgrPlugin from "vite-plugin-svgr";
+import { z } from "zod";
 
 import { author, dependencies, devDependencies, license, name, version } from "./package.json";
 
@@ -18,9 +19,30 @@ const __APP_INFO__ = {
 	lastBuildTime: new Date().toISOString(),
 };
 
+const envSchema = z.object({
+	VITE_API_BASE_URL: z.string().min(1),
+	VITE_BASE_HOME_PATH: z.string().min(1).default("/home"),
+	VITE_GLOB_APP_TITLE: z.string().min(1).default("App"),
+	VITE_GLOB_APP_LOGO_URL: z.string().optional(),
+	VITE_APP_NAMESPACE: z.string().min(1).default("app"),
+	VITE_AUTH_PROVIDER: z.enum(["supabase"]).default("supabase"),
+	VITE_SUPABASE_URL: z.url(),
+	VITE_SUPABASE_ANON_KEY: z.string().min(1),
+});
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
 	const env = loadEnv(mode, process.cwd(), "");
+
+	if (mode !== "test") {
+		const result = envSchema.safeParse(env);
+		if (!result.success) {
+			const messages = result.error.issues
+				.map(issue => `  ${issue.path.join(".")}: ${issue.message}`)
+				.join("\n");
+			throw new Error(`Missing or invalid env vars:\n${messages}`);
+		}
+	}
 
 	const BUILD_INFO = {
 		GIT_COMMIT: env.GIT_COMMIT || process.env.GIT_COMMIT,
