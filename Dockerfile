@@ -14,10 +14,7 @@ ENV GIT_COMMIT=$GIT_COMMIT \
     BUILD_TIME=$BUILD_TIME
 
 COPY . .
-RUN --mount=type=secret,id=vault_token \
-    VAULT_TOKEN=$(cat /run/secrets/vault_token) \
-    VAULT_AUTH_METHOD=token \
-    node_modules/.bin/vault-start prod -- pnpm build
+RUN pnpm build
 
 # ---
 
