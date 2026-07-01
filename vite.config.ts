@@ -23,11 +23,11 @@ export default defineConfig(({ mode }) => {
 	const env = loadEnv(mode, process.cwd(), "");
 
 	const BUILD_INFO = {
-		GIT_COMMIT: env.GIT_COMMIT,
-		GIT_AUTHOR: env.GIT_AUTHOR,
-		GIT_BRANCH: env.GIT_BRANCH,
-		GIT_MESSAGE: env.GIT_MESSAGE,
-		BUILD_TIME: env.BUILD_TIME,
+		GIT_COMMIT: env.GIT_COMMIT || process.env.GIT_COMMIT,
+		GIT_AUTHOR: env.GIT_AUTHOR || process.env.GIT_AUTHOR,
+		GIT_BRANCH: env.GIT_BRANCH || process.env.GIT_BRANCH,
+		GIT_MESSAGE: env.GIT_MESSAGE || process.env.GIT_MESSAGE,
+		BUILD_TIME: env.BUILD_TIME || process.env.BUILD_TIME,
 	};
 
 	return {
