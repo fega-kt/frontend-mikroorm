@@ -20,7 +20,7 @@
 	},
 	"scripts": {
 		"dev": "vault-start dev -- vite --host",
-		"pull:env": "vault-start $VAULT_SECRET_PATH --write-env",
+		"pull:env": "vault-start dev --write-env",
 		"build": "NODE_OPTIONS=--max-old-space-size=8192 vite build",
 		"preview": "vite preview",
 		"typecheck": "tsc --noEmit",
