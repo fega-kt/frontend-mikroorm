@@ -19,7 +19,8 @@
 		"#*": "./*"
 	},
 	"scripts": {
-		"dev": "vite --host",
+		"dev": "vault-start dev -- vite --host",
+		"pull:env": "vault-start prod --write-env",
 		"prebuild": "node scripts/build-info.js",
 		"build": "pnpm run prebuild && NODE_OPTIONS=--max-old-space-size=8192 vite build",
 		"preview": "vite preview",
@@ -100,6 +101,7 @@
 		"@types/react": "^19.2.8",
 		"@types/react-dom": "^19.2.3",
 		"@vitejs/plugin-react": "^5.1.2",
+		"@zhizhu_dev/vault-start": "1.0.1",
 		"circular-dependency-scanner": "^3.0.1",
 		"clsx": "^2.1.1",
 		"code-inspector-plugin": "^1.3.4",
