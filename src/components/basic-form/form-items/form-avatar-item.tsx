@@ -54,6 +54,12 @@ function FormAvatarItemBase({ value, onChange }: FormAvatarItemProps) {
 
 	// Handle immediate upload when a file is selected and cropped
 	const handleBeforeUpload = useCallback(async (file: File) => {
+		const MAX_SIZE_MB = 5;
+		if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+			message.error(t("personal-center.avatarFileTooLarge"));
+			return false;
+		}
+
 		setUploading(true);
 		const hide = message.loading(t("personal-center.uploadingAvatar") || "Uploading...", 0);
 

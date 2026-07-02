@@ -13,6 +13,7 @@
 	"updateAvatarSuccess": "Cập nhật ảnh đại diện thành công",
 	"uploadingAvatar": "Đang tải ảnh đại diện lên...",
 	"uploadError": "Tải ảnh lên thất bại",
+	"avatarFileTooLarge": "Ảnh đại diện không được vượt quá 5MB",
 	"pleaseInputFullName": "Vui lòng nhập họ và tên!",
 	"pleaseInputLoginName": "Vui lòng nhập tên đăng nhập!",
 	"pleaseInputEmail": "Vui lòng nhập định dạng email hợp lệ!",
