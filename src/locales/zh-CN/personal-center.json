@@ -13,6 +13,7 @@
 	"updateAvatarSuccess": "头像更新成功",
 	"uploadingAvatar": "正在上传头像...",
 	"uploadError": "头像上传失败",
+	"avatarFileTooLarge": "头像不能超过5MB",
 	"pleaseInputFullName": "请输入姓名！",
 	"pleaseInputLoginName": "请输入登录名！",
 	"pleaseInputEmail": "请输入有效的工作邮箱！",

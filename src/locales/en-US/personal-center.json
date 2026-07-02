@@ -13,6 +13,7 @@
 	"updateAvatarSuccess": "Avatar updated successfully",
 	"uploadingAvatar": "Uploading avatar...",
 	"uploadError": "Upload avatar failed",
+	"avatarFileTooLarge": "Avatar must not exceed 5MB",
 	"pleaseInputFullName": "Please input your full name!",
 	"pleaseInputLoginName": "Please input your login name!",
 	"pleaseInputEmail": "Please input a valid work email!",
