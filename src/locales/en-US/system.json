@@ -41,7 +41,11 @@
 		"editGroup": "Edit User Group",
 		"name": "Group Name",
 		"users": "Members",
-		"description": "Description"
+		"description": "Description",
+		"nameRequired": "Group name is required",
+		"nameMaxLength": "Group name must be less than 255 characters",
+		"nameInvalidFormat": "Group name must contain only letters and single spaces between words",
+		"descriptionMaxLength": "Description must be less than 500 characters"
 	},
 	"user": {
 		"name": "User Name",
