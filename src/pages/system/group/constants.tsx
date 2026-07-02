@@ -9,10 +9,12 @@ export function getConstantColumns(t: (key: string) => string): ProColumns<Group
 			dataIndex: "name",
 			width: 200,
 			disable: true,
+			ellipsis: true,
 		},
 		{
 			title: t("system.userGroup.description"),
 			dataIndex: "description",
+			width: 300,
 			ellipsis: true,
 		},
 		{

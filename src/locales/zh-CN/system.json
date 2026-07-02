@@ -36,6 +36,18 @@
 			"workflow-setting": "工作流配置"
 		}
 	},
+	"userGroup": {
+		"title": "用户组管理",
+		"addGroup": "新增用户组",
+		"editGroup": "编辑用户组",
+		"name": "组名称",
+		"users": "成员",
+		"description": "描述",
+		"nameRequired": "组名称为必填项",
+		"nameMaxLength": "组名称不能超过255个字符",
+		"nameInvalidFormat": "组名称只能包含字母，单词之间只能有单个空格",
+		"descriptionMaxLength": "描述不能超过500个字符"
+	},
 	"user": {
 		"name": "用户名称",
 		"id": "用户标识",

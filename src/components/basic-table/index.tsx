@@ -103,6 +103,13 @@ export function BasicTable<
 		return 0;
 	}, [enableFooter, fixedFooter]);
 
+	const scrollX = useMemo(() => {
+		if (!props.columns?.length)
+			return "max-content";
+		const total = props.columns.reduce((sum, col) => sum + (typeof col.width === "number" ? col.width : 0), 0);
+		return total > 0 ? total : "max-content";
+	}, [props.columns]);
+
 	const getPaginationProps = useCallback(() => {
 		if (props.pagination === false) {
 			return false;
@@ -219,7 +226,7 @@ export function BasicTable<
 				}}
 				rootClassName={cn(BASIC_TABLE_ROOT_CLASS_NAME, props.rootClassName)}
 				className={cn(classes.basicTable, props.className)}
-				scroll={{ y: scrollY, x: "max-content", ...props.scroll }}
+				scroll={{ y: scrollY, x: scrollX, ...props.scroll }}
 				loading={getLoadingProps()}
 				pagination={getPaginationProps()}
 				expandable={{

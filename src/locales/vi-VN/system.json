@@ -43,7 +43,11 @@
 		"editGroup": "Sửa nhóm người dùng",
 		"name": "Tên nhóm",
 		"users": "Thành viên",
-		"description": "Mô tả"
+		"description": "Mô tả",
+		"nameRequired": "Tên nhóm là bắt buộc",
+		"nameMaxLength": "Tên nhóm không được vượt quá 255 ký tự",
+		"nameInvalidFormat": "Tên nhóm chỉ được chứa chữ cái, các từ cách nhau bởi một dấu cách",
+		"descriptionMaxLength": "Mô tả không được vượt quá 500 ký tự"
 	},
 
 	"user": {
