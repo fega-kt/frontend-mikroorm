@@ -70,6 +70,7 @@ export function getConstantColumns(t: TFunction<"translation", undefined>): ProC
 			title: t("system.menu.menuIcon"),
 			dataIndex: "icon",
 			width: 130,
+			ellipsis: true,
 		},
 		{
 			disable: true,
@@ -103,6 +104,7 @@ export function getConstantColumns(t: TFunction<"translation", undefined>): ProC
 			dataIndex: "component",
 			width: 120,
 			search: false,
+			ellipsis: true,
 		},
 		{
 			title: t("system.menu.keepAlive"),
@@ -134,16 +136,19 @@ export function getConstantColumns(t: TFunction<"translation", undefined>): ProC
 			title: t("system.menu.currentActiveMenu"),
 			dataIndex: "currentActiveMenu",
 			width: 120,
+			ellipsis: true,
 		},
 		{
 			title: t("system.menu.iframeLink"),
 			dataIndex: "iframeLink",
 			width: 120,
+			ellipsis: true,
 		},
 		{
 			title: t("system.menu.externalLink"),
 			dataIndex: "externalLink",
 			width: 120,
+			ellipsis: true,
 		},
 		{
 			title: t("common.createTime"),

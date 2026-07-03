@@ -61,7 +61,7 @@ export default function Dept() {
 			title: t("common.action"),
 			valueType: "option",
 			key: "option",
-			width: 120,
+			width: 96,
 			fixed: "right",
 			render: (text, record, _, action) => {
 				return [
