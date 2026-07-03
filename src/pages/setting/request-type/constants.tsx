@@ -15,23 +15,27 @@ export function getConstantColumns(t: (key: string) => string): ProColumns<Reque
 			title: t("setting.requestType.code"),
 			dataIndex: "code",
 			width: 150,
+			ellipsis: true,
 		},
 		{
 			title: t("setting.requestType.name"),
 			dataIndex: "name",
 			width: 200,
+			ellipsis: true,
 		},
 		{
 			title: t("setting.requestType.category"),
 			dataIndex: ["category", "name"],
 			width: 180,
 			hideInSearch: true,
+			ellipsis: true,
 		},
 		{
 			title: t("setting.requestType.prefix"),
 			dataIndex: "prefix",
 			width: 120,
 			hideInSearch: true,
+			ellipsis: true,
 		},
 		{
 			title: t("setting.requestType.status"),

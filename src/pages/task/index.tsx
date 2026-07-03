@@ -135,7 +135,7 @@ export default function Task() {
 			title: t("common.action"),
 			valueType: "option",
 			key: "option",
-			width: 120,
+			width: 96,
 			fixed: "right",
 			render: (_, record) => [
 				<Tooltip key="edit" title={t("common.edit")}>

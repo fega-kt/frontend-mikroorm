@@ -15,12 +15,14 @@ export function getConstantColumns(t: (key: string) => string): ProColumns<Workf
 			title: t("setting.workflowSetting.name"),
 			dataIndex: "name",
 			width: 220,
+			ellipsis: true,
 		},
 		{
 			title: t("setting.workflowSetting.category"),
 			dataIndex: ["category", "name"],
 			width: 200,
 			hideInSearch: true,
+			ellipsis: true,
 		},
 		{
 			title: t("setting.workflowSetting.status"),

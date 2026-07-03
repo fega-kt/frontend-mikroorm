@@ -15,12 +15,14 @@ export function getConstantColumns(t: any): ProColumns<UserEntity>[] {
 			title: t("system.user.phone"),
 			dataIndex: "phoneNumber",
 			width: 140,
+			ellipsis: true,
 		},
 		{
 			title: t("system.dept.name"),
 			dataIndex: ["department", "name"],
 			width: 150,
 			hideInSearch: true,
+			ellipsis: true,
 		},
 		{
 			title: t("common.status"),
