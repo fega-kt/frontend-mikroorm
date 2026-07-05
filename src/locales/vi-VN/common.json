@@ -44,7 +44,9 @@
 		"setting": "Cài đặt chung",
 		"category": "Nhóm danh mục",
 		"requestType": "Loại yêu cầu",
-		"workflowSetting": "Cài đặt quy trình"
+		"workflowSetting": "Cài đặt quy trình",
+		"approval": "Phê duyệt",
+		"approvalTask": "Công việc phê duyệt"
 	},
 	"appLoading": "Đang tải tài nguyên...",
 	"back": "Quay lại",

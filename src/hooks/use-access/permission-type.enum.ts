@@ -183,4 +183,12 @@ export enum PermissionType {
 
 	/** xóa workflow setting */
 	DeleteWorkflowSetting = "permission:workflow-setting:delete",
+
+	/** ===== APPROVAL TASK ===== */
+
+	/** vào menu approval task */
+	MenuApprovalTask = "permission:menu:approval-task",
+
+	/** xử lý (phê duyệt/từ chối) task */
+	CompleteApprovalTask = "permission:approval-task:complete",
 }

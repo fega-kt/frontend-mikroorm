@@ -42,7 +42,9 @@
 		"category": "Category Management",
 		"requestType": "Request Type Management",
 		"group": "User Group Management",
-		"workflowSetting": "Workflow Settings"
+		"workflowSetting": "Workflow Settings",
+		"approval": "Approval",
+		"approvalTask": "Pending Approvals"
 	},
 	"appLoading": "Loading Resources...",
 	"back": "Back",

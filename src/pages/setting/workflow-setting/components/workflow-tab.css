@@ -1,0 +1,92 @@
+.djs-container {
+	border: none !important;
+	outline: none !important;
+}
+
+.bpmn-dark .djs-palette {
+	background: #1f1f1f !important;
+	border-color: #333 !important;
+}
+
+.bpmn-dark .djs-palette .entry::before,
+.bpmn-dark .djs-palette .entry span {
+	color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.bpmn-dark .djs-palette .separator {
+	border-top-color: #333 !important;
+}
+
+.bpmn-dark .djs-palette .entry:hover {
+	background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.bpmn-dark .djs-context-pad .entry {
+	background: #2a2a2a !important;
+	border: 1px solid #444 !important;
+}
+
+.bpmn-dark .djs-context-pad .entry::before,
+.bpmn-dark .djs-context-pad .entry span {
+	color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.bpmn-dark .djs-context-pad .entry:hover {
+	background: #3a3a3a !important;
+}
+
+.bpmn-dark .djs-popup {
+	background: #1f1f1f !important;
+	border-color: #444 !important;
+	color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.bpmn-dark .djs-popup .entry:hover {
+	background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.bpmn-dark .djs-popup-header .entry.active {
+	background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.bpmn-dark .djs-tooltip-container .djs-tooltip {
+	background: #2a2a2a !important;
+	border-color: #444 !important;
+	color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.bpmn-dark .djs-minimap {
+	background: #1f1f1f !important;
+	border-color: #444 !important;
+}
+
+.bpmn-dark .djs-minimap .map {
+	background: #1f1f1f !important;
+}
+
+.bpmn-dark .djs-minimap .toggle {
+	background: #2a2a2a !important;
+	border-color: #444 !important;
+	color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.bpmn-dark .djs-minimap .toggle:hover {
+	background: #333 !important;
+}
+
+.bpmn-dark .djs-minimap .viewport {
+	stroke: #1677ff !important;
+	fill: rgba(22, 119, 255, 0.08) !important;
+}
+
+.bpmn-dark .djs-direct-editing-parent {
+	background: #2a2a2a !important;
+	border: 1px solid #555 !important;
+	border-radius: 2px !important;
+}
+
+.bpmn-dark .djs-direct-editing-content {
+	color: rgba(255, 255, 255, 0.9) !important;
+	background: transparent !important;
+	caret-color: #fff !important;
+}

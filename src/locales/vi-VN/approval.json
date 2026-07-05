@@ -1,0 +1,19 @@
+{
+	"task": {
+		"title": "Công việc cần phê duyệt",
+		"taskName": "Tên bước phê duyệt",
+		"businessKey": "Mã đơn",
+		"createdAt": "Thời gian tạo",
+		"processInstanceId": "Mã quy trình",
+		"completeTitle": "Xử lý yêu cầu phê duyệt",
+		"decision": "Quyết định",
+		"decisionApprove": "Phê duyệt",
+		"decisionReject": "Từ chối",
+		"comment": "Ghi chú",
+		"commentPlaceholder": "Nhập ghi chú (không bắt buộc)",
+		"approveSuccess": "Phê duyệt thành công",
+		"rejectSuccess": "Từ chối thành công",
+		"alreadyProcessed": "Bước này đã được xử lý trước đó, vui lòng tải lại danh sách",
+		"noTasks": "Không có công việc cần xử lý"
+	}
+}

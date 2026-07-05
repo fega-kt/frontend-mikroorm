@@ -8,6 +8,7 @@ export const home = 1;
 export const project = 5;
 export const access = 10;
 export const routeNest = 20;
+export const approval = 30;
 
 export const outside = 40;
 

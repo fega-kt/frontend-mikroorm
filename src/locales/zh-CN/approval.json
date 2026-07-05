@@ -1,0 +1,19 @@
+{
+	"task": {
+		"title": "待审批任务",
+		"taskName": "审批步骤",
+		"businessKey": "申请编号",
+		"createdAt": "创建时间",
+		"processInstanceId": "流程编号",
+		"completeTitle": "处理审批请求",
+		"decision": "审批决定",
+		"decisionApprove": "批准",
+		"decisionReject": "拒绝",
+		"comment": "备注",
+		"commentPlaceholder": "请输入备注（选填）",
+		"approveSuccess": "审批通过",
+		"rejectSuccess": "已拒绝",
+		"alreadyProcessed": "该任务已被处理，请刷新列表",
+		"noTasks": "暂无待处理任务"
+	}
+}

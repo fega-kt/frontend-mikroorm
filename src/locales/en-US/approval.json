@@ -1,0 +1,19 @@
+{
+	"task": {
+		"title": "Pending Approvals",
+		"taskName": "Approval Step",
+		"businessKey": "Request ID",
+		"createdAt": "Created At",
+		"processInstanceId": "Process ID",
+		"completeTitle": "Process Approval Request",
+		"decision": "Decision",
+		"decisionApprove": "Approve",
+		"decisionReject": "Reject",
+		"comment": "Comment",
+		"commentPlaceholder": "Enter comment (optional)",
+		"approveSuccess": "Approved successfully",
+		"rejectSuccess": "Rejected successfully",
+		"alreadyProcessed": "This task has already been processed, please refresh the list",
+		"noTasks": "No pending tasks"
+	}
+}
