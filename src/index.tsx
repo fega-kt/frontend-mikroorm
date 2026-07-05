@@ -35,3 +35,13 @@ async function setupApp() {
 }
 
 setupApp();
+
+sessionStorage.removeItem("chunk_reload");
+
+window.addEventListener("vite:preloadError", (event) => {
+	event.preventDefault();
+	if (!sessionStorage.getItem("chunk_reload")) {
+		sessionStorage.setItem("chunk_reload", "1");
+		window.location.reload();
+	}
+});
