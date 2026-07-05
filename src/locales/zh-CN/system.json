@@ -107,6 +107,12 @@
 		"tabInfo": "基本信息",
 		"tabUsers": "成员列表",
 		"manager": "部门主管",
-		"deputy": "副主管"
+		"deputy": "副主管",
+		"nameRequired": "部门名称不能为空",
+		"nameMaxLength": "部门名称不超过255个字符",
+		"nameInvalidFormat": "部门名称必须以字母开头，只能包含字母、数字和单个空格",
+		"codeRequired": "部门编码不能为空",
+		"codeMaxLength": "部门编码不超过50个字符",
+		"codeInvalidFormat": "部门编码必须以字母开头，只能包含字母、数字和单个下划线（不连续）"
 	}
 }

@@ -90,6 +90,12 @@
 		"tabInfo": "Thông tin",
 		"tabUsers": "Nhân viên",
 		"manager": "Trưởng phòng",
-		"deputy": "Phó phòng"
+		"deputy": "Phó phòng",
+		"nameRequired": "Tên phòng ban là bắt buộc",
+		"nameMaxLength": "Tên phòng ban không được vượt quá 255 ký tự",
+		"nameInvalidFormat": "Tên phòng ban phải bắt đầu bằng chữ cái, chỉ được chứa chữ cái, chữ số và dấu cách đơn giữa các từ",
+		"codeRequired": "Mã phòng ban là bắt buộc",
+		"codeMaxLength": "Mã phòng ban không được vượt quá 50 ký tự",
+		"codeInvalidFormat": "Mã phòng ban phải bắt đầu bằng chữ cái, chỉ chứa chữ cái, chữ số và dấu gạch dưới đơn (không liên tiếp)"
 	}
 }
