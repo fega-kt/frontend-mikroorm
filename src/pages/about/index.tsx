@@ -101,7 +101,7 @@ export default function About() {
 									items={[
 										{
 											key: 1,
-											children: t("about.descriptions"),
+											children: t("about.descriptions", { appTitle: import.meta.env.VITE_GLOB_APP_TITLE }),
 										},
 									]}
 								/>
