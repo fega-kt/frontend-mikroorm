@@ -107,6 +107,12 @@
 		"tabInfo": "Info",
 		"tabUsers": "Users",
 		"manager": "Manager",
-		"deputy": "Deputy Manager"
+		"deputy": "Deputy Manager",
+		"nameRequired": "Department name is required",
+		"nameMaxLength": "Department name must not exceed 255 characters",
+		"nameInvalidFormat": "Department name must start with a letter and contain only letters, numbers, and single spaces between words",
+		"codeRequired": "Department code is required",
+		"codeMaxLength": "Department code must not exceed 50 characters",
+		"codeInvalidFormat": "Department code must start with a letter and contain only letters, numbers, and single underscores (not consecutive)"
 	}
 }
