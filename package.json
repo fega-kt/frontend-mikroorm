@@ -7,13 +7,13 @@
 	"description": "React Hooks + TypeScript + Ant Design = react-antd-admin",
 	"author": "zhizhu",
 	"license": "MIT",
-	"homepage": "https://github.com/condorheroblog/react-antd-admin/blob/main/README.md",
+	"homepage": "https://github.com/fega-kt/frontend-mikroorm/blob/main/README.md",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/condorheroblog/react-antd-admin.git"
+		"url": "git+https://github.com/fega-kt/frontend-mikroorm.git"
 	},
 	"bugs": {
-		"url": "https://github.com/condorheroblog/react-antd-admin/issues"
+		"url": "https://github.com/fega-kt/frontend-mikroorm/issues"
 	},
 	"imports": {
 		"#*": "./*"

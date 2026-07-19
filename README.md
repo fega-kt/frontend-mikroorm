@@ -1,15 +1,11 @@
 <div align="center">
-	<a href="https://github.com/condorheroblog/react-antd-admin/">
+	<a href="https://github.com/fega-kt/frontend-mikroorm/">
 		<img alt="React-antd-admin Logo" width="192" src="https://github.com/user-attachments/assets/1de76309-4cf5-4e34-a32f-92c361bace2a">
 	</a>
 	<br />
 	<h1>zhizhu system</h1>
 	<br />
 </div>
-
-![GitHub license](https://img.shields.io/github/license/condorheroblog/react-antd-admin?style=flat)
-![GitHub stars](https://img.shields.io/github/stars/condorheroblog/react-antd-admin?color=fa6470&style=flat)
-![GitHub forks](https://img.shields.io/github/forks/condorheroblog/react-antd-admin?style=flat)
 
 **English** | [中文](./README.zh-CN.md)
 
@@ -29,32 +25,6 @@ react-antd-admin is a middle and back-office solution based on React Hooks, Vite
 - Permission Routing: Supports both frontend static routing and backend dynamic routing
 - Theme Configuration: Built-in multiple theme configurations, supports dark theme, and unified color system for Ant Design and Tailwind CSS
 
-## Preview
-
-[react-antd-admin](https://condorheroblog.github.io/react-antd-admin/)
-
-## Documentation
-
-[react-antd-admin Documentation](https://condorheroblog.github.io/react-antd-admin/docs/)
-
-## Usage
-
-### GitHub Template
-
-[Create a repository using this template](https://github.com/new?template_name=react-antd-admin&template_owner=condorheroblog)
-
-### Clone the project
-
-If you prefer a template without git history, manually execute the following:
-
-```bash
-npx degit condorheroblog/react-antd-admin react-antd-admin
-# or npx giget@latest gh:condorheroblog/react-antd-admin react-antd-admin
-cd react-antd-admin
-corepack enable
-pnpm i # If you haven't installed pnpm before, run: npm install -g pnpm
-```
-
 ## Development
 
 ### Install
@@ -64,6 +34,17 @@ corepack enable
 
 pnpm install
 ```
+
+### Environment Variables
+
+```bash
+cp .env.example .env
+```
+
+The backend is split into two services running on different ports — set the matching base URL for each:
+
+- `VITE_API_BASE_URL` — core service (auth, user, department, role, group, notification, attachment, activity-log)
+- `VITE_API_APP_BASE_URL` — app service (category, request-type, workflow-setting, home-report, project, task, sprint, milestone, section, comment, time-log)
 
 ### Run
 
@@ -94,16 +75,6 @@ Thanks to the following excellent projects for providing inspiration:
 - [vue-vben-admin](https://github.com/vbenjs/vue-vben-admin)  for design inspiration
 - [vue-pure-admin](https://github.com/pure-admin/vue-pure-admin) for business logic inspiration
 
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=condorheroblog/react-antd-admin&type=Date)](https://star-history.com/#condorheroblog/react-antd-admin&Date)
-
-## Sponsor
-
-If this project was helpful to you, you can buy the author a takeaway meal.
-
-![Sponsor](https://camo.githubusercontent.com/b61a54a08ff3a1392f191016d6c0d7537559bb4fa19ae1d27fadfd1de5796289/68747470733a2f2f636f6e646f726865726f626c6f672e6769746875622e696f2f72656163742d616e74642d61646d696e2f646f63732f73706f6e736f722e706e67)
-
 ## License
 
-[MIT](https://github.com/condorheroblog/react-antd-admin/blob/main/LICENSE) License © 2023-Present [Condor Hero](https://github.com/condorheroblog)
+[MIT](./LICENSE) License
