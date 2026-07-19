@@ -1,12 +1,12 @@
 import type { UserEntity, UserSearchParams } from "./types";
-import { CrudServiceBase } from "../service-base";
+import { ApiService, CrudServiceBase } from "../service-base";
 
 export type { LoginInfo } from "#src/api/auth";
 export * from "./types";
 
 export class UserService extends CrudServiceBase<UserEntity> {
 	constructor() {
-		super({ endpoint: "user", populate: ["department"] });
+		super({ endpoint: "user", populate: ["department"], service: ApiService.Core });
 	}
 
 	/** Lấy thông tin user hiện tại */

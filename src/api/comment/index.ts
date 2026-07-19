@@ -1,11 +1,11 @@
 import type { CommentEntity, CommentPayload } from "./types";
-import { CrudServiceBase } from "../service-base";
+import { ApiService, CrudServiceBase } from "../service-base";
 
 export * from "./types";
 
 export class CommentService extends CrudServiceBase<CommentEntity> {
 	constructor() {
-		super({ endpoint: "comment", populate: ["task", "parentComment"] });
+		super({ endpoint: "comment", populate: ["task", "parentComment"], service: ApiService.App });
 	}
 
 	/** GET /comment/by-task/:taskId */

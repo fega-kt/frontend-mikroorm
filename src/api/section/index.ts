@@ -1,9 +1,9 @@
 import type { SectionEntity } from "./types";
-import { CrudServiceBase } from "../service-base";
+import { ApiService, CrudServiceBase } from "../service-base";
 
 export class SectionService extends CrudServiceBase<SectionEntity> {
 	constructor() {
-		super({ endpoint: "project" });
+		super({ endpoint: "project", service: ApiService.App });
 	}
 
 	/** GET /project/:projectId/sections */

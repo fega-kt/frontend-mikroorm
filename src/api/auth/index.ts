@@ -1,12 +1,12 @@
 import type { ChangePasswordParams, ForgotPasswordParams, OtpLoginParams, OtpLoginResult, OtpSendParams, VerifyOtpParams } from "./types";
-import { CrudServiceBase } from "../service-base";
+import { ApiService, CrudServiceBase } from "../service-base";
 
 export { authProvider } from "./provider";
 export * from "./types";
 
 export class AuthService extends CrudServiceBase {
 	constructor() {
-		super({ endpoint: "auth" });
+		super({ endpoint: "auth", service: ApiService.Core });
 	}
 
 	/** Đổi mật khẩu */

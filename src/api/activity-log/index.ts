@@ -1,11 +1,11 @@
 import type { ActivityLogEntity } from "./types";
-import { CrudServiceBase } from "../service-base";
+import { ApiService, CrudServiceBase } from "../service-base";
 
 export * from "./types";
 
 export class ActivityLogService extends CrudServiceBase<ActivityLogEntity> {
 	constructor() {
-		super({ endpoint: "activity-log", populate: ["createdBy"] });
+		super({ endpoint: "activity-log", populate: ["createdBy"], service: ApiService.Core });
 	}
 
 	/** GET /activity-log/by-parent/:parentId */

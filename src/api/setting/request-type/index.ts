@@ -1,11 +1,11 @@
 import type { RequestTypeEntity, RequestTypeSearchParams } from "./types";
-import { CrudServiceBase } from "../../service-base";
+import { ApiService, CrudServiceBase } from "../../service-base";
 
 export * from "./types";
 
 export class RequestTypeService extends CrudServiceBase<RequestTypeEntity> {
 	constructor() {
-		super({ endpoint: "request-type", populate: ["category"] });
+		super({ endpoint: "request-type", populate: ["category"], service: ApiService.App });
 	}
 
 	async fetchRequestTypeList(params?: RequestTypeSearchParams) {

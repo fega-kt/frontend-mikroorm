@@ -1,11 +1,11 @@
 import type { WorkflowSettingEntity, WorkflowSettingPayload, WorkflowSettingSearchParams } from "./types";
-import { CrudServiceBase } from "../../service-base";
+import { ApiService, CrudServiceBase } from "../../service-base";
 
 export * from "./types";
 
 export class WorkflowSettingService extends CrudServiceBase<WorkflowSettingEntity> {
 	constructor() {
-		super({ endpoint: "workflow-setting", populate: ["category"] });
+		super({ endpoint: "workflow-setting", populate: ["category"], service: ApiService.App });
 	}
 
 	async fetchWorkflowSettingList(params?: WorkflowSettingSearchParams) {

@@ -1,11 +1,11 @@
 import type { PieDataType } from "./types";
-import { CrudServiceBase } from "../service-base";
+import { ApiService, CrudServiceBase } from "../service-base";
 
 export * from "./types";
 
 export class HomeReportService extends CrudServiceBase {
 	constructor() {
-		super({ endpoint: "home-report" });
+		super({ endpoint: "home-report", service: ApiService.App });
 	}
 
 	/** GET /home-report/pie */

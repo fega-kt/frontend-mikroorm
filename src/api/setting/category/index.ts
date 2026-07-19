@@ -1,11 +1,11 @@
 import type { CategoryEntity, CategorySearchParams } from "./types";
-import { CrudServiceBase } from "../../service-base";
+import { ApiService, CrudServiceBase } from "../../service-base";
 
 export * from "./types";
 
 export class CategoryService extends CrudServiceBase<CategoryEntity> {
 	constructor() {
-		super({ endpoint: "category", populate: ["department"] });
+		super({ endpoint: "category", populate: ["department"], service: ApiService.App });
 	}
 
 	async fetchCategoryList(params?: CategorySearchParams) {

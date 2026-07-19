@@ -1,12 +1,12 @@
 import type { AttachmentEntity, UploadAttachmentParams } from "./types";
 
-import { CrudServiceBase } from "../service-base";
+import { ApiService, CrudServiceBase } from "../service-base";
 
 export * from "./types";
 
 export class AttachmentService extends CrudServiceBase<AttachmentEntity> {
 	constructor() {
-		super({ endpoint: "attachment" });
+		super({ endpoint: "attachment", service: ApiService.Core });
 	}
 
 	/** Upload một file lên R2, trả về AttachmentEntity */

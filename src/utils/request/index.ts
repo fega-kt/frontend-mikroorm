@@ -18,8 +18,6 @@ const requestWhiteList = [loginPath, healPath];
 const API_TIMEOUT = Number(import.meta.env.VITE_API_TIMEOUT) || 10000;
 
 const defaultConfig: Options = {
-	// The input argument cannot start with a slash / when using prefixUrl option.
-	prefixUrl: import.meta.env.VITE_API_BASE_URL,
 	timeout: API_TIMEOUT,
 	retry: {
 		// 当请求失败时，最多重试次数
@@ -75,5 +73,14 @@ const defaultConfig: Options = {
 	},
 };
 
-export const request = ky.create(defaultConfig);
+// The input argument cannot start with a slash / when using prefixUrl option.
+function createRequestClient(prefixUrl: string) {
+	return ky.create({ ...defaultConfig, prefixUrl });
+}
+
+// Backend "core" service
+export const request = createRequestClient(import.meta.env.VITE_API_BASE_URL);
+// Backend "app" service
+export const requestApp = createRequestClient(import.meta.env.VITE_API_APP_BASE_URL);
+
 export { parseErrorMessage } from "./error-response";

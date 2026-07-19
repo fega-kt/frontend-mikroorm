@@ -1,11 +1,11 @@
 import type { MilestoneEntity, MilestonePayload } from "./types";
-import { CrudServiceBase } from "../service-base";
+import { ApiService, CrudServiceBase } from "../service-base";
 
 export * from "./types";
 
 export class MilestoneService extends CrudServiceBase<MilestoneEntity> {
 	constructor() {
-		super({ endpoint: "milestone", populate: ["project"] });
+		super({ endpoint: "milestone", populate: ["project"], service: ApiService.App });
 	}
 
 	/** GET /milestone/by-project/:projectId */
