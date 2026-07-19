@@ -1,11 +1,11 @@
 import type { DepartmentEntity, DepartmentSearchParams, DepartmentTreeNode } from "./types";
-import { CrudServiceBase } from "../../service-base";
+import { ApiService, CrudServiceBase } from "../../service-base";
 
 export * from "./types";
 
 export class DepartmentService extends CrudServiceBase<DepartmentEntity> {
 	constructor() {
-		super({ endpoint: "department", populate: ["manager", "deputy", "parent"] });
+		super({ endpoint: "department", populate: ["manager", "deputy", "parent"], service: ApiService.Core });
 	}
 
 	/** Lấy danh sách bộ phận */

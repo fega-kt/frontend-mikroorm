@@ -1,9 +1,9 @@
 import type { TaskEntity, TaskPayload } from "./types";
-import { CrudServiceBase } from "../service-base";
+import { ApiService, CrudServiceBase } from "../service-base";
 
 export class TaskService extends CrudServiceBase<TaskEntity> {
 	constructor() {
-		super({ endpoint: "task", populate: ["assignee", "project", "section", "parentTask"] });
+		super({ endpoint: "task", populate: ["assignee", "project", "section", "parentTask"], service: ApiService.App });
 	}
 
 	/** Lấy danh sách task có phân trang (global) */

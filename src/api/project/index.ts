@@ -1,11 +1,11 @@
 import type { ProjectEntity, ProjectPayload, ProjectStats } from "./types";
-import { CrudServiceBase } from "../service-base";
+import { ApiService, CrudServiceBase } from "../service-base";
 
 export * from "./types";
 
 export class ProjectService extends CrudServiceBase<ProjectEntity> {
 	constructor() {
-		super({ endpoint: "project", populate: ["owner"] });
+		super({ endpoint: "project", populate: ["owner"], service: ApiService.App });
 	}
 
 	/** Lấy danh sách dự án có phân trang */

@@ -1,11 +1,11 @@
 import type { NotificationEntity } from "./types";
-import { CrudServiceBase } from "../service-base";
+import { ApiService, CrudServiceBase } from "../service-base";
 
 export * from "./types";
 
 export class NotificationService extends CrudServiceBase<NotificationEntity> {
 	constructor() {
-		super({ endpoint: "notification" });
+		super({ endpoint: "notification", service: ApiService.Core });
 	}
 
 	/** GET /notification?page=1&limit=20&onlyUnread=false */

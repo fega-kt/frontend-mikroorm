@@ -1,5 +1,5 @@
 import type { GroupEntity, GroupSearchParams } from "./types";
-import { CrudServiceBase } from "../../service-base";
+import { ApiService, CrudServiceBase } from "../../service-base";
 
 export * from "./types";
 
@@ -8,6 +8,7 @@ export class GroupService extends CrudServiceBase<GroupEntity> {
 		super({
 			endpoint: "group",
 			populate: ["users", "principal"],
+			service: ApiService.Core,
 		});
 	}
 

@@ -1,11 +1,11 @@
 import type { RoleEntity, RoleSearchParams } from "./types";
-import { CrudServiceBase } from "../../service-base";
+import { ApiService, CrudServiceBase } from "../../service-base";
 
 export * from "./types";
 
 export class RoleService extends CrudServiceBase<RoleEntity> {
 	constructor() {
-		super({ endpoint: "role", populate: ["usersAndGroups"],
+		super({ endpoint: "role", populate: ["usersAndGroups"], service: ApiService.Core,
 		});
 	}
 

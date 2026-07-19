@@ -1,11 +1,11 @@
 import type { SprintEntity, SprintPayload } from "./types";
-import { CrudServiceBase } from "../service-base";
+import { ApiService, CrudServiceBase } from "../service-base";
 
 export * from "./types";
 
 export class SprintService extends CrudServiceBase<SprintEntity> {
 	constructor() {
-		super({ endpoint: "sprint", populate: ["project"] });
+		super({ endpoint: "sprint", populate: ["project"], service: ApiService.App });
 	}
 
 	/** GET /sprint/by-project/:projectId */

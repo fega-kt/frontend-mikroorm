@@ -2,7 +2,7 @@
 
 > api 目录存放所有请求接口文件，按照页面划分目录，一个页面对应一个目录，目录可以嵌套，但目录下的文件需要包含请求接口文件和类型定义文件。
 
-下面是一个典型的目录结构 [`src/api/user`](https://github.com/condorheroblog/react-antd-admin/tree/main/src/api/user)：
+下面是一个典型的目录结构 [`src/api/user`](https://github.com/fega-kt/frontend-mikroorm/tree/main/src/api/user)：
 
 ```zsh
 ├── api
@@ -11,7 +11,7 @@
 │       └── types.ts          # 类型定义文件
 ```
 
-如果页面下有页面，则可以继续嵌套目录，例如：[`src/api/system`](https://github.com/condorheroblog/react-antd-admin/tree/main/src/api/system)。
+如果页面下有页面，则可以继续嵌套目录，例如：[`src/api/system`](https://github.com/fega-kt/frontend-mikroorm/tree/main/src/api/system)。
 
 ## 文件说明
 
@@ -71,4 +71,4 @@ export function fetchDeleteRoleItem(id: number) {
 
 ## `request.ts` 介绍
 
-`request.ts` 是封装了 `[Ky](https://github.com/sindresorhus/ky)` 的请求库，代码实现请看 `[src/utils/request](https://github.com/condorheroblog/react-antd-admin/tree/main/src/utils/request)`。
+`request.ts` 是封装了 `[Ky](https://github.com/sindresorhus/ky)` 的请求库，代码实现请看 `[src/utils/request](https://github.com/fega-kt/frontend-mikroorm/tree/main/src/utils/request)`。

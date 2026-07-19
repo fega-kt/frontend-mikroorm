@@ -1,11 +1,11 @@
 import type { PrincipalEntity, PrincipalSearchParams } from "./types";
-import { CrudServiceBase } from "../../service-base";
+import { ApiService, CrudServiceBase } from "../../service-base";
 
 export * from "./types";
 
 export class PrincipalService extends CrudServiceBase<PrincipalEntity> {
 	constructor() {
-		super({ endpoint: "principal" });
+		super({ endpoint: "principal", service: ApiService.Core });
 	}
 
 	async fetchPrincipalList(params?: PrincipalSearchParams) {

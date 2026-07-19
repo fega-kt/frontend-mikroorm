@@ -21,6 +21,7 @@ const __APP_INFO__ = {
 
 const envSchema = z.object({
 	VITE_API_BASE_URL: z.string().min(1),
+	VITE_API_APP_BASE_URL: z.string().min(1),
 	VITE_BASE_HOME_PATH: z.string().min(1).default("/home"),
 	VITE_GLOB_APP_TITLE: z.string().min(1).default("App"),
 	VITE_GLOB_APP_LOGO_URL: z.string().optional(),

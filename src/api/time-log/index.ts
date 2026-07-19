@@ -1,11 +1,11 @@
 import type { TimeLogEntity, TimeLogPayload, TimeLogReviewPayload, TimeLogSummary } from "./types";
-import { CrudServiceBase } from "../service-base";
+import { ApiService, CrudServiceBase } from "../service-base";
 
 export * from "./types";
 
 export class TimeLogService extends CrudServiceBase<TimeLogEntity> {
 	constructor() {
-		super({ endpoint: "timelog", populate: ["task", "user", "reviewedBy"] });
+		super({ endpoint: "timelog", populate: ["task", "user", "reviewedBy"], service: ApiService.App });
 	}
 
 	/** GET /timelog/by-task/:taskId */

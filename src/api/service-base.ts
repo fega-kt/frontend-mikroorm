@@ -1,11 +1,18 @@
 import type { Options } from "ky";
-import { request } from "#src/utils/request";
+import { request, requestApp } from "#src/utils/request";
 
 export type SearchParamsBase = Record<string, string | number | boolean | undefined>;
+
+export enum ApiService {
+	Core = "core",
+	App = "app",
+}
 
 export interface ServiceOptions {
 	endpoint: string
 	populate?: string[]
+	/** Backend service này endpoint thuộc về. */
+	service: ApiService
 }
 
 /**
@@ -15,10 +22,12 @@ export interface ServiceOptions {
 export abstract class CrudServiceBase<T = Record<string, unknown>> {
 	protected readonly endpoint: string;
 	protected readonly populate?: (keyof T)[];
+	protected readonly client: typeof request;
 
 	constructor(options: ServiceOptions) {
 		this.endpoint = options.endpoint;
 		this.populate = options.populate as (keyof T)[];
+		this.client = options.service === ApiService.App ? requestApp : request;
 	}
 
 	/**
@@ -59,7 +68,7 @@ export abstract class CrudServiceBase<T = Record<string, unknown>> {
 
 	/** GET helper - Tự động gọi .json() */
 	protected get<R = T>(path?: string, options?: Options): Promise<R> {
-		return request.get(this.getUrl(path), options).json<R>();
+		return this.client.get(this.getUrl(path), options).json<R>();
 	}
 
 	/** POST helper - Tự động gọi .json() */
@@ -67,7 +76,7 @@ export abstract class CrudServiceBase<T = Record<string, unknown>> {
 		if (options?.json) {
 			options.json = this.transformPopulatedFields(options.json as Partial<T>);
 		}
-		return request.post(this.getUrl(path), options).json<R>();
+		return this.client.post(this.getUrl(path), options).json<R>();
 	}
 
 	/** PUT helper - Tự động gọi .json() */
@@ -75,7 +84,7 @@ export abstract class CrudServiceBase<T = Record<string, unknown>> {
 		if (options?.json) {
 			options.json = this.transformPopulatedFields(options.json as Partial<T>);
 		}
-		return request.put(this.getUrl(path), options).json<R>();
+		return this.client.put(this.getUrl(path), options).json<R>();
 	}
 
 	/** PATCH helper - Tự động gọi .json() */
@@ -83,11 +92,11 @@ export abstract class CrudServiceBase<T = Record<string, unknown>> {
 		if (options?.json) {
 			options.json = this.transformPopulatedFields(options.json as Partial<T>);
 		}
-		return request.patch(this.getUrl(path), options).json<R>();
+		return this.client.patch(this.getUrl(path), options).json<R>();
 	}
 
 	/** DELETE helper - Tự động gọi .json() */
 	protected delete<R = void>(path?: string, options?: Options): Promise<R> {
-		return request.delete(this.getUrl(path), options).json<R>();
+		return this.client.delete(this.getUrl(path), options).json<R>();
 	}
 }
