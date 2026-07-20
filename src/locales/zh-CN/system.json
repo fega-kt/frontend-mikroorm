@@ -72,7 +72,8 @@
 		"passwordMaxLength": "密码不能超过16个字符",
 		"passwordNumber": "密码必须包含至少一个数字",
 		"emailInvalidFormat": "邮箱格式无效",
-		"phoneInvalidFormat": "电话号码只能包含数字、+号和空格"
+		"phoneInvalidFormat": "电话号码只能包含数字、+号和空格",
+		"departmentRequired": "部门为必填项"
 	},
 	"menu": {
 		"name": "菜单名称",

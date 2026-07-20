@@ -72,7 +72,8 @@
 		"passwordMaxLength": "Password must be at most 16 characters",
 		"passwordNumber": "Password must contain at least one number",
 		"emailInvalidFormat": "Invalid email format",
-		"phoneInvalidFormat": "Phone number can only contain digits, + and spaces"
+		"phoneInvalidFormat": "Phone number can only contain digits, + and spaces",
+		"departmentRequired": "Department is required"
 	},
 	"menu": {
 		"name": "Menu Name",
