@@ -45,7 +45,7 @@ export class DepartmentService extends CrudServiceBase<DepartmentEntity> {
 
 	/** Sửa bộ phận */
 	async fetchUpdateDeptItem(id: string, data: DepartmentEntity) {
-		return this.patch<void>(id, { json: data, ignoreLoading: true });
+		return this.put<void>(id, { json: data, ignoreLoading: true });
 	}
 
 	/** Xóa bộ phận */
