@@ -221,6 +221,10 @@ export function Detail({ ref }: DetailProps) {
 					name="department"
 					label={t("system.dept.name")}
 					labelInValue={true}
+					required
+					rules={[
+						{ required: true, message: t("system.user.departmentRequired") },
+					]}
 				/>
 
 				<ProFormSwitch

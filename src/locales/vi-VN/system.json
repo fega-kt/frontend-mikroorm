@@ -75,7 +75,8 @@
 		"passwordMaxLength": "Mật khẩu không được vượt quá 16 ký tự",
 		"passwordNumber": "Mật khẩu phải chứa ít nhất một chữ số",
 		"emailInvalidFormat": "Định dạng email không hợp lệ",
-		"phoneInvalidFormat": "Số điện thoại chỉ được chứa chữ số, dấu + và khoảng trắng"
+		"phoneInvalidFormat": "Số điện thoại chỉ được chứa chữ số, dấu + và khoảng trắng",
+		"departmentRequired": "Phòng ban là bắt buộc"
 	},
 
 	"dept": {

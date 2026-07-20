@@ -41,7 +41,7 @@ export class UserService extends CrudServiceBase<UserEntity> {
 
 	/** Sửa user */
 	async fetchUpdateUser(id: string, data: Partial<UserEntity>) {
-		return this.patch<void>(id, { json: data, ignoreLoading: true });
+		return this.put<void>(id, { json: data, ignoreLoading: true });
 	}
 
 	/** Xóa user */
