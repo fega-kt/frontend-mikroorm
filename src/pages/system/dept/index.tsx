@@ -49,9 +49,9 @@ export default function Dept() {
 	};
 
 	const handleDeleteRow = async (id: string, action?: ProCoreActionType<object>) => {
-		const deletedId = await departmentService.fetchDeleteDeptItem(id);
+		await departmentService.fetchDeleteDeptItem(id);
 		await action?.reload?.();
-		window.$message?.success(`${t("common.deleteSuccess")} id = ${deletedId}`);
+		window.$message?.success(t("common.deleteSuccess"));
 	};
 
 	const columns: ProColumns<DepartmentTreeNode>[] = [

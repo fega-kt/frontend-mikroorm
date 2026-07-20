@@ -50,7 +50,7 @@ export class DepartmentService extends CrudServiceBase<DepartmentEntity> {
 
 	/** Xóa bộ phận */
 	async fetchDeleteDeptItem(id: string) {
-		return this.delete<void>("dept-item", { json: id, ignoreLoading: true });
+		return this.delete<void>(id, { ignoreLoading: true });
 	}
 
 	/** Lấy chi tiết bộ phận */
