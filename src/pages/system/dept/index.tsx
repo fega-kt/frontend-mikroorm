@@ -34,6 +34,10 @@ export default function Dept() {
 		]);
 	};
 
+	const countTreeNodes = (nodes: DepartmentTreeNode[]): number => {
+		return nodes.reduce((sum, node) => sum + 1 + countTreeNodes(node.children ?? []), 0);
+	};
+
 	const handleAdd = async () => {
 		const res = await detailRef.current?.show();
 		if (res?.isChange) {
@@ -104,12 +108,17 @@ export default function Dept() {
 				columns={columns}
 				scroll={{ x: "min-content" }}
 				actionRef={actionRef}
+				pagination={{
+					showSizeChanger: false,
+					showQuickJumper: false,
+					itemRender: () => null,
+				}}
 				request={async (params) => {
 					const tree = await departmentService.fetchDeptTreeList(params);
 					setExpandedRowKeys(getExpandedKeys(tree));
 					return {
 						data: tree,
-						total: tree.length,
+						total: countTreeNodes(tree),
 						success: true,
 					};
 				}}
