@@ -7,7 +7,7 @@ import { usePreferencesStore } from "#src/store/preferences";
 import { cn } from "#src/utils/cn";
 import { isObject, isUndefined } from "#src/utils/is";
 
-import { DownOutlined, LoadingOutlined, UpOutlined } from "@ant-design/icons";
+import { DownOutlined, UpOutlined } from "@ant-design/icons";
 import { ProTable } from "@ant-design/pro-components";
 import { useDebounceFn, useSize } from "ahooks";
 import { Grid } from "antd";
@@ -205,7 +205,6 @@ export function BasicTable<
 			return true;
 		}
 		return {
-			indicator: <LoadingOutlined spin />,
 			...props.loading,
 		};
 	};

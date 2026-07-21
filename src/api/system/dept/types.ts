@@ -11,6 +11,12 @@ export interface DepartmentSearchParams extends SearchParamsBase {
 	keyword?: string
 }
 
+export interface DepartmentUsersSearchParams extends SearchParamsBase {
+	page?: number
+	limit?: number
+	keyword?: string
+}
+
 export interface DepartmentEntity extends EntityBase {
 	code: string
 	name: string
@@ -18,7 +24,6 @@ export interface DepartmentEntity extends EntityBase {
 	parent?: DepartmentEntity
 	manager?: UserEntity | null
 	deputy?: UserEntity | null
-	users?: UserEntity[]
 }
 
 export type DepartmentTreeNode = WithChildren<{

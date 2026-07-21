@@ -1,28 +1,36 @@
 import type { UserEntity } from "#src/api/user/types";
-import { ProTable } from "@ant-design/pro-components";
+import { departmentService } from "#src/api/system/dept";
+import { BasicTable } from "#src/components/basic-table";
 import { useTranslation } from "react-i18next";
 
 interface DeptUsersTabProps {
-	users: UserEntity[]
+	departmentId: string
 }
 
-export function DeptUsersTab({ users }: DeptUsersTabProps) {
+export function DeptUsersTab({ departmentId }: DeptUsersTabProps) {
 	const { t } = useTranslation();
 
 	return (
-		<ProTable<UserEntity>
+		<BasicTable<UserEntity>
 			rowKey="id"
+			cardBordered={false}
+			cardProps={{ ghost: true }}
 			search={false}
-			options={false}
-			pagination={{ pageSize: 5, size: "small", showTotal: total => t("common.paginationUser", { total }) }}
-			scroll={{ x: "max-content" }}
-			dataSource={users}
+			options={{ reload: false, density: false, setting: false, fullScreen: false }}
+			scroll={{ x: undefined, y: "clamp(200px, calc(100vh - 400px), 480px)" }}
+			request={async (params) => {
+				const { data, total } = await departmentService.fetchDeptUsers(departmentId, {
+					page: params.page,
+					limit: params.limit,
+				});
+				return { data, total, success: true };
+			}}
 			columns={[
 				{
 					title: t("system.user.fullName"),
 					dataIndex: "fullName",
 					key: "fullName",
-					width: 180,
+					width: 220,
 					render: (_, record) => (
 						<span className="flex items-center gap-2">
 							<span
@@ -37,13 +45,12 @@ export function DeptUsersTab({ users }: DeptUsersTabProps) {
 					title: t("system.user.loginName"),
 					dataIndex: "loginName",
 					key: "loginName",
-					width: 140,
+					width: 220,
 				},
 				{
 					title: t("system.user.phoneNumber"),
 					dataIndex: "phoneNumber",
 					key: "phoneNumber",
-					width: 130,
 				},
 			]}
 		/>
