@@ -1,5 +1,4 @@
 import type { DepartmentEntity } from "#src/api/system/dept";
-import type { UserEntity } from "#src/api/user/types";
 import { departmentService } from "#src/api/system/dept";
 import { ModalForm } from "@ant-design/pro-components";
 import { Form, Spin, Tabs } from "antd";
@@ -26,7 +25,6 @@ export function Detail({ ref }: DetailProps) {
 	const [loading, setLoading] = useState(false);
 	const [activeTab, setActiveTab] = useState("info");
 	const [editingId, setEditingId] = useState<string | null>(null);
-	const [deptUsers, setDeptUsers] = useState<UserEntity[]>([]);
 
 	const title = useMemo(
 		() => editingId ? t("system.dept.editDept") : t("system.dept.addDept"),
@@ -38,14 +36,12 @@ export function Detail({ ref }: DetailProps) {
 			form.resetFields();
 			setEditingId(id ?? null);
 			setActiveTab("info");
-			setDeptUsers([]);
 			setOpen(true);
 			setLoading(true);
 			try {
 				const deptItem = id ? await departmentService.fetchDeptItem(id) : null;
 				if (deptItem) {
 					form.setFieldsValue(deptItem);
-					setDeptUsers(deptItem.users ?? []);
 				}
 				setLoading(false);
 			}
@@ -118,7 +114,7 @@ export function Detail({ ref }: DetailProps) {
 							key: "users",
 							label: t("system.dept.tabUsers"),
 							disabled: !editingId,
-							children: <DeptUsersTab users={deptUsers} />,
+							children: editingId ? <DeptUsersTab departmentId={editingId} /> : null,
 						},
 					]}
 				/>

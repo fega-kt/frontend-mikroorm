@@ -1,4 +1,5 @@
-import type { DepartmentEntity, DepartmentSearchParams, DepartmentTreeNode } from "./types";
+import type { UserEntity } from "../../user";
+import type { DepartmentEntity, DepartmentSearchParams, DepartmentTreeNode, DepartmentUsersSearchParams } from "./types";
 import { ApiService, CrudServiceBase } from "../../service-base";
 
 export * from "./types";
@@ -56,6 +57,14 @@ export class DepartmentService extends CrudServiceBase<DepartmentEntity> {
 	/** Lấy chi tiết bộ phận */
 	async fetchDeptItem(id: string) {
 		return this.get<DepartmentEntity>(id, { ignoreLoading: true });
+	}
+
+	/** Lấy danh sách nhân viên của bộ phận có phân trang */
+	async fetchDeptUsers(id: string, params?: DepartmentUsersSearchParams) {
+		return this.get<{ data: UserEntity[], total: number }>(`${id}/users`, {
+			searchParams: params,
+			ignoreLoading: true,
+		});
 	}
 }
 
