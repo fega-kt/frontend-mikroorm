@@ -76,7 +76,13 @@
 		"passwordNumber": "Mật khẩu phải chứa ít nhất một chữ số",
 		"emailInvalidFormat": "Định dạng email không hợp lệ",
 		"phoneInvalidFormat": "Số điện thoại chỉ được chứa chữ số, dấu + và khoảng trắng",
-		"departmentRequired": "Phòng ban là bắt buộc"
+		"departmentRequired": "Phòng ban là bắt buộc",
+		"activate": "Kích hoạt",
+		"deactivate": "Vô hiệu hóa",
+		"confirmActivate": "Bạn có chắc chắn muốn kích hoạt người dùng này?",
+		"confirmDeactivate": "Bạn có chắc chắn muốn vô hiệu hóa người dùng này?",
+		"activateSuccess": "Kích hoạt người dùng thành công",
+		"deactivateSuccess": "Vô hiệu hóa người dùng thành công"
 	},
 
 	"dept": {

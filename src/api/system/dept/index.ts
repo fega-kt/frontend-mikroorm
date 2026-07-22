@@ -39,6 +39,11 @@ export class DepartmentService extends CrudServiceBase<DepartmentEntity> {
 		return this.get<DepartmentTreeNode[]>("department-tree", { searchParams: params, ignoreLoading: true });
 	}
 
+	/** Lấy cây phòng ban chỉ gồm các phòng ban active (và có cha cũng active) */
+	async fetchActiveDeptTreeList(params?: Pick<DepartmentSearchParams, "keyword" | "name" | "code">) {
+		return this.get<DepartmentTreeNode[]>("department-tree/active", { searchParams: params, ignoreLoading: true });
+	}
+
 	/** Thêm bộ phận */
 	async fetchAddDeptItem(data: DepartmentEntity) {
 		return this.post<void>("", { json: data, ignoreLoading: true });
