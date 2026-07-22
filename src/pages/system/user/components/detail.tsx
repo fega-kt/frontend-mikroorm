@@ -232,6 +232,7 @@ export function Detail({ ref }: DetailProps) {
 					label={t("common.status")}
 					checkedChildren={t("common.active")}
 					unCheckedChildren={t("common.inactive")}
+					disabled={!!editingId}
 				/>
 			</Spin>
 		</ModalForm>

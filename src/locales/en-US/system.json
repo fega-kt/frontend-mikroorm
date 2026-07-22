@@ -73,7 +73,13 @@
 		"passwordNumber": "Password must contain at least one number",
 		"emailInvalidFormat": "Invalid email format",
 		"phoneInvalidFormat": "Phone number can only contain digits, + and spaces",
-		"departmentRequired": "Department is required"
+		"departmentRequired": "Department is required",
+		"activate": "Activate",
+		"deactivate": "Deactivate",
+		"confirmActivate": "Are you sure you want to activate this user?",
+		"confirmDeactivate": "Are you sure you want to deactivate this user?",
+		"activateSuccess": "User activated successfully",
+		"deactivateSuccess": "User deactivated successfully"
 	},
 	"menu": {
 		"name": "Menu Name",

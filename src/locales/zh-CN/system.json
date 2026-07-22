@@ -73,7 +73,13 @@
 		"passwordNumber": "密码必须包含至少一个数字",
 		"emailInvalidFormat": "邮箱格式无效",
 		"phoneInvalidFormat": "电话号码只能包含数字、+号和空格",
-		"departmentRequired": "部门为必填项"
+		"departmentRequired": "部门为必填项",
+		"activate": "启用",
+		"deactivate": "停用",
+		"confirmActivate": "确定要启用该用户吗？",
+		"confirmDeactivate": "确定要停用该用户吗？",
+		"activateSuccess": "启用用户成功",
+		"deactivateSuccess": "停用用户成功"
 	},
 	"menu": {
 		"name": "菜单名称",

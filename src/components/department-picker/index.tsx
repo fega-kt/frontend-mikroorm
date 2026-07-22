@@ -138,7 +138,7 @@ export function DepartmentPicker(props: DepartmentPickerProps) {
 	const fetchData = useCallback(async (keyword?: string) => {
 		setLoading(true);
 		try {
-			const data = await departmentService.fetchDeptTreeList({ keyword });
+			const data = await departmentService.fetchActiveDeptTreeList({ keyword });
 			const nodes = convertToTreeNodes(data || []);
 			setApiTreeData(nodes);
 			setRemoteExpandedKeys(nodes.map(n => n.value));

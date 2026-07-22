@@ -6,7 +6,7 @@ import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
-import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, LockOutlined, PlusCircleOutlined, UnlockOutlined } from "@ant-design/icons";
 import { Button, Popconfirm, Tooltip } from "antd";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
@@ -39,13 +39,19 @@ export default function User() {
 		window.$message?.success(t("common.deleteSuccess"));
 	};
 
+	const handleToggleActive = async (id: string, isActive: boolean) => {
+		await userService.fetchUpdateUserActive(id, !isActive);
+		actionRef.current?.reload();
+		window.$message?.success(isActive ? t("system.user.deactivateSuccess") : t("system.user.activateSuccess"));
+	};
+
 	const columns: ProColumns<UserEntity>[] = [
 		...getConstantColumns(t),
 		{
 			title: t("common.action"),
 			valueType: "option",
 			key: "option",
-			width: 96,
+			width: 130,
 			fixed: "right",
 			render: (_, record) => [
 				<Tooltip key="edit" title={t("common.edit")}>
@@ -57,6 +63,22 @@ export default function User() {
 						onClick={() => handleEdit(record.id)}
 					/>
 				</Tooltip>,
+				<Popconfirm
+					key="toggle-active"
+					title={record.isActive ? t("system.user.confirmDeactivate") : t("system.user.confirmActivate")}
+					onConfirm={() => handleToggleActive(record.id, !!record.isActive)}
+					okText={t("common.confirm")}
+					cancelText={t("common.cancel")}
+				>
+					<Tooltip title={record.isActive ? t("system.user.deactivate") : t("system.user.activate")}>
+						<Button
+							type="text"
+							size="small"
+							icon={record.isActive ? <LockOutlined /> : <UnlockOutlined />}
+							disabled={!canAccess(PermissionType.UpdateUser)}
+						/>
+					</Tooltip>
+				</Popconfirm>,
 				<Popconfirm
 					key="delete"
 					title={t("common.confirmDelete")}

@@ -49,6 +49,11 @@ export class UserService extends CrudServiceBase<UserEntity> {
 		return this.delete<void>(id, { ignoreLoading: true });
 	}
 
+	/** Kích hoạt/vô hiệu hóa user */
+	async fetchUpdateUserActive(id: string, isActive: boolean) {
+		return this.patch<void>(`${id}/active`, { json: { isActive }, ignoreLoading: true });
+	}
+
 	/** Lấy chi tiết user */
 	async fetchUserItem(id: string) {
 		return this.get<UserEntity>(id, { ignoreLoading: true });
