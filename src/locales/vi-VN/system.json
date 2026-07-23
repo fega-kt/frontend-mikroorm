@@ -82,7 +82,8 @@
 		"confirmActivate": "Bạn có chắc chắn muốn kích hoạt người dùng này?",
 		"confirmDeactivate": "Bạn có chắc chắn muốn vô hiệu hóa người dùng này?",
 		"activateSuccess": "Kích hoạt người dùng thành công",
-		"deactivateSuccess": "Vô hiệu hóa người dùng thành công"
+		"deactivateSuccess": "Vô hiệu hóa người dùng thành công",
+		"statusChangeDisabledTooltip": "Trạng thái chỉ có thể thay đổi qua chức năng kích hoạt/vô hiệu hóa"
 	},
 
 	"dept": {
@@ -103,6 +104,13 @@
 		"nameInvalidFormat": "Tên phòng ban phải bắt đầu bằng chữ cái, chỉ được chứa chữ cái, chữ số và dấu cách đơn giữa các từ",
 		"codeRequired": "Mã phòng ban là bắt buộc",
 		"codeMaxLength": "Mã phòng ban không được vượt quá 50 ký tự",
-		"codeInvalidFormat": "Mã phòng ban phải bắt đầu bằng chữ cái, chỉ chứa chữ cái, chữ số và dấu gạch dưới đơn (không liên tiếp)"
+		"codeInvalidFormat": "Mã phòng ban phải bắt đầu bằng chữ cái, chỉ chứa chữ cái, chữ số và dấu gạch dưới đơn (không liên tiếp)",
+		"activate": "Kích hoạt",
+		"deactivate": "Vô hiệu hóa",
+		"confirmActivate": "Bạn có chắc chắn muốn kích hoạt phòng ban này?",
+		"confirmDeactivate": "Bạn có chắc chắn muốn vô hiệu hóa phòng ban này?",
+		"activateSuccess": "Kích hoạt phòng ban thành công",
+		"deactivateSuccess": "Vô hiệu hóa phòng ban thành công",
+		"statusChangeDisabledTooltip": "Trạng thái chỉ có thể thay đổi qua chức năng kích hoạt/vô hiệu hóa"
 	}
 }

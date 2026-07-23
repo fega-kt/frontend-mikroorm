@@ -79,7 +79,8 @@
 		"confirmActivate": "Are you sure you want to activate this user?",
 		"confirmDeactivate": "Are you sure you want to deactivate this user?",
 		"activateSuccess": "User activated successfully",
-		"deactivateSuccess": "User deactivated successfully"
+		"deactivateSuccess": "User deactivated successfully",
+		"statusChangeDisabledTooltip": "Status can only be changed via the dedicated activate/deactivate action"
 	},
 	"menu": {
 		"name": "Menu Name",
@@ -120,6 +121,13 @@
 		"nameInvalidFormat": "Department name must start with a letter and contain only letters, numbers, and single spaces between words",
 		"codeRequired": "Department code is required",
 		"codeMaxLength": "Department code must not exceed 50 characters",
-		"codeInvalidFormat": "Department code must start with a letter and contain only letters, numbers, and single underscores (not consecutive)"
+		"codeInvalidFormat": "Department code must start with a letter and contain only letters, numbers, and single underscores (not consecutive)",
+		"activate": "Activate",
+		"deactivate": "Deactivate",
+		"confirmActivate": "Are you sure you want to activate this department?",
+		"confirmDeactivate": "Are you sure you want to deactivate this department?",
+		"activateSuccess": "Department activated successfully",
+		"deactivateSuccess": "Department deactivated successfully",
+		"statusChangeDisabledTooltip": "Status can only be changed via the dedicated activate/deactivate action"
 	}
 }

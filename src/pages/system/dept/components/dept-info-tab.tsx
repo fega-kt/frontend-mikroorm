@@ -1,7 +1,7 @@
 import { TrimInput } from "#src/components/basic-form";
 import { ProFormDepartmentPicker } from "#src/components/department-picker";
 import { ProFormPeoplePicker } from "#src/components/people-picker";
-import { ProFormRadio } from "@ant-design/pro-components";
+import { ProFormSwitch } from "@ant-design/pro-components";
 import { Form } from "antd";
 import { useTranslation } from "react-i18next";
 
@@ -72,20 +72,15 @@ export function DeptInfoTab({ isEditing, excludeRootId }: DeptInfoTabProps) {
 				}}
 			/>
 
-			<ProFormRadio.Group
+			<ProFormSwitch
 				name="status"
 				label={t("common.status")}
-				radioType="button"
-				options={[
-					{
-						label: t("common.enabled"),
-						value: 1,
-					},
-					{
-						label: t("common.deactivated"),
-						value: 0,
-					},
-				]}
+				disabled
+				tooltip={t("system.dept.statusChangeDisabledTooltip")}
+				checkedChildren={t("common.active")}
+				unCheckedChildren={t("common.inactive")}
+				getValueProps={value => ({ checked: value === 1 })}
+				normalize={(value: boolean) => (value ? 1 : 0)}
 			/>
 		</>
 	);
