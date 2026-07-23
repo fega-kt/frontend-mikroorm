@@ -54,6 +54,11 @@ export class DepartmentService extends CrudServiceBase<DepartmentEntity> {
 		return this.put<void>(id, { json: data, ignoreLoading: true });
 	}
 
+	/** Kích hoạt/vô hiệu hóa bộ phận (cascade xuống toàn bộ bộ phận con) */
+	async fetchUpdateDeptActive(id: string, status: 0 | 1) {
+		return this.patch<void>(`${id}/active`, { json: { status }, ignoreLoading: true });
+	}
+
 	/** Xóa bộ phận */
 	async fetchDeleteDeptItem(id: string) {
 		return this.delete<void>(id, { ignoreLoading: true });

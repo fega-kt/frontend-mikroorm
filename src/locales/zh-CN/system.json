@@ -79,7 +79,8 @@
 		"confirmActivate": "确定要启用该用户吗？",
 		"confirmDeactivate": "确定要停用该用户吗？",
 		"activateSuccess": "启用用户成功",
-		"deactivateSuccess": "停用用户成功"
+		"deactivateSuccess": "停用用户成功",
+		"statusChangeDisabledTooltip": "状态只能通过专门的启用/停用功能修改"
 	},
 	"menu": {
 		"name": "菜单名称",
@@ -120,6 +121,13 @@
 		"nameInvalidFormat": "部门名称必须以字母开头，只能包含字母、数字和单个空格",
 		"codeRequired": "部门编码不能为空",
 		"codeMaxLength": "部门编码不超过50个字符",
-		"codeInvalidFormat": "部门编码必须以字母开头，只能包含字母、数字和单个下划线（不连续）"
+		"codeInvalidFormat": "部门编码必须以字母开头，只能包含字母、数字和单个下划线（不连续）",
+		"activate": "启用",
+		"deactivate": "停用",
+		"confirmActivate": "确定要启用该部门吗？",
+		"confirmDeactivate": "确定要停用该部门吗？",
+		"activateSuccess": "启用部门成功",
+		"deactivateSuccess": "停用部门成功",
+		"statusChangeDisabledTooltip": "状态只能通过专门的启用/停用功能修改"
 	}
 }

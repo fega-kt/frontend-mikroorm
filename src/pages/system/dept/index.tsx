@@ -8,7 +8,7 @@ import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
-import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, LockOutlined, PlusCircleOutlined, UnlockOutlined } from "@ant-design/icons";
 import { Button, Popconfirm, Tooltip } from "antd";
 import { useRef, useState } from "react";
 
@@ -58,6 +58,12 @@ export default function Dept() {
 		window.$message?.success(t("common.deleteSuccess"));
 	};
 
+	const handleToggleActive = async (id: string, status: 0 | 1, action?: ProCoreActionType<object>) => {
+		await departmentService.fetchUpdateDeptActive(id, status === 1 ? 0 : 1);
+		await action?.reload?.();
+		window.$message?.success(status === 1 ? t("system.dept.deactivateSuccess") : t("system.dept.activateSuccess"));
+	};
+
 	const columns: ProColumns<DepartmentTreeNode>[] = [
 
 		...getConstantColumns(t),
@@ -65,7 +71,7 @@ export default function Dept() {
 			title: t("common.action"),
 			valueType: "option",
 			key: "option",
-			width: 96,
+			width: 130,
 			fixed: "right",
 			render: (text, record, _, action) => {
 				return [
@@ -78,6 +84,22 @@ export default function Dept() {
 							onClick={() => handleEdit(record.id)}
 						/>
 					</Tooltip>,
+					<Popconfirm
+						key="toggle-active"
+						title={record.status === 1 ? t("system.dept.confirmDeactivate") : t("system.dept.confirmActivate")}
+						onConfirm={() => handleToggleActive(record.id, record.status, action)}
+						okText={t("common.confirm")}
+						cancelText={t("common.cancel")}
+					>
+						<Tooltip title={record.status === 1 ? t("system.dept.deactivate") : t("system.dept.activate")}>
+							<Button
+								type="text"
+								size="small"
+								icon={record.status === 1 ? <LockOutlined /> : <UnlockOutlined />}
+								disabled={!canAccess(PermissionType.UpdateDeparment)}
+							/>
+						</Tooltip>
+					</Popconfirm>,
 					<Popconfirm
 						key="delete"
 						title={t("common.confirmDelete")}

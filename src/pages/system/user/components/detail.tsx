@@ -233,6 +233,7 @@ export function Detail({ ref }: DetailProps) {
 					checkedChildren={t("common.active")}
 					unCheckedChildren={t("common.inactive")}
 					disabled={!!editingId}
+					tooltip={editingId ? t("system.user.statusChangeDisabledTooltip") : undefined}
 				/>
 			</Spin>
 		</ModalForm>
