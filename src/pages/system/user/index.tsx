@@ -4,10 +4,11 @@ import type { DetailRef } from "./components/detail";
 import { userService } from "#src/api/user";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
+import { createActionColumn } from "#src/components/row-actions/create-action-column";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
-import { DeleteOutlined, EditOutlined, LockOutlined, PlusCircleOutlined, UnlockOutlined } from "@ant-design/icons";
-import { Button, Popconfirm, Tooltip } from "antd";
+import { PlusCircleOutlined } from "@ant-design/icons";
+import { Button } from "antd";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Detail } from "./components/detail";
@@ -45,59 +46,25 @@ export default function User() {
 		window.$message?.success(isActive ? t("system.user.deactivateSuccess") : t("system.user.activateSuccess"));
 	};
 
+	const canUpdate = canAccess(PermissionType.UpdateUser);
+	const canDelete = canAccess(PermissionType.DeleteUser);
+
 	const columns: ProColumns<UserEntity>[] = [
 		...getConstantColumns(t),
-		{
-			title: t("common.action"),
-			valueType: "option",
-			key: "option",
+		...createActionColumn<UserEntity>(t, {
 			width: 130,
-			fixed: "right",
-			render: (_, record) => [
-				<Tooltip key="edit" title={t("common.edit")}>
-					<Button
-						type="text"
-						size="small"
-						icon={<EditOutlined />}
-						disabled={!canAccess(PermissionType.UpdateUser)}
-						onClick={() => handleEdit(record.id)}
-					/>
-				</Tooltip>,
-				<Popconfirm
-					key="toggle-active"
-					title={record.isActive ? t("system.user.confirmDeactivate") : t("system.user.confirmActivate")}
-					onConfirm={() => handleToggleActive(record.id, !!record.isActive)}
-					okText={t("common.confirm")}
-					cancelText={t("common.cancel")}
-				>
-					<Tooltip title={record.isActive ? t("system.user.deactivate") : t("system.user.activate")}>
-						<Button
-							type="text"
-							size="small"
-							icon={record.isActive ? <LockOutlined /> : <UnlockOutlined />}
-							disabled={!canAccess(PermissionType.UpdateUser)}
-						/>
-					</Tooltip>
-				</Popconfirm>,
-				<Popconfirm
-					key="delete"
-					title={t("common.confirmDelete")}
-					onConfirm={() => handleDelete(record.id)}
-					okText={t("common.confirm")}
-					cancelText={t("common.cancel")}
-				>
-					<Tooltip title={t("common.delete")}>
-						<Button
-							type="text"
-							size="small"
-							danger
-							icon={<DeleteOutlined />}
-							disabled={!canAccess(PermissionType.DeleteUser)}
-						/>
-					</Tooltip>
-				</Popconfirm>,
-			],
-		},
+			onEdit: record => handleEdit(record.id),
+			editEnabled: canUpdate,
+			toggleActive: {
+				active: record => !!record.isActive,
+				onToggle: record => handleToggleActive(record.id, !!record.isActive),
+				enabled: canUpdate,
+				confirmTitle: record => record.isActive ? t("system.user.confirmDeactivate") : t("system.user.confirmActivate"),
+				tooltipTitle: record => record.isActive ? t("system.user.deactivate") : t("system.user.activate"),
+			},
+			onDelete: record => handleDelete(record.id),
+			deleteEnabled: canDelete,
+		}),
 	];
 
 	return (

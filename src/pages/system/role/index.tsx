@@ -5,10 +5,11 @@ import type { DetailRef } from "./components/detail";
 import { roleService } from "#src/api/system/role";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
+import { createActionColumn } from "#src/components/row-actions/create-action-column";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
-import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Popconfirm, Tooltip } from "antd";
+import { PlusCircleOutlined } from "@ant-design/icons";
+import { Button } from "antd";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Detail } from "./components/detail";
@@ -41,43 +42,17 @@ export default function Role() {
 		window.$message?.success(t("common.deleteSuccess"));
 	};
 
+	const canUpdate = canAccess(PermissionType.UpdateRole);
+	const canDelete = canAccess(PermissionType.DeleteRole);
+
 	const columns: ProColumns<RoleEntity>[] = [
 		...getConstantColumns(t, pageInfo),
-		{
-			title: t("common.action"),
-			valueType: "option",
-			key: "option",
-			width: 96,
-			fixed: "right",
-			render: (_, record) => [
-				<Tooltip key="edit" title={t("common.edit")}>
-					<Button
-						type="text"
-						size="small"
-						icon={<EditOutlined />}
-						disabled={!canAccess(PermissionType.UpdateRole)}
-						onClick={() => handleEdit(record.id)}
-					/>
-				</Tooltip>,
-				<Popconfirm
-					key="delete"
-					title={t("common.confirmDelete")}
-					onConfirm={() => handleDelete(record.id)}
-					okText={t("common.confirm")}
-					cancelText={t("common.cancel")}
-				>
-					<Tooltip title={t("common.delete")}>
-						<Button
-							type="text"
-							size="small"
-							danger
-							icon={<DeleteOutlined />}
-							disabled={!canAccess(PermissionType.DeleteRole)}
-						/>
-					</Tooltip>
-				</Popconfirm>,
-			],
-		},
+		...createActionColumn<RoleEntity>(t, {
+			onEdit: record => handleEdit(record.id),
+			editEnabled: canUpdate,
+			onDelete: record => handleDelete(record.id),
+			deleteEnabled: canDelete,
+		}),
 	];
 
 	return (
