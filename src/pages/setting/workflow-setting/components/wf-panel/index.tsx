@@ -1,33 +1,40 @@
-import type { WfApprovalData, WfEdgeCondition, WfEndData } from "#src/api/setting/workflow-setting";
-import type { Edge, Node } from "@xyflow/react";
+import type { WfApprovalData } from "#src/api/setting/workflow-setting";
+import type { BpmnElement } from "bpmn-js/lib/Modeler";
+import type { SequenceFlowMode } from "./sequence-flow-panel";
 import { CloseOutlined } from "@ant-design/icons";
 import { Button, theme, Typography } from "antd";
 import { ApprovalPanel } from "./approval-panel";
-import { EdgeConditionPanel } from "./condition-panel";
-
-type Selection = { kind: "node", node: Node } | { kind: "edge", edge: Edge } | null;
+import { SequenceFlowPanel } from "./sequence-flow-panel";
 
 interface WfPanelProps {
-	selection: Selection
+	element: BpmnElement | null
 	onClose: () => void
-	onNodeDataChange: (nodeId: string, data: WfApprovalData) => void
-	onEdgeConditionChange: (edgeId: string, condition: WfEdgeCondition) => void
+	approvalData: WfApprovalData
+	onApprovalChange: (data: WfApprovalData) => void
+	sequenceFlowMode: SequenceFlowMode
+	onSequenceFlowChange: (mode: SequenceFlowMode) => void
 }
 
-export function WfPanel({ selection, onClose, onNodeDataChange, onEdgeConditionChange }: WfPanelProps) {
+export function WfPanel({
+	element,
+	onClose,
+	approvalData,
+	onApprovalChange,
+	sequenceFlowMode,
+	onSequenceFlowChange,
+}: WfPanelProps) {
 	const { token } = theme.useToken();
 
-	if (!selection)
+	if (!element)
 		return null;
 
-	let title: string;
-	if (selection.kind === "edge") {
-		title = "Điều kiện";
-	}
-	else {
-		const node = selection.node;
-		title = node.type === "approval" ? "Bước phê duyệt" : node.type === "end" ? "Kết thúc" : "Node";
-	}
+	const isUserTask = element.type === "bpmn:UserTask";
+	const isSequenceFlow = element.type === "bpmn:SequenceFlow";
+
+	if (!isUserTask && !isSequenceFlow)
+		return null;
+
+	const title = isUserTask ? "Bước phê duyệt" : "Điều kiện";
 
 	return (
 		<div
@@ -48,32 +55,8 @@ export function WfPanel({ selection, onClose, onNodeDataChange, onEdgeConditionC
 			</div>
 
 			<div className="flex-1 overflow-y-auto">
-				{selection.kind === "edge" && (
-					<EdgeConditionPanel
-						condition={selection.edge.data?.condition as WfEdgeCondition | undefined}
-						onChange={cond => onEdgeConditionChange(selection.edge.id, cond)}
-					/>
-				)}
-				{selection.kind === "node" && selection.node.type === "approval" && (
-					<ApprovalPanel
-						data={selection.node.data as unknown as WfApprovalData}
-						onChange={data => onNodeDataChange(selection.node.id, data)}
-					/>
-				)}
-				{selection.kind === "node" && selection.node.type === "end" && (
-					<div className="p-4">
-						<Typography.Text className="text-xs" style={{ color: token.colorTextQuaternary }}>
-							{`Kết quả: ${(selection.node.data as unknown as WfEndData).result === "approved" ? "Phê duyệt" : "Từ chối"}`}
-						</Typography.Text>
-					</div>
-				)}
-				{selection.kind === "node" && selection.node.type === "start" && (
-					<div className="p-4">
-						<Typography.Text className="text-xs" style={{ color: token.colorTextQuaternary }}>
-							Node bắt đầu không có cấu hình thêm.
-						</Typography.Text>
-					</div>
-				)}
+				{isUserTask && <ApprovalPanel data={approvalData} onChange={onApprovalChange} />}
+				{isSequenceFlow && <SequenceFlowPanel mode={sequenceFlowMode} onChange={onSequenceFlowChange} />}
 			</div>
 		</div>
 	);

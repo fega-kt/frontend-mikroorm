@@ -17,16 +17,6 @@ export interface WorkflowSettingSearchParams extends SearchParamsBase {
 	status?: WorkflowSettingStatus
 }
 
-export interface WorkflowSettingEntity extends EntityBase {
-	name: string
-	category: CategoryEntity
-	status: WorkflowSettingStatus
-	description?: string
-	workflowDefinition?: WorkflowDefinition
-}
-
-// ─── Workflow node / edge types ───────────────────────────────────────────────
-
 export enum ApproverType {
 	User = "user",
 	Dept = "dept",
@@ -44,41 +34,6 @@ export enum SelfApproval {
 	Skip = "skip",
 }
 
-export enum WfEndResult {
-	Approved = "approved",
-	Rejected = "rejected",
-}
-
-export enum WfNodeType {
-	Start = "start",
-	Approval = "approval",
-	End = "end",
-}
-
-export enum ConditionOperator {
-	Eq = "eq",
-	Ne = "ne",
-	Gt = "gt",
-	Lt = "lt",
-	Gte = "gte",
-	Lte = "lte",
-	Contains = "contains",
-	NotContains = "notContains",
-}
-
-export interface ConditionRule {
-	field: string
-	operator: ConditionOperator
-	value: string
-}
-
-export interface WfEdgeCondition {
-	label: string
-	rules: ConditionRule[]
-	logic: "and" | "or"
-	isDefault?: boolean
-}
-
 export interface ApproverConfig {
 	type: ApproverType
 	/** Single ID — used for dept, role */
@@ -90,8 +45,6 @@ export interface ApproverConfig {
 	fieldPath?: string
 }
 
-export interface WfStartData { label: string }
-
 export interface WfApprovalData {
 	title: string
 	approvers: ApproverConfig[]
@@ -99,30 +52,18 @@ export interface WfApprovalData {
 	selfApproval: SelfApproval
 }
 
-export interface WfEndData {
-	label: string
-	result: WfEndResult
-}
-
-export type WfNodeData = WfStartData | WfApprovalData | WfEndData;
-
-export interface WfNode {
-	id: string
-	type: WfNodeType
-	position: { x: number, y: number }
-	data: WfNodeData
-}
-
-export interface WfEdge {
-	id: string
-	source: string
-	target: string
-	condition?: WfEdgeCondition
-}
-
-export interface WorkflowDefinition {
-	nodes: WfNode[]
-	edges: WfEdge[]
+export interface WorkflowSettingEntity extends EntityBase {
+	name: string
+	category: CategoryEntity
+	status: WorkflowSettingStatus
+	description?: string
+	/** Approval step config, keyed by the BPMN element id (bpmn:UserTask) it belongs to */
+	approvalConfig?: Record<string, WfApprovalData>
+	/**
+	 * Set after a successful POST .../deploy — no deploymentId is stored (matches v5); the BPMN
+	 *  XML is always fetched by resolving this key to its latest Flowable process definition.
+	 */
+	processDefinitionKey?: string
 }
 
 // ─── API payload types (approvers serialized to string IDs) ──────────────────
@@ -135,13 +76,6 @@ export interface WfApprovalDataPayload extends Omit<WfApprovalData, "approvers">
 	approvers?: ApproverConfigPayload[]
 }
 
-export interface WfNodePayload extends Omit<WfNode, "data"> {
-	data: WfStartData | WfApprovalDataPayload | WfEndData
-}
-
-export interface WorkflowSettingPayload extends Omit<WorkflowSettingEntity, "workflowDefinition"> {
-	workflowDefinition?: {
-		nodes: WfNodePayload[]
-		edges: WfEdge[]
-	}
+export interface WorkflowSettingPayload extends Omit<WorkflowSettingEntity, "approvalConfig"> {
+	approvalConfig?: Record<string, WfApprovalDataPayload>
 }

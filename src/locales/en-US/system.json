@@ -16,7 +16,10 @@
 			"task": "Task Management",
 			"category": "Category Management",
 			"request_type": "Request Type Management",
-			"workflow_setting": "Workflow Settings"
+			"workflow_setting": "Workflow Settings",
+			"workflow_instance": "Workflow Instance Management",
+			"workflow_task": "Workflow Task Management",
+			"workflow_delegation_setting": "Workflow Delegation Management"
 		},
 		"permission": {
 			"user": "User",
@@ -32,7 +35,22 @@
 			"group": "Group",
 			"category": "Category",
 			"request-type": "Request Type",
-			"workflow-setting": "Workflow Settings"
+			"workflow-setting": "Workflow Settings",
+			"deploy": "Deploy",
+			"cancel": "Cancel",
+			"approve": "Approve",
+			"reject": "Reject",
+			"return": "Return",
+			"request-change": "Request Change",
+			"apply-change": "Apply Change",
+			"request-review": "Request Review",
+			"submit-review": "Submit Review",
+			"request-to-cancel": "Request To Cancel",
+			"approve-cancellation": "Approve Cancellation",
+			"reject-cancellation": "Reject Cancellation",
+			"workflow-instance": "Workflow Instance",
+			"workflow-task": "Workflow Task",
+			"workflow-delegation-setting": "Workflow Delegation Setting"
 		}
 	},
 	"userGroup": {

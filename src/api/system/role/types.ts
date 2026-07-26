@@ -76,6 +76,38 @@ export enum PermissionType {
 	CreateWorkflowSetting = "permission:workflow-setting:create",
 	UpdateWorkflowSetting = "permission:workflow-setting:update",
 	DeleteWorkflowSetting = "permission:workflow-setting:delete",
+	DeployWorkflowSetting = "permission:workflow-setting:deploy",
+
+	/** ===== WORKFLOW INSTANCE ===== */
+
+	MenuWorkflowInstance = "permission:menu:workflow-instance",
+	ViewWorkflowInstanceDetail = "permission:workflow-instance:view",
+	CreateWorkflowInstance = "permission:workflow-instance:create",
+	UpdateWorkflowInstance = "permission:workflow-instance:update",
+	CancelWorkflowInstance = "permission:workflow-instance:cancel",
+	RequestToCancelWorkflowInstance = "permission:workflow-instance:request-to-cancel",
+	ApproveCancellationWorkflowInstance = "permission:workflow-instance:approve-cancellation",
+	RejectCancellationWorkflowInstance = "permission:workflow-instance:reject-cancellation",
+
+	/** ===== WORKFLOW TASK ===== */
+
+	MenuWorkflowTask = "permission:menu:workflow-task",
+	ViewWorkflowTaskDetail = "permission:workflow-task:view",
+	ApproveWorkflowTask = "permission:workflow-task:approve",
+	RejectWorkflowTask = "permission:workflow-task:reject",
+	ReturnWorkflowTask = "permission:workflow-task:return",
+	RequestChangeWorkflowTask = "permission:workflow-task:request-change",
+	ApplyChangeWorkflowTask = "permission:workflow-task:apply-change",
+	RequestReviewWorkflowTask = "permission:workflow-task:request-review",
+	SubmitReviewWorkflowTask = "permission:workflow-task:submit-review",
+
+	/** ===== WORKFLOW DELEGATION SETTING ===== */
+
+	MenuWorkflowDelegationSetting = "permission:menu:workflow-delegation-setting",
+	ViewWorkflowDelegationSettingDetail = "permission:workflow-delegation-setting:view",
+	CreateWorkflowDelegationSetting = "permission:workflow-delegation-setting:create",
+	UpdateWorkflowDelegationSetting = "permission:workflow-delegation-setting:update",
+	DeleteWorkflowDelegationSetting = "permission:workflow-delegation-setting:delete",
 }
 
 export interface RoleSearchParams extends SearchParamsBase {
