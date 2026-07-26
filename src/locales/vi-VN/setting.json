@@ -26,6 +26,59 @@
 			"draft": "Nháp",
 			"published": "Đã xuất bản",
 			"cancelled": "Đã hủy"
+		},
+		"deploy": "Deploy BPMN",
+		"deploySuccess": "Deploy quy trình thành công",
+		"deployMissingDefinition": "Quy trình chưa có sơ đồ để deploy"
+	},
+	"workflowInstance": {
+		"title": "Tiêu đề",
+		"content": "Nội dung",
+		"requester": "Người đề nghị",
+		"requestType": "Loại yêu cầu",
+		"workflowSetting": "Quy trình duyệt",
+		"status": "Trạng thái",
+		"currentStepName": "Bước hiện tại",
+		"createdAt": "Ngày tạo",
+		"addWorkflowInstance": "Tạo phiếu đề nghị",
+		"detailTitle": "Chi tiết phiếu đề nghị",
+		"start": "Nộp phiếu",
+		"startConfirm": "Xác nhận nộp phiếu và bắt đầu quy trình duyệt?",
+		"startSuccess": "Đã nộp phiếu",
+		"cancelWorkflow": "Hủy phiếu",
+		"cancelWorkflowConfirm": "Xác nhận hủy phiếu đề nghị này?",
+		"cancelWorkflowSuccess": "Đã hủy phiếu",
+		"statusOptions": {
+			"draft": "Nháp",
+			"in_progress": "Đang duyệt",
+			"approved": "Đã duyệt",
+			"rejected": "Từ chối",
+			"returned": "Trả lại",
+			"cancelled": "Đã hủy"
+		}
+	},
+	"workflowTask": {
+		"stepName": "Bước duyệt",
+		"workflowInstance": "Phiếu đề nghị",
+		"requester": "Người đề nghị",
+		"status": "Trạng thái",
+		"comment": "Ghi chú",
+		"commentPlaceholder": "Nhập ghi chú (không bắt buộc)",
+		"approve": "Duyệt",
+		"reject": "Từ chối",
+		"return": "Trả lại",
+		"confirmApprove": "Xác nhận duyệt bước này?",
+		"confirmReject": "Xác nhận từ chối?",
+		"confirmReturn": "Xác nhận trả lại?",
+		"approveSuccess": "Duyệt thành công",
+		"rejectSuccess": "Đã từ chối",
+		"returnSuccess": "Đã trả lại",
+		"statusOptions": {
+			"pending": "Chờ duyệt",
+			"approved": "Đã duyệt",
+			"rejected": "Từ chối",
+			"returned": "Trả lại",
+			"cancelled": "Đã hủy"
 		}
 	},
 	"requestType": {

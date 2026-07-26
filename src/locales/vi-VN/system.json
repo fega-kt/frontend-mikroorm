@@ -17,7 +17,10 @@
 			"task": "Quản lý công việc",
 			"category": "Quản lý danh mục",
 			"request_type": "Quản lý loại yêu cầu",
-			"workflow_setting": "Cài đặt quy trình"
+			"workflow_setting": "Cài đặt quy trình",
+			"workflow_instance": "Quản lý phiếu đề nghị",
+			"workflow_task": "Quản lý việc cần duyệt",
+			"workflow_delegation_setting": "Quản lý ủy quyền duyệt"
 		},
 		"permission": {
 			"user": "Người dùng",
@@ -33,7 +36,22 @@
 			"group": "Nhóm",
 			"category": "Danh mục",
 			"request-type": "Loại yêu cầu",
-			"workflow-setting": "Cài đặt quy trình"
+			"workflow-setting": "Cài đặt quy trình",
+			"deploy": "Deploy",
+			"cancel": "Hủy",
+			"approve": "Duyệt",
+			"reject": "Từ chối",
+			"return": "Trả lại",
+			"request-change": "Yêu cầu bổ sung",
+			"apply-change": "Nộp bổ sung",
+			"request-review": "Yêu cầu soát xét",
+			"submit-review": "Nộp soát xét",
+			"request-to-cancel": "Yêu cầu hủy",
+			"approve-cancellation": "Duyệt hủy",
+			"reject-cancellation": "Từ chối hủy",
+			"workflow-instance": "Phiếu đề nghị",
+			"workflow-task": "Việc cần duyệt",
+			"workflow-delegation-setting": "Ủy quyền duyệt"
 		}
 	},
 

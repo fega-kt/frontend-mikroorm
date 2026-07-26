@@ -17,6 +17,9 @@
 		"detailTitle": "Workflow Detail",
 		"addWorkflowSetting": "Add Workflow",
 		"editWorkflowSetting": "Edit Workflow",
+		"deploy": "Deploy BPMN",
+		"deploySuccess": "Workflow deployed successfully",
+		"deployMissingDefinition": "This workflow has no diagram to deploy yet",
 		"basicInfo": "Basic Information",
 		"tabs": {
 			"general": "General",
@@ -25,6 +28,56 @@
 		"statusOptions": {
 			"draft": "Draft",
 			"published": "Published",
+			"cancelled": "Cancelled"
+		}
+	},
+	"workflowInstance": {
+		"title": "Title",
+		"content": "Content",
+		"requester": "Requester",
+		"requestType": "Request Type",
+		"workflowSetting": "Workflow",
+		"status": "Status",
+		"currentStepName": "Current Step",
+		"createdAt": "Created At",
+		"addWorkflowInstance": "Create Request",
+		"detailTitle": "Request Detail",
+		"start": "Submit",
+		"startConfirm": "Submit this request and start the approval workflow?",
+		"startSuccess": "Submitted",
+		"cancelWorkflow": "Cancel",
+		"cancelWorkflowConfirm": "Cancel this request?",
+		"cancelWorkflowSuccess": "Cancelled",
+		"statusOptions": {
+			"draft": "Draft",
+			"in_progress": "In Progress",
+			"approved": "Approved",
+			"rejected": "Rejected",
+			"returned": "Returned",
+			"cancelled": "Cancelled"
+		}
+	},
+	"workflowTask": {
+		"stepName": "Step",
+		"workflowInstance": "Request",
+		"requester": "Requester",
+		"status": "Status",
+		"comment": "Comment",
+		"commentPlaceholder": "Enter a comment (optional)",
+		"approve": "Approve",
+		"reject": "Reject",
+		"return": "Return",
+		"confirmApprove": "Confirm approving this step?",
+		"confirmReject": "Confirm rejecting?",
+		"confirmReturn": "Confirm returning?",
+		"approveSuccess": "Approved",
+		"rejectSuccess": "Rejected",
+		"returnSuccess": "Returned",
+		"statusOptions": {
+			"pending": "Pending",
+			"approved": "Approved",
+			"rejected": "Rejected",
+			"returned": "Returned",
 			"cancelled": "Cancelled"
 		}
 	},

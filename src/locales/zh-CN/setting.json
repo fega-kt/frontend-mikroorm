@@ -18,6 +18,9 @@
 		"addWorkflowSetting": "新增流程",
 		"editWorkflowSetting": "编辑流程",
 		"basicInfo": "基本信息",
+		"deploy": "部署 BPMN",
+		"deploySuccess": "流程部署成功",
+		"deployMissingDefinition": "该流程还没有可部署的流程图",
 		"tabs": {
 			"general": "基本信息",
 			"workflow": "流程设计"
@@ -26,6 +29,56 @@
 			"draft": "草稿",
 			"published": "已发布",
 			"cancelled": "已取消"
+		}
+	},
+	"workflowInstance": {
+		"title": "标题",
+		"content": "内容",
+		"requester": "申请人",
+		"requestType": "请求类型",
+		"workflowSetting": "审批流程",
+		"status": "状态",
+		"currentStepName": "当前步骤",
+		"createdAt": "创建时间",
+		"addWorkflowInstance": "创建审批单",
+		"detailTitle": "审批单详情",
+		"start": "提交",
+		"startConfirm": "确认提交并开始审批流程？",
+		"startSuccess": "已提交",
+		"cancelWorkflow": "撤销",
+		"cancelWorkflowConfirm": "确认撤销此审批单？",
+		"cancelWorkflowSuccess": "已撤销",
+		"statusOptions": {
+			"draft": "草稿",
+			"in_progress": "审批中",
+			"approved": "已通过",
+			"rejected": "已拒绝",
+			"returned": "已退回",
+			"cancelled": "已撤销"
+		}
+	},
+	"workflowTask": {
+		"stepName": "审批步骤",
+		"workflowInstance": "审批单",
+		"requester": "申请人",
+		"status": "状态",
+		"comment": "备注",
+		"commentPlaceholder": "输入备注（可选）",
+		"approve": "同意",
+		"reject": "拒绝",
+		"return": "退回",
+		"confirmApprove": "确认同意此步骤？",
+		"confirmReject": "确认拒绝？",
+		"confirmReturn": "确认退回？",
+		"approveSuccess": "已同意",
+		"rejectSuccess": "已拒绝",
+		"returnSuccess": "已退回",
+		"statusOptions": {
+			"pending": "待审批",
+			"approved": "已同意",
+			"rejected": "已拒绝",
+			"returned": "已退回",
+			"cancelled": "已撤销"
 		}
 	},
 	"requestType": {
