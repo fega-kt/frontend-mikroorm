@@ -11,6 +11,10 @@
 	"versionMonitorContent": "检测到系统有新版本发布，是否立即刷新页面？",
 	"versionMonitorConfirm": "立即刷新",
 	"versionMonitorCancel": "稍后再说",
+	"sidebar": {
+		"collapse": "收起菜单",
+		"expand": "展开菜单"
+	},
 	"search": {
 		"placeholder": "输入关键字搜索菜单（支持拼音）",
 		"title": "搜索",
