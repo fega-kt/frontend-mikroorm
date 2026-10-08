@@ -11,6 +11,10 @@
 	"versionMonitorContent": "Đã phát hiện phiên bản mới của hệ thống, bạn có muốn tải lại trang ngay không?",
 	"versionMonitorConfirm": "Tải lại ngay",
 	"versionMonitorCancel": "Để sau",
+	"sidebar": {
+		"collapse": "Thu gọn menu",
+		"expand": "Mở rộng menu"
+	},
 	"search": {
 		"placeholder": "Nhập từ khóa để tìm kiếm menu",
 		"title": "Tìm kiếm",

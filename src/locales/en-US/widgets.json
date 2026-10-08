@@ -11,6 +11,10 @@
 	"versionMonitorContent": "A new version of the system has been detected, do you want to refresh the page now?",
 	"versionMonitorConfirm": "Refresh Now",
 	"versionMonitorCancel": "Later",
+	"sidebar": {
+		"collapse": "Collapse menu",
+		"expand": "Expand menu"
+	},
 	"search": {
 		"placeholder": "Enter keyword to search menu",
 		"title": "Search",
