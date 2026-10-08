@@ -71,8 +71,7 @@
 		"off": "Off",
 		"viewSetting": "View Setting",
 		"configureSetting": "Configure Setting",
-		"configure": "Configure",
-		"deleteConfirm": "Clear this value? The setting will go back to not configured.",
+		"deleteConfirm": "Delete this setting? You can add it again later; its change history is kept.",
 		"rule": {
 			"minLength": "At least {{count}} characters",
 			"maxLength": "At most {{count}} characters",
@@ -92,6 +91,8 @@
 			"CREATE": "Configured",
 			"DELETE": "Cleared"
 		},
+		"keyRequired": "Please select a setting",
+		"noAvailableKeys": "All settings are already configured",
 		"keys": {
 			"mail_template_password_changed": {
 				"label": "Email template: password changed",

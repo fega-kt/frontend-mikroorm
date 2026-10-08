@@ -73,8 +73,7 @@
 		"off": "Tắt",
 		"viewSetting": "Xem cấu hình",
 		"configureSetting": "Thiết lập cấu hình",
-		"configure": "Thiết lập",
-		"deleteConfirm": "Xóa giá trị? Cấu hình sẽ trở về trạng thái chưa cấu hình.",
+		"deleteConfirm": "Xóa cấu hình này? Có thể thêm lại sau, lịch sử thay đổi vẫn được giữ.",
 		"rule": {
 			"minLength": "Tối thiểu {{count}} ký tự",
 			"maxLength": "Tối đa {{count}} ký tự",
@@ -94,6 +93,8 @@
 			"CREATE": "Thiết lập",
 			"DELETE": "Xóa giá trị"
 		},
+		"keyRequired": "Vui lòng chọn cấu hình",
+		"noAvailableKeys": "Tất cả cấu hình đã được thiết lập",
 		"keys": {
 			"mail_template_password_changed": {
 				"label": "Mẫu email: đổi mật khẩu",

@@ -32,6 +32,13 @@ export interface AppSettingRule {
 	maxItems?: number
 }
 
+/** Key có thể thêm mới (chưa có giá trị), kèm type/rule để dựng input */
+export interface AppSettingKeyOption {
+	key: string
+	type: AppSettingValueType
+	rule: AppSettingRule | null
+}
+
 /** Một dòng trên trang quản lý: backend trả đủ mọi key hiển thị, key chưa cấu hình thì value = null. */
 export interface AppSettingRow extends Partial<Pick<EntityBase, "id" | "createdAt" | "updatedAt" | "updatedBy">> {
 	key: string

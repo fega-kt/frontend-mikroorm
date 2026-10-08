@@ -80,11 +80,6 @@ function renderValue(t: TFunction<"translation", undefined>, record: AppSettingR
 	}
 }
 
-/** Key đã có giá trị trong DB (khác với key chưa cấu hình backend trả về kèm value = null). */
-export function isConfigured(record: AppSettingRow) {
-	return !!record.id;
-}
-
 /** onView: có quyền xem chi tiết thì tên cấu hình bấm được để mở modal xem. */
 export function getConstantColumns(t: TFunction<"translation", undefined>, onView?: (record: AppSettingRow) => void): ProColumns<AppSettingRow>[] {
 	return [

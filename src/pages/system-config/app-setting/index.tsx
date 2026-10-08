@@ -16,7 +16,7 @@ import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Detail } from "./components/detail";
 import { History } from "./components/history";
-import { getConstantColumns, isConfigured } from "./constants";
+import { getConstantColumns } from "./constants";
 
 export default function AppSetting() {
 	const { t } = useTranslation();
@@ -44,6 +44,15 @@ export default function AppSetting() {
 		}
 	};
 
+	const handleAdd = async () => {
+		const res = await detailRef.current?.show(undefined, "create");
+		if (res?.isChange) {
+			actionRef.current?.reload();
+			// Key được chọn trong modal nên không biết trước; key từng bị xóa rồi thêm lại vẫn giữ lịch sử cũ
+			queryClient.invalidateQueries({ queryKey: ["app-setting", "history"] });
+		}
+	};
+
 	const handleDelete = async (record: AppSettingRow) => {
 		await appSettingService.fetchDeleteAppSetting(record.key);
 		actionRef.current?.reload();
@@ -55,7 +64,7 @@ export default function AppSetting() {
 		...getConstantColumns(t, canView ? record => openDetail(record, "view") : undefined),
 	];
 
-	if (canView || canCreate || canUpdate || canDelete) {
+	if (canView || canUpdate || canDelete) {
 		columns.push({
 			title: t("common.action"),
 			valueType: "option",
@@ -64,27 +73,13 @@ export default function AppSetting() {
 			fixed: "right",
 			render: (_, record) => (
 				<div className="flex items-center gap-2">
-					{isConfigured(record)
-						? (
-							<RowActions
-								onEdit={() => openDetail(record, "edit")}
-								editEnabled={canUpdate}
-								onDelete={() => handleDelete(record)}
-								deleteEnabled={canDelete}
-								deleteConfirmTitle={t("system.appSetting.deleteConfirm")}
-							/>
-						)
-						: canCreate && (
-							<Tooltip title={t("system.appSetting.configure")}>
-								<Button
-									type="text"
-									size="small"
-									icon={<PlusCircleOutlined />}
-									style={{ color: "#1677ff" }}
-									onClick={() => openDetail(record, "create")}
-								/>
-							</Tooltip>
-						)}
+					<RowActions
+						onEdit={() => openDetail(record, "edit")}
+						editEnabled={canUpdate}
+						onDelete={() => handleDelete(record)}
+						deleteEnabled={canDelete}
+						deleteConfirmTitle={t("system.appSetting.deleteConfirm")}
+					/>
 					{canView && (
 						<Tooltip title={t("system.appSetting.history")}>
 							<Button
@@ -104,7 +99,7 @@ export default function AppSetting() {
 		<BasicContent className="h-full">
 			<BasicTable<AppSettingRow>
 				adaptive
-				rowKey="key"
+				rowKey="id"
 				columns={columns}
 				actionRef={actionRef}
 				request={async (params) => {
@@ -120,6 +115,17 @@ export default function AppSetting() {
 					};
 				}}
 				headerTitle={t("system.appSetting.title")}
+				toolBarRender={() => [
+					<Button
+						key="add-app-setting"
+						icon={<PlusCircleOutlined />}
+						type="primary"
+						disabled={!canCreate}
+						onClick={handleAdd}
+					>
+						{t("common.add")}
+					</Button>,
+				]}
 			/>
 			<Detail ref={detailRef} />
 			<History ref={historyRef} />

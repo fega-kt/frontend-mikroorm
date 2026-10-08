@@ -72,8 +72,7 @@
 		"off": "关闭",
 		"viewSetting": "查看配置",
 		"configureSetting": "设置配置",
-		"configure": "设置",
-		"deleteConfirm": "确定清除该值？配置将恢复为未配置状态。",
+		"deleteConfirm": "确定删除该配置？之后可重新添加，变更历史会保留。",
 		"rule": {
 			"minLength": "至少 {{count}} 个字符",
 			"maxLength": "最多 {{count}} 个字符",
@@ -93,6 +92,8 @@
 			"CREATE": "设置",
 			"DELETE": "清除"
 		},
+		"keyRequired": "请选择配置项",
+		"noAvailableKeys": "所有配置项均已设置",
 		"keys": {
 			"mail_template_password_changed": {
 				"label": "邮件模板：修改密码",

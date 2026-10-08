@@ -1,4 +1,4 @@
-import type { AppSettingRow, AppSettingValue } from "#src/api/system-config/app-setting";
+import type { AppSettingKeyOption, AppSettingRow, AppSettingValue } from "#src/api/system-config/app-setting";
 import type { Dayjs } from "dayjs";
 import { appSettingService } from "#src/api/system-config/app-setting";
 import { TrimInput, TrimTextArea } from "#src/components/basic-form";
@@ -13,19 +13,22 @@ const { Text } = Typography;
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@][^\s.@]*\.[^\s@]+$/;
 
-/** view: chỉ xem, create: thiết lập key chưa cấu hình, edit: sửa key đã cấu hình */
+/** view: chỉ xem, create: chọn key chưa có giá trị rồi thiết lập, edit: sửa key đã có giá trị */
 export type DetailMode = "view" | "create" | "edit";
 
 /** Giá trị trong form: như AppSettingValue, riêng `date` là Dayjs và `json` là chuỗi đang soạn. */
 type FormValue = AppSettingValue | Dayjs | undefined;
 
 interface FormValues {
+	/** Chỉ dùng ở chế độ create */
+	key?: string
 	value: FormValue
 	description?: string
 }
 
 export interface DetailRef {
-	show: (record: AppSettingRow, mode: DetailMode) => Promise<{ isChange: boolean } | undefined>
+	/** create không truyền record (người dùng chọn key trong modal); view/edit truyền dòng đang thao tác */
+	show: (record: AppSettingRow | undefined, mode: DetailMode) => Promise<{ isChange: boolean } | undefined>
 }
 
 interface DetailProps {
@@ -80,6 +83,7 @@ export function Detail({ ref }: DetailProps) {
 	const [loading, setLoading] = useState(false);
 	const [mode, setMode] = useState<DetailMode>("view");
 	const [record, setRecord] = useState<AppSettingRow | null>(null);
+	const [keyOptions, setKeyOptions] = useState<AppSettingKeyOption[]>([]);
 
 	const type = record?.type ?? "string";
 	const rule = record?.rule ?? {};
@@ -93,13 +97,28 @@ export function Detail({ ref }: DetailProps) {
 	};
 
 	useImperativeHandle(ref, () => ({
-		show: async (row: AppSettingRow, nextMode: DetailMode) => {
+		show: async (row: AppSettingRow | undefined, nextMode: DetailMode) => {
 			form.resetFields();
-			setRecord(row);
+			setRecord(row ?? null);
 			setMode(nextMode);
 			setOpen(true);
-			fillForm(row);
-			if (nextMode === "view") {
+			if (row)
+				fillForm(row);
+			if (nextMode === "create") {
+				setKeyOptions([]);
+				setLoading(true);
+				try {
+					setKeyOptions(await appSettingService.fetchAvailableKeys());
+				}
+				catch (error) {
+					console.error("[AppSettingDetail] Failed to fetch available keys:", error);
+					window.$message?.error(t("common.fetchError"));
+				}
+				finally {
+					setLoading(false);
+				}
+			}
+			if (nextMode === "view" && row) {
 				setLoading(true);
 				try {
 					const data = await appSettingService.fetchAppSettingItem(row.key);
@@ -119,6 +138,15 @@ export function Detail({ ref }: DetailProps) {
 			});
 		},
 	}));
+
+	/** Chọn key ở chế độ create: lấy type/rule của key để dựng lại input giá trị */
+	const onSelectKey = (key: string) => {
+		const option = keyOptions.find(item => item.key === key);
+		if (!option)
+			return;
+		setRecord({ ...option, value: null });
+		form.setFieldsValue({ value: undefined });
+	};
 
 	const onFinish = async (values: FormValues) => {
 		if (!record || readonly)
@@ -280,22 +308,44 @@ export function Detail({ ref }: DetailProps) {
 			onFinish={onFinish}
 		>
 			<Spin spinning={loading}>
-				{record && (
-					<div className="mb-4 flex flex-col">
-						<Text strong>{getSettingLabel(t, record.key)}</Text>
-						<Text type="secondary" className="text-xs">{record.key}</Text>
-					</div>
-				)}
+				{mode === "create"
+					? (
+						<Form.Item
+							name="key"
+							label={t("system.appSetting.name")}
+							rules={[{ required: true, message: t("system.appSetting.keyRequired") }]}
+						>
+							<Select
+								showSearch={{ optionFilterProp: "label" }}
+								placeholder={t("common.pleaseSelect")}
+								notFoundContent={t("system.appSetting.noAvailableKeys")}
+								options={keyOptions.map(option => ({
+									value: option.key,
+									label: `${getSettingLabel(t, option.key)} (${option.key})`,
+								}))}
+								onChange={onSelectKey}
+							/>
+						</Form.Item>
+					)
+					: record && (
+						<div className="mb-4 flex flex-col">
+							<Text strong>{getSettingLabel(t, record.key)}</Text>
+							<Text type="secondary" className="text-xs">{record.key}</Text>
+						</div>
+					)}
 
-				<Form.Item
-					name="value"
-					label={t("system.appSetting.value")}
-					valuePropName={type === "boolean" ? "checked" : "value"}
-					extra={record ? t(`system.appSetting.keys.${record.key}.hint`, { defaultValue: "" }) || undefined : undefined}
-					rules={readonly ? [] : [{ validator: validateValue }]}
-				>
-					{renderValueInput()}
-				</Form.Item>
+				{/* Chưa chọn key (create) thì chưa biết type nên chưa hiện ô giá trị */}
+				{record && (
+					<Form.Item
+						name="value"
+						label={t("system.appSetting.value")}
+						valuePropName={type === "boolean" ? "checked" : "value"}
+						extra={t(`system.appSetting.keys.${record.key}.hint`, { defaultValue: "" }) || undefined}
+						rules={readonly ? [] : [{ validator: validateValue }]}
+					>
+						{renderValueInput()}
+					</Form.Item>
+				)}
 
 				<Form.Item
 					name="description"

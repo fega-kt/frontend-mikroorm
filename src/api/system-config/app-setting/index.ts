@@ -1,5 +1,5 @@
 import type { ActivityLogEntity } from "../../activity-log/types";
-import type { AppSettingPayload, AppSettingRow, AppSettingSearchParams } from "./types";
+import type { AppSettingKeyOption, AppSettingPayload, AppSettingRow, AppSettingSearchParams } from "./types";
 import { ApiService, CrudServiceBase } from "../../service-base";
 
 export * from "./types";
@@ -11,6 +11,11 @@ export class AppSettingService extends CrudServiceBase<AppSettingRow> {
 
 	async fetchAppSettingList(params?: AppSettingSearchParams) {
 		return this.get<{ data: AppSettingRow[], total: number }>("", { searchParams: params, ignoreLoading: true });
+	}
+
+	/** Các key chưa có giá trị, dùng cho ô chọn key khi thêm mới. */
+	async fetchAvailableKeys() {
+		return this.get<AppSettingKeyOption[]>("available-keys", { ignoreLoading: true });
 	}
 
 	async fetchAppSettingItem(key: string) {
