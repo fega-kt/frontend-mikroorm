@@ -3,6 +3,7 @@ import {
 	ApartmentOutlined,
 	CloudOutlined,
 	ContainerOutlined,
+	ControlOutlined,
 	CopyrightOutlined,
 	EyeOutlined,
 	FieldTimeOutlined,
@@ -17,6 +18,7 @@ import {
 	SafetyOutlined,
 	SettingOutlined,
 	SisternodeOutlined,
+	SlidersOutlined,
 	SubnodeOutlined,
 	TagsOutlined,
 	TeamOutlined,
@@ -60,4 +62,6 @@ export const menuIcons: Record<string, any> = {
 	ToolOutlined,
 	TagsOutlined,
 	NodeIndexOutlined,
+	ControlOutlined,
+	SlidersOutlined,
 };

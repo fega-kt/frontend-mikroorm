@@ -20,7 +20,8 @@
 			"workflow_setting": "Cài đặt quy trình",
 			"workflow_instance": "Quản lý phiếu đề nghị",
 			"workflow_task": "Quản lý việc cần duyệt",
-			"workflow_delegation_setting": "Quản lý ủy quyền duyệt"
+			"workflow_delegation_setting": "Quản lý ủy quyền duyệt",
+			"app_setting": "Quản lý tham số hệ thống"
 		},
 		"permission": {
 			"user": "Người dùng",
@@ -51,7 +52,81 @@
 			"reject-cancellation": "Từ chối hủy",
 			"workflow-instance": "Phiếu đề nghị",
 			"workflow-task": "Việc cần duyệt",
-			"workflow-delegation-setting": "Ủy quyền duyệt"
+			"workflow-delegation-setting": "Ủy quyền duyệt",
+			"app-setting": "Tham số hệ thống"
+		}
+	},
+
+	"appSetting": {
+		"title": "Tham số hệ thống",
+		"editSetting": "Sửa cấu hình",
+		"name": "Cấu hình",
+		"value": "Giá trị",
+		"description": "Ghi chú",
+		"notConfigured": "Chưa cấu hình",
+		"valueRequired": "Giá trị là bắt buộc",
+		"descriptionMaxLength": "Ghi chú không được vượt quá 500 ký tự",
+		"tagsPlaceholder": "Nhập giá trị rồi nhấn Enter",
+		"invalidEmails": "Email không hợp lệ: {{emails}}",
+		"invalidJson": "JSON không hợp lệ, phải là object hoặc mảng",
+		"on": "Bật",
+		"off": "Tắt",
+		"viewSetting": "Xem cấu hình",
+		"configureSetting": "Thiết lập cấu hình",
+		"configure": "Thiết lập",
+		"deleteConfirm": "Xóa giá trị? Cấu hình sẽ trở về trạng thái chưa cấu hình.",
+		"rule": {
+			"minLength": "Tối thiểu {{count}} ký tự",
+			"maxLength": "Tối đa {{count}} ký tự",
+			"pattern": "Giá trị không đúng định dạng",
+			"min": "Giá trị phải từ {{min}} trở lên",
+			"max": "Giá trị không được vượt quá {{max}}",
+			"integer": "Giá trị phải là số nguyên",
+			"dateMin": "Ngày phải từ {{date}} trở đi",
+			"dateMax": "Ngày không được sau {{date}}",
+			"minItems": "Cần ít nhất {{count}} giá trị",
+			"maxItems": "Tối đa {{count}} giá trị"
+		},
+		"keyword": "Từ khóa",
+		"keywordPlaceholder": "Tìm theo key hoặc ghi chú",
+		"history": "Lịch sử",
+		"historyAction": {
+			"CREATE": "Thiết lập",
+			"DELETE": "Xóa giá trị"
+		},
+		"keys": {
+			"mail_template_password_changed": {
+				"label": "Mẫu email: đổi mật khẩu",
+				"hint": "ID template Resend gửi khi người dùng đổi mật khẩu"
+			},
+			"mail_template_forgot_password_otp": {
+				"label": "Mẫu email: OTP quên mật khẩu",
+				"hint": "ID template Resend gửi mã OTP khi quên mật khẩu"
+			},
+			"mail_template_new_password": {
+				"label": "Mẫu email: mật khẩu mới",
+				"hint": "ID template Resend gửi mật khẩu mới cho người dùng"
+			},
+			"mail_template_account_created": {
+				"label": "Mẫu email: tạo tài khoản",
+				"hint": "ID template Resend gửi khi tài khoản được tạo"
+			},
+			"mail_template_login_otp": {
+				"label": "Mẫu email: OTP đăng nhập",
+				"hint": "ID template Resend gửi mã OTP khi đăng nhập"
+			},
+			"inactive_days_threshold": {
+				"label": "Số ngày không hoạt động",
+				"hint": "Số ngày không đăng nhập trước khi gửi email nhắc nhở. Mặc định 7 ngày nếu chưa cấu hình"
+			},
+			"inactive_email_allowed_list": {
+				"label": "Danh sách email nhận nhắc nhở",
+				"hint": "Chỉ các email trong danh sách mới nhận email nhắc nhở. Để trống thì không gửi cho ai"
+			},
+			"mail_template_inactive_reminder": {
+				"label": "Mẫu email: nhắc nhở không hoạt động",
+				"hint": "ID template Resend gửi cho người dùng lâu không đăng nhập"
+			}
 		}
 	},
 

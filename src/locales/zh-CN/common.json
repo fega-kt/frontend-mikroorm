@@ -44,7 +44,9 @@
 		"group": "用户组管理",
 		"workflowSetting": "工作流配置",
 		"workflowInstance": "审批单",
-		"myTasks": "待办任务"
+		"myTasks": "待办任务",
+		"appSetting": "系统参数",
+		"systemConfig": "系统配置"
 	},
 	"appLoading": "资源正在加载中...",
 	"back": "返回",
@@ -132,5 +134,29 @@
 		"retry": "重试"
 	},
 	"updateError": "更新失败",
-	"featureUpdating": "功能正在更新中"
+	"featureUpdating": "功能正在更新中",
+	"history": {
+		"title": "变更历史",
+		"records": "条记录",
+		"noRecords": "暂无变更历史",
+		"system": "系统",
+		"user": "用户",
+		"before": "变更前",
+		"after": "变更后",
+		"emptyValue": "（空）",
+		"noChanges": "无变更",
+		"assignedTo": "分配给：{{name}}",
+		"assignedUpdated": "已更新负责人",
+		"rejectReason": "原因：{{reason}}",
+		"action": {
+			"CREATE": "新增",
+			"UPDATE": "更新",
+			"DELETE": "删除",
+			"RESTORE": "恢复",
+			"STATUS_CHANGE": "状态变更",
+			"ASSIGN": "分配",
+			"APPROVE": "同意",
+			"REJECT": "拒绝"
+		}
+	}
 }

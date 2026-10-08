@@ -108,6 +108,14 @@ export enum PermissionType {
 	CreateWorkflowDelegationSetting = "permission:workflow-delegation-setting:create",
 	UpdateWorkflowDelegationSetting = "permission:workflow-delegation-setting:update",
 	DeleteWorkflowDelegationSetting = "permission:workflow-delegation-setting:delete",
+
+	/** ===== APP SETTING ===== */
+
+	MenuAppSetting = "permission:menu:app-setting",
+	ViewAppSettingDetail = "permission:app-setting:view",
+	CreateAppSetting = "permission:app-setting:create",
+	UpdateAppSetting = "permission:app-setting:update",
+	DeleteAppSetting = "permission:app-setting:delete",
 }
 
 export interface RoleSearchParams extends SearchParamsBase {
