@@ -46,7 +46,9 @@
 		"requestType": "Loại yêu cầu",
 		"workflowSetting": "Cài đặt quy trình",
 		"workflowInstance": "Phiếu đề nghị",
-		"myTasks": "Việc cần duyệt"
+		"myTasks": "Việc cần duyệt",
+		"appSetting": "Tham số hệ thống",
+		"systemConfig": "Cấu hình hệ thống"
 	},
 	"appLoading": "Đang tải tài nguyên...",
 	"back": "Quay lại",
@@ -140,5 +142,29 @@
 		"retry": "Thử lại"
 	},
 	"updateError": "Cập nhật thất bại",
-	"featureUpdating": "Tính năng đang được cập nhật"
+	"featureUpdating": "Tính năng đang được cập nhật",
+	"history": {
+		"title": "Lịch sử thay đổi",
+		"records": "bản ghi",
+		"noRecords": "Chưa có lịch sử thay đổi",
+		"system": "Hệ thống",
+		"user": "Người dùng",
+		"before": "Trước",
+		"after": "Sau",
+		"emptyValue": "(trống)",
+		"noChanges": "Không có thay đổi",
+		"assignedTo": "Giao cho: {{name}}",
+		"assignedUpdated": "Đã cập nhật người được giao",
+		"rejectReason": "Lý do: {{reason}}",
+		"action": {
+			"CREATE": "Tạo mới",
+			"UPDATE": "Cập nhật",
+			"DELETE": "Xóa",
+			"RESTORE": "Khôi phục",
+			"STATUS_CHANGE": "Đổi trạng thái",
+			"ASSIGN": "Phân công",
+			"APPROVE": "Phê duyệt",
+			"REJECT": "Từ chối"
+		}
+	}
 }

@@ -95,4 +95,11 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.UpdateWorkflowDelegationSetting,
 		PermissionType.DeleteWorkflowDelegationSetting,
 	],
+	APP_SETTING: [
+		PermissionType.MenuAppSetting,
+		PermissionType.ViewAppSettingDetail,
+		PermissionType.CreateAppSetting,
+		PermissionType.UpdateAppSetting,
+		PermissionType.DeleteAppSetting,
+	],
 };

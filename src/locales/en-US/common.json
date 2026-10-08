@@ -44,7 +44,9 @@
 		"group": "User Group Management",
 		"workflowSetting": "Workflow Settings",
 		"workflowInstance": "Requests",
-		"myTasks": "My Tasks"
+		"myTasks": "My Tasks",
+		"appSetting": "App Parameters",
+		"systemConfig": "System Configuration"
 	},
 	"appLoading": "Loading Resources...",
 	"back": "Back",
@@ -136,5 +138,29 @@
 		"retry": "Retry"
 	},
 	"updateError": "Update failed",
-	"featureUpdating": "This feature is being updated"
+	"featureUpdating": "This feature is being updated",
+	"history": {
+		"title": "Change History",
+		"records": "records",
+		"noRecords": "No change history yet",
+		"system": "System",
+		"user": "User",
+		"before": "Before",
+		"after": "After",
+		"emptyValue": "(empty)",
+		"noChanges": "No changes",
+		"assignedTo": "Assigned to: {{name}}",
+		"assignedUpdated": "Assignee updated",
+		"rejectReason": "Reason: {{reason}}",
+		"action": {
+			"CREATE": "Created",
+			"UPDATE": "Updated",
+			"DELETE": "Deleted",
+			"RESTORE": "Restored",
+			"STATUS_CHANGE": "Status changed",
+			"ASSIGN": "Assigned",
+			"APPROVE": "Approved",
+			"REJECT": "Rejected"
+		}
+	}
 }

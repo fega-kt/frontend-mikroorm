@@ -19,7 +19,8 @@
 			"workflow_setting": "Workflow Settings",
 			"workflow_instance": "Workflow Instance Management",
 			"workflow_task": "Workflow Task Management",
-			"workflow_delegation_setting": "Workflow Delegation Management"
+			"workflow_delegation_setting": "Workflow Delegation Management",
+			"app_setting": "App Parameter Management"
 		},
 		"permission": {
 			"user": "User",
@@ -50,7 +51,81 @@
 			"reject-cancellation": "Reject Cancellation",
 			"workflow-instance": "Workflow Instance",
 			"workflow-task": "Workflow Task",
-			"workflow-delegation-setting": "Workflow Delegation Setting"
+			"workflow-delegation-setting": "Workflow Delegation Setting",
+			"app-setting": "App Parameters"
+		}
+	},
+	"appSetting": {
+		"title": "App Parameters",
+		"editSetting": "Edit Setting",
+		"name": "Setting",
+		"value": "Value",
+		"description": "Note",
+		"notConfigured": "Not configured",
+		"valueRequired": "Value is required",
+		"descriptionMaxLength": "Note must be less than 500 characters",
+		"tagsPlaceholder": "Type a value and press Enter",
+		"invalidEmails": "Invalid email: {{emails}}",
+		"invalidJson": "Invalid JSON, must be an object or an array",
+		"on": "On",
+		"off": "Off",
+		"viewSetting": "View Setting",
+		"configureSetting": "Configure Setting",
+		"deleteConfirm": "Delete this setting? You can add it again later; its change history is kept.",
+		"rule": {
+			"minLength": "At least {{count}} characters",
+			"maxLength": "At most {{count}} characters",
+			"pattern": "Value has an invalid format",
+			"min": "Value must be at least {{min}}",
+			"max": "Value must not exceed {{max}}",
+			"integer": "Value must be an integer",
+			"dateMin": "Date must be on or after {{date}}",
+			"dateMax": "Date must be on or before {{date}}",
+			"minItems": "At least {{count}} values required",
+			"maxItems": "At most {{count}} values"
+		},
+		"keyword": "Keyword",
+		"keywordPlaceholder": "Search by key or note",
+		"history": "History",
+		"historyAction": {
+			"CREATE": "Configured",
+			"DELETE": "Cleared"
+		},
+		"keyRequired": "Please select a setting",
+		"noAvailableKeys": "All settings are already configured",
+		"keys": {
+			"mail_template_password_changed": {
+				"label": "Email template: password changed",
+				"hint": "Resend template ID sent when a user changes their password"
+			},
+			"mail_template_forgot_password_otp": {
+				"label": "Email template: forgot password OTP",
+				"hint": "Resend template ID for the forgot-password OTP"
+			},
+			"mail_template_new_password": {
+				"label": "Email template: new password",
+				"hint": "Resend template ID that delivers a new password to the user"
+			},
+			"mail_template_account_created": {
+				"label": "Email template: account created",
+				"hint": "Resend template ID sent when an account is created"
+			},
+			"mail_template_login_otp": {
+				"label": "Email template: login OTP",
+				"hint": "Resend template ID for the login OTP"
+			},
+			"inactive_days_threshold": {
+				"label": "Inactive days threshold",
+				"hint": "Days without login before a reminder email is sent. Defaults to 7 when not configured"
+			},
+			"inactive_email_allowed_list": {
+				"label": "Reminder email allow list",
+				"hint": "Only emails in this list receive reminders. Leave empty to send none"
+			},
+			"mail_template_inactive_reminder": {
+				"label": "Email template: inactivity reminder",
+				"hint": "Resend template ID sent to users who have not logged in for a while"
+			}
 		}
 	},
 	"userGroup": {
