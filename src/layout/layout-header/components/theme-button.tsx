@@ -7,6 +7,9 @@ import { useEffect } from "react";
 import { flushSync } from "react-dom";
 
 const isBrowser = typeof window !== "undefined";
+const TO_DARK_CLASS = "theme-switch-to-dark";
+const TO_LIGHT_CLASS = "theme-switch-to-light";
+const DURATION = 500;
 function injectViewTransitionStyles() {
 	if (isBrowser) {
 		const styleId = "theme-switch-view-transition-styles";
@@ -22,13 +25,32 @@ function injectViewTransitionStyles() {
           animation: none;
           mix-blend-mode: normal;
         }
-        ::view-transition-old(root),
-        .dark::view-transition-new(root) {
+        /*
+         * Animation chạy bằng CSS (không dùng element.animate sau transition.ready)
+         * để clip-path được áp ngay từ frame đầu, tránh nháy full màn hình theme mới.
+         * Thứ tự lớp dựa vào class hướng chuyển, không phụ thuộc class .dark (gắn trong useEffect).
+         */
+        html.${TO_DARK_CLASS}::view-transition-new(root),
+        html.${TO_LIGHT_CLASS}::view-transition-old(root) {
           z-index: 999999999;
         }
-        ::view-transition-new(root),
-        .dark::view-transition-old(root) {
+        html.${TO_DARK_CLASS}::view-transition-old(root),
+        html.${TO_LIGHT_CLASS}::view-transition-new(root) {
           z-index: 1;
+        }
+        html.${TO_DARK_CLASS}::view-transition-new(root) {
+          animation: theme-switch-reveal ${DURATION}ms ease-in forwards;
+        }
+        html.${TO_LIGHT_CLASS}::view-transition-old(root) {
+          animation: theme-switch-hide ${DURATION}ms ease-in forwards;
+        }
+        @keyframes theme-switch-hide {
+          from { clip-path: circle(var(--theme-switch-r) at var(--theme-switch-x) var(--theme-switch-y)); }
+          to { clip-path: circle(0px at var(--theme-switch-x) var(--theme-switch-y)); }
+        }
+        @keyframes theme-switch-reveal {
+          from { clip-path: circle(0px at var(--theme-switch-x) var(--theme-switch-y)); }
+          to { clip-path: circle(var(--theme-switch-r) at var(--theme-switch-x) var(--theme-switch-y)); }
         }
       `;
 
@@ -63,30 +85,24 @@ export function ThemeButton({ ...restProps }: ButtonProps) {
 			Math.max(x, innerWidth - x),
 			Math.max(y, innerHeight - y),
 		);
+		const root = document.documentElement;
+		const directionClass = isDark ? TO_LIGHT_CLASS : TO_DARK_CLASS;
+		root.style.setProperty("--theme-switch-x", `${x}px`);
+		root.style.setProperty("--theme-switch-y", `${y}px`);
+		root.style.setProperty("--theme-switch-r", `${endRadius}px`);
+		root.classList.add(directionClass);
+
 		const transition = document.startViewTransition(() => {
 			// eslint-disable-next-line react-dom/no-flush-sync
 			flushSync(() => {
 				changeSiteTheme(isDark ? "light" : "dark");
 			});
+			// Đồng bộ class .dark ngay trong snapshot mới (layout-root cũng gắn lại trong useEffect)
+			root.classList.toggle("dark", !isDark);
+			root.style.colorScheme = isDark ? "light" : "dark";
 		});
-		transition.ready.then(() => {
-			const clipPath = [
-				`circle(0px at ${x}px ${y}px)`,
-				`circle(${endRadius}px at ${x}px ${y}px)`,
-			];
-			document.documentElement.animate(
-				{
-					clipPath: isDark ? [...clipPath].reverse() : clipPath,
-				},
-				{
-					duration: 500,
-					easing: "ease-in",
-					fill: "forwards",
-					pseudoElement: isDark
-						? "::view-transition-old(root)"
-						: "::view-transition-new(root)",
-				},
-			);
+		transition.finished.finally(() => {
+			root.classList.remove(directionClass);
 		});
 	}
 
