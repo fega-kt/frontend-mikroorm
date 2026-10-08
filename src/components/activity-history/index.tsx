@@ -92,8 +92,8 @@ function FieldRow({ field, options, children }: { field: string, options: Displa
 	const labelKey = options.fieldLabels?.[field];
 
 	return (
-		<div className="rounded-md border border-solid border-gray-100 bg-gray-50 px-3 py-2 text-xs">
-			<span className="block mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-gray-400">
+		<div className="rounded-md border border-solid border-colorBorderSecondary bg-colorFillTertiary px-3 py-2 text-xs">
+			<span className="block mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-colorTextSecondary">
 				{labelKey ? t(labelKey) : field}
 			</span>
 			{children}
@@ -111,7 +111,7 @@ function DiffBlock({ oldData, newData, options }: { oldData?: Record<string, any
 		.filter(field => formatText(field, oldData?.[field]) !== formatText(field, newData?.[field]));
 
 	if (fields.length === 0)
-		return <div className="mt-1 text-xs italic text-gray-400">{t("common.history.noChanges")}</div>;
+		return <div className="mt-1 text-xs italic text-colorTextSecondary">{t("common.history.noChanges")}</div>;
 
 	return (
 		<div className="mt-2 flex flex-col gap-1.5">
@@ -124,14 +124,14 @@ function DiffBlock({ oldData, newData, options }: { oldData?: Record<string, any
 						<FieldRow key={field} field={field} options={options}>
 							<div className="flex flex-col gap-2">
 								<div>
-									<span className="text-[10px] text-gray-400 mb-1 block">{t("common.history.before")}</span>
-									<div className="rounded border border-solid border-gray-200 bg-white opacity-60 line-through">
+									<span className="text-[10px] text-colorTextSecondary mb-1 block">{t("common.history.before")}</span>
+									<div className="rounded border border-solid border-colorBorderSecondary bg-colorBgContainer line-through">
 										<RichTextEditor value={oldVal ?? ""} readOnly />
 									</div>
 								</div>
 								<div>
-									<span className="text-[10px] text-gray-400 mb-1 block">{t("common.history.after")}</span>
-									<div className="rounded border border-solid border-green-100 bg-green-50/30">
+									<span className="text-[10px] text-colorTextSecondary mb-1 block">{t("common.history.after")}</span>
+									<div className="rounded border border-solid border-successBorder bg-successBg">
 										<RichTextEditor value={newVal ?? ""} readOnly />
 									</div>
 								</div>
@@ -143,11 +143,11 @@ function DiffBlock({ oldData, newData, options }: { oldData?: Record<string, any
 				return (
 					<FieldRow key={field} field={field} options={options}>
 						<div className="flex items-center gap-2 flex-wrap">
-							<span className="rounded bg-gray-100 px-2 py-0.5 font-medium text-gray-400 line-through break-all">
+							<span className="rounded bg-colorFillSecondary px-2 py-0.5 font-medium text-colorTextSecondary line-through break-all">
 								{formatText(field, oldVal)}
 							</span>
-							<span className="text-gray-400">→</span>
-							<span className="rounded bg-green-50 px-2 py-0.5 font-medium text-green-700 break-all">
+							<span className="text-colorTextSecondary">→</span>
+							<span className="rounded border border-solid border-successBorder bg-successBg px-2 py-0.5 font-medium text-successText break-all">
 								{formatText(field, newVal)}
 							</span>
 						</div>
@@ -174,7 +174,7 @@ function DataBlock({ data, variant, options }: { data?: Record<string, any>, var
 				if (isHtml(field, value)) {
 					return (
 						<FieldRow key={field} field={field} options={options}>
-							<div className={`rounded border border-solid ${isNew ? "border-green-100 bg-green-50/30" : "border-gray-200 bg-white opacity-60 line-through"}`}>
+							<div className={`rounded border border-solid ${isNew ? "border-successBorder bg-successBg" : "border-colorBorderSecondary bg-colorBgContainer line-through"}`}>
 								<RichTextEditor value={value ?? ""} readOnly />
 							</div>
 						</FieldRow>
@@ -183,7 +183,7 @@ function DataBlock({ data, variant, options }: { data?: Record<string, any>, var
 
 				return (
 					<FieldRow key={field} field={field} options={options}>
-						<span className={`rounded px-2 py-0.5 font-medium break-all ${isNew ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-400 line-through"}`}>
+						<span className={`rounded px-2 py-0.5 font-medium break-all ${isNew ? "border border-solid border-successBorder bg-successBg text-successText" : "bg-colorFillSecondary text-colorTextSecondary line-through"}`}>
 							{formatText(field, value)}
 						</span>
 					</FieldRow>
@@ -213,7 +213,7 @@ function ActivityItem({ log, options }: { log: ActivityLogEntity, options: Displ
 				return <DiffBlock oldData={log.oldData} newData={log.newData} options={options} />;
 			case ActivityLogAction.ASSIGN:
 				return (
-					<div className="mt-1 text-xs text-gray-500">
+					<div className="mt-1 text-xs text-colorTextSecondary">
 						{log.newData?.assignee
 							? t("common.history.assignedTo", { name: log.newData.assignee })
 							: t("common.history.assignedUpdated")}
@@ -223,7 +223,7 @@ function ActivityItem({ log, options }: { log: ActivityLogEntity, options: Displ
 			case ActivityLogAction.REJECT:
 				return log.newData?.rejectReason
 					? (
-						<div className="mt-1 text-xs text-gray-500">
+						<div className="mt-1 text-xs text-colorTextSecondary">
 							{t("common.history.rejectReason", { reason: log.newData.rejectReason })}
 						</div>
 					)
