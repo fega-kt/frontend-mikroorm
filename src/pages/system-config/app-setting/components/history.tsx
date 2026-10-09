@@ -48,6 +48,13 @@ export function History({ ref }: HistoryProps) {
 		return undefined;
 	};
 
+	/** Giá trị boolean "Tắt" hiện màu đỏ thay vì xanh */
+	const valueTone = (field: string, value: any) => {
+		if (field === "value" && record?.type === "boolean" && !(value === true || value === "true"))
+			return "error" as const;
+		return undefined;
+	};
+
 	return (
 		<Drawer
 			open={!!record}
@@ -69,6 +76,7 @@ export function History({ ref }: HistoryProps) {
 					fetcher={() => appSettingService.fetchAppSettingHistory(record.key)}
 					fieldLabels={FIELD_LABELS}
 					formatValue={formatValue}
+					valueTone={valueTone}
 					actionLabels={ACTION_LABELS}
 					fillHeight
 				/>
