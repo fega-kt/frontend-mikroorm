@@ -12,6 +12,7 @@ import { generateRoutesFromBackend } from "#src/router/utils/generate-routes-fro
 
 import { generateRoutesByFrontend } from "#src/router/utils/generate-routes-from-frontend";
 import { useAccessStore } from "#src/store/access";
+import { useAppSettingStore } from "#src/store/app-setting";
 
 import { usePreferencesStore } from "#src/store/preferences";
 import { useUserStore } from "#src/store/user";
@@ -98,6 +99,12 @@ export function AuthGuard({ children }: AuthGuardProps) {
 		promises.push(getUserInfo());
 
 		/**
+		 * Nạp app setting cho client; tự bắt lỗi nên không ảnh hưởng hasError bên dưới.
+		 * Không đưa vào promises để không làm lệch thứ tự results.
+		 */
+		const appSettingPromise = useAppSettingStore.getState().fetchSettings();
+
+		/**
 		 * @zh 启用了后端路由，且路由从单独接口中获取，则发起请求
 		 * @en If backend routing is enabled and the route is obtained from a separate interface, then initiate a request
 		 */
@@ -105,7 +112,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
 			promises.push(fetchAsyncRoutes());
 		}
 
-		const results = await Promise.allSettled(promises);
+		const [results] = await Promise.all([Promise.allSettled(promises), appSettingPromise]);
 		const [userInfoResult, routeResult] = results;
 		const routes = [];
 		const latestPermssions: string[] = [];

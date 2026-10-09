@@ -126,6 +126,10 @@
 			"mail_template_inactive_reminder": {
 				"label": "邮件模板：未活跃提醒",
 				"hint": "发送给长期未登录用户的 Resend 模板 ID"
+			},
+			"content_focus_outline_enabled": {
+				"label": "内容区域边框",
+				"hint": "开启：主内容区域获得焦点时显示黑色边框；关闭：隐藏边框。未配置时默认关闭"
 			}
 		}
 	},

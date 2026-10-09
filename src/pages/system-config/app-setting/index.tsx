@@ -9,6 +9,7 @@ import { BasicTable } from "#src/components/basic-table";
 import { RowActions } from "#src/components/row-actions";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
+import { useAppSettingStore } from "#src/store/app-setting";
 import { HistoryOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button, Tooltip } from "antd";
@@ -40,6 +41,7 @@ export default function AppSetting() {
 		const res = await detailRef.current?.show(record, mode);
 		if (res?.isChange) {
 			actionRef.current?.reload();
+			useAppSettingStore.getState().fetchSettings();
 			invalidateHistory(record);
 		}
 	};
@@ -48,6 +50,7 @@ export default function AppSetting() {
 		const res = await detailRef.current?.show(undefined, "create");
 		if (res?.isChange) {
 			actionRef.current?.reload();
+			useAppSettingStore.getState().fetchSettings();
 			// Key được chọn trong modal nên không biết trước; key từng bị xóa rồi thêm lại vẫn giữ lịch sử cũ
 			queryClient.invalidateQueries({ queryKey: ["app-setting", "history"] });
 		}
@@ -56,6 +59,7 @@ export default function AppSetting() {
 	const handleDelete = async (record: AppSettingRow) => {
 		await appSettingService.fetchDeleteAppSetting(record.key);
 		actionRef.current?.reload();
+		useAppSettingStore.getState().fetchSettings();
 		invalidateHistory(record);
 		window.$message?.success(t("common.deleteSuccess"));
 	};

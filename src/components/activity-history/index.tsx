@@ -65,6 +65,8 @@ interface DisplayOptions {
 	fieldLabels?: Record<string, string>
 	/** Định dạng giá trị của field; trả undefined thì dùng định dạng mặc định */
 	formatValue?: (field: string, value: any) => string | undefined
+	/** Màu của giá trị MỚI; undefined (hoặc "success") thì dùng màu xanh mặc định, "error" dùng màu đỏ (vd: giá trị "Tắt") */
+	valueTone?: (field: string, value: any) => "success" | "error" | undefined
 	/** action → i18n key của nhãn, ghi đè nhãn mặc định `common.history.action.*` */
 	actionLabels?: Partial<Record<ActivityLogAction, string>>
 }
@@ -83,6 +85,13 @@ function useFormatText({ formatValue }: DisplayOptions) {
 			return JSON.stringify(value);
 		return String(value);
 	};
+}
+
+/** Class của ô giá trị mới theo tone; mặc định là màu xanh */
+function newValueClass(options: DisplayOptions, field: string, value: any): string {
+	return options.valueTone?.(field, value) === "error"
+		? "border border-solid border-errorBorder bg-errorBg text-errorText"
+		: "border border-solid border-successBorder bg-successBg text-successText";
 }
 
 // ─── Field row wrapper ────────────────────────────────────────────────────────
@@ -147,7 +156,7 @@ function DiffBlock({ oldData, newData, options }: { oldData?: Record<string, any
 								{formatText(field, oldVal)}
 							</span>
 							<span className="text-colorTextSecondary">→</span>
-							<span className="rounded border border-solid border-successBorder bg-successBg px-2 py-0.5 font-medium text-successText break-all">
+							<span className={`rounded px-2 py-0.5 font-medium break-all ${newValueClass(options, field, newVal)}`}>
 								{formatText(field, newVal)}
 							</span>
 						</div>
@@ -183,7 +192,7 @@ function DataBlock({ data, variant, options }: { data?: Record<string, any>, var
 
 				return (
 					<FieldRow key={field} field={field} options={options}>
-						<span className={`rounded px-2 py-0.5 font-medium break-all ${isNew ? "border border-solid border-successBorder bg-successBg text-successText" : "bg-colorFillSecondary text-colorTextSecondary line-through"}`}>
+						<span className={`rounded px-2 py-0.5 font-medium break-all ${isNew ? newValueClass(options, field, value) : "bg-colorFillSecondary text-colorTextSecondary line-through"}`}>
 							{formatText(field, value)}
 						</span>
 					</FieldRow>

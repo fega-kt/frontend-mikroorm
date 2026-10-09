@@ -1,6 +1,7 @@
 import type { AuthType, LoginInfo } from "#src/api/auth";
 import { authProvider } from "#src/api/auth";
 import { useAccessStore } from "#src/store/access";
+import { useAppSettingStore } from "#src/store/app-setting";
 import { useTabsStore } from "#src/store/tabs";
 import { useUserStore } from "#src/store/user";
 
@@ -60,6 +61,11 @@ export const useAuthStore = create<AuthState & AuthAction>()(
 			 * @see https://github.com/pmndrs/zustand?tab=readme-ov-file#readingwriting-state-and-reacting-to-changes-outside-of-components
 			 */
 			useAccessStore.getState().reset();
+
+			/**
+			 * Clear app setting
+			 */
+			useAppSettingStore.getState().reset();
 
 			/**
 			 * 清空标签页

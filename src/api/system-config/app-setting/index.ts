@@ -1,5 +1,5 @@
 import type { ActivityLogEntity } from "../../activity-log/types";
-import type { AppSettingKeyOption, AppSettingPayload, AppSettingRow, AppSettingSearchParams } from "./types";
+import type { AppSettingKeyOption, AppSettingPayload, AppSettingRow, AppSettingSearchParams, AppSettingValue } from "./types";
 import { ApiService, CrudServiceBase } from "../../service-base";
 
 export * from "./types";
@@ -16,6 +16,11 @@ export class AppSettingService extends CrudServiceBase<AppSettingRow> {
 	/** Các key chưa có giá trị, dùng cho ô chọn key khi thêm mới. */
 	async fetchAvailableKeys() {
 		return this.get<AppSettingKeyOption[]>("available-keys", { ignoreLoading: true });
+	}
+
+	/** Setting cho client (mọi user đăng nhập): map key -> value, backend chỉ trả các key được phép lộ ra. */
+	async fetchClientSettings() {
+		return this.get<Record<string, AppSettingValue>>("client", { ignoreLoading: true });
 	}
 
 	async fetchAppSettingItem(key: string) {

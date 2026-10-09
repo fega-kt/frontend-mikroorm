@@ -1,11 +1,14 @@
+import { APP_SETTINGS } from "#src/api/system-config/app-setting/keys";
 import { GlobalSpin } from "#src/components/global-spin";
 import { Scrollbar } from "#src/components/scrollbar";
+import { useAppSetting } from "#src/hooks/use-app-setting";
 import { useLayoutContentStyle } from "#src/hooks/use-layout-style";
 import { CSS_VARIABLE_LAYOUT_CONTENT_HEIGHT, ELEMENT_ID_MAIN_CONTENT } from "#src/layout/constants";
 import LayoutFooter from "#src/layout/layout-footer";
 import { useAccessStore } from "#src/store/access";
 import { usePreferencesStore } from "#src/store/preferences";
 import { useTabsStore } from "#src/store/tabs";
+import { cn } from "#src/utils/cn";
 
 import { theme } from "antd";
 import { KeepAlive, useKeepAliveRef } from "keepalive-for-react";
@@ -22,6 +25,7 @@ export default function LayoutContent() {
 	const { pathname, search } = useLocation();
 	const outlet = useOutlet();
 	const { contentElement } = useLayoutContentStyle();
+	const showFocusOutline = useAppSetting(APP_SETTINGS.contentFocusOutline);
 
 	const aliveRef = useKeepAliveRef();
 	const isRefresh = useTabsStore(state => state.isRefresh);
@@ -50,6 +54,7 @@ export default function LayoutContent() {
 				aliveRef.current?.destroy(node.cacheKey);
 			}
 		});
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [openTabs]);
 
 	/**
@@ -65,6 +70,7 @@ export default function LayoutContent() {
 				}
 			});
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [tabbarEnable]);
 
 	/* KeepAlive 的刷新 */
@@ -73,6 +79,7 @@ export default function LayoutContent() {
 		if (tabbarEnable && isRefresh) {
 			aliveRef.current?.refresh();
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isRefresh]);
 
 	/* 路由设置 keepAlive = false 则不缓存页面 */
@@ -96,7 +103,11 @@ export default function LayoutContent() {
 		<main
 			id={ELEMENT_ID_MAIN_CONTENT}
 			ref={contentElement}
-			className="relative overflow-y-auto overflow-x-hidden grow"
+			className={cn(
+				"relative overflow-y-auto overflow-x-hidden grow",
+				// SimpleBar gắn tabindex=0 cho vùng cuộn nên trình duyệt vẽ viền focus đen; setting cho phép tắt
+				!showFocusOutline && "[&_.simplebar-content-wrapper]:outline-none",
+			)}
 			style={
 				{
 					backgroundColor: colorBgLayout,
