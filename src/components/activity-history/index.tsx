@@ -270,6 +270,43 @@ function ActivityItem({ log, options }: { log: ActivityLogEntity, options: Displ
 	);
 }
 
+// ─── Loading skeleton ─────────────────────────────────────────────────────────
+
+/** Mục có khối giá trị hay không, xen kẽ để skeleton trông giống timeline thật */
+const SKELETON_ITEMS = [true, false, true];
+
+/** Skeleton cùng bố cục với timeline (dot, avatar, tên, nhãn hành động, thời gian, khối giá trị) để khi tải xong không bị nhảy layout */
+function HistorySkeleton({ fillHeight }: { fillHeight: boolean }) {
+	return (
+		<div className={fillHeight ? "px-6 pt-4" : "py-4"}>
+			<div className="mb-6 flex items-center gap-2">
+				<Skeleton.Avatar active size={16} />
+				<Skeleton.Input active size="small" style={{ width: 180, minWidth: 180 }} />
+			</div>
+			{SKELETON_ITEMS.map((hasBody, index) => (
+				// eslint-disable-next-line react/no-array-index-key -- danh sách tĩnh, không đổi thứ tự
+				<div key={index} className="flex gap-3 pb-6">
+					<Skeleton.Avatar active size={24} />
+					<div className="flex min-w-0 flex-1 flex-col gap-2">
+						<div className="flex flex-wrap items-center gap-2">
+							<Skeleton.Avatar active size={20} />
+							<Skeleton.Input active size="small" style={{ width: 110, minWidth: 110 }} />
+							<Skeleton.Button active size="small" style={{ width: 64, minWidth: 64 }} />
+							<Skeleton.Input active size="small" style={{ width: 150, minWidth: 150 }} />
+						</div>
+						{hasBody && (
+							<div className="flex flex-col gap-2 rounded-md border border-solid border-colorBorderSecondary bg-colorFillTertiary px-3 py-2">
+								<Skeleton.Input active size="small" style={{ width: 60, minWidth: 60, height: 12 }} />
+								<Skeleton.Input active size="small" style={{ width: 200, minWidth: 200 }} />
+							</div>
+						)}
+					</div>
+				</div>
+			))}
+		</div>
+	);
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export interface ActivityHistoryProps extends DisplayOptions {
@@ -299,7 +336,7 @@ export function ActivityHistory({ queryKey, fetcher, active = true, fillHeight =
 	const logs: ActivityLogEntity[] = data?.data ?? [];
 
 	if (isLoading) {
-		return <div className="py-4"><Skeleton active paragraph={{ rows: 4 }} /></div>;
+		return <HistorySkeleton fillHeight={fillHeight} />;
 	}
 
 	if (logs.length === 0) {
