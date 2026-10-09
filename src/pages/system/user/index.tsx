@@ -1,4 +1,5 @@
 import type { UserEntity } from "#src/api/user/types";
+import type { HistoryDrawerRef } from "#src/components/activity-history/history-drawer";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import type { DetailRef } from "./components/detail";
 import { userService } from "#src/api/user";
@@ -12,6 +13,7 @@ import { Button } from "antd";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Detail } from "./components/detail";
+import { History } from "./components/history";
 import { getConstantColumns } from "./constants";
 
 export default function User() {
@@ -19,6 +21,7 @@ export default function User() {
 	const { canAccess } = useAccess();
 	const actionRef = useRef<ActionType>(null);
 	const detailRef = useRef<DetailRef>(null);
+	const historyRef = useRef<HistoryDrawerRef>(null);
 
 	const handleAdd = async () => {
 		const res = await detailRef.current?.show();
@@ -47,6 +50,8 @@ export default function User() {
 	};
 
 	const canUpdate = canAccess(PermissionType.UpdateUser);
+	// Có quyền xem chi tiết hoặc cập nhật đều xem được lịch sử
+	const canViewHistory = canAccess([PermissionType.ViewUserDetail, PermissionType.UpdateUser]);
 	const canDelete = canAccess(PermissionType.DeleteUser);
 
 	const columns: ProColumns<UserEntity>[] = [
@@ -64,6 +69,8 @@ export default function User() {
 			},
 			onDelete: record => handleDelete(record.id),
 			deleteEnabled: canDelete,
+			onHistory: record => historyRef.current?.show({ id: record.id, title: record.fullName, subtitle: record.loginName }),
+			historyEnabled: canViewHistory,
 		}),
 	];
 
@@ -95,6 +102,7 @@ export default function User() {
 				]}
 			/>
 			<Detail ref={detailRef} />
+			<History ref={historyRef} />
 		</BasicContent>
 	);
 }

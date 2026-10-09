@@ -149,6 +149,8 @@
 		"after": "After",
 		"emptyValue": "(empty)",
 		"noChanges": "No changes",
+		"added": "Added ({{count}})",
+		"removed": "Removed ({{count}})",
 		"assignedTo": "Assigned to: {{name}}",
 		"assignedUpdated": "Assignee updated",
 		"rejectReason": "Reason: {{reason}}",
@@ -160,7 +162,9 @@
 			"STATUS_CHANGE": "Status changed",
 			"ASSIGN": "Assigned",
 			"APPROVE": "Approved",
-			"REJECT": "Rejected"
+			"REJECT": "Rejected",
+			"CHANGE_PASSWORD": "Password changed",
+			"FORGOT_PASSWORD": "Password reset requested"
 		}
 	}
 }

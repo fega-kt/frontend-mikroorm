@@ -18,12 +18,18 @@ interface CreateActionColumnOptions<T> {
 	onDelete?: (record: T, action?: ProCoreActionType<object>) => void
 	deleteEnabled?: boolean
 	deleteConfirmTitle?: string
+	/** Mở lịch sử thay đổi của bản ghi */
+	onHistory?: (record: T) => void
+	historyEnabled?: boolean
 }
 
 export function createActionColumn<T extends object>(t: TFunction<"translation", undefined>, options: CreateActionColumnOptions<T>): ProColumns<T>[] {
-	const { width = 96, onEdit, editEnabled, toggleActive, onDelete, deleteEnabled, deleteConfirmTitle } = options;
+	const { onEdit, editEnabled, toggleActive, onDelete, deleteEnabled, deleteConfirmTitle, onHistory, historyEnabled } = options;
 
-	const visible = (!!onEdit && !!editEnabled) || (!!toggleActive && !!toggleActive.enabled) || (!!onDelete && !!deleteEnabled);
+	const historyVisible = !!onHistory && !!historyEnabled;
+	const visible = (!!onEdit && !!editEnabled) || (!!toggleActive && !!toggleActive.enabled) || (!!onDelete && !!deleteEnabled) || historyVisible;
+	// Nút lịch sử thêm vào cuối nên cộng thêm chỗ cho nó
+	const width = (options.width ?? 96) + (historyVisible ? 32 : 0);
 
 	if (!visible) {
 		return [];
@@ -49,6 +55,8 @@ export function createActionColumn<T extends object>(t: TFunction<"translation",
 				onDelete={onDelete && (() => onDelete(record, action))}
 				deleteEnabled={deleteEnabled}
 				deleteConfirmTitle={deleteConfirmTitle}
+				onHistory={onHistory && (() => onHistory(record))}
+				historyEnabled={historyEnabled}
 			/>
 		),
 	}];

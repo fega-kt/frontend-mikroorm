@@ -1,4 +1,5 @@
 import type { RoleEntity } from "#src/api/system/role";
+import type { HistoryDrawerRef } from "#src/components/activity-history/history-drawer";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import type { DetailRef } from "./components/detail";
 
@@ -13,6 +14,7 @@ import { Button } from "antd";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Detail } from "./components/detail";
+import { History } from "./components/history";
 import { getConstantColumns } from "./constants";
 
 export default function Role() {
@@ -20,6 +22,7 @@ export default function Role() {
 	const { canAccess } = useAccess();
 	const actionRef = useRef<ActionType>(null);
 	const detailRef = useRef<DetailRef>(null);
+	const historyRef = useRef<HistoryDrawerRef>(null);
 	const [pageInfo, setPageInfo] = useState({ current: 1, pageSize: 10 });
 
 	const handleAdd = async () => {
@@ -43,6 +46,8 @@ export default function Role() {
 	};
 
 	const canUpdate = canAccess(PermissionType.UpdateRole);
+	// Có quyền xem chi tiết hoặc cập nhật đều xem được lịch sử
+	const canViewHistory = canAccess([PermissionType.ViewRoleDetail, PermissionType.UpdateRole]);
 	const canDelete = canAccess(PermissionType.DeleteRole);
 
 	const columns: ProColumns<RoleEntity>[] = [
@@ -52,6 +57,8 @@ export default function Role() {
 			editEnabled: canUpdate,
 			onDelete: record => handleDelete(record.id),
 			deleteEnabled: canDelete,
+			onHistory: record => historyRef.current?.show({ id: record.id, title: record.name }),
+			historyEnabled: canViewHistory,
 		}),
 	];
 
@@ -85,6 +92,7 @@ export default function Role() {
 				]}
 			/>
 			<Detail ref={detailRef} />
+			<History ref={historyRef} />
 		</BasicContent>
 	);
 }

@@ -145,6 +145,8 @@
 		"after": "变更后",
 		"emptyValue": "（空）",
 		"noChanges": "无变更",
+		"added": "新增（{{count}}）",
+		"removed": "移除（{{count}}）",
 		"assignedTo": "分配给：{{name}}",
 		"assignedUpdated": "已更新负责人",
 		"rejectReason": "原因：{{reason}}",
@@ -156,7 +158,9 @@
 			"STATUS_CHANGE": "状态变更",
 			"ASSIGN": "分配",
 			"APPROVE": "同意",
-			"REJECT": "拒绝"
+			"REJECT": "拒绝",
+			"CHANGE_PASSWORD": "修改密码",
+			"FORGOT_PASSWORD": "忘记密码"
 		}
 	}
 }

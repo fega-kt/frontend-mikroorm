@@ -177,7 +177,10 @@
 		"confirmDeactivate": "确定要停用该用户吗？",
 		"activateSuccess": "启用用户成功",
 		"deactivateSuccess": "停用用户成功",
-		"statusChangeDisabledTooltip": "状态只能通过专门的启用/停用功能修改"
+		"statusChangeDisabledTooltip": "状态只能通过专门的启用/停用功能修改",
+		"department": "部门",
+		"description": "描述",
+		"avatar": "头像"
 	},
 	"menu": {
 		"name": "菜单名称",

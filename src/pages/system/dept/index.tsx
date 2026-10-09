@@ -1,6 +1,7 @@
 import type { DepartmentTreeNode } from "#src/api/system/dept";
-import type { ActionType, ProColumns, ProCoreActionType } from "@ant-design/pro-components";
+import type { HistoryDrawerRef } from "#src/components/activity-history/history-drawer";
 
+import type { ActionType, ProColumns, ProCoreActionType } from "@ant-design/pro-components";
 import type { DetailRef } from "./components/detail";
 import { departmentService } from "#src/api/system/dept";
 
@@ -15,6 +16,7 @@ import { useRef, useState } from "react";
 
 import { useTranslation } from "react-i18next";
 import { Detail } from "./components/detail";
+import { History } from "./components/history";
 import { getConstantColumns } from "./constants";
 
 export default function Dept() {
@@ -23,6 +25,7 @@ export default function Dept() {
 
 	const actionRef = useRef<ActionType>(null);
 	const detailRef = useRef<DetailRef>(null);
+	const historyRef = useRef<HistoryDrawerRef>(null);
 	const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
 	const getExpandedKeys = (nodes: DepartmentTreeNode[], depth = 0, maxDepth = 2): string[] => {
@@ -66,6 +69,8 @@ export default function Dept() {
 	};
 
 	const canUpdate = canAccess(PermissionType.UpdateDeparment);
+	// Có quyền xem chi tiết hoặc cập nhật đều xem được lịch sử
+	const canViewHistory = canAccess([PermissionType.ViewDeparmentDetail, PermissionType.UpdateDeparment]);
 	const canDelete = canAccess(PermissionType.DeleteDeparment);
 
 	const columns: ProColumns<DepartmentTreeNode>[] = [
@@ -84,6 +89,8 @@ export default function Dept() {
 			},
 			onDelete: (record, action) => handleDeleteRow(record.id, action),
 			deleteEnabled: canDelete,
+			onHistory: record => historyRef.current?.show({ id: record.id, title: record.name, subtitle: record.code }),
+			historyEnabled: canViewHistory,
 		}),
 	];
 
@@ -127,6 +134,7 @@ export default function Dept() {
 				]}
 			/>
 			<Detail ref={detailRef} />
+			<History ref={historyRef} />
 		</BasicContent>
 	);
 }

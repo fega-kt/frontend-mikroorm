@@ -177,7 +177,9 @@
 		"confirmDeactivate": "Are you sure you want to deactivate this user?",
 		"activateSuccess": "User activated successfully",
 		"deactivateSuccess": "User deactivated successfully",
-		"statusChangeDisabledTooltip": "Status can only be changed via the dedicated activate/deactivate action"
+		"statusChangeDisabledTooltip": "Status can only be changed via the dedicated activate/deactivate action",
+		"department": "Department",
+		"description": "Description"
 	},
 	"menu": {
 		"name": "Menu Name",

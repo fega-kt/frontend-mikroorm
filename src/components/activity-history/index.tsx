@@ -7,6 +7,8 @@ import {
 	DeleteOutlined,
 	EditOutlined,
 	HistoryOutlined,
+	KeyOutlined,
+	LockOutlined,
 	PlusCircleOutlined,
 	RedoOutlined,
 	RobotOutlined,
@@ -35,6 +37,8 @@ const ACTION_COLORS: Record<ActivityLogAction, string> = {
 	[ActivityLogAction.ASSIGN]: "orange",
 	[ActivityLogAction.APPROVE]: "green",
 	[ActivityLogAction.REJECT]: "red",
+	[ActivityLogAction.CHANGE_PASSWORD]: "orange",
+	[ActivityLogAction.FORGOT_PASSWORD]: "orange",
 };
 
 const ACTION_ICONS: Record<ActivityLogAction, React.ReactNode> = {
@@ -46,6 +50,8 @@ const ACTION_ICONS: Record<ActivityLogAction, React.ReactNode> = {
 	[ActivityLogAction.ASSIGN]: <TeamOutlined />,
 	[ActivityLogAction.APPROVE]: <CheckCircleOutlined />,
 	[ActivityLogAction.REJECT]: <CloseCircleOutlined />,
+	[ActivityLogAction.CHANGE_PASSWORD]: <LockOutlined />,
+	[ActivityLogAction.FORGOT_PASSWORD]: <KeyOutlined />,
 };
 
 // Fields stored as HTML (rich text)
@@ -55,16 +61,86 @@ function isHtml(field: string, value: any): boolean {
 	return HTML_FIELDS.has(field) && typeof value === "string" && value.includes("<");
 }
 
+/** Quan hệ được backend lưu dạng { id, name } (vd: phòng ban, thành viên) */
+function isLogRef(value: any): value is { id: string, name: string | null } {
+	return !!value && typeof value === "object" && !Array.isArray(value) && "id" in value && "name" in value;
+}
+
+function refName(value: { id: string, name: string | null }): string {
+	return value.name ?? value.id;
+}
+
+/** Khóa so sánh phần tử: quan hệ so theo id, còn lại theo giá trị */
+function itemKey(item: any): string {
+	return isLogRef(item) ? item.id : typeof item === "object" ? JSON.stringify(item) : String(item);
+}
+
+function defaultItemText(item: any): string {
+	return isLogRef(item) ? refName(item) : typeof item === "object" ? JSON.stringify(item) : String(item);
+}
+
+/** Field dạng danh sách: ít nhất một bên là mảng, bên còn lại là mảng hoặc rỗng */
+function isListChange(oldVal: any, newVal: any): boolean {
+	if (!Array.isArray(oldVal) && !Array.isArray(newVal))
+		return false;
+	return (Array.isArray(oldVal) || isEmptyValue(oldVal)) && (Array.isArray(newVal) || isEmptyValue(newVal));
+}
+
+function ItemTags({ items, field, options, tone }: { items: any[], field: string, options: DisplayOptions, tone: "added" | "removed" }) {
+	const className = tone === "added"
+		? "border-successBorder bg-successBg text-successText"
+		: "border-colorBorderSecondary bg-colorFillSecondary text-colorTextSecondary line-through";
+	return (
+		<div className="flex flex-wrap gap-1">
+			{items.map(item => (
+				<span key={itemKey(item)} className={`rounded border border-solid px-2 py-0.5 font-medium break-all ${className}`}>
+					{options.formatItem?.(field, item) ?? defaultItemText(item)}
+				</span>
+			))}
+		</div>
+	);
+}
+
+/** Danh sách chỉ hiện phần thêm và phần bỏ, không lặp lại toàn bộ danh sách */
+function ListDiff({ field, oldVal, newVal, options }: { field: string, oldVal: any, newVal: any, options: DisplayOptions }) {
+	const { t } = useTranslation();
+	const oldItems: any[] = Array.isArray(oldVal) ? oldVal : [];
+	const newItems: any[] = Array.isArray(newVal) ? newVal : [];
+	const oldKeys = new Set(oldItems.map(itemKey));
+	const newKeys = new Set(newItems.map(itemKey));
+	const added = newItems.filter(item => !oldKeys.has(itemKey(item)));
+	const removed = oldItems.filter(item => !newKeys.has(itemKey(item)));
+
+	return (
+		<div className="flex flex-col gap-1.5">
+			{added.length > 0 && (
+				<div className="flex flex-col gap-1">
+					<span className="text-[10px] text-colorTextSecondary">{t("common.history.added", { count: added.length })}</span>
+					<ItemTags items={added} field={field} options={options} tone="added" />
+				</div>
+			)}
+			{removed.length > 0 && (
+				<div className="flex flex-col gap-1">
+					<span className="text-[10px] text-colorTextSecondary">{t("common.history.removed", { count: removed.length })}</span>
+					<ItemTags items={removed} field={field} options={options} tone="removed" />
+				</div>
+			)}
+		</div>
+	);
+}
+
 function isEmptyValue(value: any): boolean {
 	return value === null || value === undefined || value === "" || (Array.isArray(value) && value.length === 0);
 }
 
 /** Phần riêng của từng màn; giá trị nào không truyền thì dùng mặc định. */
-interface DisplayOptions {
+export interface DisplayOptions {
 	/** field → i18n key của nhãn; field không có trong map thì hiện tên field */
 	fieldLabels?: Record<string, string>
 	/** Định dạng giá trị của field; trả undefined thì dùng định dạng mặc định */
 	formatValue?: (field: string, value: any) => string | undefined
+	/** Định dạng một phần tử của field dạng danh sách (hiện thành tag); trả undefined thì dùng định dạng mặc định */
+	formatItem?: (field: string, item: any) => string | undefined
 	/** Màu của giá trị MỚI; undefined (hoặc "success") thì dùng màu xanh mặc định, "error" dùng màu đỏ (vd: giá trị "Tắt") */
 	valueTone?: (field: string, value: any) => "success" | "error" | undefined
 	/** action → i18n key của nhãn, ghi đè nhãn mặc định `common.history.action.*` */
@@ -80,7 +156,9 @@ function useFormatText({ formatValue }: DisplayOptions) {
 		if (custom !== undefined)
 			return custom;
 		if (Array.isArray(value))
-			return value.map(v => (typeof v === "object" ? JSON.stringify(v) : String(v))).join(", ");
+			return value.map(v => (isLogRef(v) ? refName(v) : typeof v === "object" ? JSON.stringify(v) : String(v))).join(", ");
+		if (isLogRef(value))
+			return refName(value);
 		if (typeof value === "object")
 			return JSON.stringify(value);
 		return String(value);
@@ -117,7 +195,16 @@ function DiffBlock({ oldData, newData, options }: { oldData?: Record<string, any
 	const formatText = useFormatText(options);
 	// Chỉ hiện field có giá trị hiển thị khác nhau (log có thể lưu cả field không đổi, hoặc "" so với null)
 	const fields = Array.from(new Set([...Object.keys(oldData ?? {}), ...Object.keys(newData ?? {})]))
-		.filter(field => formatText(field, oldData?.[field]) !== formatText(field, newData?.[field]));
+		.filter((field) => {
+			const oldVal = oldData?.[field];
+			const newVal = newData?.[field];
+			if (isListChange(oldVal, newVal)) {
+				const oldKeys = new Set((Array.isArray(oldVal) ? oldVal : []).map(itemKey));
+				const newKeys = (Array.isArray(newVal) ? newVal : []).map(itemKey);
+				return newKeys.length !== oldKeys.size || newKeys.some(key => !oldKeys.has(key));
+			}
+			return formatText(field, oldVal) !== formatText(field, newVal);
+		});
 
 	if (fields.length === 0)
 		return <div className="mt-1 text-xs italic text-colorTextSecondary">{t("common.history.noChanges")}</div>;
@@ -127,6 +214,14 @@ function DiffBlock({ oldData, newData, options }: { oldData?: Record<string, any
 			{fields.map((field) => {
 				const oldVal = oldData?.[field];
 				const newVal = newData?.[field];
+
+				if (isListChange(oldVal, newVal)) {
+					return (
+						<FieldRow key={field} field={field} options={options}>
+							<ListDiff field={field} oldVal={oldVal} newVal={newVal} options={options} />
+						</FieldRow>
+					);
+				}
 
 				if (isHtml(field, oldVal) || isHtml(field, newVal)) {
 					return (
@@ -180,6 +275,14 @@ function DataBlock({ data, variant, options }: { data?: Record<string, any>, var
 	return (
 		<div className="mt-2 flex flex-col gap-1.5">
 			{entries.map(([field, value]) => {
+				if (Array.isArray(value)) {
+					return (
+						<FieldRow key={field} field={field} options={options}>
+							<ItemTags items={value} field={field} options={options} tone={isNew ? "added" : "removed"} />
+						</FieldRow>
+					);
+				}
+
 				if (isHtml(field, value)) {
 					return (
 						<FieldRow key={field} field={field} options={options}>

@@ -1,3 +1,4 @@
+import type { ActivityLogEntity } from "../../activity-log/types";
 import type { UserEntity } from "../../user";
 import type { DepartmentEntity, DepartmentSearchParams, DepartmentTreeNode, DepartmentUsersSearchParams } from "./types";
 import { ApiService, CrudServiceBase } from "../../service-base";
@@ -73,6 +74,14 @@ export class DepartmentService extends CrudServiceBase<DepartmentEntity> {
 	async fetchDeptUsers(id: string, params?: DepartmentUsersSearchParams) {
 		return this.get<{ data: UserEntity[], total: number }>(`${id}/users`, {
 			searchParams: params,
+			ignoreLoading: true,
+		});
+	}
+
+	/** Lịch sử thao tác (activity log), mới nhất trước. */
+	async fetchHistory(id: string, params?: { page?: number, limit?: number }) {
+		return this.get<{ data: ActivityLogEntity[], total: number }>(`${id}/history`, {
+			searchParams: { page: 1, limit: 50, ...params },
 			ignoreLoading: true,
 		});
 	}
