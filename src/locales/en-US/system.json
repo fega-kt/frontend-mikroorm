@@ -125,6 +125,10 @@
 			"mail_template_inactive_reminder": {
 				"label": "Email template: inactivity reminder",
 				"hint": "Resend template ID sent to users who have not logged in for a while"
+			},
+			"content_focus_outline_enabled": {
+				"label": "Content area outline",
+				"hint": "On: show the black outline around the main content area when it is focused. Off: hide it. Defaults to off when not configured"
 			}
 		}
 	},

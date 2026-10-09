@@ -127,6 +127,10 @@
 			"mail_template_inactive_reminder": {
 				"label": "Mẫu email: nhắc nhở không hoạt động",
 				"hint": "ID template Resend gửi cho người dùng lâu không đăng nhập"
+			},
+			"content_focus_outline_enabled": {
+				"label": "Viền khung vùng nội dung",
+				"hint": "Bật: hiện viền đen quanh vùng nội dung chính khi vùng này được focus. Tắt: ẩn viền. Mặc định tắt nếu chưa cấu hình"
 			}
 		}
 	},
