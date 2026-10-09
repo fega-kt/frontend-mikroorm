@@ -153,6 +153,8 @@
 		"after": "Sau",
 		"emptyValue": "(trống)",
 		"noChanges": "Không có thay đổi",
+		"added": "Thêm ({{count}})",
+		"removed": "Bỏ ({{count}})",
 		"assignedTo": "Giao cho: {{name}}",
 		"assignedUpdated": "Đã cập nhật người được giao",
 		"rejectReason": "Lý do: {{reason}}",
@@ -164,7 +166,9 @@
 			"STATUS_CHANGE": "Đổi trạng thái",
 			"ASSIGN": "Phân công",
 			"APPROVE": "Phê duyệt",
-			"REJECT": "Từ chối"
+			"REJECT": "Từ chối",
+			"CHANGE_PASSWORD": "Đổi mật khẩu",
+			"FORGOT_PASSWORD": "Quên mật khẩu"
 		}
 	}
 }

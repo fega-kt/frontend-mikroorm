@@ -8,6 +8,8 @@ import {
 	DeleteOutlined,
 	EditOutlined,
 	HistoryOutlined,
+	KeyOutlined,
+	LockOutlined,
 	PlusCircleOutlined,
 	RedoOutlined,
 	RobotOutlined,
@@ -48,6 +50,8 @@ const ACTION_COLORS: Record<ActivityLogAction, string> = {
 	[ActivityLogAction.ASSIGN]: "orange",
 	[ActivityLogAction.APPROVE]: "green",
 	[ActivityLogAction.REJECT]: "red",
+	[ActivityLogAction.CHANGE_PASSWORD]: "orange",
+	[ActivityLogAction.FORGOT_PASSWORD]: "orange",
 };
 
 const ACTION_ICONS: Record<ActivityLogAction, React.ReactNode> = {
@@ -59,6 +63,8 @@ const ACTION_ICONS: Record<ActivityLogAction, React.ReactNode> = {
 	[ActivityLogAction.ASSIGN]: <TeamOutlined />,
 	[ActivityLogAction.APPROVE]: <CheckCircleOutlined />,
 	[ActivityLogAction.REJECT]: <CloseCircleOutlined />,
+	[ActivityLogAction.CHANGE_PASSWORD]: <LockOutlined />,
+	[ActivityLogAction.FORGOT_PASSWORD]: <KeyOutlined />,
 };
 
 // Fields stored as HTML (rich text)

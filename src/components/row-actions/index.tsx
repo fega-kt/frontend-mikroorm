@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined, LockOutlined, UnlockOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, HistoryOutlined, LockOutlined, UnlockOutlined } from "@ant-design/icons";
 import { Button, Popconfirm, Tooltip } from "antd";
 import { useTranslation } from "react-i18next";
 
@@ -17,10 +17,12 @@ interface RowActionsProps {
 	onDelete?: () => void
 	deleteEnabled?: boolean
 	deleteConfirmTitle?: string
+	onHistory?: () => void
+	historyEnabled?: boolean
 }
 
 export function RowActions(props: RowActionsProps) {
-	const { onEdit, editEnabled, toggleActive, onDelete, deleteEnabled, deleteConfirmTitle } = props;
+	const { onEdit, editEnabled, toggleActive, onDelete, deleteEnabled, deleteConfirmTitle, onHistory, historyEnabled } = props;
 	const { active, onToggle, enabled: toggleEnabled, confirmTitle, tooltipTitle } = toggleActive ?? {};
 	const { t } = useTranslation();
 
@@ -70,6 +72,16 @@ export function RowActions(props: RowActionsProps) {
 						/>
 					</Tooltip>
 				</Popconfirm>
+			)}
+			{onHistory && historyEnabled && (
+				<Tooltip title={t("common.history.title")}>
+					<Button
+						type="text"
+						size="small"
+						icon={<HistoryOutlined />}
+						onClick={onHistory}
+					/>
+				</Tooltip>
 			)}
 		</div>
 	);

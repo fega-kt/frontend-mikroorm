@@ -1,3 +1,4 @@
+import type { ActivityLogEntity } from "../../activity-log/types";
 import type { GroupEntity, GroupSearchParams } from "./types";
 import { ApiService, CrudServiceBase } from "../../service-base";
 
@@ -33,6 +34,14 @@ export class GroupService extends CrudServiceBase<GroupEntity> {
 
 	async fetchGroupItem(id: string) {
 		return this.get<GroupEntity>(id, { ignoreLoading: true });
+	}
+
+	/** Lịch sử thao tác (activity log), mới nhất trước. */
+	async fetchHistory(id: string, params?: { page?: number, limit?: number }) {
+		return this.get<{ data: ActivityLogEntity[], total: number }>(`${id}/history`, {
+			searchParams: { page: 1, limit: 50, ...params },
+			ignoreLoading: true,
+		});
 	}
 }
 

@@ -1,4 +1,5 @@
 import type { GroupEntity } from "#src/api/system/group";
+import type { HistoryDrawerRef } from "#src/components/activity-history/history-drawer";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import type { DetailRef } from "./components/detail";
 
@@ -13,6 +14,7 @@ import { Button } from "antd";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Detail } from "./components/detail";
+import { History } from "./components/history";
 import { getConstantColumns } from "./constants";
 
 export default function Group() {
@@ -20,6 +22,7 @@ export default function Group() {
 	const { canAccess } = useAccess();
 	const actionRef = useRef<ActionType>(null);
 	const detailRef = useRef<DetailRef>(null);
+	const historyRef = useRef<HistoryDrawerRef>(null);
 
 	const handleAdd = async () => {
 		const res = await detailRef.current?.show();
@@ -43,6 +46,8 @@ export default function Group() {
 
 	// Generic or User permission used until Group specific perms exist
 	const canUpdate = canAccess(PermissionType.UpdateUser);
+	// Có quyền xem chi tiết hoặc cập nhật đều xem được lịch sử
+	const canViewHistory = canAccess([PermissionType.ViewGroupDetail, PermissionType.UpdateGroup]);
 	const canDelete = canAccess(PermissionType.DeleteUser);
 
 	const columns: ProColumns<GroupEntity>[] = [
@@ -52,6 +57,8 @@ export default function Group() {
 			editEnabled: canUpdate,
 			onDelete: record => handleDelete(record.id),
 			deleteEnabled: canDelete,
+			onHistory: record => historyRef.current?.show({ id: record.id, title: record.name }),
+			historyEnabled: canViewHistory,
 		}),
 	];
 
@@ -83,6 +90,7 @@ export default function Group() {
 				]}
 			/>
 			<Detail ref={detailRef} />
+			<History ref={historyRef} />
 		</BasicContent>
 	);
 }

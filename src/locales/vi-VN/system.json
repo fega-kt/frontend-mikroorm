@@ -181,7 +181,9 @@
 		"confirmDeactivate": "Bạn có chắc chắn muốn vô hiệu hóa người dùng này?",
 		"activateSuccess": "Kích hoạt người dùng thành công",
 		"deactivateSuccess": "Vô hiệu hóa người dùng thành công",
-		"statusChangeDisabledTooltip": "Trạng thái chỉ có thể thay đổi qua chức năng kích hoạt/vô hiệu hóa"
+		"statusChangeDisabledTooltip": "Trạng thái chỉ có thể thay đổi qua chức năng kích hoạt/vô hiệu hóa",
+		"department": "Phòng ban",
+		"description": "Mô tả"
 	},
 
 	"dept": {

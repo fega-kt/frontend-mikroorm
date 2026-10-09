@@ -1,3 +1,4 @@
+import type { ActivityLogEntity } from "../activity-log/types";
 import type { UserEntity, UserSearchParams } from "./types";
 import { ApiService, CrudServiceBase } from "../service-base";
 
@@ -69,6 +70,14 @@ export class UserService extends CrudServiceBase<UserEntity> {
 		const formData = new FormData();
 		formData.append("file", file);
 		await this.post<void>("avatar", { body: formData });
+	}
+
+	/** Lịch sử thao tác (activity log), mới nhất trước. */
+	async fetchHistory(id: string, params?: { page?: number, limit?: number }) {
+		return this.get<{ data: ActivityLogEntity[], total: number }>(`${id}/history`, {
+			searchParams: { page: 1, limit: 50, ...params },
+			ignoreLoading: true,
+		});
 	}
 }
 
