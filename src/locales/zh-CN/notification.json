@@ -6,5 +6,9 @@
 	"LOGIN_INACTIVE_REMINDER": {
 		"title": "好久不见",
 		"message": "您已超过 {{days}} 天未登录系统。"
+	},
+	"LOGIN_NEW_DEVICE": {
+		"title": "新设备登录",
+		"message": "您的账号刚刚在 {{browser}}（{{os}}）上登录，IP {{ip}}。如果不是您本人操作，请立即修改密码。"
 	}
 }

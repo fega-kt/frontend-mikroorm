@@ -4,7 +4,8 @@ import { healPath, loginPath } from "#src/router/extra-info";
 import { usePreferencesStore } from "#src/store/preferences";
 import ky from "ky";
 
-import { AUTH_HEADER, LANG_HEADER, REFRESH_TOKEN_PATH } from "./constants";
+import { AUTH_HEADER, DEVICE_ID_HEADER, LANG_HEADER, REFRESH_TOKEN_PATH } from "./constants";
+import { getDeviceToken, saveDeviceToken } from "./device";
 import { handleErrorResponse } from "./error-response";
 import { globalProgress } from "./global-progress";
 import { goLogin } from "./go-login";
@@ -38,6 +39,9 @@ const defaultConfig: Options = {
 				}
 				// 语言等所有的接口都需要携带
 				request.headers.set(LANG_HEADER, usePreferencesStore.getState().language);
+				const deviceToken = getDeviceToken();
+				if (deviceToken)
+					request.headers.set(DEVICE_ID_HEADER, deviceToken);
 			},
 		],
 		afterResponse: [
@@ -46,6 +50,8 @@ const defaultConfig: Options = {
 				if (!ignoreLoading) {
 					globalProgress.done();
 				}
+				// Backend cấp device token mới (lần đầu đăng nhập trên trình duyệt này) → lưu lại
+				saveDeviceToken(response.headers.get(DEVICE_ID_HEADER));
 				// request error
 				if (!response.ok) {
 					if (response.status === 401) {
