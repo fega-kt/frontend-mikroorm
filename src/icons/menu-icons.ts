@@ -9,6 +9,7 @@ import {
 	FieldTimeOutlined,
 	FileTextOutlined,
 	FundProjectionScreenOutlined,
+	HistoryOutlined,
 	HomeOutlined,
 	LockOutlined,
 	MenuOutlined,
@@ -64,4 +65,5 @@ export const menuIcons: Record<string, any> = {
 	NodeIndexOutlined,
 	ControlOutlined,
 	SlidersOutlined,
+	HistoryOutlined,
 };

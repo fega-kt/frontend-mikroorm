@@ -29,6 +29,7 @@
 		"role": "角色管理",
 		"menu": "菜单管理",
 		"dept": "部门管理",
+		"activityLog": "操作日志",
 		"projectMgmt": "项目管理",
 		"project": "项目列表",
 		"task": "任务列表",
@@ -165,7 +166,8 @@
 			"RESET_PASSWORD_FAILED": "重置密码失败",
 			"LOGIN_OTP_REQUEST": "请求登录验证码",
 			"LOGIN_OTP": "验证码登录",
-			"LOGIN_OTP_FAILED": "验证码登录失败"
+			"LOGIN_OTP_FAILED": "验证码登录失败",
+			"LOGIN": "登录"
 		}
 	}
 }

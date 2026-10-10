@@ -234,4 +234,12 @@ export enum PermissionType {
 
 	/** xóa giá trị app setting (về trạng thái chưa cấu hình) */
 	DeleteAppSetting = "permission:app-setting:delete",
+
+	/** ===== ACTIVITY LOG ===== */
+
+	MenuActivityLog = "permission:menu:activity-log",
+	/** xem activity log toàn hệ thống */
+	ViewActivityLogAll = "permission:activity-log:view-all",
+	/** xem activity log trong phòng ban của mình và các phòng ban con */
+	ViewActivityLogDepartment = "permission:activity-log:view-department",
 }

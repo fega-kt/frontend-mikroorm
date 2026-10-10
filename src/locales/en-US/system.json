@@ -20,7 +20,8 @@
 			"workflow_instance": "Workflow Instance Management",
 			"workflow_task": "Workflow Task Management",
 			"workflow_delegation_setting": "Workflow Delegation Management",
-			"app_setting": "App Parameter Management"
+			"app_setting": "App Parameter Management",
+			"activity_log": "Activity Log"
 		},
 		"permission": {
 			"user": "User",
@@ -52,7 +53,10 @@
 			"workflow-instance": "Workflow Instance",
 			"workflow-task": "Workflow Task",
 			"workflow-delegation-setting": "Workflow Delegation Setting",
-			"app-setting": "App Parameters"
+			"app-setting": "App Parameters",
+			"activity-log": "Activity Log",
+			"view-all": "View all",
+			"view-department": "View department (incl. sub-departments)"
 		}
 	},
 	"appSetting": {
@@ -228,5 +232,35 @@
 		"activateSuccess": "Department activated successfully",
 		"deactivateSuccess": "Department deactivated successfully",
 		"statusChangeDisabledTooltip": "Status can only be changed via the dedicated activate/deactivate action"
+	},
+	"activityLog": {
+		"title": "Activity Log",
+		"timeRange": "Time",
+		"actor": "Performed by",
+		"action": "Action",
+		"type": "Type",
+		"parentType": "Object",
+		"parentId": "Object ID",
+		"ip": "IP",
+		"device": "Device",
+		"requestId": "Request ID",
+		"detail": "Details",
+		"oldData": "Before",
+		"newData": "After",
+		"noData": "No data",
+		"loginIpNote": "The IP and device of login logs belong to the Supabase server, not the user.",
+		"types": {
+			"system": "System",
+			"user": "User"
+		},
+		"parentTypes": {
+			"users": "User",
+			"departments": "Department",
+			"groups": "Group",
+			"roles": "Role",
+			"app_settings": "App setting",
+			"auth": "Authentication",
+			"unknown": "Unknown"
+		}
 	}
 }

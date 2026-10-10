@@ -116,6 +116,14 @@ export enum PermissionType {
 	CreateAppSetting = "permission:app-setting:create",
 	UpdateAppSetting = "permission:app-setting:update",
 	DeleteAppSetting = "permission:app-setting:delete",
+
+	/** ===== ACTIVITY LOG ===== */
+
+	MenuActivityLog = "permission:menu:activity-log",
+	/** xem activity log toàn hệ thống */
+	ViewActivityLogAll = "permission:activity-log:view-all",
+	/** xem activity log trong phòng ban của mình và các phòng ban con */
+	ViewActivityLogDepartment = "permission:activity-log:view-department",
 }
 
 export interface RoleSearchParams extends SearchParamsBase {

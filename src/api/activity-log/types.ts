@@ -1,4 +1,5 @@
 import type { EntityBase } from "../entity-base";
+import type { SearchParamsBase } from "../service-base";
 
 /** Ai thực hiện thao tác: người dùng qua API hay hệ thống (job, cron) */
 export enum ActivityLogType {
@@ -22,6 +23,8 @@ export enum ActivityLogAction {
 	LOGIN_OTP_REQUEST = "LOGIN_OTP_REQUEST",
 	LOGIN_OTP = "LOGIN_OTP",
 	LOGIN_OTP_FAILED = "LOGIN_OTP_FAILED",
+	/** Bắt đầu một phiên đăng nhập mới (mật khẩu, OAuth...) */
+	LOGIN = "LOGIN",
 }
 
 /** Loại đối tượng của log: tên bảng mà parentId trỏ tới (backend lấy từ tableName của entity), hoặc nhóm không thuộc bảng nào (auth, unknown) */
@@ -48,4 +51,19 @@ export interface ActivityLogEntity extends EntityBase {
 	device: string
 	/** id của request đã tạo log, dùng để tra log server */
 	requestId: string
+}
+
+/** Bộ lọc của GET /activity-log; BasicTable tự đổi current/pageSize thành page/limit */
+export interface ActivityLogSearchParams extends SearchParamsBase {
+	page?: number
+	limit?: number
+	action?: ActivityLogAction
+	type?: ActivityLogType
+	parentType?: string
+	parentId?: string
+	/** id user thực hiện */
+	actorId?: string
+	/** ISO datetime */
+	from?: string
+	to?: string
 }
