@@ -46,7 +46,8 @@ export default function LayoutMixedSidebar({
 			}}
 		>
 			<aside
-				className="fixed left-0 top-0 bottom-0 flex"
+				// select-none: bấm/kéo trên menu không bôi đen chữ
+				className="fixed left-0 top-0 bottom-0 flex select-none"
 				style={{
 					backgroundColor: isFixedDarkTheme ? Menu?.darkItemBg : Menu?.itemBg,
 					boxShadow: "3px 0 5px 0 rgb(29, 35, 41, 0.05)",
