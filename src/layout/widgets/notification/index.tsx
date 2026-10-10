@@ -28,6 +28,12 @@ const useStyles = createUseStyles(({ token }) => (
 				overflowY: "auto",
 			},
 		},
+		item: {
+			"transition": `background-color ${token.motionDurationMid}`,
+			"&:hover": {
+				backgroundColor: token.controlItemBgHover,
+			},
+		},
 	}
 ));
 
@@ -142,7 +148,7 @@ export const NotificationPopup: React.FC<Props> = ({ dot, count, notifications, 
 						</div>
 					)}
 					renderItem={item => (
-						<List.Item className="relative justify-start gap-5 hover:bg-gray-100 cursor-pointer" onClick={() => handleClick(item)}>
+						<List.Item className={clsx(classes.item, "relative justify-start gap-5 cursor-pointer")} onClick={() => handleClick(item)}>
 							{!item.isRead && <span className="absolute w-2 h-2 rounded bg-primary right-2 top-2"></span>}
 							{item.avatar || item.actorName
 								? (
