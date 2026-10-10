@@ -221,7 +221,7 @@
 		"title": "Theo dõi hoạt động",
 		"timeRange": "Thời gian",
 		"actor": "Người thực hiện",
-		"action": "Hành động",
+		"action": "Hoạt động",
 		"type": "Loại",
 		"parentType": "Đối tượng",
 		"parentId": "ID đối tượng",

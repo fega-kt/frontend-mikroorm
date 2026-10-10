@@ -1,5 +1,6 @@
 import type { ActivityLogEntity } from "#src/api/activity-log";
 import { ActivityLogAction } from "#src/api/activity-log";
+import { ActionTag } from "#src/components/activity-history";
 import { Alert, Descriptions, Drawer, Typography } from "antd";
 import dayjs from "dayjs";
 import { useImperativeHandle, useState } from "react";
@@ -55,7 +56,7 @@ export function Detail({ ref }: DetailProps) {
 					<Descriptions column={1} size="small" bordered>
 						<Descriptions.Item label={t("common.createdAt")}>{dayjs(log.createdAt).format("DD/MM/YYYY HH:mm:ss")}</Descriptions.Item>
 						<Descriptions.Item label={t("system.activityLog.actor")}>{actor?.fullName ?? actor?.loginName ?? "-"}</Descriptions.Item>
-						<Descriptions.Item label={t("system.activityLog.action")}>{getActionLabel(t, log.action)}</Descriptions.Item>
+						<Descriptions.Item label={t("system.activityLog.action")}><ActionTag action={log.action} label={getActionLabel(t, log.action)} /></Descriptions.Item>
 						<Descriptions.Item label={t("system.activityLog.type")}>{t(`system.activityLog.types.${log.type}`)}</Descriptions.Item>
 						<Descriptions.Item label={t("system.activityLog.parentType")}>{getParentTypeLabel(t, log.parentType)}</Descriptions.Item>
 						<Descriptions.Item label={t("system.activityLog.parentId")}><Text copyable>{log.parentId}</Text></Descriptions.Item>
