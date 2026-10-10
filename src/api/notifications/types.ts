@@ -12,6 +12,7 @@ export enum NotificationType {
 	SPRINT_STARTED = "SPRINT_STARTED",
 	SPRINT_COMPLETED = "SPRINT_COMPLETED",
 	LOGIN_INACTIVE_REMINDER = "LOGIN_INACTIVE_REMINDER",
+	LOGIN_NEW_DEVICE = "LOGIN_NEW_DEVICE",
 }
 
 export interface NotificationEntity extends EntityBase {

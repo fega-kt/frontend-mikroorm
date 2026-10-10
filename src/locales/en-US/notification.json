@@ -6,5 +6,9 @@
 	"LOGIN_INACTIVE_REMINDER": {
 		"title": "It's been a while",
 		"message": "You haven't logged in for more than {{days}} days."
+	},
+	"LOGIN_NEW_DEVICE": {
+		"title": "New device sign-in",
+		"message": "Your account was just signed in on {{browser}} ({{os}}), IP {{ip}}. If this wasn't you, change your password immediately."
 	}
 }

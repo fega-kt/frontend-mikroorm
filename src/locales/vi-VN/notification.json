@@ -6,5 +6,9 @@
 	"LOGIN_INACTIVE_REMINDER": {
 		"title": "Đã lâu bạn chưa đăng nhập",
 		"message": "Bạn đã không đăng nhập hệ thống hơn {{days}} ngày."
+	},
+	"LOGIN_NEW_DEVICE": {
+		"title": "Đăng nhập trên thiết bị mới",
+		"message": "Tài khoản của bạn vừa đăng nhập trên {{browser}} ({{os}}), IP {{ip}}. Nếu không phải bạn, hãy đổi mật khẩu ngay."
 	}
 }
