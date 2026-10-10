@@ -7,6 +7,7 @@
 	"notifications": "通知",
 	"markAllAsRead": "全部标记为已读",
 	"clearNotifications": "清空",
+	"loadMore": "加载更多",
 	"versionMonitorTitle": "系统版本更新通知",
 	"versionMonitorContent": "检测到系统有新版本发布，是否立即刷新页面？",
 	"versionMonitorConfirm": "立即刷新",

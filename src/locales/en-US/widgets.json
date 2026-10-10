@@ -7,6 +7,7 @@
 	"notifications": "Notifications",
 	"markAllAsRead": "Make All as Read",
 	"clearNotifications": "Clear",
+	"loadMore": "Load more",
 	"versionMonitorTitle": "System Version Update Notification",
 	"versionMonitorContent": "A new version of the system has been detected, do you want to refresh the page now?",
 	"versionMonitorConfirm": "Refresh Now",

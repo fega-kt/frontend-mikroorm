@@ -8,9 +8,9 @@ export class NotificationService extends CrudServiceBase<NotificationEntity> {
 		super({ endpoint: "notification", service: ApiService.Core });
 	}
 
-	/** GET /notification?page=1&limit=20&onlyUnread=false */
-	async fetchNotifications(params?: { page?: number, limit?: number, onlyUnread?: boolean }) {
-		return this.get<{ data: NotificationEntity[], total: number }>("", {
+	/** GET /notification?limit=20&before=<id>&onlyUnread=false — cursor pagination, `before` = id item cuối trang trước */
+	async fetchNotifications(params?: { limit?: number, before?: string, onlyUnread?: boolean }) {
+		return this.get<{ data: NotificationEntity[], hasMore: boolean }>("", {
 			searchParams: params as any,
 			ignoreLoading: true,
 		});

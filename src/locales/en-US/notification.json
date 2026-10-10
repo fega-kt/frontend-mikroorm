@@ -1,0 +1,10 @@
+{
+	"unknown": {
+		"title": "Notification",
+		"message": "You have a new notification"
+	},
+	"LOGIN_INACTIVE_REMINDER": {
+		"title": "It's been a while",
+		"message": "You haven't logged in for more than {{days}} days."
+	}
+}
