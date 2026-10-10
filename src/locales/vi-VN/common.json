@@ -32,6 +32,7 @@
 		"usersAndGroups": "Người dùng và nhóm",
 		"menu": "Quản lý menu",
 		"dept": "Quản lý phòng ban",
+		"activityLog": "Theo dõi hoạt động",
 		"projectMgmt": "Quản lý dự án",
 		"project": "Danh sách dự án",
 		"task": "Danh sách công việc",
@@ -173,7 +174,8 @@
 			"RESET_PASSWORD_FAILED": "Đặt lại mật khẩu thất bại",
 			"LOGIN_OTP_REQUEST": "Yêu cầu OTP đăng nhập",
 			"LOGIN_OTP": "Đăng nhập bằng OTP",
-			"LOGIN_OTP_FAILED": "Đăng nhập OTP thất bại"
+			"LOGIN_OTP_FAILED": "Đăng nhập OTP thất bại",
+			"LOGIN": "Đăng nhập"
 		}
 	}
 }

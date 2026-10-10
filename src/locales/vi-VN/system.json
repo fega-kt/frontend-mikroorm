@@ -21,7 +21,8 @@
 			"workflow_instance": "Quản lý phiếu đề nghị",
 			"workflow_task": "Quản lý việc cần duyệt",
 			"workflow_delegation_setting": "Quản lý ủy quyền duyệt",
-			"app_setting": "Quản lý tham số hệ thống"
+			"app_setting": "Quản lý tham số hệ thống",
+			"activity_log": "Theo dõi hoạt động"
 		},
 		"permission": {
 			"user": "Người dùng",
@@ -53,7 +54,10 @@
 			"workflow-instance": "Phiếu đề nghị",
 			"workflow-task": "Việc cần duyệt",
 			"workflow-delegation-setting": "Ủy quyền duyệt",
-			"app-setting": "Tham số hệ thống"
+			"app-setting": "Tham số hệ thống",
+			"activity-log": "Theo dõi hoạt động",
+			"view-all": "Xem toàn hệ thống",
+			"view-department": "Xem trong phòng ban (gồm phòng con)"
 		}
 	},
 
@@ -212,5 +216,35 @@
 		"activateSuccess": "Kích hoạt phòng ban thành công",
 		"deactivateSuccess": "Vô hiệu hóa phòng ban thành công",
 		"statusChangeDisabledTooltip": "Trạng thái chỉ có thể thay đổi qua chức năng kích hoạt/vô hiệu hóa"
+	},
+	"activityLog": {
+		"title": "Theo dõi hoạt động",
+		"timeRange": "Thời gian",
+		"actor": "Người thực hiện",
+		"action": "Hành động",
+		"type": "Loại",
+		"parentType": "Đối tượng",
+		"parentId": "ID đối tượng",
+		"ip": "IP",
+		"device": "Thiết bị",
+		"requestId": "Request ID",
+		"detail": "Chi tiết",
+		"oldData": "Dữ liệu trước",
+		"newData": "Dữ liệu sau",
+		"noData": "Không có dữ liệu",
+		"loginIpNote": "IP và thiết bị của log đăng nhập là của máy chủ Supabase, không phải của người dùng.",
+		"types": {
+			"system": "Hệ thống",
+			"user": "Người dùng"
+		},
+		"parentTypes": {
+			"users": "Người dùng",
+			"departments": "Phòng ban",
+			"groups": "Nhóm",
+			"roles": "Vai trò",
+			"app_settings": "Tham số hệ thống",
+			"auth": "Xác thực",
+			"unknown": "Không xác định"
+		}
 	}
 }

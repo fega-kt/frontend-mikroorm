@@ -29,6 +29,7 @@
 		"role": "Role Management",
 		"menu": "Menu Management",
 		"dept": "Department Management",
+		"activityLog": "Activity Log",
 		"projectMgmt": "Project Management",
 		"project": "Project List",
 		"task": "Task List",
@@ -169,7 +170,8 @@
 			"RESET_PASSWORD_FAILED": "Password reset failed",
 			"LOGIN_OTP_REQUEST": "Login OTP requested",
 			"LOGIN_OTP": "Logged in with OTP",
-			"LOGIN_OTP_FAILED": "OTP login failed"
+			"LOGIN_OTP_FAILED": "OTP login failed",
+			"LOGIN": "Logged in"
 		}
 	}
 }

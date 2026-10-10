@@ -21,7 +21,8 @@
 			"workflow_instance": "审批单管理",
 			"workflow_task": "待办任务管理",
 			"workflow_delegation_setting": "委托审批管理",
-			"app_setting": "系统参数管理"
+			"app_setting": "系统参数管理",
+			"activity_log": "操作日志"
 		},
 		"permission": {
 			"user": "用户",
@@ -53,7 +54,10 @@
 			"workflow-instance": "审批单",
 			"workflow-task": "待办任务",
 			"workflow-delegation-setting": "委托审批",
-			"app-setting": "系统参数"
+			"app-setting": "系统参数",
+			"activity-log": "操作日志",
+			"view-all": "查看全部",
+			"view-department": "查看本部门（含下级部门）"
 		}
 	},
 	"appSetting": {
@@ -229,5 +233,35 @@
 		"activateSuccess": "启用部门成功",
 		"deactivateSuccess": "停用部门成功",
 		"statusChangeDisabledTooltip": "状态只能通过专门的启用/停用功能修改"
+	},
+	"activityLog": {
+		"title": "操作日志",
+		"timeRange": "时间",
+		"actor": "操作人",
+		"action": "操作",
+		"type": "类型",
+		"parentType": "对象",
+		"parentId": "对象 ID",
+		"ip": "IP",
+		"device": "设备",
+		"requestId": "请求 ID",
+		"detail": "详情",
+		"oldData": "变更前",
+		"newData": "变更后",
+		"noData": "无数据",
+		"loginIpNote": "登录日志中的 IP 和设备属于 Supabase 服务器，而非用户本人。",
+		"types": {
+			"system": "系统",
+			"user": "用户"
+		},
+		"parentTypes": {
+			"users": "用户",
+			"departments": "部门",
+			"groups": "用户组",
+			"roles": "角色",
+			"app_settings": "系统参数",
+			"auth": "认证",
+			"unknown": "未知"
+		}
 	}
 }

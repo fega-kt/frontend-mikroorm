@@ -47,6 +47,7 @@ const ACTION_COLORS: Record<ActivityLogAction, string> = {
 	[ActivityLogAction.LOGIN_OTP_REQUEST]: "cyan",
 	[ActivityLogAction.LOGIN_OTP]: "green",
 	[ActivityLogAction.LOGIN_OTP_FAILED]: "red",
+	[ActivityLogAction.LOGIN]: "green",
 };
 
 const ACTION_ICONS: Record<ActivityLogAction, React.ReactNode> = {
@@ -65,6 +66,7 @@ const ACTION_ICONS: Record<ActivityLogAction, React.ReactNode> = {
 	[ActivityLogAction.LOGIN_OTP_REQUEST]: <MailOutlined />,
 	[ActivityLogAction.LOGIN_OTP]: <LoginOutlined />,
 	[ActivityLogAction.LOGIN_OTP_FAILED]: <WarningOutlined />,
+	[ActivityLogAction.LOGIN]: <LoginOutlined />,
 };
 
 // Fields stored as HTML (rich text)

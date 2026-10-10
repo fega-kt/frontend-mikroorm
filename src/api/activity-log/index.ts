@@ -1,4 +1,4 @@
-import type { ActivityLogEntity } from "./types";
+import type { ActivityLogEntity, ActivityLogSearchParams } from "./types";
 import { ApiService, CrudServiceBase } from "../service-base";
 
 export * from "./types";
@@ -6,6 +6,14 @@ export * from "./types";
 export class ActivityLogService extends CrudServiceBase<ActivityLogEntity> {
 	constructor() {
 		super({ endpoint: "activity-log", populate: ["createdBy"], service: ApiService.Core });
+	}
+
+	/** GET /activity-log — theo dõi activity log; backend tự giới hạn theo quyền (toàn hệ thống hoặc trong phòng ban) */
+	async fetchList(params?: ActivityLogSearchParams) {
+		return this.get<{ data: ActivityLogEntity[], total: number }>("", {
+			searchParams: params,
+			ignoreLoading: true,
+		});
 	}
 
 	/** GET /activity-log/by-parent/:parentId */

@@ -102,4 +102,9 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.UpdateAppSetting,
 		PermissionType.DeleteAppSetting,
 	],
+	ACTIVITY_LOG: [
+		PermissionType.MenuActivityLog,
+		PermissionType.ViewActivityLogAll,
+		PermissionType.ViewActivityLogDepartment,
+	],
 };
