@@ -3,11 +3,12 @@ import type { NotificationItem } from "./types";
 
 import { BasicButton } from "#src/components/basic-button";
 import { RiMailCheckLine } from "#src/icons";
+import { getAvatarColor } from "#src/utils/avatar";
 import { cn } from "#src/utils/cn";
 
 import { BellOutlined } from "@ant-design/icons";
 import { useToggle } from "ahooks";
-import { List, Popover, Tooltip } from "antd";
+import { Avatar, List, Popover, Tooltip } from "antd";
 import { clsx } from "clsx";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -30,7 +31,7 @@ const useStyles = createUseStyles(({ token }) => (
 	}
 ));
 
-type NotificationEventType = "viewAll" | "makeAll" | "clear" | "read";
+export type NotificationEventType = "viewAll" | "makeAll" | "clear" | "read";
 
 interface Props extends ButtonProps {
 	/**
@@ -41,13 +42,21 @@ interface Props extends ButtonProps {
 	 * 显示圆点
 	 */
 	dot?: boolean
+	/** Số chưa đọc — có thì hiện số thay cho chấm */
+	count?: number
 	/**
 	 * 消息列表
 	 */
 	notifications?: NotificationItem[]
+	/** Còn noti cũ hơn để tải */
+	hasMore?: boolean
+	loadingMore?: boolean
+	onLoadMore?: () => void
+	/** Hiện footer (Xóa / Xem tất cả) — mặc định true */
+	showFooter?: boolean
 }
 
-export const NotificationPopup: React.FC<Props> = ({ dot, notifications, onEventChange, ...restProps }) => {
+export const NotificationPopup: React.FC<Props> = ({ dot, count, notifications, hasMore, loadingMore, onLoadMore, showFooter = true, onEventChange, ...restProps }) => {
 	const [open, action] = useToggle();
 	const classes = useStyles();
 	const { t } = useTranslation();
@@ -71,11 +80,15 @@ export const NotificationPopup: React.FC<Props> = ({ dot, notifications, onEvent
 
 	const handleClick = (item: NotificationItem) => {
 		onEventChange && onEventChange("read", item);
+		if (item.link)
+			close();
 	};
 
-	dot = useMemo(() => {
+	// Ưu tiên `dot` từ ngoài (vd: unread-count từ API), không có thì tự tính từ list
+	const localDot = useMemo(() => {
 		return !!notifications?.filter(item => !item.isRead).length;
 	}, [notifications]);
+	const showDot = dot ?? localDot;
 
 	return (
 		<Popover
@@ -106,7 +119,7 @@ export const NotificationPopup: React.FC<Props> = ({ dot, notifications, onEvent
 							</Tooltip>
 						</div>
 					)}
-					footer={(
+					footer={showFooter && (
 						<div className="flex items-center justify-between">
 							<BasicButton
 								disabled={!notifications?.length}
@@ -121,12 +134,25 @@ export const NotificationPopup: React.FC<Props> = ({ dot, notifications, onEvent
 						</div>
 					)}
 					dataSource={notifications}
+					loadMore={hasMore && (
+						<div className="flex justify-center py-2">
+							<BasicButton type="link" size="small" loading={loadingMore} onClick={onLoadMore}>
+								{t("widgets.loadMore")}
+							</BasicButton>
+						</div>
+					)}
 					renderItem={item => (
 						<List.Item className="relative justify-start gap-5 hover:bg-gray-100 cursor-pointer" onClick={() => handleClick(item)}>
 							{!item.isRead && <span className="absolute w-2 h-2 rounded bg-primary right-2 top-2"></span>}
-							<span className="relative flex w-10 h-10 overflow-hidden rounded-full shrink-0">
-								<img src={item.avatar} className="object-cover w-full h-full aspect-square" role="img" />
-							</span>
+							{item.avatar || item.actorName
+								? (
+									<Avatar size={40} src={item.avatar} className="shrink-0 font-semibold" style={{ backgroundColor: getAvatarColor(item.actorId) }}>
+										{item.actorName?.[0]?.toUpperCase()}
+									</Avatar>
+								)
+								: (
+									<Avatar size={40} icon={item.icon} className="shrink-0" style={{ backgroundColor: item.iconColor }} />
+								)}
 							<div className="flex flex-col gap-1 leading-none">
 								<p className="font-semibold">{item.title}</p>
 								<p className="my-1 text-xs text-muted-foreground line-clamp-2">{item.message}</p>
@@ -145,7 +171,13 @@ export const NotificationPopup: React.FC<Props> = ({ dot, notifications, onEvent
 				className={cn("relative group", restProps.className)}
 				icon={<BellOutlined className="group-hover:animate-wiggle" />}
 			>
-				{dot && <span className="bg-blue-600 absolute right-2 top-1.5 h-2 w-2 rounded"></span>}
+				{count !== undefined
+					? count > 0 && (
+						<span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white">
+							{count > 99 ? "99+" : count}
+						</span>
+					)
+					: showDot && <span className="bg-blue-600 absolute right-2 top-1.5 h-2 w-2 rounded"></span>}
 			</BasicButton>
 
 		</Popover>

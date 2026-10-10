@@ -11,14 +11,18 @@ export enum NotificationType {
 	MILESTONE_DUE = "MILESTONE_DUE",
 	SPRINT_STARTED = "SPRINT_STARTED",
 	SPRINT_COMPLETED = "SPRINT_COMPLETED",
+	LOGIN_INACTIVE_REMINDER = "LOGIN_INACTIVE_REMINDER",
 }
 
 export interface NotificationEntity extends EntityBase {
 	type: NotificationType
-	title: string
-	message: string
+	/** Người gây ra noti — null nếu do hệ thống */
+	actor?: { id: string, fullName: string, avatar?: string } | null
+	/** Tham số merge vào câu dịch `notification.<type>.*` */
+	data?: Record<string, string | number>
 	refId?: string
-	refType?: string
+	/** Tên bảng của entity liên quan (vd: "users") */
+	refType?: string | null
 	isRead: boolean
 	readAt?: string
 }

@@ -1,0 +1,10 @@
+{
+	"unknown": {
+		"title": "通知",
+		"message": "您有一条新通知"
+	},
+	"LOGIN_INACTIVE_REMINDER": {
+		"title": "好久不见",
+		"message": "您已超过 {{days}} 天未登录系统。"
+	}
+}
