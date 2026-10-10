@@ -10,12 +10,15 @@ import {
 	HistoryOutlined,
 	KeyOutlined,
 	LockOutlined,
+	LoginOutlined,
+	MailOutlined,
 	PlusCircleOutlined,
 	RedoOutlined,
 	RobotOutlined,
 	SwapOutlined,
 	TeamOutlined,
 	UserOutlined,
+	WarningOutlined,
 } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import { Avatar, Empty, Skeleton, Space, Tag, Timeline, Typography } from "antd";
@@ -52,6 +55,11 @@ const ACTION_COLORS: Record<ActivityLogAction, string> = {
 	[ActivityLogAction.REJECT]: "red",
 	[ActivityLogAction.CHANGE_PASSWORD]: "orange",
 	[ActivityLogAction.FORGOT_PASSWORD]: "orange",
+	[ActivityLogAction.RESET_PASSWORD]: "green",
+	[ActivityLogAction.RESET_PASSWORD_FAILED]: "red",
+	[ActivityLogAction.LOGIN_OTP_REQUEST]: "cyan",
+	[ActivityLogAction.LOGIN_OTP]: "green",
+	[ActivityLogAction.LOGIN_OTP_FAILED]: "red",
 };
 
 const ACTION_ICONS: Record<ActivityLogAction, React.ReactNode> = {
@@ -65,6 +73,11 @@ const ACTION_ICONS: Record<ActivityLogAction, React.ReactNode> = {
 	[ActivityLogAction.REJECT]: <CloseCircleOutlined />,
 	[ActivityLogAction.CHANGE_PASSWORD]: <LockOutlined />,
 	[ActivityLogAction.FORGOT_PASSWORD]: <KeyOutlined />,
+	[ActivityLogAction.RESET_PASSWORD]: <KeyOutlined />,
+	[ActivityLogAction.RESET_PASSWORD_FAILED]: <WarningOutlined />,
+	[ActivityLogAction.LOGIN_OTP_REQUEST]: <MailOutlined />,
+	[ActivityLogAction.LOGIN_OTP]: <LoginOutlined />,
+	[ActivityLogAction.LOGIN_OTP_FAILED]: <WarningOutlined />,
 };
 
 // Fields stored as HTML (rich text)

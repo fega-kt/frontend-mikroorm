@@ -17,16 +17,23 @@ export enum ActivityLogAction {
 	REJECT = "REJECT",
 	CHANGE_PASSWORD = "CHANGE_PASSWORD",
 	FORGOT_PASSWORD = "FORGOT_PASSWORD",
+	RESET_PASSWORD = "RESET_PASSWORD",
+	RESET_PASSWORD_FAILED = "RESET_PASSWORD_FAILED",
+	LOGIN_OTP_REQUEST = "LOGIN_OTP_REQUEST",
+	LOGIN_OTP = "LOGIN_OTP",
+	LOGIN_OTP_FAILED = "LOGIN_OTP_FAILED",
 }
 
-/** Tên bảng mà parentId trỏ tới (backend lấy từ tableName của entity) */
+/** Loại đối tượng của log: tên bảng mà parentId trỏ tới (backend lấy từ tableName của entity), hoặc nhóm không thuộc bảng nào (auth, unknown) */
 export enum ActivityLogParentType {
 	Users = "users",
 	Departments = "departments",
 	Groups = "groups",
 	Roles = "roles",
 	AppSettings = "app_settings",
-	/** Log không gắn với bảng cụ thể, hoặc tạo trước khi có cột parentType */
+	/** Đăng nhập, đăng xuất, đổi/quên mật khẩu; parentId là id user */
+	Auth = "auth",
+	/** Log tạo trước khi có cột parentType */
 	Unknown = "unknown",
 }
 
