@@ -2,8 +2,9 @@ import type { ActivityLogEntity } from "#src/api/activity-log";
 import type { ProColumns } from "@ant-design/pro-components";
 import type { TFunction } from "i18next";
 import { ActivityLogAction, ActivityLogParentType, ActivityLogType } from "#src/api/activity-log";
+import { ActionTag } from "#src/components/activity-history";
 import { PeoplePicker } from "#src/components/people-picker";
-import { Tag, Typography } from "antd";
+import { Typography } from "antd";
 import dayjs from "dayjs";
 
 const { Text } = Typography;
@@ -56,20 +57,21 @@ export function getConstantColumns(t: T): ProColumns<ActivityLogEntity>[] {
 				: "-",
 		},
 		{
-			title: t("system.activityLog.action"),
-			dataIndex: "action",
-			width: 200,
-			valueType: "select",
-			valueEnum: enumOptions(Object.values(ActivityLogAction), value => getActionLabel(t, value)),
-			render: (_, record) => <Tag>{getActionLabel(t, record.action)}</Tag>,
-		},
-		{
+			// Ai thực hiện (người dùng / hệ thống) nên đặt cạnh người thực hiện
 			title: t("system.activityLog.type"),
 			dataIndex: "type",
 			width: 120,
 			valueType: "select",
 			valueEnum: enumOptions(Object.values(ActivityLogType), value => t(`system.activityLog.types.${value}`)),
 			render: (_, record) => t(`system.activityLog.types.${record.type}`),
+		},
+		{
+			title: t("system.activityLog.action"),
+			dataIndex: "action",
+			width: 200,
+			valueType: "select",
+			valueEnum: enumOptions(Object.values(ActivityLogAction), value => getActionLabel(t, value)),
+			render: (_, record) => <ActionTag action={record.action} label={getActionLabel(t, record.action)} />,
 		},
 		{
 			title: t("system.activityLog.parentType"),

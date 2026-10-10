@@ -238,7 +238,7 @@
 		"title": "操作日志",
 		"timeRange": "时间",
 		"actor": "操作人",
-		"action": "操作",
+		"action": "活动",
 		"type": "类型",
 		"parentType": "对象",
 		"parentId": "对象 ID",

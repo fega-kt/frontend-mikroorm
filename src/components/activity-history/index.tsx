@@ -69,6 +69,23 @@ const ACTION_ICONS: Record<ActivityLogAction, React.ReactNode> = {
 	[ActivityLogAction.LOGIN]: <LoginOutlined />,
 };
 
+interface ActionTagProps {
+	action: ActivityLogAction
+	/** Nhãn hiển thị; không truyền thì dùng `common.history.action.*` */
+	label?: string
+	className?: string
+}
+
+/** Tag của một hành động trong activity log: mỗi hành động có màu và icon riêng, dùng chung cho timeline, bảng và chi tiết log */
+export function ActionTag({ action, label, className }: ActionTagProps) {
+	const { t } = useTranslation();
+	return (
+		<Tag color={ACTION_COLORS[action] ?? "default"} icon={ACTION_ICONS[action]} className={className}>
+			{label ?? t(`common.history.action.${action}`, { defaultValue: action })}
+		</Tag>
+	);
+}
+
 // Fields stored as HTML (rich text)
 const HTML_FIELDS = new Set(["description", "note", "content"]);
 
@@ -325,7 +342,6 @@ function DataBlock({ data, variant, options }: { data?: Record<string, any>, var
 function ActivityItem({ log, options }: { log: ActivityLogEntity, options: DisplayOptions }) {
 	const { t } = useTranslation();
 	const user = (log as any).createdBy;
-	const color = ACTION_COLORS[log.action] ?? "default";
 	const actionLabel = t(options.actionLabels?.[log.action] ?? `common.history.action.${log.action}`, { defaultValue: log.action });
 
 	const renderBody = () => {
@@ -376,7 +392,7 @@ function ActivityItem({ log, options }: { log: ActivityLogEntity, options: Displ
 							<Text strong className="text-sm">{t("common.history.system")}</Text>
 						</Space>
 					)}
-				<Tag color={color} className="text-xs">{actionLabel}</Tag>
+				<ActionTag action={log.action} label={actionLabel} className="text-xs" />
 				<Text type="secondary" className="text-xs">
 					{dayjs(log.createdAt).format("DD/MM/YYYY HH:mm")}
 					{" · "}

@@ -237,7 +237,7 @@
 		"title": "Activity Log",
 		"timeRange": "Time",
 		"actor": "Performed by",
-		"action": "Action",
+		"action": "Activity",
 		"type": "Type",
 		"parentType": "Object",
 		"parentId": "Object ID",
