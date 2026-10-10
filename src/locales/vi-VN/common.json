@@ -168,7 +168,12 @@
 			"APPROVE": "Phê duyệt",
 			"REJECT": "Từ chối",
 			"CHANGE_PASSWORD": "Đổi mật khẩu",
-			"FORGOT_PASSWORD": "Quên mật khẩu"
+			"FORGOT_PASSWORD": "Quên mật khẩu",
+			"RESET_PASSWORD": "Đặt lại mật khẩu",
+			"RESET_PASSWORD_FAILED": "Đặt lại mật khẩu thất bại",
+			"LOGIN_OTP_REQUEST": "Yêu cầu OTP đăng nhập",
+			"LOGIN_OTP": "Đăng nhập bằng OTP",
+			"LOGIN_OTP_FAILED": "Đăng nhập OTP thất bại"
 		}
 	}
 }

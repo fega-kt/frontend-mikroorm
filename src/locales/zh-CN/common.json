@@ -160,7 +160,12 @@
 			"APPROVE": "同意",
 			"REJECT": "拒绝",
 			"CHANGE_PASSWORD": "修改密码",
-			"FORGOT_PASSWORD": "忘记密码"
+			"FORGOT_PASSWORD": "忘记密码",
+			"RESET_PASSWORD": "重置密码",
+			"RESET_PASSWORD_FAILED": "重置密码失败",
+			"LOGIN_OTP_REQUEST": "请求登录验证码",
+			"LOGIN_OTP": "验证码登录",
+			"LOGIN_OTP_FAILED": "验证码登录失败"
 		}
 	}
 }

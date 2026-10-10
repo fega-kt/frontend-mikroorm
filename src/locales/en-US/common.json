@@ -164,7 +164,12 @@
 			"APPROVE": "Approved",
 			"REJECT": "Rejected",
 			"CHANGE_PASSWORD": "Password changed",
-			"FORGOT_PASSWORD": "Password reset requested"
+			"FORGOT_PASSWORD": "Password reset requested",
+			"RESET_PASSWORD": "Password reset",
+			"RESET_PASSWORD_FAILED": "Password reset failed",
+			"LOGIN_OTP_REQUEST": "Login OTP requested",
+			"LOGIN_OTP": "Logged in with OTP",
+			"LOGIN_OTP_FAILED": "OTP login failed"
 		}
 	}
 }
