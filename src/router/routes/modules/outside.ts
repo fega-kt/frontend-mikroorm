@@ -37,15 +37,6 @@ const routes: AppRouteRecordRaw[] = [
 							iframeLink: "https://ant.design/",
 						},
 					},
-					{
-						path: "/outside/embedded/project-docs",
-						Component: Iframe,
-						handle: {
-							icon: createElement(ContainerOutlined),
-							title: $t("common.menu.projectDocs"),
-							iframeLink: "https://condorheroblog.github.io/react-antd-admin/docs/",
-						},
-					},
 				],
 			},
 			{
@@ -63,6 +54,16 @@ const routes: AppRouteRecordRaw[] = [
 							icon: createElement(RiReactjsLine),
 							title: $t("common.menu.reactDocs"),
 							externalLink: "https://react.dev/",
+						},
+					},
+					{
+						// GitHub chặn nhúng iframe → mở tab mới thay vì nhúng
+						path: "/outside/external-link/project-docs",
+						Component: Iframe,
+						handle: {
+							icon: createElement(ContainerOutlined),
+							title: $t("common.menu.projectDocs"),
+							externalLink: "https://github.com/fega-kt/frontend-mikroorm#readme",
 						},
 					},
 				],

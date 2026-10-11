@@ -8,6 +8,8 @@ import { dependenciesItems, devDependenciesItems } from "./constants";
 
 const { version } = __APP_INFO__.pkg;
 const { lastBuildTime } = __APP_INFO__;
+/** Địa chỉ public của app (env), chưa cấu hình thì lấy địa chỉ trang đang mở */
+const appUrl = import.meta.env.VITE_GLOB_APP_URL || window.location.origin;
 
 const { Text, Link } = Typography;
 
@@ -41,7 +43,7 @@ export default function About() {
 					rel="noreferrer noopener"
 					copyable
 					target="_blank"
-					href="https://condorheroblog.github.io/react-antd-admin/"
+					href={appUrl}
 				>
 					{t("common.view")}
 				</Link>
@@ -55,7 +57,7 @@ export default function About() {
 					rel="noreferrer noopener"
 					copyable
 					target="_blank"
-					href="https://condorheroblog.github.io/react-antd-admin/docs/"
+					href="https://github.com/fega-kt/frontend-mikroorm#readme"
 				>
 					{t("common.view")}
 				</Link>
