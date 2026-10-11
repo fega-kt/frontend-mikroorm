@@ -1,34 +1,140 @@
 {
-	"newVisits": "New Visits",
-	"messages": "Messages",
-	"purchases": "Purchases",
-	"shoppings": "Shoppings",
+	"greeting": {
+		"morning": "Good morning",
+		"noon": "Good afternoon",
+		"afternoon": "Good afternoon",
+		"evening": "Good evening"
+	},
+	"createRequest": "New request",
+	"chip": {
+		"pending": "awaiting your approval",
+		"overdue": "waiting over 2 days",
+		"returned": "need more info"
+	},
+	"unit": {
+		"request": "requests"
+	},
 
-	"sales": "Sales",
-	"thisWeek": "This Week",
-	"thisMonth": "This Month",
-	"thisYear": "This Year",
+	"kpi": {
+		"pending": "Awaiting my approval",
+		"pendingNote": "{{count}} waiting over 2 days",
+		"myInProgress": "My requests in progress",
+		"myInProgressNote": "{{count}} need more info",
+		"approvedThisMonth": "Approved by me this month",
+		"approvedNote": "{{delta}} vs last month",
+		"approvalRate": "Approval rate",
+		"approvalRateNote": "{{rejected}} rejected · {{returned}} returned this month"
+	},
 
-	"monday": "Monday",
-	"tuesday": "Tuesday",
-	"wednesday": "Wednesday",
-	"thursday": "Thursday",
-	"friday": "Friday",
-	"saturday": "Saturday",
-	"sunday": "Sunday",
-	"views": "Views",
-	"directAccess": "Direct Access",
-	"emailMarketing": "Email Marketing",
-	"affiliateAdvertise": "Affiliate Advertise",
-	"videoAdvertise": "Video Advertise",
+	"requestType": {
+		"leave": "Leave",
+		"advance": "Advance",
+		"purchase": "Purchase",
+		"trip": "Business trip",
+		"payment": "Payment"
+	},
 
-	"salesCategoryProportion": "Sales Category Proportion",
-	"electronics": "Electronics",
-	"homeGoods": "Home Goods",
-	"apparelAccessories": "Apparel Accessories",
-	"foodBeverages": "Food Beverages",
-	"beautySkincare": "Beauty Skincare",
-	"allChannels": "All Channels",
-	"online": "Online",
-	"site": "Site"
+	"pending": {
+		"title": "Awaiting my approval",
+		"sortHint": "Sorted by waiting time",
+		"step": "Step: {{step}}",
+		"waiting": "{{time}}",
+		"approve": "Approve",
+		"reject": "Reject",
+		"rejectConfirm": "Reject this request?",
+		"approved": "Approved",
+		"rejected": "Rejected",
+		"approvedMsg": "Approved \"{{title}}\"",
+		"rejectedMsg": "Rejected \"{{title}}\"",
+		"viewAll": "View all pending approvals"
+	},
+
+	"myRequests": {
+		"title": "My requests",
+		"filter": {
+			"inProgress": "In progress",
+			"returned": "Need info",
+			"done": "Completed"
+		},
+		"status": {
+			"draft": "Draft",
+			"in_progress": "In review",
+			"approved": "Approved",
+			"rejected": "Rejected",
+			"returned": "Returned",
+			"cancelled": "Cancelled"
+		},
+		"submitted": "Submitted {{time}}",
+		"progress": "Approval progress",
+		"empty": "No requests",
+		"viewAll": "View all my requests"
+	},
+
+	"delegation": {
+		"title": "Delegation",
+		"outgoing": "You are delegating to",
+		"incoming": "Delegated to you",
+		"until": "until {{date}}",
+		"empty": "No active delegation"
+	},
+
+	"avgTime": {
+		"title": "Average approval time",
+		"unit": "days / step",
+		"faster": "{{days}} days faster",
+		"slower": "{{days}} days slower",
+		"days": "{{days}} d"
+	},
+
+	"activity": {
+		"title": "Approval activity",
+		"kind": {
+			"approved": "approved",
+			"rejected": "rejected",
+			"returned": "returned",
+			"submitted": "submitted",
+			"delegated": "delegated approval to"
+		}
+	},
+
+	"pet": {
+		"label": "zhizhu cat — click for a cheer",
+		"cheers": [
+			"Let's approve! 🐾",
+			"Almost there!",
+			"Meow~ great job today",
+			"Take a sip of water!",
+			"Just a few left!"
+		],
+		"bonk": "Ouch! 😵",
+		"angry": "Stop poking me! 😾",
+		"runaway": "Hmph! I'm out!",
+		"approved": [
+			"Awesome! ✨",
+			"Nicely done!",
+			"One more!"
+		],
+		"allDone": "All done! 🎉",
+		"chatter": [
+			"Just a little stroll~",
+			"Meow meow~ 🎵",
+			"Anyone seen a fish? 🐟",
+			"Lovely day, isn't it?",
+			"Did you check your approvals?",
+			"Short legs, fast feet!",
+			"Guess my name?",
+			"Coffee break? ☕",
+			"Stop watching me, get to work!",
+			"On patrol 👀"
+		],
+		"wakeUp": [
+			"Huh… I wasn't sleeping! 😳",
+			"Not lazy, just recharging 🔋",
+			"I'm up, I'm up, don't scold me!",
+			"Just a 5-minute nap… 😿",
+			"Lazy? I was thinking deeply!",
+			"What?! Something to approve? 🙀",
+			"Being lazy is bad… I know 😅"
+		]
+	}
 }

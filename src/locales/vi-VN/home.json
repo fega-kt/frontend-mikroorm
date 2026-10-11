@@ -1,35 +1,140 @@
 {
-	"newVisits": "Lượt truy cập mới",
-	"messages": "Tin nhắn",
-	"purchases": "Đơn mua",
-	"shoppings": "Giỏ hàng",
+	"greeting": {
+		"morning": "Chào buổi sáng",
+		"noon": "Chào buổi trưa",
+		"afternoon": "Chào buổi chiều",
+		"evening": "Chào buổi tối"
+	},
+	"createRequest": "Tạo yêu cầu",
+	"chip": {
+		"pending": "yêu cầu chờ bạn duyệt",
+		"overdue": "chờ quá 2 ngày",
+		"returned": "yêu cầu cần bổ sung"
+	},
+	"unit": {
+		"request": "yêu cầu"
+	},
 
-	"sales": "Doanh số",
-	"thisWeek": "Tuần này",
-	"thisMonth": "Tháng này",
-	"thisYear": "Năm nay",
+	"kpi": {
+		"pending": "Chờ tôi duyệt",
+		"pendingNote": "{{count}} yêu cầu chờ quá 2 ngày",
+		"myInProgress": "Yêu cầu của tôi đang xử lý",
+		"myInProgressNote": "{{count}} yêu cầu cần bổ sung",
+		"approvedThisMonth": "Tôi đã duyệt tháng này",
+		"approvedNote": "{{delta}} so với tháng trước",
+		"approvalRate": "Tỷ lệ duyệt",
+		"approvalRateNote": "{{rejected}} từ chối · {{returned}} trả lại tháng này"
+	},
 
-	"monday": "Thứ hai",
-	"tuesday": "Thứ ba",
-	"wednesday": "Thứ tư",
-	"thursday": "Thứ năm",
-	"friday": "Thứ sáu",
-	"saturday": "Thứ bảy",
-	"sunday": "Chủ nhật",
+	"requestType": {
+		"leave": "Nghỉ phép",
+		"advance": "Tạm ứng",
+		"purchase": "Mua sắm",
+		"trip": "Công tác",
+		"payment": "Thanh toán"
+	},
 
-	"views": "Lượt xem",
-	"directAccess": "Truy cập trực tiếp",
-	"emailMarketing": "Email Marketing",
-	"affiliateAdvertise": "Quảng cáo liên kết",
-	"videoAdvertise": "Quảng cáo video",
+	"pending": {
+		"title": "Chờ tôi phê duyệt",
+		"sortHint": "Sắp xếp theo thời gian chờ",
+		"step": "Bước: {{step}}",
+		"waiting": "Chờ {{time}}",
+		"approve": "Duyệt",
+		"reject": "Từ chối",
+		"rejectConfirm": "Từ chối yêu cầu này?",
+		"approved": "Đã duyệt",
+		"rejected": "Đã từ chối",
+		"approvedMsg": "Đã duyệt \"{{title}}\"",
+		"rejectedMsg": "Đã từ chối \"{{title}}\"",
+		"viewAll": "Xem tất cả yêu cầu chờ duyệt"
+	},
 
-	"salesCategoryProportion": "Tỷ lệ danh mục doanh số",
-	"allChannels": "Tất cả kênh",
-	"online": "Trực tuyến",
-	"site": "Cửa hàng",
-	"electronics": "Điện tử",
-	"homeGoods": "Đồ gia dụng",
-	"apparelAccessories": "Thời trang & Phụ kiện",
-	"foodBeverages": "Thực phẩm & Đồ uống",
-	"beautySkincare": "Làm đẹp & Chăm sóc da"
+	"myRequests": {
+		"title": "Yêu cầu của tôi",
+		"filter": {
+			"inProgress": "Đang xử lý",
+			"returned": "Cần bổ sung",
+			"done": "Hoàn tất"
+		},
+		"status": {
+			"draft": "Nháp",
+			"in_progress": "Đang duyệt",
+			"approved": "Đã duyệt",
+			"rejected": "Từ chối",
+			"returned": "Trả lại",
+			"cancelled": "Đã hủy"
+		},
+		"submitted": "Gửi {{time}}",
+		"progress": "Tiến trình duyệt",
+		"empty": "Không có yêu cầu nào",
+		"viewAll": "Xem tất cả yêu cầu của tôi"
+	},
+
+	"delegation": {
+		"title": "Ủy quyền",
+		"outgoing": "Bạn đang ủy quyền",
+		"incoming": "Được ủy quyền cho bạn",
+		"until": "đến {{date}}",
+		"empty": "Không có ủy quyền nào đang hiệu lực"
+	},
+
+	"avgTime": {
+		"title": "Thời gian duyệt trung bình",
+		"unit": "ngày / bước",
+		"faster": "nhanh hơn {{days}} ngày",
+		"slower": "chậm hơn {{days}} ngày",
+		"days": "{{days}} ngày"
+	},
+
+	"activity": {
+		"title": "Hoạt động phê duyệt",
+		"kind": {
+			"approved": "đã duyệt",
+			"rejected": "đã từ chối",
+			"returned": "đã trả lại",
+			"submitted": "đã gửi yêu cầu",
+			"delegated": "đã ủy quyền duyệt cho"
+		}
+	},
+
+	"pet": {
+		"label": "Mèo zhizhu — bấm để nghe cổ vũ",
+		"cheers": [
+			"Duyệt nhanh nào! 🐾",
+			"Cố lên, sắp xong rồi!",
+			"Meo~ hôm nay làm tốt lắm",
+			"Nghỉ tay uống nước đi!",
+			"Còn vài yêu cầu thôi!"
+		],
+		"bonk": "Ui da! 😵",
+		"angry": "Đừng chọc nữa! 😾",
+		"runaway": "Hứ! Không chơi nữa!",
+		"approved": [
+			"Tuyệt vời! ✨",
+			"Duyệt gọn gàng!",
+			"Thêm một cái nữa nào!"
+		],
+		"allDone": "Xong hết rồi! 🎉",
+		"chatter": [
+			"Đi dạo tí cho khỏe~",
+			"Meo meo~ 🎵",
+			"Có ai thấy cá không? 🐟",
+			"Hôm nay trời đẹp ghê",
+			"Lên lịch duyệt chưa đó?",
+			"Chân ngắn nhưng chạy nhanh!",
+			"Đố biết tui tên gì?",
+			"Uống cà phê không? ☕",
+			"Nhìn gì đó, làm việc đi!",
+			"Tui đang tuần tra nè 👀"
+		],
+		"wakeUp": [
+			"Ơ… tui đâu có ngủ! 😳",
+			"Không lười đâu, đang sạc pin thôi 🔋",
+			"Dậy rồi, dậy rồi, đừng mắng mà!",
+			"Chợp mắt 5 phút thôi mà… 😿",
+			"Ai bảo tui lười biếng? Tui suy nghĩ đó!",
+			"Hả?! Có việc cần duyệt hả? 🙀",
+			"Lười biếng là không tốt… biết rồi 😅"
+		]
+	}
 }

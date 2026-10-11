@@ -37,6 +37,11 @@ export const i18nInitOptions: InitOptions = {
 	 * @see https://github.com/i18next/i18next/issues/2385
 	 */
 	showSupportNotice: false,
+	/**
+	 * React đã tự escape khi render — tắt escape của i18next để "20/10", dấu nháy… không thành &#x2F; &quot;
+	 * @see https://react.i18next.com/getting-started#basic-sample
+	 */
+	interpolation: { escapeValue: false },
 	missingKeyHandler: async (languages, namespace, translationKey) => {
 		if (import.meta.env.PROD) {
 			return;
