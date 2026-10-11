@@ -1,34 +1,140 @@
 {
-	"newVisits": "新增浏览",
-	"messages": "消息",
-	"purchases": "购买金额",
-	"shoppings": "购买数量",
+	"greeting": {
+		"morning": "早上好",
+		"noon": "中午好",
+		"afternoon": "下午好",
+		"evening": "晚上好"
+	},
+	"createRequest": "新建申请",
+	"chip": {
+		"pending": "个申请待你审批",
+		"overdue": "个已等待超过 2 天",
+		"returned": "个申请需补充"
+	},
+	"unit": {
+		"request": "个申请"
+	},
 
-	"sales": "销售额",
-	"thisWeek": "本周",
-	"thisMonth": "本月",
-	"thisYear": "本年",
-	"monday": "星期一",
-	"tuesday": "星期二",
-	"wednesday": "星期三",
-	"thursday": "星期四",
-	"friday": "星期五",
-	"saturday": "星期六",
-	"sunday": "星期日",
+	"kpi": {
+		"pending": "待我审批",
+		"pendingNote": "{{count}} 个已等待超过 2 天",
+		"myInProgress": "我的申请处理中",
+		"myInProgressNote": "{{count}} 个需补充材料",
+		"approvedThisMonth": "本月我已审批",
+		"approvedNote": "较上月 {{delta}}",
+		"approvalRate": "通过率",
+		"approvalRateNote": "本月驳回 {{rejected}} · 退回 {{returned}}"
+	},
 
-	"views": "访问量",
-	"directAccess": "直接访问",
-	"emailMarketing": "邮件营销",
-	"affiliateAdvertise": "联盟广告",
-	"videoAdvertise": "视频广告",
+	"requestType": {
+		"leave": "请假",
+		"advance": "预支",
+		"purchase": "采购",
+		"trip": "出差",
+		"payment": "付款"
+	},
 
-	"salesCategoryProportion": "销售额类别占比",
-	"electronics": "电子产品",
-	"homeGoods": "家居用品",
-	"apparelAccessories": "服装饰品",
-	"foodBeverages": "食品饮料",
-	"beautySkincare": "美容护肤",
-	"allChannels": "全部渠道",
-	"online": "线上",
-	"site": "门店"
+	"pending": {
+		"title": "待我审批",
+		"sortHint": "按等待时间排序",
+		"step": "步骤：{{step}}",
+		"waiting": "已等 {{time}}",
+		"approve": "通过",
+		"reject": "驳回",
+		"rejectConfirm": "确定驳回该申请？",
+		"approved": "已通过",
+		"rejected": "已驳回",
+		"approvedMsg": "已通过「{{title}}」",
+		"rejectedMsg": "已驳回「{{title}}」",
+		"viewAll": "查看全部待审批"
+	},
+
+	"myRequests": {
+		"title": "我的申请",
+		"filter": {
+			"inProgress": "处理中",
+			"returned": "需补充",
+			"done": "已完成"
+		},
+		"status": {
+			"draft": "草稿",
+			"in_progress": "审批中",
+			"approved": "已通过",
+			"rejected": "已驳回",
+			"returned": "已退回",
+			"cancelled": "已取消"
+		},
+		"submitted": "提交于 {{time}}",
+		"progress": "审批进度",
+		"empty": "暂无申请",
+		"viewAll": "查看我的全部申请"
+	},
+
+	"delegation": {
+		"title": "委托",
+		"outgoing": "你正在委托",
+		"incoming": "委托给你",
+		"until": "至 {{date}}",
+		"empty": "暂无生效的委托"
+	},
+
+	"avgTime": {
+		"title": "平均审批时长",
+		"unit": "天 / 步",
+		"faster": "快了 {{days}} 天",
+		"slower": "慢了 {{days}} 天",
+		"days": "{{days}} 天"
+	},
+
+	"activity": {
+		"title": "审批动态",
+		"kind": {
+			"approved": "通过了",
+			"rejected": "驳回了",
+			"returned": "退回了",
+			"submitted": "提交了申请",
+			"delegated": "委托审批给"
+		}
+	},
+
+	"pet": {
+		"label": "zhizhu 小猫 — 点我加油",
+		"cheers": [
+			"快来审批吧！🐾",
+			"加油，快完成了！",
+			"喵~ 今天辛苦啦",
+			"喝口水休息一下！",
+			"只剩几个了！"
+		],
+		"bonk": "哎哟！😵",
+		"angry": "别戳我了！😾",
+		"runaway": "哼！不玩了！",
+		"approved": [
+			"太棒了！✨",
+			"干得漂亮！",
+			"再来一个！"
+		],
+		"allDone": "全部搞定！🎉",
+		"chatter": [
+			"随便走走~",
+			"喵喵~ 🎵",
+			"有人看到鱼吗？🐟",
+			"今天天气真好",
+			"审批看了吗？",
+			"腿短跑得快！",
+			"猜猜我叫什么？",
+			"来杯咖啡？☕",
+			"别看我啦，快干活！",
+			"巡逻中 👀"
+		],
+		"wakeUp": [
+			"呃…我没睡！😳",
+			"不是偷懒，是在充电 🔋",
+			"醒了醒了，别骂我！",
+			"就眯五分钟嘛…😿",
+			"谁说我偷懒？我在思考！",
+			"啊？！有要审批的吗？🙀",
+			"偷懒不好…知道啦 😅"
+		]
+	}
 }
