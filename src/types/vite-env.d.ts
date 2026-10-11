@@ -11,6 +11,9 @@ interface ImportMetaEnv {
 	readonly VITE_SUPABASE_URL: string
 	readonly VITE_SUPABASE_ANON_KEY: string
 	readonly VITE_GLOB_APP_LOGO_URL: string
+	readonly VITE_GLOB_APP_DESCRIPTION: string
+	readonly VITE_GLOB_APP_URL: string
+	readonly VITE_GLOB_APP_OG_IMAGE_URL: string
 
 }
 

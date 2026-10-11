@@ -25,6 +25,11 @@ const envSchema = z.object({
 	VITE_BASE_HOME_PATH: z.string().min(1).default("/home"),
 	VITE_GLOB_APP_TITLE: z.string().min(1).default("App"),
 	VITE_GLOB_APP_LOGO_URL: z.string().optional(),
+	VITE_GLOB_APP_DESCRIPTION: z.string().min(1).default("Quản lý dự án, công việc và sprint cho đội nhóm của bạn"),
+	// Domain public (không có "/" cuối) — dùng cho og:url / og:image, crawler cần URL tuyệt đối
+	VITE_GLOB_APP_URL: z.string().default("").transform(url => url.replace(/\/+$/, "")),
+	// Ảnh preview khi share link (og:image) — URL tuyệt đối, vd link Cloudflare; bỏ trống thì dùng <APP_URL>/og-image.png
+	VITE_GLOB_APP_OG_IMAGE_URL: z.string().optional(),
 	VITE_APP_NAMESPACE: z.string().min(1).default("app"),
 	VITE_AUTH_PROVIDER: z.enum(["supabase"]).default("supabase"),
 	VITE_SUPABASE_URL: z.url(),
@@ -43,6 +48,10 @@ export default defineConfig(({ mode }) => {
 				.join("\n");
 			throw new Error(`Missing or invalid env vars:\n${messages}`);
 		}
+		// Ghi lại giá trị đã áp default/transform — Vite đọc process.env khi thay %VITE_*% trong index.html
+		for (const key of ["VITE_GLOB_APP_TITLE", "VITE_GLOB_APP_DESCRIPTION", "VITE_GLOB_APP_URL"] as const)
+			process.env[key] = result.data[key];
+		process.env.VITE_GLOB_APP_OG_IMAGE_URL = result.data.VITE_GLOB_APP_OG_IMAGE_URL || `${result.data.VITE_GLOB_APP_URL}/og-image.png`;
 	}
 
 	const BUILD_INFO = {

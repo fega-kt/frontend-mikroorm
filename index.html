@@ -6,7 +6,22 @@
 	<link rel="icon" href="%VITE_GLOB_APP_LOGO_URL%" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta name="theme-color" content="#000000" />
-	<meta name="description" content="Web site created using Vite React App" />
+	<meta name="description" content="%VITE_GLOB_APP_DESCRIPTION%" />
+	<!-- Open Graph / Twitter: preview khi share link (Zalo, Facebook, Messenger, Slack…) — crawler không chạy JS nên phải để tĩnh, ảnh phải là URL tuyệt đối -->
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="%VITE_GLOB_APP_TITLE%" />
+	<meta property="og:title" content="%VITE_GLOB_APP_TITLE%" />
+	<meta property="og:description" content="%VITE_GLOB_APP_DESCRIPTION%" />
+	<meta property="og:url" content="%VITE_GLOB_APP_URL%/" />
+	<meta property="og:image" content="%VITE_GLOB_APP_OG_IMAGE_URL%" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:image:alt" content="%VITE_GLOB_APP_TITLE%" />
+	<meta property="og:locale" content="vi_VN" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="%VITE_GLOB_APP_TITLE%" />
+	<meta name="twitter:description" content="%VITE_GLOB_APP_DESCRIPTION%" />
+	<meta name="twitter:image" content="%VITE_GLOB_APP_OG_IMAGE_URL%" />
 	<link rel="apple-touch-icon" href="%VITE_GLOB_APP_LOGO_URL%" />
 	<!--
 			manifest.json provides metadata used when your web app is installed on a
