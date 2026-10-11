@@ -86,6 +86,22 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
             type=sha,prefix=sha-
 
+      # Thông tin build hiển thị ở window.BUILD_INFO — đọc từ git (dùng được cả khi chạy tay workflow_dispatch)
+      - name: Collect build info
+        id: build_info
+        run: |
+          subject="$(git log -1 --format='%s')"
+          # Commit merge PR: dòng đầu là "Merge pull request #..." → lấy tiêu đề PR ở dòng nội dung đầu tiên
+          if [[ "$subject" == Merge\ pull\ request* ]]; then
+            body_title="$(git log -1 --format='%b' | sed '/^[[:space:]]*$/d' | head -n 1)"
+            subject="${body_title:-$subject}"
+          fi
+          {
+            echo "author=$(git log -1 --format='%an')"
+            echo "message=${subject}"
+            echo "time=$(TZ=Asia/Ho_Chi_Minh date --iso-8601=seconds)"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
@@ -98,13 +114,19 @@ jobs:
           build-args: |
             GIT_COMMIT=${{ github.sha }}
             GIT_BRANCH=${{ github.ref_name }}
-            BUILD_TIME=${{ github.event.head_commit.timestamp }}
+            GIT_AUTHOR=${{ steps.build_info.outputs.author }}
+            GIT_MESSAGE=${{ steps.build_info.outputs.message }}
+            BUILD_TIME=${{ steps.build_info.outputs.time }}
 
   deploy:
     name: Deploy to server
     needs: build-and-push
     runs-on: ubuntu-latest
     environment: production
+    # Hai lần deploy FE (vd merge 2 PR liền nhau) chạy lần lượt, không chồng lên nhau trên server
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
 
     steps:
       - name: Install cloudflared
@@ -130,9 +152,16 @@ jobs:
           APP_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
         run: |
           ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} bash <<ENDSSH
+            # Dừng ngay khi login/pull/up lỗi, để job báo fail đúng thay vì chỉ lấy exit code của lệnh cuối
+            set -e
             echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
             cd ${{ secrets.SERVER_DEPLOY_PATH }}
             APP_IMAGE="$APP_IMAGE" docker compose -f docker-compose.yml pull
             APP_IMAGE="$APP_IMAGE" docker compose -f docker-compose.yml up -d --remove-orphans
-            docker image prune -f
+            # Dọn image cũ của riêng FE (lọc theo label nguồn repo do metadata-action gắn) — không đụng image của BE.
+            # Docker chỉ cho 1 lệnh prune chạy một lúc: FE và BE deploy cùng lúc thì lệnh sau lỗi "a prune operation is already running"
+            # → xếp hàng qua file khoá dùng chung trên server; dọn image là phụ nên lỗi thì bỏ qua, không làm fail deploy
+            flock -w 120 /tmp/zhizhu-docker-prune.lock \
+              docker image prune -f --filter "label=org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
+              || echo "Skip image prune (another prune may be running)"
           ENDSSH
