@@ -42,6 +42,9 @@ export default function Home() {
 			const remaining = MOCK_PENDING.filter(pending => pending.id !== item.id && !results[pending.id]).length;
 			petRef.current?.celebrate(remaining === 0);
 		}
+		else {
+			petRef.current?.sadden();
+		}
 		message.success(t(result === "approved" ? "home.pending.approvedMsg" : "home.pending.rejectedMsg", { title: item.title }));
 	};
 

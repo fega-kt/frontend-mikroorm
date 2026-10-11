@@ -10,6 +10,8 @@ const SPEED = { walk: 55, run: 260 }; // px/s
 /** Tối đa bao nhiêu chặng đi thường thì bắt buộc một lần đi ra mép đâm tường */
 const MAX_TRIPS_BEFORE_WALL = 3;
 const JUMP_MS = 650;
+/** Thời gian hiện bong bóng thoại */
+const BUBBLE_MS = 3500;
 /** Bấm liên tục trong khoảng này mới tính là "chọc" */
 const CLICK_WINDOW_MS = 2500;
 const ANGRY_CLICKS = 5;
@@ -20,7 +22,7 @@ const RUNAWAY_CLICKS = 10;
  * away: đã chạy khuất, chờ quay lại
  * còn lại: đứng tại chỗ một lúc rồi chuyển trạng thái
  */
-type PetMode = "walk" | "toWall" | "runaway" | "away" | "sit" | "sleep" | "dizzy" | "angry" | "celebrate";
+type PetMode = "walk" | "toWall" | "runaway" | "away" | "sit" | "sleep" | "dizzy" | "angry" | "celebrate" | "sad";
 
 const MOVING_MODES: PetMode[] = ["walk", "toWall", "runaway"];
 
@@ -91,6 +93,10 @@ const useStyles = createUseStyles({
 		"& $tail": { animationDuration: "4s" },
 	},
 	"dizzy": { "& $body": { animation: "$petSway 0.5s ease-in-out infinite" } },
+	"sad": {
+		"& $tail": { animationDuration: "3.2s" },
+		"& $body": { transform: "translateY(1px)" },
+	},
 	"angry": {
 		"& $body": { animation: "$petShake 0.12s linear infinite" },
 		"& $tail": { animationDuration: "0.2s" },
@@ -117,7 +123,7 @@ const useStyles = createUseStyles({
 		fontSize: 12,
 		fontWeight: 500,
 		pointerEvents: "none",
-		animation: "$petBubble 2.2s ease-out forwards",
+		animation: `$petBubble ${BUBBLE_MS}ms ease-out forwards`,
 	},
 	"@media (prefers-reduced-motion: reduce)": {
 		walking: { "& $legA, & $legB, & $body": { animation: "none" } },
@@ -136,6 +142,8 @@ interface Particle { id: number, text: string, color: string, dx: number, dy: nu
 export interface BannerPetRef {
 	/** Gọi sau mỗi lần duyệt: mèo nhảy ăn mừng, `allDone` = duyệt hết thì nhảy múa + pháo giấy */
 	celebrate: (allDone: boolean) => void
+	/** Gọi sau mỗi lần từ chối: mèo buồn, rơi nước mắt và nói câu buồn */
+	sadden: () => void
 }
 
 const random = (min: number, max: number) => min + Math.random() * (max - min);
@@ -193,8 +201,8 @@ export function BannerPet({ ref }: { ref?: Ref<BannerPetRef> }) {
 	const say = (text: string) => {
 		clearTimeout(bubbleTimer.current);
 		setBubble({ id: Date.now(), text });
-		bubbleUntil.current = performance.now() + 2200;
-		bubbleTimer.current = setTimeout(() => setBubble(undefined), 2200);
+		bubbleUntil.current = performance.now() + BUBBLE_MS;
+		bubbleTimer.current = setTimeout(() => setBubble(undefined), BUBBLE_MS);
 	};
 
 	const jump = () => {
@@ -217,6 +225,7 @@ export function BannerPet({ ref }: { ref?: Ref<BannerPetRef> }) {
 		setTimeout(() => setParticles(prev => prev.filter(item => item.id < base || item.id >= base + count)), 1200);
 	};
 
+	const tears = () => emit(2, { texts: ["💧"], colors: [token.blue5], spread: 10, rise: [-26, -16] });
 	const hearts = () => emit(3, { texts: ["♥"], colors: [token.magenta5, token.red5], spread: 20, rise: [36, 50] });
 	const confetti = () => emit(18, { texts: ["■", "●", "▲", "★"], colors: [token.colorPrimary, token.gold5, token.magenta5, token.cyan5, token.green5, token.purple5], spread: 70, rise: [30, 70] });
 	const cheers = (key: string) => {
@@ -360,10 +369,15 @@ export function BannerPet({ ref }: { ref?: Ref<BannerPetRef> }) {
 	// Trang chủ gọi trực tiếp khi người dùng bấm Duyệt
 	useImperativeHandle(ref, () => ({
 		celebrate: (allDone) => {
-			touch();
 			const s = sim.current;
 			if (s.mode === "away" || s.mode === "runaway")
 				return;
+			// Đang ngủ thì nói mớ rồi ngủ tiếp — chỉ bấm vào mèo mới đánh thức được
+			if (s.mode === "sleep") {
+				say(cheers(allDone ? "home.pet.sleepTalkAllDone" : "home.pet.sleepTalk"));
+				return;
+			}
+			touch();
 			if (allDone) {
 				setMode("celebrate", 2600);
 				confetti();
@@ -374,6 +388,20 @@ export function BannerPet({ ref }: { ref?: Ref<BannerPetRef> }) {
 				hearts();
 				say(cheers("home.pet.approved"));
 			}
+		},
+		sadden: () => {
+			const s = sim.current;
+			if (s.mode === "away" || s.mode === "runaway")
+				return;
+			// Đang ngủ thì nói mớ buồn rồi ngủ tiếp
+			if (s.mode === "sleep") {
+				say(cheers("home.pet.sleepTalkRejected"));
+				return;
+			}
+			touch();
+			setMode("sad", 2600);
+			tears();
+			say(cheers("home.pet.rejected"));
 		},
 	}));
 
@@ -424,6 +452,7 @@ export function BannerPet({ ref }: { ref?: Ref<BannerPetRef> }) {
 		mode === "sleep" && classes.sleeping,
 		mode === "dizzy" && classes.dizzy,
 		mode === "angry" && classes.angry,
+		mode === "sad" && classes.sad,
 	].filter(Boolean).join(" ");
 
 	const fur = token.orange5;
@@ -446,6 +475,15 @@ export function BannerPet({ ref }: { ref?: Ref<BannerPetRef> }) {
 			return <path d={`M${l - 2} ${cy + 1} q2 -2.6 4 0 M${r - 2} ${cy + 1} q2 -2.6 4 0`} stroke={ink} strokeWidth="1.4" strokeLinecap="round" fill="none" />;
 		if (mode === "dizzy")
 			return <path d={`M${l - 1.6} ${cy - 1.6} l3.2 3.2 m0 -3.2 l-3.2 3.2 M${r - 1.6} ${cy - 1.6} l3.2 3.2 m0 -3.2 l-3.2 3.2`} stroke={ink} strokeWidth="1.3" strokeLinecap="round" />;
+		if (mode === "sad") {
+			return (
+				<g strokeLinecap="round">
+					<path d={`M${l - 2.4} ${cy - 2.6} l4 -1.6 M${r + 2.4} ${cy - 2.6} l-4 -1.6`} stroke={ink} strokeWidth="1.3" />
+					<path d={`M${l - 2} ${cy + 0.6} q2 -1.6 4 0 M${r - 2} ${cy + 0.6} q2 -1.6 4 0`} stroke={ink} strokeWidth="1.3" fill="none" />
+					<path d={`M${l - 0.4} ${cy + 2.4} q-1.4 2 0 3 q1.4 -1 0 -3 z`} fill={token.blue4} />
+				</g>
+			);
+		}
 		if (mode === "angry") {
 			return (
 				<g stroke={ink} strokeWidth="1.4" strokeLinecap="round">
@@ -480,7 +518,9 @@ export function BannerPet({ ref }: { ref?: Ref<BannerPetRef> }) {
 			{renderEyes(hx, hy + 0.5)}
 			{/* Mũi + miệng ω */}
 			<path d={`M${hx - 1.2} ${hy + 2.8} h2.4 l-1.2 1.3 z`} fill={token.magenta5} />
-			<path d={`M${hx - 2.4} ${hy + 4.4} q1.2 1.5 2.4 0 q1.2 1.5 2.4 0`} stroke={ink} strokeWidth="0.9" strokeLinecap="round" fill="none" />
+			{mode === "sad"
+				? <path d={`M${hx - 2.2} ${hy + 5.8} q2.2 -1.8 4.4 0`} stroke={ink} strokeWidth="0.9" strokeLinecap="round" fill="none" />
+				: <path d={`M${hx - 2.4} ${hy + 4.4} q1.2 1.5 2.4 0 q1.2 1.5 2.4 0`} stroke={ink} strokeWidth="0.9" strokeLinecap="round" fill="none" />}
 			{/* Ria */}
 			<path d={`M${hx - 7} ${hy + 3} l-6 -1 M${hx - 7} ${hy + 4.4} l-6 1 M${hx + 7} ${hy + 3} l6 -1 M${hx + 7} ${hy + 4.4} l6 1`} stroke={ink} strokeWidth="0.6" strokeLinecap="round" opacity="0.45" />
 			{mode !== "angry" && (
