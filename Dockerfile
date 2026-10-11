@@ -7,10 +7,14 @@ RUN pnpm install --frozen-lockfile
 
 ARG GIT_COMMIT=unknown
 ARG GIT_BRANCH=unknown
+ARG GIT_AUTHOR=unknown
+ARG GIT_MESSAGE=unknown
 ARG BUILD_TIME=unknown
 
 ENV GIT_COMMIT=$GIT_COMMIT \
     GIT_BRANCH=$GIT_BRANCH \
+    GIT_AUTHOR=$GIT_AUTHOR \
+    GIT_MESSAGE=$GIT_MESSAGE \
     BUILD_TIME=$BUILD_TIME
 
 COPY . .
