@@ -7,10 +7,10 @@ import { getAvatarColor } from "#src/utils/avatar";
 import { cn } from "#src/utils/cn";
 
 import { BellOutlined } from "@ant-design/icons";
-import { useToggle } from "ahooks";
-import { Avatar, List, Popover, Tooltip } from "antd";
+import { useLatest, useToggle } from "ahooks";
+import { Avatar, List, Popover, Skeleton, Tooltip } from "antd";
 import { clsx } from "clsx";
-import { useMemo } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { createUseStyles } from "react-jss";
 
@@ -38,6 +38,13 @@ const useStyles = createUseStyles(({ token }) => (
 ));
 
 export type NotificationEventType = "viewAll" | "makeAll" | "clear" | "read";
+
+/** Dòng giả cuối danh sách khi đang tải thêm */
+const LOADING_ROW = { id: "__loading__" } as const;
+
+function isLoadingRow(row: NotificationItem | typeof LOADING_ROW): row is typeof LOADING_ROW {
+	return row === LOADING_ROW;
+}
 
 interface Props extends ButtonProps {
 	/**
@@ -96,6 +103,31 @@ export const NotificationPopup: React.FC<Props> = ({ dot, count, notifications, 
 	}, [notifications]);
 	const showDot = dot ?? localDot;
 
+	// Ref ổn định → chỉ cuộn 1 lần lúc dòng loading xuất hiện, không kéo ngược khi user đang cuộn lên
+	const scrollLoadingRowIntoView = useCallback((node: HTMLDivElement | null) => {
+		node?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+	}, []);
+
+	const rows = useMemo<Array<NotificationItem | typeof LOADING_ROW>>(
+		() => (loadingMore ? [...(notifications ?? []), LOADING_ROW] : (notifications ?? [])),
+		[notifications, loadingMore],
+	);
+
+	// Cuộn tới noti cuối thì tự tải thêm. Observer không đặt root: phần bị overflow của list cuộn
+	// cũng bị cắt khi tính giao nhau, nên chỉ kích hoạt khi noti cuối thực sự hiện ra
+	const onLoadMoreRef = useLatest(onLoadMore);
+	const observerRef = useRef<IntersectionObserver>(null);
+	const loadMoreSentinelRef = useCallback((node: HTMLSpanElement | null) => {
+		observerRef.current?.disconnect();
+		if (!node)
+			return;
+		observerRef.current = new IntersectionObserver(([entry]) => {
+			if (entry?.isIntersecting)
+				onLoadMoreRef.current?.();
+		});
+		observerRef.current.observe(node);
+	}, [onLoadMoreRef]);
+
 	return (
 		<Popover
 			// getPopupContainer={triggerNode => triggerNode}
@@ -139,33 +171,38 @@ export const NotificationPopup: React.FC<Props> = ({ dot, count, notifications, 
 							</BasicButton>
 						</div>
 					)}
-					dataSource={notifications}
-					loadMore={hasMore && (
-						<div className="flex justify-center py-2">
-							<BasicButton type="link" size="small" loading={loadingMore} onClick={onLoadMore}>
-								{t("widgets.loadMore")}
-							</BasicButton>
-						</div>
-					)}
-					renderItem={item => (
-						<List.Item className={clsx(classes.item, "relative justify-start gap-5 cursor-pointer")} onClick={() => handleClick(item)}>
-							{!item.isRead && <span className="absolute w-2 h-2 rounded bg-primary right-2 top-2"></span>}
-							{item.avatar || item.actorName
-								? (
-									<Avatar size={40} src={item.avatar} className="shrink-0 font-semibold" style={{ backgroundColor: getAvatarColor(item.actorId) }}>
-										{item.actorName?.[0]?.toUpperCase()}
-									</Avatar>
-								)
-								: (
-									<Avatar size={40} icon={item.icon} className="shrink-0" style={{ backgroundColor: item.iconColor }} />
-								)}
-							<div className="flex flex-col gap-1 leading-none">
-								<p className="font-semibold">{item.title}</p>
-								<p className="my-1 text-xs text-muted-foreground line-clamp-2">{item.message}</p>
-								<p className="text-xs text-muted-foreground line-clamp-2">{item.date}</p>
-							</div>
-						</List.Item>
-					)}
+					dataSource={rows}
+					renderItem={(item, index) => isLoadingRow(item)
+						? (
+							// Dòng loading nằm trong vùng cuộn (không phải loadMore bên ngoài) → popup không đổi chiều cao.
+							// Cuộn nhẹ cho dòng này hiện ra → các noti trượt lên thay vì giao diện nhảy
+							// Skeleton cùng bố cục với 1 noti (avatar 40px + tiêu đề, nội dung, thời gian) → như noti đang hiện dần ra
+							<List.Item ref={scrollLoadingRowIntoView} className="gap-5">
+								<Skeleton.Avatar active size={40} className="shrink-0" />
+								<Skeleton active title={{ width: "60%" }} paragraph={{ rows: 2, width: ["90%", "30%"] }} />
+							</List.Item>
+						)
+						: (
+							<List.Item className={clsx(classes.item, "relative justify-start gap-5 cursor-pointer")} onClick={() => handleClick(item)}>
+								{/* Mốc cuộn: noti cuối lọt vào vùng nhìn thấy → tự tải trang sau */}
+								{hasMore && index === notifications!.length - 1 && <span ref={loadMoreSentinelRef} className="absolute bottom-0 left-0 h-px w-px" />}
+								{!item.isRead && <span className="absolute w-2 h-2 rounded bg-primary right-2 top-2"></span>}
+								{item.avatar || item.actorName
+									? (
+										<Avatar size={40} src={item.avatar} className="shrink-0 font-semibold" style={{ backgroundColor: getAvatarColor(item.actorId) }}>
+											{item.actorName?.[0]?.toUpperCase()}
+										</Avatar>
+									)
+									: (
+										<Avatar size={40} icon={item.icon} className="shrink-0" style={{ backgroundColor: item.iconColor }} />
+									)}
+								<div className="flex flex-col gap-1 leading-none">
+									<p className="font-semibold">{item.title}</p>
+									<p className="my-1 text-xs text-muted-foreground line-clamp-2">{item.message}</p>
+									<p className="text-xs text-muted-foreground line-clamp-2">{item.date}</p>
+								</div>
+							</List.Item>
+						)}
 				/>
 			)}
 		>
