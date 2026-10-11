@@ -135,6 +135,25 @@
 			"Ai bảo tui lười biếng? Tui suy nghĩ đó!",
 			"Hả?! Có việc cần duyệt hả? 🙀",
 			"Lười biếng là không tốt… biết rồi 😅"
+		],
+		"sleepTalk": [
+			"Khò… duyệt giỏi lắm… zzz",
+			"Ừm… cứ duyệt đi… tui ngủ tí… 💤",
+			"Zzz… thêm một cái… zzz",
+			"Khò khò… ai duyệt đó… giỏi ghê…"
+		],
+		"sleepTalkAllDone": [
+			"Khò… xong hết rồi hả… giỏi quá… zzz 🎉"
+		],
+		"rejected": [
+			"Huhu… bị từ chối rồi 😿",
+			"Buồn ghê… lần sau cố hơn nha",
+			"Thôi không sao… mai tính tiếp 🥺",
+			"Tiếc quá đi… 💧"
+		],
+		"sleepTalkRejected": [
+			"Khò… sao lại từ chối… huhu… zzz",
+			"Zzz… buồn ghê… zzz 😿"
 		]
 	}
 }

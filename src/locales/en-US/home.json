@@ -135,6 +135,25 @@
 			"Lazy? I was thinking deeply!",
 			"What?! Something to approve? 🙀",
 			"Being lazy is bad… I know 😅"
+		],
+		"sleepTalk": [
+			"Zzz… nice approval… zzz",
+			"Mm… keep going… just napping… 💤",
+			"Zzz… one more… zzz",
+			"Snore… who approved… so good…"
+		],
+		"sleepTalkAllDone": [
+			"Zzz… all done…? amazing… zzz 🎉"
+		],
+		"rejected": [
+			"Aww… rejected 😿",
+			"So sad… better luck next time",
+			"It's okay… we'll try again 🥺",
+			"What a pity… 💧"
+		],
+		"sleepTalkRejected": [
+			"Zzz… why reject… sob… zzz",
+			"Zzz… so sad… zzz 😿"
 		]
 	}
 }
