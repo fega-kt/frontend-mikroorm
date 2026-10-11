@@ -56,20 +56,20 @@ export function NotificationContainer({ ...restProps }: ButtonProps) {
 	};
 
 	const handleEvent = (event: NotificationEventType, item?: NotificationItem) => {
+		// Đánh dấu đã đọc ngay ở client, gọi API ở nền không chờ. Nếu API lỗi, lần poll unread-count sau
+		// thấy số trên server khác số local → tải lại trang đầu → noti tự hiện lại là chưa đọc
 		if (event === "read" && item && !item.isRead) {
-			notificationService.fetchMarkRead(item.id).then(() => {
-				setRawNotifications(prev => prev.map(n => (n.id === item.id ? { ...n, isRead: true } : n)));
-				// tính từ ref (giá trị mới nhất), không dùng `unreadCount` của render cũ — đọc liên tiếp nhanh vẫn giảm đúng
-				updateUnread(Math.max(0, (unreadCountRef.current ?? 0) - 1));
-			}).catch(() => {});
+			setRawNotifications(prev => prev.map(n => (n.id === item.id ? { ...n, isRead: true } : n)));
+			// tính từ ref (giá trị mới nhất), không dùng `unreadCount` của render cũ — đọc liên tiếp nhanh vẫn giảm đúng
+			updateUnread(Math.max(0, (unreadCountRef.current ?? 0) - 1));
+			notificationService.fetchMarkRead(item.id).catch(() => {});
 		}
 		if (event === "read" && item?.link)
 			navigate(item.link);
 		if (event === "makeAll") {
-			notificationService.fetchMarkAllRead().then(() => {
-				setRawNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
-				updateUnread(0);
-			}).catch(() => {});
+			setRawNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+			updateUnread(0);
+			notificationService.fetchMarkAllRead().catch(() => {});
 		}
 	};
 

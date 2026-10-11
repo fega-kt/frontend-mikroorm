@@ -47,7 +47,7 @@ export default function Home() {
 
 	return (
 		<BasicContent>
-			<div className="mx-auto flex max-w-[1400px] flex-col gap-5">
+			<div className="flex flex-col gap-5">
 				<GreetingBanner
 					pendingCount={openPending.length}
 					overdueCount={overdueCount}

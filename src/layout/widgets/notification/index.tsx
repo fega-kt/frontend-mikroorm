@@ -34,6 +34,13 @@ const useStyles = createUseStyles(({ token }) => (
 				backgroundColor: token.controlItemBgHover,
 			},
 		},
+		// Chưa đọc: nền màu primary nhạt để tách hẳn khỏi các noti đã đọc
+		unread: {
+			"backgroundColor": token.colorPrimaryBg,
+			"&:hover": {
+				backgroundColor: token.colorPrimaryBgHover,
+			},
+		},
 	}
 ));
 
@@ -183,10 +190,9 @@ export const NotificationPopup: React.FC<Props> = ({ dot, count, notifications, 
 							</List.Item>
 						)
 						: (
-							<List.Item className={clsx(classes.item, "relative justify-start gap-5 cursor-pointer")} onClick={() => handleClick(item)}>
+							<List.Item className={clsx(classes.item, !item.isRead && classes.unread, "relative justify-start gap-5 cursor-pointer")} onClick={() => handleClick(item)}>
 								{/* Mốc cuộn: noti cuối lọt vào vùng nhìn thấy → tự tải trang sau */}
 								{hasMore && index === notifications!.length - 1 && <span ref={loadMoreSentinelRef} className="absolute bottom-0 left-0 h-px w-px" />}
-								{!item.isRead && <span className="absolute w-2 h-2 rounded bg-primary right-2 top-2"></span>}
 								{item.avatar || item.actorName
 									? (
 										<Avatar size={40} src={item.avatar} className="shrink-0 font-semibold" style={{ backgroundColor: getAvatarColor(item.actorId) }}>
@@ -197,7 +203,7 @@ export const NotificationPopup: React.FC<Props> = ({ dot, count, notifications, 
 										<Avatar size={40} icon={item.icon} className="shrink-0" style={{ backgroundColor: item.iconColor }} />
 									)}
 								<div className="flex flex-col gap-1 leading-none">
-									<p className="font-semibold">{item.title}</p>
+									<p className={item.isRead ? "font-normal text-colorTextSecondary" : "font-semibold text-colorText"}>{item.title}</p>
 									<p className="my-1 text-xs text-muted-foreground line-clamp-2">{item.message}</p>
 									<p className="text-xs text-muted-foreground line-clamp-2">{item.date}</p>
 								</div>
