@@ -6,10 +6,46 @@ import { RiMoonIcon, RiSunIcon } from "#src/icons";
 import { useEffect } from "react";
 import { flushSync } from "react-dom";
 
+import { isThemeViewTransitionRunning, setThemeViewTransitionRunning } from "./theme-switch-state";
+
 const isBrowser = typeof window !== "undefined";
+
 const TO_DARK_CLASS = "theme-switch-to-dark";
 const TO_LIGHT_CLASS = "theme-switch-to-light";
+/** Gắn lên <html> suốt hiệu ứng + khoảng nghỉ để chặn chuột */
+const SWITCHING_CLASS = "theme-switching";
 const DURATION = 500;
+/** Khoảng nghỉ sau hiệu ứng trước khi dọn class và nhận lần bấm tiếp (ms) */
+const COOLDOWN = 100;
+/**
+ * Bấm lại trong khoảng này sau lần đổi trước thì đổi theme ngay, không chạy vòng tròn.
+ * Chạy view transition liên tục (mỗi lần Chrome giữ 2 ảnh chụp toàn màn hình) thỉnh thoảng làm Chrome vẽ sai lớp vài frame → nháy;
+ * người bấm liên tục cũng không xem hết hiệu ứng nên đổi tức thì là hợp lý
+ */
+const RAPID_CLICK_WINDOW = 1000;
+/** Thời điểm lần đổi theme gần nhất xong (ms, performance.now) */
+let lastSwitchAt = Number.NEGATIVE_INFINITY;
+
+/**
+ * Ghi keyframes vòng tròn với toạ độ / bán kính là số cụ thể cho lần bấm này
+ * (không phụ thuộc biến CSS trên <html> khi trình duyệt tính lại style giữa chừng)
+ */
+function writeCircleKeyframes(x: number, y: number, radius: number) {
+	const styleId = "theme-switch-keyframes";
+	const style = document.getElementById(styleId) ?? document.head.appendChild(Object.assign(document.createElement("style"), { id: styleId }));
+	const at = `at ${x}px ${y}px`;
+	style.textContent = `
+    @keyframes theme-switch-hide {
+      from { clip-path: circle(${radius}px ${at}); }
+      to { clip-path: circle(0px ${at}); }
+    }
+    @keyframes theme-switch-reveal {
+      from { clip-path: circle(0px ${at}); }
+      to { clip-path: circle(${radius}px ${at}); }
+    }
+  `;
+}
+
 function injectViewTransitionStyles() {
 	if (isBrowser) {
 		const styleId = "theme-switch-view-transition-styles";
@@ -17,8 +53,10 @@ function injectViewTransitionStyles() {
 			const style = document.createElement("style");
 			style.id = styleId;
 			style.textContent = `
-        html.stop-transition * {
-          transition: none !important;
+        /* Chặn chuột suốt hiệu ứng + khoảng nghỉ: không cho bấm chồng làm huỷ ngang view transition */
+        html.${SWITCHING_CLASS},
+        html.${SWITCHING_CLASS} * {
+          pointer-events: none !important;
         }
         ::view-transition-old(root),
         ::view-transition-new(root) {
@@ -44,14 +82,6 @@ function injectViewTransitionStyles() {
         html.${TO_LIGHT_CLASS}::view-transition-old(root) {
           animation: theme-switch-hide ${DURATION}ms ease-in forwards;
         }
-        @keyframes theme-switch-hide {
-          from { clip-path: circle(var(--theme-switch-r) at var(--theme-switch-x) var(--theme-switch-y)); }
-          to { clip-path: circle(0px at var(--theme-switch-x) var(--theme-switch-y)); }
-        }
-        @keyframes theme-switch-reveal {
-          from { clip-path: circle(0px at var(--theme-switch-x) var(--theme-switch-y)); }
-          to { clip-path: circle(var(--theme-switch-r) at var(--theme-switch-x) var(--theme-switch-y)); }
-        }
       `;
 
 			document.head.appendChild(style);
@@ -74,11 +104,18 @@ export function ThemeButton({ ...restProps }: ButtonProps) {
 	}, []);
 
 	function toggleTheme(event: React.PointerEvent<HTMLElement>) {
-		const isAppearanceTransition = !!document.startViewTransition;
-		if (!isAppearanceTransition || !event) {
+		// Đang chạy hiệu ứng thì bỏ qua: bấm chồng sẽ huỷ ngang view transition cũ → ảnh chụp bị bỏ giữa chừng, lóe màu
+		if (isThemeViewTransitionRunning())
+			return;
+
+		const isRapidClick = performance.now() - lastSwitchAt < RAPID_CLICK_WINDOW;
+		if (!document.startViewTransition || !event || isRapidClick) {
+			// Đổi tức thì (layout-root tự tắt transition trong lúc đổi màu)
 			changeSiteTheme(isDark ? "light" : "dark");
+			lastSwitchAt = performance.now();
 			return;
 		}
+
 		const x = event.clientX;
 		const y = event.clientY;
 		const endRadius = Math.hypot(
@@ -87,11 +124,12 @@ export function ThemeButton({ ...restProps }: ButtonProps) {
 		);
 		const root = document.documentElement;
 		const directionClass = isDark ? TO_LIGHT_CLASS : TO_DARK_CLASS;
-		root.style.setProperty("--theme-switch-x", `${x}px`);
-		root.style.setProperty("--theme-switch-y", `${y}px`);
-		root.style.setProperty("--theme-switch-r", `${endRadius}px`);
-		root.classList.add(directionClass);
+		writeCircleKeyframes(x, y, endRadius);
+		// stop-transition: tắt transition suốt hiệu ứng — ảnh "new" của view transition là ảnh sống,
+		// transition màu còn đang chạy sẽ lộ ra thành mảng màu cũ (chỗ đen chỗ trắng) trong vòng tròn
+		root.classList.add(directionClass, "stop-transition", SWITCHING_CLASS);
 
+		setThemeViewTransitionRunning(true);
 		const transition = document.startViewTransition(() => {
 			// eslint-disable-next-line react-dom/no-flush-sync
 			flushSync(() => {
@@ -102,7 +140,11 @@ export function ThemeButton({ ...restProps }: ButtonProps) {
 			root.style.colorScheme = isDark ? "light" : "dark";
 		});
 		transition.finished.finally(() => {
-			root.classList.remove(directionClass);
+			lastSwitchAt = performance.now();
+			setTimeout(() => {
+				root.classList.remove(directionClass, "stop-transition", SWITCHING_CLASS);
+				setThemeViewTransitionRunning(false);
+			}, COOLDOWN);
 		});
 	}
 

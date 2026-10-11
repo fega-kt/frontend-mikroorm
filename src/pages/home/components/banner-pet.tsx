@@ -58,7 +58,15 @@ const useStyles = createUseStyles({
 		"100%": { opacity: 0, transform: "translate(-50%, -4px) scale(0.95)" },
 	},
 	"track": { position: "absolute", left: 0, right: 0, bottom: 0, height: 60, pointerEvents: "none" },
-	"mover": { position: "absolute", left: 0, bottom: 2, width: PET_WIDTH, willChange: "transform" },
+	// Tên view transition riêng: lúc đổi theme (vòng tròn lan ra), mèo không bị chụp chung vào ảnh tĩnh của
+	// cả trang mà thành lớp sống riêng → vẫn đi liên tục thay vì đứng hình rồi giật tới vị trí mới
+	"mover": { "position": "absolute", "left": 0, "bottom": 2, "width": PET_WIDTH, "willChange": "transform", "view-transition-name": "banner-pet" },
+	"@global": {
+		// Lớp mèo nằm trên cả vòng tròn đổi theme, không cross-fade, chỉ hiện ảnh sống
+		"::view-transition-group(banner-pet)": { animation: "none", zIndex: 1000000000 },
+		"::view-transition-old(banner-pet)": { display: "none" },
+		"::view-transition-new(banner-pet)": { animation: "none" },
+	},
 	"pet": {
 		"display": "block",
 		"padding": 0,

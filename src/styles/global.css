@@ -16,6 +16,13 @@
 	height: 100vh;
 }
 
+/* Tắt transition trong lúc đổi theme (class gắn ở layout-root / theme-button) — tránh chỗ đen chỗ trắng */
+html.stop-transition *,
+html.stop-transition *::before,
+html.stop-transition *::after {
+	transition: none !important;
+}
+
 img {
 	max-width: 100%;
 	height: auto;
