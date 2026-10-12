@@ -58,7 +58,9 @@
 		"approvalReviewDone": "Đã xử lý",
 		"approvalReviewPending": "Sắp xử lý",
 		"approvalReviewAll": "Toàn bộ",
-		"emailTemplate": "Mẫu email"
+		"emailTemplate": "Mẫu email",
+		"activityLogList": "Nhật ký hoạt động",
+		"mailQueue": "Hàng đợi gửi mail"
 	},
 	"appLoading": "Đang tải tài nguyên...",
 	"back": "Quay lại",

@@ -56,7 +56,9 @@
 		"approvalReviewDone": "已处理",
 		"approvalReviewPending": "待处理",
 		"approvalReviewAll": "全部",
-		"emailTemplate": "邮件模板"
+		"emailTemplate": "邮件模板",
+		"activityLogList": "操作日志",
+		"mailQueue": "邮件发送队列"
 	},
 	"appLoading": "资源正在加载中...",
 	"back": "返回",

@@ -56,7 +56,9 @@
 		"approvalReviewDone": "Handled",
 		"approvalReviewPending": "Awaiting me",
 		"approvalReviewAll": "All",
-		"emailTemplate": "Email templates"
+		"emailTemplate": "Email templates",
+		"activityLogList": "Activity log",
+		"mailQueue": "Mail queue"
 	},
 	"appLoading": "Loading Resources...",
 	"back": "Back",

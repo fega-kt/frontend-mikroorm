@@ -272,6 +272,21 @@
 		"UNKNOWN_FIELD": "条件使用了申请类型表单中不存在的字段",
 		"SLA_REQUIRED": "选择升级或自动通过时必须设置处理时限",
 		"INACTIVE_USER": "审批人已停用",
-		"NOTIFY_NO_RECIPIENT": "通知步骤至少需要一个接收人"
+		"NOTIFY_NO_RECIPIENT": "通知步骤至少需要一个接收人",
+		"STEP_NOTIFY_NO_RECIPIENT": "已开启步骤结果通知但未选择接收人"
+	},
+	"stepNotify": {
+		"title": "按步骤结果通知",
+		"hint": "在此步骤审批通过、驳回或退回时发送站内通知 / 邮件。",
+		"events": {
+			"approved": "审批通过时",
+			"rejected": "驳回时",
+			"returned": "退回时"
+		},
+		"defaultRequester": "默认：通知申请人",
+		"previousApprovers": "之前已审批的人",
+		"off": "不发送",
+		"noRecipient": "未选择接收人",
+		"fixedCount": "{{count}} 个固定接收人"
 	}
 }

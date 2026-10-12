@@ -19,6 +19,7 @@ import { fromApproverForm, fromApproverFormItem, toApproverForm, useApproverType
 import { ApproverListField } from "./ApproverListField";
 import { PrincipalMultiSelect } from "./PrincipalMultiSelect";
 import { PrincipalSelect } from "./PrincipalSelect";
+import { StepNotifications } from "./StepNotifications";
 import { UserPicker } from "./UserPicker";
 
 interface PanelProps<T extends WorkflowNode> {
@@ -107,44 +108,47 @@ export function ApprovalPanel({ node, disabled }: PanelProps<ApprovalNode>) {
 	const initialApprover = node.approver ? toApproverForm(node.approver) : {};
 
 	return (
-		<Form
-			form={form}
-			layout="vertical"
-			disabled={disabled}
-			initialValues={{
-				name: node.name,
-				approverType: initialApprover.type,
-				userId: initialApprover.userId,
-				principalId: initialApprover.principalId,
-				...slaValues(node),
-			}}
-			onValuesChange={(_, all: SlaFormValues & ApproverFormItem & { name?: string, approverType?: ApproverType }) => {
-				updateNode(node.id, (n) => {
-					const approver = fromApproverFormItem({ type: all.approverType, userId: all.userId, principalId: all.principalId });
-					return { ...applySla(n as ApprovalNode, all), name: trimName(all.name), approver } as ApprovalNode;
-				});
-			}}
-		>
-			<NameField />
-			<Form.Item name="approverType" label={t("workflowDesigner.inspector.approver")} className={approverType === ApproverType.SpecificUser || approverType === ApproverType.Principal ? "mb-2" : undefined}>
-				<Radio.Group>
-					<Space direction="vertical" size={6}>
-						{typeOptions.map(o => <Radio key={o.value} value={o.value}>{o.label}</Radio>)}
-					</Space>
-				</Radio.Group>
-			</Form.Item>
-			{approverType === ApproverType.Principal && (
-				<Form.Item name="principalId" extra={t("workflowDesigner.inspector.principalHint")}>
-					<PrincipalSelect disabled={disabled} placeholder={t("workflowDesigner.inspector.selectPrincipal")} />
+		<>
+			<Form
+				form={form}
+				layout="vertical"
+				disabled={disabled}
+				initialValues={{
+					name: node.name,
+					approverType: initialApprover.type,
+					userId: initialApprover.userId,
+					principalId: initialApprover.principalId,
+					...slaValues(node),
+				}}
+				onValuesChange={(_, all: SlaFormValues & ApproverFormItem & { name?: string, approverType?: ApproverType }) => {
+					updateNode(node.id, (n) => {
+						const approver = fromApproverFormItem({ type: all.approverType, userId: all.userId, principalId: all.principalId });
+						return { ...applySla(n as ApprovalNode, all), name: trimName(all.name), approver } as ApprovalNode;
+					});
+				}}
+			>
+				<NameField />
+				<Form.Item name="approverType" label={t("workflowDesigner.inspector.approver")} className={approverType === ApproverType.SpecificUser || approverType === ApproverType.Principal ? "mb-2" : undefined}>
+					<Radio.Group>
+						<Space direction="vertical" size={6}>
+							{typeOptions.map(o => <Radio key={o.value} value={o.value}>{o.label}</Radio>)}
+						</Space>
+					</Radio.Group>
 				</Form.Item>
-			)}
-			{approverType === ApproverType.SpecificUser && (
-				<Form.Item name="userId">
-					<UserPicker disabled={disabled} placeholder={t("workflowDesigner.inspector.selectUser")} />
-				</Form.Item>
-			)}
-			<SlaFields />
-		</Form>
+				{approverType === ApproverType.Principal && (
+					<Form.Item name="principalId" extra={t("workflowDesigner.inspector.principalHint")}>
+						<PrincipalSelect disabled={disabled} placeholder={t("workflowDesigner.inspector.selectPrincipal")} />
+					</Form.Item>
+				)}
+				{approverType === ApproverType.SpecificUser && (
+					<Form.Item name="userId">
+						<UserPicker disabled={disabled} placeholder={t("workflowDesigner.inspector.selectUser")} />
+					</Form.Item>
+				)}
+				<SlaFields />
+			</Form>
+			<StepNotifications node={node} disabled={disabled} />
+		</>
 	);
 }
 
@@ -153,44 +157,47 @@ export function ParallelPanel({ node, disabled }: PanelProps<ParallelNode>) {
 	const updateNode = useDesigner(s => s.updateNode);
 
 	return (
-		<Form
-			layout="vertical"
-			disabled={disabled}
-			initialValues={{
-				name: node.name,
-				mode: node.mode,
-				approvers: node.approvers.map(toApproverForm),
-				...slaValues(node),
-			}}
-			onValuesChange={(_, all: SlaFormValues & { name?: string, mode?: ParallelMode, approvers?: ApproverFormItem[] }) => {
-				updateNode(node.id, n => ({
-					...applySla(n as ParallelNode, all),
-					name: trimName(all.name),
-					mode: all.mode ?? ParallelMode.All,
-					approvers: fromApproverForm(all.approvers),
-				}));
-			}}
-		>
-			<NameField />
-			<Form.Item name="mode" label={t("workflowDesigner.inspector.mode")}>
-				<Radio.Group>
-					<Space direction="vertical" size={6}>
-						{[ParallelMode.All, ParallelMode.Any].map(m => (
-							<Radio key={m} value={m}>
-								<span>{t(`workflowDesigner.parallelMode.${m}`)}</span>
-								<Typography.Text type="secondary" className="ml-1.5 text-xs">
-									{t(`workflowDesigner.parallelModeDesc.${m}`)}
-								</Typography.Text>
-							</Radio>
-						))}
-					</Space>
-				</Radio.Group>
-			</Form.Item>
-			<Form.Item label={t("workflowDesigner.inspector.approvers")} required>
-				<ApproverListField name="approvers" addText={t("workflowDesigner.actions.addApprover")} disabled={disabled} />
-			</Form.Item>
-			<SlaFields />
-		</Form>
+		<>
+			<Form
+				layout="vertical"
+				disabled={disabled}
+				initialValues={{
+					name: node.name,
+					mode: node.mode,
+					approvers: node.approvers.map(toApproverForm),
+					...slaValues(node),
+				}}
+				onValuesChange={(_, all: SlaFormValues & { name?: string, mode?: ParallelMode, approvers?: ApproverFormItem[] }) => {
+					updateNode(node.id, n => ({
+						...applySla(n as ParallelNode, all),
+						name: trimName(all.name),
+						mode: all.mode ?? ParallelMode.All,
+						approvers: fromApproverForm(all.approvers),
+					}));
+				}}
+			>
+				<NameField />
+				<Form.Item name="mode" label={t("workflowDesigner.inspector.mode")}>
+					<Radio.Group>
+						<Space direction="vertical" size={6}>
+							{[ParallelMode.All, ParallelMode.Any].map(m => (
+								<Radio key={m} value={m}>
+									<span>{t(`workflowDesigner.parallelMode.${m}`)}</span>
+									<Typography.Text type="secondary" className="ml-1.5 text-xs">
+										{t(`workflowDesigner.parallelModeDesc.${m}`)}
+									</Typography.Text>
+								</Radio>
+							))}
+						</Space>
+					</Radio.Group>
+				</Form.Item>
+				<Form.Item label={t("workflowDesigner.inspector.approvers")} required>
+					<ApproverListField name="approvers" addText={t("workflowDesigner.actions.addApprover")} disabled={disabled} />
+				</Form.Item>
+				<SlaFields />
+			</Form>
+			<StepNotifications node={node} disabled={disabled} />
+		</>
 	);
 }
 
@@ -286,7 +293,7 @@ export function NotifyPanel({ node, disabled }: PanelProps<NotifyNode>) {
 				</div>
 			)}
 			<Form.Item name="message" label={t("workflowDesigner.inspector.message")} extra={t("workflowDesigner.inspector.messageHint")}>
-				<Input.TextArea autoSize={{ minRows: 3, maxRows: 8 }} maxLength={1000} showCount />
+				<Input.TextArea autoSize={{ minRows: 3, maxRows: 8 }} maxLength={1000} />
 			</Form.Item>
 		</Form>
 	);

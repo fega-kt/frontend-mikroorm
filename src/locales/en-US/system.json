@@ -18,7 +18,8 @@
 			"activity_log": "Activity Log",
 			"approval_workflow": "Approval workflows",
 			"approval_request": "Approval request administration",
-			"email_template": "Email templates"
+			"email_template": "Email templates",
+			"activity_log_queue": "Mail queue"
 		},
 		"permission": {
 			"user": "User",
@@ -39,7 +40,8 @@
 			"publish": "Publish",
 			"approval-request-all": "All requests",
 			"reassign": "Reassign approver",
-			"email-template": "Email templates"
+			"email-template": "Email templates",
+			"retry": "Resend"
 		}
 	},
 	"appSetting": {
@@ -116,6 +118,10 @@
 			"content_focus_outline_enabled": {
 				"label": "Content area outline",
 				"hint": "On: show the black outline around the main content area when it is focused. Off: hide it. Defaults to off when not configured"
+			},
+			"outbox_retention_days": {
+				"label": "Outbox event retention (days)",
+				"hint": "Events already published to RabbitMQ are deleted after this many days (pending / failed events are kept). Leave empty or 0 to keep forever"
 			}
 		}
 	},
@@ -244,6 +250,31 @@
 			"app_settings": "App setting",
 			"auth": "Authentication",
 			"unknown": "Unknown"
+		}
+	},
+	"mailQueue": {
+		"keyword": "Search",
+		"keywordPlaceholder": "Recipient email / subject",
+		"type": "Email type",
+		"recipient": "Recipient",
+		"subject": "Subject",
+		"openRef": "Open request",
+		"status": "Status",
+		"attempts": "Attempts",
+		"lastAttemptAt": "Last attempt",
+		"error": "Error / reason",
+		"retry": "Resend",
+		"confirmRetry": "Resend this email?",
+		"confirmResend": "This email was already sent. Resend anyway?",
+		"retryQueued": "Email queued for resending",
+		"retryFailed": "Could not resend",
+		"filteredByRef": "Filtered by request",
+		"statuses": {
+			"draft": "Queued",
+			"in_progress": "Sending",
+			"completed": "Sent",
+			"failed": "Failed",
+			"skipped": "Skipped"
 		}
 	}
 }

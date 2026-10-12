@@ -21,11 +21,13 @@
 	},
 	"APPROVAL_REJECTED": {
 		"title": "Request rejected",
-		"message": "Request {{code}} {{title}} was rejected at {{step}}."
+		"message": "Request {{code}} {{title}} was rejected at {{step}}.",
+		"message_withMessage": "Request {{code}} {{title}} was rejected ({{step}}). Message: “{{message}}”"
 	},
 	"APPROVAL_RETURNED": {
 		"title": "Request returned",
-		"message": "Request {{code}} {{title}} was returned for changes ({{step}})."
+		"message": "Request {{code}} {{title}} was returned for changes ({{step}}).",
+		"message_withMessage": "Request {{code}} {{title}} was returned ({{step}}). Message: “{{message}}”"
 	},
 	"APPROVAL_CANCELLED": {
 		"title": "Request cancelled",
@@ -44,5 +46,10 @@
 		"message": "You have a notification about request {{code}} {{title}} (step {{step}}).",
 		"message_withMessage": "You have a notification about request {{code}} {{title}}. Message: “{{message}}”",
 		"message_noStep": "You have a notification about request {{code}} {{title}}."
+	},
+	"APPROVAL_STEP_APPROVED": {
+		"title": "A request step was approved",
+		"message": "Step {{step}} of request {{code}} {{title}} was approved.",
+		"message_withMessage": "Step {{step}} of request {{code}} {{title}} was approved. Message: “{{message}}”"
 	}
 }

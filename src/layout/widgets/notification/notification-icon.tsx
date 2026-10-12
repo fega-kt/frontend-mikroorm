@@ -23,6 +23,7 @@ const ICON_BY_TYPE: Partial<Record<NotificationType, NotificationIconConfig>> = 
 	[NotificationType.APPROVAL_REMINDER]: { icon: <ClockCircleOutlined />, color: "#fa8c16" },
 	[NotificationType.APPROVAL_ESCALATED]: { icon: <RiseOutlined />, color: "#722ed1" },
 	[NotificationType.APPROVAL_NOTIFY]: { icon: <BellOutlined />, color: "#13c2c2" },
+	[NotificationType.APPROVAL_STEP_APPROVED]: { icon: <CheckCircleOutlined />, color: "#52c41a" },
 };
 
 export function getNotificationIcon(type: NotificationType): NotificationIconConfig {

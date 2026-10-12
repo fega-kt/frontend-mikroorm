@@ -64,7 +64,8 @@
 		"return": "退回",
 		"bulkApprove": "批量通过 {{count}} 条",
 		"reassign": "重新指派审批人",
-		"back": "返回"
+		"back": "返回",
+		"viewEmails": "已发送邮件"
 	},
 	"messages": {
 		"submitted": "已提交申请",

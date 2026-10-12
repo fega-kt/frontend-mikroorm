@@ -64,7 +64,8 @@
 		"return": "Return",
 		"bulkApprove": "Approve {{count}} requests",
 		"reassign": "Reassign approver",
-		"back": "Back"
+		"back": "Back",
+		"viewEmails": "Sent emails"
 	},
 	"messages": {
 		"submitted": "Request submitted",

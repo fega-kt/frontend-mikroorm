@@ -60,10 +60,32 @@ interface NodeBase {
 	name?: string
 }
 
+/**
+ * Thông báo khi bước duyệt xong / bị từ chối / bị trả lại — đồng bộ backend stepNotifyRuleSchema.
+ * Từ chối, trả lại chưa cấu hình → gửi người trình; duyệt xong chưa cấu hình → không gửi.
+ */
+export interface StepNotifyRule {
+	enabled: boolean
+	channels: NotifyChannel[]
+	notifyRequester: boolean
+	/** Duyệt xong: người được giao duyệt ở bước kế tiếp */
+	notifyNextApprovers: boolean
+	/** Từ chối / trả lại: những người đã duyệt trước đó trong lượt trình */
+	notifyPreviousApprovers: boolean
+	recipients: Approver[]
+	/** Mã mẫu email (bỏ trống → mẫu hệ thống của sự kiện) */
+	emailTemplate?: string
+	message?: string
+}
+
+export type StepEvent = "approved" | "rejected" | "returned";
+export type StepNotifications = Partial<Record<StepEvent, StepNotifyRule>>;
+
 interface SlaFields {
 	slaHours?: number
 	onOverdue: OverdueAction
 	options: StepOptions
+	notifications?: StepNotifications
 }
 
 export interface StartNode extends NodeBase { type: NodeType.Start }
@@ -124,6 +146,20 @@ export const DEFAULT_STEP_OPTIONS: StepOptions = {
 /** Bước thông báo có gửi cho người trình không (tương thích định nghĩa cũ chưa có cờ) — đồng bộ backend */
 export function notifiesRequester(node: NotifyNode) {
 	return node.notifyRequester ?? (node.recipients.length === 0 && !node.notifyNextApprovers);
+}
+
+export const DEFAULT_STEP_NOTIFY_RULE: StepNotifyRule = {
+	enabled: true,
+	channels: [NotifyChannel.InApp, NotifyChannel.Email],
+	notifyRequester: true,
+	notifyNextApprovers: false,
+	notifyPreviousApprovers: false,
+	recipients: [],
+};
+
+/** Quy tắc thông báo của bước có ít nhất một người nhận — đồng bộ backend */
+export function hasStepNotifyRecipient(rule: StepNotifyRule, event: StepEvent) {
+	return rule.notifyRequester || rule.recipients.length > 0 || (event === "approved" ? rule.notifyNextApprovers : rule.notifyPreviousApprovers);
 }
 
 export function isWaitNode(node: WorkflowNode): node is WaitNode {

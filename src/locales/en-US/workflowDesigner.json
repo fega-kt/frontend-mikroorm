@@ -274,6 +274,21 @@
 		"UNKNOWN_FIELD": "The condition uses a field that is not in the request type's form",
 		"SLA_REQUIRED": "A deadline is required for escalation or auto-approval",
 		"INACTIVE_USER": "The approver is inactive",
-		"NOTIFY_NO_RECIPIENT": "A notification step needs at least one recipient"
+		"NOTIFY_NO_RECIPIENT": "A notification step needs at least one recipient",
+		"STEP_NOTIFY_NO_RECIPIENT": "A step result notification is on but has no recipient"
+	},
+	"stepNotify": {
+		"title": "Notifications on step result",
+		"hint": "Send in-app / email notifications when this step is approved, rejected or returned.",
+		"events": {
+			"approved": "When approved",
+			"rejected": "When rejected",
+			"returned": "When returned"
+		},
+		"defaultRequester": "Default: notify the requester",
+		"previousApprovers": "People who approved earlier",
+		"off": "Not sent",
+		"noRecipient": "No recipient selected",
+		"fixedCount": "{{count}} fixed recipient(s)"
 	}
 }

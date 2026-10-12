@@ -1,5 +1,5 @@
 import type { WorkflowDefinition } from "#src/api/approval-workflow/types";
-import { GraphErrorCode, NodeType, OverdueAction } from "#src/api/approval-workflow/types";
+import { DEFAULT_STEP_NOTIFY_RULE, GraphErrorCode, NodeType, OverdueAction } from "#src/api/approval-workflow/types";
 import { collectPayloadVars, validateGraph } from "#src/pages/approval/workflow-designer/lib/validate-graph";
 import { describe, expect, it } from "vitest";
 import { leaveWorkflow } from "./fixtures";
@@ -92,6 +92,20 @@ describe("validate-graph (FE)", () => {
 			Object.assign(notify, { notifyRequester: false, notifyNextApprovers: false, recipients: [] });
 		expect(codes(def)).toContain(GraphErrorCode.NotifyNoRecipient);
 		expect(codes(leaveWorkflow())).not.toContain(GraphErrorCode.NotifyNoRecipient);
+	});
+
+	it("enabled step notifications need at least one recipient", () => {
+		const def = leaveWorkflow();
+		const n1 = def.nodes.find(n => n.id === "n1")!;
+		if (n1.type !== NodeType.Approval)
+			throw new Error("n1");
+		const rule = { ...DEFAULT_STEP_NOTIFY_RULE, notifyRequester: false };
+		n1.notifications = { rejected: { ...rule, enabled: false } };
+		expect(codes(def)).not.toContain(GraphErrorCode.StepNotifyNoRecipient);
+		n1.notifications = { rejected: { ...rule, notifyNextApprovers: true } };
+		expect(codes(def)).toContain(GraphErrorCode.StepNotifyNoRecipient);
+		n1.notifications = { rejected: { ...rule, notifyPreviousApprovers: true }, approved: { ...rule, notifyNextApprovers: true } };
+		expect(codes(def)).not.toContain(GraphErrorCode.StepNotifyNoRecipient);
 	});
 
 	it("collects nested payload vars", () => {
