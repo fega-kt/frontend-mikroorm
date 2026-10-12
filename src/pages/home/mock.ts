@@ -1,10 +1,18 @@
-import { WorkflowInstanceStatus } from "#src/api/workflow-instance/types";
 import dayjs from "dayjs";
 
 /**
  * Dữ liệu giả cho dashboard phê duyệt — chưa có API thống kê.
- * TODO: thay bằng workflowTaskService.fetchMyTasks / workflowInstanceService / delegation setting / API thống kê khi BE sẵn sàng.
+ * TODO: thay bằng API của module phê duyệt (src/api/approval) khi BE sẵn sàng.
  */
+
+export enum RequestStatus {
+	Draft = "DRAFT",
+	Pending = "PENDING",
+	Approved = "APPROVED",
+	Rejected = "REJECTED",
+	Returned = "RETURNED",
+	Cancelled = "CANCELLED",
+}
 
 export type RequestTypeCode = "leave" | "advance" | "purchase" | "trip" | "payment";
 
@@ -27,7 +35,7 @@ export interface MyRequest {
 	type: RequestTypeCode
 	title: string
 	submittedAt: string
-	status: WorkflowInstanceStatus
+	status: RequestStatus
 	steps: ApprovalStep[]
 	/** Vị trí bước hiện tại (bằng steps.length khi đã hoàn tất) */
 	currentStep: number
@@ -63,13 +71,13 @@ export const MOCK_PENDING: PendingApproval[] = [
 ];
 
 export const MOCK_MY_REQUESTS: MyRequest[] = [
-	{ id: "r1", type: "trip", title: "Công tác Hà Nội hội thảo DevOps", submittedAt: ago(3, "day"), status: WorkflowInstanceStatus.InProgress, steps: [{ name: "Quản lý" }, { name: "Trưởng phòng" }, { name: "Giám đốc" }], currentStep: 2, note: "Đang chờ Giám đốc" },
-	{ id: "r2", type: "purchase", title: "Mua license JetBrains cho team", submittedAt: ago(2, "day"), status: WorkflowInstanceStatus.InProgress, steps: [{ name: "Trưởng phòng" }, { name: "Kế toán" }, { name: "Giám đốc" }], currentStep: 1, note: "Đang chờ Kế toán" },
-	{ id: "r3", type: "leave", title: "Nghỉ phép 20/10", submittedAt: ago(3, "hour"), status: WorkflowInstanceStatus.InProgress, steps: [{ name: "Quản lý" }, { name: "Nhân sự" }], currentStep: 0, note: "Đang chờ Quản lý" },
-	{ id: "r4", type: "advance", title: "Tạm ứng mua thiết bị test", submittedAt: ago(5, "day"), status: WorkflowInstanceStatus.Returned, steps: [{ name: "Trưởng phòng" }, { name: "Kế toán" }], currentStep: 1, note: "Thiếu báo giá, cần bổ sung" },
-	{ id: "r5", type: "leave", title: "Nghỉ phép 02/10", submittedAt: ago(13, "day"), status: WorkflowInstanceStatus.Approved, steps: [{ name: "Quản lý" }, { name: "Nhân sự" }], currentStep: 2, note: "Hoàn tất" },
-	{ id: "r6", type: "payment", title: "Thanh toán khóa học AWS", submittedAt: ago(21, "day"), status: WorkflowInstanceStatus.Approved, steps: [{ name: "Trưởng phòng" }, { name: "Kế toán" }, { name: "Giám đốc" }], currentStep: 3, note: "Hoàn tất" },
-	{ id: "r7", type: "purchase", title: "Mua ghế công thái học", submittedAt: ago(26, "day"), status: WorkflowInstanceStatus.Rejected, steps: [{ name: "Trưởng phòng" }, { name: "Kế toán" }, { name: "Giám đốc" }], currentStep: 2, note: "Từ chối bởi Giám đốc" },
+	{ id: "r1", type: "trip", title: "Công tác Hà Nội hội thảo DevOps", submittedAt: ago(3, "day"), status: RequestStatus.Pending, steps: [{ name: "Quản lý" }, { name: "Trưởng phòng" }, { name: "Giám đốc" }], currentStep: 2, note: "Đang chờ Giám đốc" },
+	{ id: "r2", type: "purchase", title: "Mua license JetBrains cho team", submittedAt: ago(2, "day"), status: RequestStatus.Pending, steps: [{ name: "Trưởng phòng" }, { name: "Kế toán" }, { name: "Giám đốc" }], currentStep: 1, note: "Đang chờ Kế toán" },
+	{ id: "r3", type: "leave", title: "Nghỉ phép 20/10", submittedAt: ago(3, "hour"), status: RequestStatus.Pending, steps: [{ name: "Quản lý" }, { name: "Nhân sự" }], currentStep: 0, note: "Đang chờ Quản lý" },
+	{ id: "r4", type: "advance", title: "Tạm ứng mua thiết bị test", submittedAt: ago(5, "day"), status: RequestStatus.Returned, steps: [{ name: "Trưởng phòng" }, { name: "Kế toán" }], currentStep: 1, note: "Thiếu báo giá, cần bổ sung" },
+	{ id: "r5", type: "leave", title: "Nghỉ phép 02/10", submittedAt: ago(13, "day"), status: RequestStatus.Approved, steps: [{ name: "Quản lý" }, { name: "Nhân sự" }], currentStep: 2, note: "Hoàn tất" },
+	{ id: "r6", type: "payment", title: "Thanh toán khóa học AWS", submittedAt: ago(21, "day"), status: RequestStatus.Approved, steps: [{ name: "Trưởng phòng" }, { name: "Kế toán" }, { name: "Giám đốc" }], currentStep: 3, note: "Hoàn tất" },
+	{ id: "r7", type: "purchase", title: "Mua ghế công thái học", submittedAt: ago(26, "day"), status: RequestStatus.Rejected, steps: [{ name: "Trưởng phòng" }, { name: "Kế toán" }, { name: "Giám đốc" }], currentStep: 2, note: "Từ chối bởi Giám đốc" },
 ];
 
 export const MOCK_DELEGATION: { outgoing?: Delegation, incoming?: Delegation } = {

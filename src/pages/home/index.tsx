@@ -2,16 +2,15 @@ import type { BannerPetRef } from "./components/banner-pet";
 import type { ApprovalResult } from "./components/pending-approvals";
 import type { PendingApproval } from "./mock";
 
-import { WorkflowInstanceStatus } from "#src/api/workflow-instance/types";
 import { BasicContent } from "#src/components/basic-content";
-
 import { App } from "antd";
+
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-
 import { ApprovalActivityCard } from "./components/approval-activity";
+
 import { AvgApprovalTime } from "./components/avg-approval-time";
 import { DelegationCard } from "./components/delegation-card";
 import { GreetingBanner } from "./components/greeting-banner";
@@ -19,7 +18,7 @@ import { KpiCards } from "./components/kpi-cards";
 import { MyRequests } from "./components/my-requests";
 import { PendingApprovals } from "./components/pending-approvals";
 import { WAIT_WARNING_HOURS } from "./constants";
-import { MOCK_ACTIVITIES, MOCK_DELEGATION, MOCK_MY_REQUESTS, MOCK_PENDING, MOCK_STATS } from "./mock";
+import { MOCK_ACTIVITIES, MOCK_DELEGATION, MOCK_MY_REQUESTS, MOCK_PENDING, MOCK_STATS, RequestStatus } from "./mock";
 
 dayjs.extend(relativeTime);
 
@@ -32,10 +31,10 @@ export default function Home() {
 
 	const openPending = MOCK_PENDING.filter(item => !results[item.id]);
 	const overdueCount = openPending.filter(item => dayjs().diff(item.createdAt, "hour") >= WAIT_WARNING_HOURS).length;
-	const myInProgressCount = MOCK_MY_REQUESTS.filter(item => item.status === WorkflowInstanceStatus.InProgress).length;
-	const returnedCount = MOCK_MY_REQUESTS.filter(item => item.status === WorkflowInstanceStatus.Returned).length;
+	const myInProgressCount = MOCK_MY_REQUESTS.filter(item => item.status === RequestStatus.Pending).length;
+	const returnedCount = MOCK_MY_REQUESTS.filter(item => item.status === RequestStatus.Returned).length;
 
-	// TODO: gọi workflowActionsService.approveTask / rejectTask khi nối API
+	// TODO: gọi API duyệt/từ chối của module phê duyệt khi nối API
 	const handleAction = (item: PendingApproval, result: ApprovalResult) => {
 		setResults(prev => ({ ...prev, [item.id]: result }));
 		if (result === "approved") {

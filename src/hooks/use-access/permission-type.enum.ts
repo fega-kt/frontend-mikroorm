@@ -167,57 +167,6 @@ export enum PermissionType {
 	/** xóa request type */
 	DeleteRequestType = "permission:request-type:delete",
 
-	/** ===== WORKFLOW SETTING ===== */
-
-	/** vào menu workflow setting */
-	MenuWorkflowSetting = "permission:menu:workflow-setting",
-
-	/** xem chi tiết workflow setting */
-	ViewWorkflowSettingDetail = "permission:workflow-setting:view",
-
-	/** tạo workflow setting */
-	CreateWorkflowSetting = "permission:workflow-setting:create",
-
-	/** cập nhật workflow setting */
-	UpdateWorkflowSetting = "permission:workflow-setting:update",
-
-	/** xóa workflow setting */
-	DeleteWorkflowSetting = "permission:workflow-setting:delete",
-
-	/** deploy BPMN cho workflow setting */
-	DeployWorkflowSetting = "permission:workflow-setting:deploy",
-
-	/** ===== WORKFLOW INSTANCE ===== */
-
-	MenuWorkflowInstance = "permission:menu:workflow-instance",
-	ViewWorkflowInstanceDetail = "permission:workflow-instance:view",
-	CreateWorkflowInstance = "permission:workflow-instance:create",
-	UpdateWorkflowInstance = "permission:workflow-instance:update",
-	CancelWorkflowInstance = "permission:workflow-instance:cancel",
-	RequestToCancelWorkflowInstance = "permission:workflow-instance:request-to-cancel",
-	ApproveCancellationWorkflowInstance = "permission:workflow-instance:approve-cancellation",
-	RejectCancellationWorkflowInstance = "permission:workflow-instance:reject-cancellation",
-
-	/** ===== WORKFLOW TASK ===== */
-
-	MenuWorkflowTask = "permission:menu:workflow-task",
-	ViewWorkflowTaskDetail = "permission:workflow-task:view",
-	ApproveWorkflowTask = "permission:workflow-task:approve",
-	RejectWorkflowTask = "permission:workflow-task:reject",
-	ReturnWorkflowTask = "permission:workflow-task:return",
-	RequestChangeWorkflowTask = "permission:workflow-task:request-change",
-	ApplyChangeWorkflowTask = "permission:workflow-task:apply-change",
-	RequestReviewWorkflowTask = "permission:workflow-task:request-review",
-	SubmitReviewWorkflowTask = "permission:workflow-task:submit-review",
-
-	/** ===== WORKFLOW DELEGATION SETTING ===== */
-
-	MenuWorkflowDelegationSetting = "permission:menu:workflow-delegation-setting",
-	ViewWorkflowDelegationSettingDetail = "permission:workflow-delegation-setting:view",
-	CreateWorkflowDelegationSetting = "permission:workflow-delegation-setting:create",
-	UpdateWorkflowDelegationSetting = "permission:workflow-delegation-setting:update",
-	DeleteWorkflowDelegationSetting = "permission:workflow-delegation-setting:delete",
-
 	/** ===== APP SETTING ===== */
 
 	/** vào menu app setting */

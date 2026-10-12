@@ -1,31 +1,31 @@
 import type { MyRequest } from "../mock";
 
-import { WorkflowInstanceStatus } from "#src/api/workflow-instance/types";
-
 import { Segmented, Tag, theme } from "antd";
+
 import dayjs from "dayjs";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-
 import { REQUEST_TYPE_COLOR } from "../constants";
+
+import { RequestStatus } from "../mock";
 import { DashboardCard } from "./dashboard-card";
 import { RequestTypeIcon } from "./request-type-icon";
 
 type FilterKey = "inProgress" | "returned" | "done";
 
-const FILTER_STATUSES: Record<FilterKey, WorkflowInstanceStatus[]> = {
-	inProgress: [WorkflowInstanceStatus.InProgress],
-	returned: [WorkflowInstanceStatus.Returned],
-	done: [WorkflowInstanceStatus.Approved, WorkflowInstanceStatus.Rejected, WorkflowInstanceStatus.Cancelled],
+const FILTER_STATUSES: Record<FilterKey, RequestStatus[]> = {
+	inProgress: [RequestStatus.Pending],
+	returned: [RequestStatus.Returned],
+	done: [RequestStatus.Approved, RequestStatus.Rejected, RequestStatus.Cancelled],
 };
 
-const STATUS_TAG: Partial<Record<WorkflowInstanceStatus, string>> = {
+const STATUS_TAG: Partial<Record<RequestStatus, string>> = {
 	// "blue" cố định thay vì "processing" (theo màu chủ đạo) — để không trùng màu xanh lá của bước đã duyệt khi đổi theme
-	[WorkflowInstanceStatus.InProgress]: "blue",
-	[WorkflowInstanceStatus.Returned]: "warning",
-	[WorkflowInstanceStatus.Approved]: "success",
-	[WorkflowInstanceStatus.Rejected]: "error",
-	[WorkflowInstanceStatus.Cancelled]: "default",
+	[RequestStatus.Pending]: "blue",
+	[RequestStatus.Returned]: "warning",
+	[RequestStatus.Approved]: "success",
+	[RequestStatus.Rejected]: "error",
+	[RequestStatus.Cancelled]: "default",
 };
 
 export function MyRequests({ items }: { items: MyRequest[] }) {
@@ -45,7 +45,7 @@ export function MyRequests({ items }: { items: MyRequest[] }) {
 		if (index < item.currentStep)
 			return token.colorSuccess;
 		if (index === item.currentStep) {
-			const failed = item.status === WorkflowInstanceStatus.Returned || item.status === WorkflowInstanceStatus.Rejected;
+			const failed = item.status === RequestStatus.Returned || item.status === RequestStatus.Rejected;
 			return failed ? token.colorWarning : token.blue6;
 		}
 		return token.colorFillSecondary;
@@ -72,7 +72,7 @@ export function MyRequests({ items }: { items: MyRequest[] }) {
 					options={(["inProgress", "returned", "done"] as FilterKey[]).map(key => ({ value: key, label: filterLabel(key) }))}
 				/>
 			)}
-			footerLink={{ to: "/setting/workflow-instance", label: t("home.myRequests.viewAll") }}
+			footerLink={{ to: "/approval/my-requests", label: t("home.myRequests.viewAll") }}
 		>
 			{visible.map(item => (
 				<div key={item.id} className="flex flex-wrap items-center gap-3.5 border-0 border-b border-solid border-colorBorderSecondary px-5 py-3.5">

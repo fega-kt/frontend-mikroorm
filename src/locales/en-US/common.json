@@ -43,9 +43,6 @@
 		"category": "Category Management",
 		"requestType": "Request Type Management",
 		"group": "User Group Management",
-		"workflowSetting": "Workflow Settings",
-		"workflowInstance": "Requests",
-		"myTasks": "My Tasks",
 		"appSetting": "App Parameters",
 		"systemConfig": "System Configuration"
 	},

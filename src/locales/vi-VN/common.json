@@ -45,9 +45,6 @@
 		"setting": "Cài đặt chung",
 		"category": "Nhóm danh mục",
 		"requestType": "Loại yêu cầu",
-		"workflowSetting": "Cài đặt quy trình",
-		"workflowInstance": "Phiếu đề nghị",
-		"myTasks": "Việc cần duyệt",
 		"appSetting": "Tham số hệ thống",
 		"systemConfig": "Cấu hình hệ thống"
 	},
