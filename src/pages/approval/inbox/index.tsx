@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router";
 import { ActionModal } from "../components/action-modal";
 import { PayloadDescriptions } from "../components/form-fields";
-import { RequestStatusTag, TaskStatusTag } from "../components/status-tag";
+import { PriorityTag, RequestStatusTag, TaskStatusTag } from "../components/status-tag";
 import { DATE_TIME_FORMAT } from "../lib/payload";
 
 dayjs.extend(relativeTime);
@@ -112,6 +112,13 @@ export default function ApprovalInbox() {
 					<Typography.Text type="secondary" className="text-xs">{item.request.code}</Typography.Text>
 				</div>
 			),
+		},
+		{
+			title: t("approval.form.priority"),
+			dataIndex: ["request", "priority"],
+			width: 110,
+			hideInSearch: true,
+			render: (_, item) => <PriorityTag priority={item.request.priority} />,
 		},
 		{
 			title: t("approval.fields.requestType"),

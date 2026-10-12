@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { DATE_TIME_FORMAT } from "../lib/payload";
-import { RequestStatusTag } from "./status-tag";
+import { PriorityTag, RequestStatusTag } from "./status-tag";
 
 /** Nhóm trạng thái của menu "Tờ trình của tôi" */
 export type RequestScope = "draft" | "pending" | "completed" | "all";
@@ -97,6 +97,13 @@ export function RequestTable({ mode, title, scope = "all" }: RequestTableProps) 
 				} satisfies ProColumns<ApprovalRequestListItem>,
 			]
 			: []),
+		{
+			title: t("approval.form.priority"),
+			dataIndex: "priority",
+			width: 120,
+			hideInSearch: true,
+			render: (_, record) => <PriorityTag priority={record.priority} />,
+		},
 		{
 			title: t("approval.fields.status"),
 			dataIndex: "status",

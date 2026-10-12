@@ -32,6 +32,48 @@ export interface FormField {
 	placeholder?: string
 }
 
+/** Nhóm loại tệp — đồng bộ với backend attachment-config.ts */
+export enum FileKind {
+	Pdf = "pdf",
+	Word = "word",
+	Excel = "excel",
+	PowerPoint = "powerpoint",
+	Image = "image",
+	Zip = "zip",
+}
+
+export const FILE_KIND_EXTENSIONS: Record<FileKind, string[]> = {
+	[FileKind.Pdf]: ["pdf"],
+	[FileKind.Word]: ["doc", "docx"],
+	[FileKind.Excel]: ["xls", "xlsx", "csv"],
+	[FileKind.PowerPoint]: ["ppt", "pptx"],
+	[FileKind.Image]: ["png", "jpg", "jpeg", "gif", "webp"],
+	[FileKind.Zip]: ["zip", "rar", "7z"],
+};
+
+/** Cấu hình một khối tệp ở màn tạo tờ trình */
+export interface FileBlockConfig {
+	enabled: boolean
+	required: boolean
+	minFiles: number
+	maxFiles: number
+	maxSizeMb: number
+	fileTypes: FileKind[]
+	hint?: string | null
+}
+
+export interface AttachmentConfig {
+	/** Văn bản tờ trình */
+	documents: FileBlockConfig
+	/** Tài liệu đính kèm */
+	attachments: FileBlockConfig
+}
+
+export const DEFAULT_ATTACHMENT_CONFIG: AttachmentConfig = {
+	documents: { enabled: true, required: false, minFiles: 1, maxFiles: 5, maxSizeMb: 10, fileTypes: [FileKind.Pdf, FileKind.Word], hint: null },
+	attachments: { enabled: true, required: false, minFiles: 0, maxFiles: 20, maxSizeMb: 10, fileTypes: Object.values(FileKind), hint: null },
+};
+
 export interface RequestTypeSearchParams extends SearchParamsBase {
 	page?: number
 	limit?: number
@@ -49,4 +91,5 @@ export interface RequestTypeEntity extends EntityBase {
 	description?: string
 	status: RequestTypeStatus
 	formSchema?: FormField[]
+	attachmentConfig?: AttachmentConfig | null
 }

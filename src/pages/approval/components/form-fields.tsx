@@ -4,14 +4,21 @@ import { DatePicker, Descriptions, Form, Input, InputNumber, Select, Switch, Typ
 import { useTranslation } from "react-i18next";
 import { DATE_FORMAT, formatMoney, formatPayloadValue, parseMoney } from "../lib/payload";
 
-/** Ô nhập cho một trường của form loại đơn */
-export function FormFieldInput({ field, disabled }: { field: FormField, disabled?: boolean }) {
+interface FormFieldInputProps {
+	field: FormField
+	disabled?: boolean
+	/** value / onChange / checked / id… do Form.Item truyền xuống — phải chuyển tiếp cho ô nhập, nếu không Form không nhận được giá trị */
+	[control: string]: any
+}
+
+/** Ô nhập cho một trường của form loại tờ trình */
+export function FormFieldInput({ field, disabled, ...control }: FormFieldInputProps) {
 	const { t } = useTranslation();
 	switch (field.type) {
 		case FormFieldType.Textarea:
-			return <Input.TextArea rows={4} maxLength={field.max ?? 5000} showCount placeholder={field.placeholder} disabled={disabled} />;
+			return <Input.TextArea rows={4} maxLength={field.max ?? 5000} showCount placeholder={field.placeholder} disabled={disabled} {...control} />;
 		case FormFieldType.Number:
-			return <InputNumber className="w-full" min={field.min} max={field.max} placeholder={field.placeholder} disabled={disabled} />;
+			return <InputNumber className="w-full" min={field.min} max={field.max} placeholder={field.placeholder} disabled={disabled} {...control} />;
 		case FormFieldType.Money:
 			return (
 				<InputNumber<number>
@@ -22,19 +29,20 @@ export function FormFieldInput({ field, disabled }: { field: FormField, disabled
 					parser={parseMoney}
 					placeholder={field.placeholder}
 					disabled={disabled}
+					{...control}
 				/>
 			);
 		case FormFieldType.Date:
-			return <DatePicker className="w-full" format={DATE_FORMAT} disabled={disabled} />;
+			return <DatePicker className="w-full" format={DATE_FORMAT} disabled={disabled} {...control} />;
 		case FormFieldType.DateRange:
-			return <DatePicker.RangePicker className="w-full" format={DATE_FORMAT} disabled={disabled} />;
+			return <DatePicker.RangePicker className="w-full" format={DATE_FORMAT} disabled={disabled} {...control} />;
 		case FormFieldType.Select:
-			return <Select options={field.options} placeholder={field.placeholder} disabled={disabled} allowClear={!field.required} />;
+			return <Select options={field.options} placeholder={field.placeholder} disabled={disabled} allowClear={!field.required} {...control} />;
 		case FormFieldType.Switch:
-			return <Switch checkedChildren={t("approval.yes")} unCheckedChildren={t("approval.no")} disabled={disabled} />;
+			return <Switch checkedChildren={t("approval.yes")} unCheckedChildren={t("approval.no")} disabled={disabled} {...control} />;
 		case FormFieldType.Text:
 		default:
-			return <Input maxLength={field.max ?? 500} placeholder={field.placeholder} disabled={disabled} />;
+			return <Input maxLength={field.max ?? 500} placeholder={field.placeholder} disabled={disabled} {...control} />;
 	}
 }
 

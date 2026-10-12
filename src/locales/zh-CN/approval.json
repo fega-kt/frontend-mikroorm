@@ -95,7 +95,23 @@
 		"formData": "申请信息",
 		"noFields": "该申请类型未配置表单字段，只需填写标题并按需上传附件。",
 		"returnedNotice": "申请已被退回补充，请修改后点击重新提交。",
-		"lastComment": "审批人意见"
+		"lastComment": "审批人意见",
+		"createTitle": "发起申请",
+		"editTitle": "编辑申请",
+		"codeHint": "提交时生成编号",
+		"submit": "提交申请",
+		"general": "基本信息",
+		"category": "申请分组",
+		"typeHint": "仅显示所选分组下的类型",
+		"priority": "优先级",
+		"priorityHint": "紧急申请排在待审批列表最前，且每一步处理时限减半",
+		"submitUnit": "提交单位",
+		"submitUnitHint": "默认为您所在部门；决定由哪位部门负责人/副职审批",
+		"ownUnit": "本部门",
+		"submitter": "申请人",
+		"content": "申请内容",
+		"contentHint": "“{{name}}”类型配置的字段",
+		"summary": "摘要"
 	},
 	"inbox": {
 		"pending": "待我审批",
@@ -199,5 +215,64 @@
 	"skipReason": {
 		"requester": "审批人为申请人",
 		"no_approver": "找不到审批人"
+	},
+	"priority": {
+		"0": "低",
+		"1": "普通",
+		"2": "高",
+		"3": "紧急"
+	},
+	"files": {
+		"documents": "申请正文",
+		"attachments": "附件",
+		"required": "必填",
+		"optional": "选填",
+		"countRange": "{{min}}–{{max}} 个文件",
+		"countMax": "最多 {{max}} 个文件",
+		"count": "{{count}} 个文件",
+		"kinds": {
+			"pdf": "PDF",
+			"word": "Word",
+			"excel": "Excel",
+			"powerpoint": "PowerPoint",
+			"image": "图片",
+			"zip": "ZIP"
+		},
+		"errors": {
+			"MIN_FILES": "至少需要 {{min}} 个文件",
+			"MAX_FILES": "最多 {{max}} 个文件",
+			"FILE_TYPE": "不支持的文件类型（{{filename}}）",
+			"FILE_SIZE": "{{filename}} 超过 {{max}} MB"
+		}
+	},
+	"flow": {
+		"title": "预计审批流程",
+		"chooseType": "选择申请类型以查看审批流程",
+		"workflow": "{{name}} · 版本 v{{version}}",
+		"submit": "提交申请",
+		"you": "您",
+		"skipped": "跳过",
+		"noApprover": "找不到审批人",
+		"done": "完成",
+		"blocked": "无法继续——请联系管理员"
+	},
+	"attachmentConfig": {
+		"tab": "附件",
+		"description": "设置用户发起此类申请时看到的两个文件区。提交时系统会再次校验。",
+		"enabled": "显示此区域",
+		"documentsDesc": "申请主文件，通常为待签署文档",
+		"attachmentsDesc": "补充材料：表格、照片、证明…",
+		"required": "必填",
+		"requiredOn": "至少上传最少文件数才能提交",
+		"requiredOff": "已关闭——申请人可不上传",
+		"minFiles": "最少文件数",
+		"maxFiles": "最多文件数",
+		"maxSize": "单个文件大小上限",
+		"fileTypes": "允许的文件类型",
+		"hint": "给申请人的提示",
+		"hintPlaceholder": "例如：上传已由部门负责人签字的申请",
+		"preview": "申请人将看到",
+		"dropzone": "拖拽文件到此处或点击选择",
+		"notice": "修改仅对保存后提交的申请生效；已提交的申请保留原有文件。"
 	}
 }

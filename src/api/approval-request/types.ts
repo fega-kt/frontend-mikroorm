@@ -1,7 +1,7 @@
 import type { WorkflowDefinition } from "#src/api/approval-workflow";
 import type { AttachmentEntity } from "#src/api/attachment";
 import type { SearchParamsBase } from "#src/api/service-base";
-import type { FormField } from "#src/api/setting/request-type";
+import type { AttachmentConfig, FormField } from "#src/api/setting/request-type";
 
 export enum ApprovalRequestStatus {
 	Draft = "draft",
@@ -10,6 +10,14 @@ export enum ApprovalRequestStatus {
 	Rejected = "rejected",
 	Returned = "returned",
 	Cancelled = "cancelled",
+}
+
+/** Độ ưu tiên — số lớn hơn = gấp hơn (đồng bộ backend) */
+export enum ApprovalPriority {
+	Low = 0,
+	Normal = 1,
+	High = 2,
+	Urgent = 3,
 }
 
 export enum ApprovalTaskStatus {
@@ -58,6 +66,7 @@ export interface ApprovalRequestListItem {
 	code?: string
 	title: string
 	status: ApprovalRequestStatus
+	priority: ApprovalPriority
 	submittedAt?: string
 	closedAt?: string
 	createdAt: string
@@ -76,7 +85,24 @@ export interface CreatableRequestType {
 	description?: string
 	category: { id: string, name: string } | null
 	formSchema: FormField[]
+	attachmentConfig: AttachmentConfig
 	hasWorkflow: boolean
+}
+
+/** Đơn vị trình chọn được (phòng của người dùng + cấp trên) */
+export interface SubmitUnit {
+	id: string
+	name: string
+	code?: string
+	level: number
+	isOwn: boolean
+}
+
+export interface PreviewFlowResult {
+	workflow: { id: string, name: string, version: number } | null
+	path: string[]
+	steps: { nodeId: string, name?: string, type: string, approvers: { id: string, fullName: string }[], skipped?: boolean, error?: string }[]
+	outcome: "approved" | "blocked"
 }
 
 export interface ApprovalTaskItem {
@@ -112,6 +138,7 @@ export interface ApprovalRequestDetail {
 	code?: string
 	title: string
 	status: ApprovalRequestStatus
+	priority: ApprovalPriority
 	payload: Record<string, unknown>
 	round: number
 	currentNodeIds: string[]
@@ -120,9 +147,10 @@ export interface ApprovalRequestDetail {
 	closedAt?: string
 	createdAt: string
 	updatedAt: string
-	requestType: { id: string, code: string, name: string, formSchema: FormField[] }
+	requestType: { id: string, code: string, name: string, formSchema: FormField[], attachmentConfig: AttachmentConfig }
 	requester: UserBrief
 	department: { id: string, name: string }
+	documents: Pick<AttachmentEntity, "id" | "filename" | "url" | "size" | "mimetype">[]
 	attachments: Pick<AttachmentEntity, "id" | "filename" | "url" | "size" | "mimetype">[]
 	workflow: { id: string, name: string, versionId: string, version: number } | null
 	definition: WorkflowDefinition | null
@@ -147,6 +175,10 @@ export interface ApprovalRequestPayload {
 	requestType: string
 	title: string
 	payload: Record<string, unknown>
+	priority: ApprovalPriority
+	/** Đơn vị trình — bỏ trống = phòng của người tạo */
+	department?: string
+	documents: string[]
 	attachments: string[]
 	submit?: boolean
 }

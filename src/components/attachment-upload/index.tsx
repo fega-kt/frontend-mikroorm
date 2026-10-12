@@ -179,17 +179,16 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 				}),
 			);
 
+			// Giữ lại các file đã upload thành công kể cả khi có file lỗi — tránh mất (và mồ côi) file đã lên storage
+			const next = uploaded.length > 0 ? [...valueRef.current, ...uploaded] : valueRef.current;
+			if (uploaded.length > 0)
+				onChange?.(next);
+
 			if (failedCount > 0) {
 				message.error(`${failedCount} ${t("common.attachment.failToUpload", "file upload thất bại. Vui lòng thử lại.")}`);
 				throw new Error("UPLOAD_FAILED");
 			}
-
-			if (uploaded.length > 0) {
-				const next = [...valueRef.current, ...uploaded];
-				onChange?.(next);
-				return next;
-			}
-			return valueRef.current;
+			return next;
 		},
 	}), [uploadItem, onChange, t]);
 

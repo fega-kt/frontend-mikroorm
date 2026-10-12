@@ -1,4 +1,4 @@
-import type { ApprovalRequestStatus, ApprovalTaskStatus, UserBrief } from "#src/api/approval-request";
+import type { ApprovalPriority, ApprovalRequestStatus, ApprovalTaskStatus, UserBrief } from "#src/api/approval-request";
 import type { SearchParamsBase } from "#src/api/service-base";
 import type { FormField } from "#src/api/setting/request-type";
 
@@ -25,6 +25,7 @@ export interface InboxItem {
 		code?: string
 		title: string
 		status: ApprovalRequestStatus
+		priority: ApprovalPriority
 		payload: Record<string, unknown>
 		submittedAt?: string
 		requestType: { id: string, name: string, formSchema: FormField[] }
