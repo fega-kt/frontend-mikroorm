@@ -58,7 +58,8 @@ export function FullscreenModal({ ref, header, children }: FullscreenModalProps 
 					{header}
 				</div>
 			)}
-			<div className="flex-1 overflow-hidden" style={{ backgroundColor: token.colorBgLayout }}>
+			{/* flex-col + min-h-0: để phần con dùng flex-1 overflow-y-auto cuộn được trong chiều cao còn lại */}
+			<div className="flex min-h-0 flex-1 flex-col overflow-hidden" style={{ backgroundColor: token.colorBgLayout }}>
 				{children}
 			</div>
 		</Modal>

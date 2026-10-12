@@ -1,13 +1,14 @@
-import type { FormField, RequestTypeEntity } from "#src/api/setting/request-type";
+import type { AttachmentConfig, FormField, RequestTypeEntity } from "#src/api/setting/request-type";
 import type { FullscreenModalRef } from "#src/components/fullscreen-modal";
 import type { Tab } from "./tab-bar";
-import { requestTypeService, RequestTypeStatus } from "#src/api/setting/request-type";
+import { DEFAULT_ATTACHMENT_CONFIG, requestTypeService, RequestTypeStatus } from "#src/api/setting/request-type";
 import { FullscreenModal } from "#src/components/fullscreen-modal";
 import { Button, Form, Spin, Tag } from "antd";
 import * as React from "react";
 import { useImperativeHandle, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { validateFormSchema } from "../form-schema";
+import { AttachmentConfigTab } from "./attachment-config-tab";
 import { FormDocTab } from "./form-doc-tab";
 import { GeneralTab } from "./general-tab";
 import { Header } from "./header";
@@ -41,6 +42,7 @@ export function Detail({ ref }: DetailProps) {
 	const [editingId, setEditingId] = useState<string | null>(null);
 	const [activeTab, setActiveTab] = useState("general");
 	const [formSchema, setFormSchema] = useState<FormField[]>([]);
+	const [attachmentConfig, setAttachmentConfig] = useState<AttachmentConfig>(DEFAULT_ATTACHMENT_CONFIG);
 
 	const watchedName = Form.useWatch("name", form);
 	const watchedStatus = Form.useWatch("status", form);
@@ -51,6 +53,7 @@ export function Detail({ ref }: DetailProps) {
 			setEditingId(id ?? null);
 			setActiveTab("general");
 			setFormSchema([]);
+			setAttachmentConfig(DEFAULT_ATTACHMENT_CONFIG);
 			modalRef.current?.open();
 			if (id) {
 				setLoading(true);
@@ -58,6 +61,10 @@ export function Detail({ ref }: DetailProps) {
 					const data = await requestTypeService.fetchRequestTypeItem(id);
 					form.setFieldsValue(data);
 					setFormSchema(data.formSchema ?? []);
+					setAttachmentConfig({
+						documents: { ...DEFAULT_ATTACHMENT_CONFIG.documents, ...data.attachmentConfig?.documents },
+						attachments: { ...DEFAULT_ATTACHMENT_CONFIG.attachments, ...data.attachmentConfig?.attachments },
+					});
 				}
 				catch {
 					window.$message?.error(t("common.fetchError"));
@@ -79,7 +86,7 @@ export function Detail({ ref }: DetailProps) {
 			window.$message?.error(schemaError);
 			return;
 		}
-		const values = { ...formValues, formSchema };
+		const values = { ...formValues, formSchema, attachmentConfig };
 		setSubmitting(true);
 		try {
 			if (editingId) {
@@ -128,6 +135,7 @@ export function Detail({ ref }: DetailProps) {
 	const tabs: Tab[] = [
 		{ key: "general", label: t("setting.requestType.tabs.general"), children: <GeneralTab form={form} onFinish={onFinish} /> },
 		{ key: "formDoc", label: t("setting.requestType.tabs.formDoc"), children: <FormDocTab value={formSchema} onChange={setFormSchema} /> },
+		{ key: "attachments", label: t("approval.attachmentConfig.tab"), children: <AttachmentConfigTab value={attachmentConfig} onChange={setAttachmentConfig} /> },
 		{ key: "permission", label: t("setting.requestType.tabs.permission"), children: <PermissionTab /> },
 		{ key: "workflow", label: t("setting.requestType.tabs.workflow"), children: <WorkflowTab /> },
 		{ key: "integration", label: t("setting.requestType.tabs.integration"), children: <IntegrationTab /> },
@@ -147,7 +155,7 @@ export function Detail({ ref }: DetailProps) {
 			)}
 		>
 			<TabBar tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
-			<div className="flex-1 overflow-y-auto p-6 relative">
+			<div className="relative min-h-0 flex-1 overflow-y-auto p-6">
 				{loading && (
 					<div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60">
 						<Spin size="large" />

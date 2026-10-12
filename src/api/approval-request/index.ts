@@ -4,6 +4,8 @@ import type {
 	ApprovalRequestPayload,
 	ApprovalRequestSearchParams,
 	CreatableRequestType,
+	PreviewFlowResult,
+	SubmitUnit,
 } from "./types";
 import { ApiService, CrudServiceBase } from "../service-base";
 
@@ -16,6 +18,14 @@ export class ApprovalRequestService extends CrudServiceBase<ApprovalRequestListI
 
 	fetchRequestTypes() {
 		return this.get<CreatableRequestType[]>("request-types", { ignoreLoading: true });
+	}
+
+	fetchSubmitUnits() {
+		return this.get<SubmitUnit[]>("submit-units", { ignoreLoading: true });
+	}
+
+	fetchPreview(data: { requestType: string, department?: string, payload: Record<string, unknown> }) {
+		return this.post<PreviewFlowResult>("preview", { json: data as never, ignoreLoading: true });
 	}
 
 	fetchMine(params?: ApprovalRequestSearchParams) {

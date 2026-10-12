@@ -95,7 +95,23 @@
 		"formData": "Request details",
 		"noFields": "This request type has no form fields — just enter a title and attach files if needed.",
 		"returnedNotice": "This request was returned for changes. Update it and click Resubmit.",
-		"lastComment": "Approver's comment"
+		"lastComment": "Approver's comment",
+		"createTitle": "New request",
+		"editTitle": "Edit request",
+		"codeHint": "The code is generated on submit",
+		"submit": "Submit request",
+		"general": "General information",
+		"category": "Request group",
+		"typeHint": "Only types in the selected group are listed",
+		"priority": "Priority",
+		"priorityHint": "Urgent requests go to the top of approval queues and every step has half the usual deadline",
+		"submitUnit": "Submitting unit",
+		"submitUnitHint": "Defaults to your department; decides which head/deputy approves",
+		"ownUnit": "your department",
+		"submitter": "Submitter",
+		"content": "Request details",
+		"contentHint": "Fields configured for “{{name}}”",
+		"summary": "Summary"
 	},
 	"inbox": {
 		"pending": "Awaiting me",
@@ -199,5 +215,64 @@
 	"skipReason": {
 		"requester": "approver is the requester",
 		"no_approver": "no approver found"
+	},
+	"priority": {
+		"0": "Low",
+		"1": "Normal",
+		"2": "High",
+		"3": "Urgent"
+	},
+	"files": {
+		"documents": "Request documents",
+		"attachments": "Attachments",
+		"required": "Required",
+		"optional": "Optional",
+		"countRange": "{{min}}–{{max}} files",
+		"countMax": "up to {{max}} files",
+		"count": "{{count}} files",
+		"kinds": {
+			"pdf": "PDF",
+			"word": "Word",
+			"excel": "Excel",
+			"powerpoint": "PowerPoint",
+			"image": "Image",
+			"zip": "ZIP"
+		},
+		"errors": {
+			"MIN_FILES": "at least {{min}} files required",
+			"MAX_FILES": "up to {{max}} files",
+			"FILE_TYPE": "file type not accepted ({{filename}})",
+			"FILE_SIZE": "{{filename}} exceeds {{max}} MB"
+		}
+	},
+	"flow": {
+		"title": "Expected approval flow",
+		"chooseType": "Choose a request type to see its approval flow",
+		"workflow": "{{name}} · version v{{version}}",
+		"submit": "Submit",
+		"you": "You",
+		"skipped": "Skipped",
+		"noApprover": "No approver found",
+		"done": "Completed",
+		"blocked": "Cannot proceed — contact an administrator"
+	},
+	"attachmentConfig": {
+		"tab": "Attachments",
+		"description": "Set up the two file sections users see when creating this request type. The rules are checked again on submit.",
+		"enabled": "Show this section",
+		"documentsDesc": "The main request file, usually the document to sign",
+		"attachmentsDesc": "Supporting files: spreadsheets, photos, evidence…",
+		"required": "Required",
+		"requiredOn": "At least the minimum number of files is needed to submit",
+		"requiredOff": "Off — requesters may leave this section empty",
+		"minFiles": "Minimum files",
+		"maxFiles": "Maximum files",
+		"maxSize": "Max size per file",
+		"fileTypes": "Accepted file types",
+		"hint": "Hint for requesters",
+		"hintPlaceholder": "e.g. attach the request signed off by your manager",
+		"preview": "Requesters will see",
+		"dropzone": "Drag files here or click to choose",
+		"notice": "Changes apply to requests submitted after saving; submitted requests keep their files."
 	}
 }

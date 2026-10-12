@@ -95,7 +95,23 @@
 		"formData": "Thông tin tờ trình",
 		"noFields": "Loại tờ trình này chưa cấu hình form — chỉ cần nhập tiêu đề và đính kèm tệp (nếu có).",
 		"returnedNotice": "Tờ trình được trả lại để bổ sung. Sửa thông tin rồi bấm Gửi lại.",
-		"lastComment": "Ý kiến của người duyệt"
+		"lastComment": "Ý kiến của người duyệt",
+		"createTitle": "Tạo tờ trình",
+		"editTitle": "Sửa tờ trình",
+		"codeHint": "Mã tờ trình được sinh khi gửi",
+		"submit": "Gửi tờ trình",
+		"general": "Thông tin chung",
+		"category": "Nhóm tờ trình",
+		"typeHint": "Chỉ hiện loại thuộc nhóm đã chọn",
+		"priority": "Độ ưu tiên",
+		"priorityHint": "Tờ trình Khẩn được đẩy lên đầu danh sách chờ duyệt và hạn xử lý mỗi bước ngắn còn một nửa",
+		"submitUnit": "Đơn vị trình",
+		"submitUnitHint": "Mặc định là phòng của bạn; quyết định trưởng/phó phòng nào duyệt",
+		"ownUnit": "phòng của bạn",
+		"submitter": "Người trình",
+		"content": "Nội dung tờ trình",
+		"contentHint": "Các trường theo cấu hình của loại “{{name}}”",
+		"summary": "Tóm tắt"
 	},
 	"inbox": {
 		"pending": "Chờ tôi duyệt",
@@ -199,5 +215,64 @@
 	"skipReason": {
 		"requester": "người duyệt là người tạo tờ trình",
 		"no_approver": "không tìm thấy người duyệt"
+	},
+	"priority": {
+		"0": "Thấp",
+		"1": "Bình thường",
+		"2": "Cao",
+		"3": "Khẩn"
+	},
+	"files": {
+		"documents": "Văn bản tờ trình",
+		"attachments": "Tài liệu đính kèm",
+		"required": "Bắt buộc",
+		"optional": "Không bắt buộc",
+		"countRange": "{{min}}–{{max}} tệp",
+		"countMax": "tối đa {{max}} tệp",
+		"count": "{{count}} tệp",
+		"kinds": {
+			"pdf": "PDF",
+			"word": "Word",
+			"excel": "Excel",
+			"powerpoint": "PowerPoint",
+			"image": "Ảnh",
+			"zip": "ZIP"
+		},
+		"errors": {
+			"MIN_FILES": "cần ít nhất {{min}} tệp",
+			"MAX_FILES": "tối đa {{max}} tệp",
+			"FILE_TYPE": "loại tệp không được nhận ({{filename}})",
+			"FILE_SIZE": "tệp {{filename}} vượt quá {{max}} MB"
+		}
+	},
+	"flow": {
+		"title": "Luồng phê duyệt dự kiến",
+		"chooseType": "Chọn loại tờ trình để xem luồng phê duyệt",
+		"workflow": "{{name}} · phiên bản v{{version}}",
+		"submit": "Gửi tờ trình",
+		"you": "Bạn",
+		"skipped": "Bỏ qua",
+		"noApprover": "Không tìm thấy người duyệt",
+		"done": "Hoàn tất",
+		"blocked": "Không đi tiếp được — liên hệ quản trị viên"
+	},
+	"attachmentConfig": {
+		"tab": "Tệp đính kèm",
+		"description": "Thiết lập hai khối tệp người dùng thấy khi tạo tờ trình loại này. Hệ thống kiểm tra lại các điều kiện khi gửi tờ trình.",
+		"enabled": "Hiện khối này",
+		"documentsDesc": "File tờ trình chính, thường là văn bản trình ký",
+		"attachmentsDesc": "Tài liệu bổ sung: bảng tính, ảnh chụp, minh chứng…",
+		"required": "Bắt buộc",
+		"requiredOn": "Phải có ít nhất số tệp tối thiểu mới gửi được",
+		"requiredOff": "Đang tắt — người tạo có thể bỏ trống khối này",
+		"minFiles": "Số tệp tối thiểu",
+		"maxFiles": "Số tệp tối đa",
+		"maxSize": "Dung lượng tối đa mỗi tệp",
+		"fileTypes": "Loại tệp được nhận",
+		"hint": "Hướng dẫn cho người tạo",
+		"hintPlaceholder": "Ví dụ: đính kèm tờ trình đã ký nháy của trưởng bộ phận",
+		"preview": "Người tạo sẽ thấy",
+		"dropzone": "Kéo thả hoặc bấm để chọn tệp",
+		"notice": "Thay đổi chỉ áp dụng cho tờ trình gửi sau khi lưu; tờ trình đã gửi giữ nguyên tệp hiện có."
 	}
 }

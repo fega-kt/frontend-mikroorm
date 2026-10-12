@@ -30,7 +30,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router";
 import { ActionModal } from "../components/action-modal";
 import { PayloadDescriptions } from "../components/form-fields";
-import { RequestStatusTag } from "../components/status-tag";
+import { PriorityTag, RequestStatusTag } from "../components/status-tag";
 import { DATE_TIME_FORMAT } from "../lib/payload";
 import { collectUserNames, computeNodeStatus } from "../lib/progress";
 import { HistoryTimeline } from "./components/history-timeline";
@@ -144,6 +144,7 @@ export default function ApprovalRequestDetailPage() {
 							<Space size={8} wrap>
 								<Title level={4} className="!m-0">{detail.title}</Title>
 								<RequestStatusTag status={detail.status} />
+								<PriorityTag priority={detail.priority} />
 							</Space>
 							<div>
 								<Text type="secondary">
@@ -237,22 +238,24 @@ export default function ApprovalRequestDetailPage() {
 								: <Empty className="py-8" description={t("approval.detail.notSubmitted")} />}
 						</SectionCard>
 
-						<SectionCard icon={<PaperClipOutlined />} title={t("approval.fields.attachments")}>
-							{detail.attachments.length
-								? (
-									<ul className="m-0 pl-0 list-none flex flex-col gap-1">
-										{detail.attachments.map(file => (
-											<li key={file.id}>
-												<Typography.Link href={file.url} target="_blank" rel="noreferrer">
-													<PaperClipOutlined className="mr-1" />
-													{file.filename}
-												</Typography.Link>
-											</li>
-										))}
-									</ul>
-								)
-								: <Text type="secondary">{t("common.noData")}</Text>}
-						</SectionCard>
+						{(["documents", "attachments"] as const).map(block => (
+							<SectionCard key={block} icon={<PaperClipOutlined />} title={t(`approval.files.${block}`)}>
+								{detail[block].length
+									? (
+										<ul className="m-0 pl-0 list-none flex flex-col gap-1">
+											{detail[block].map(file => (
+												<li key={file.id}>
+													<Typography.Link href={file.url} target="_blank" rel="noreferrer">
+														<PaperClipOutlined className="mr-1" />
+														{file.filename}
+													</Typography.Link>
+												</li>
+											))}
+										</ul>
+									)
+									: <Text type="secondary">{t("common.noData")}</Text>}
+							</SectionCard>
+						))}
 					</div>
 
 					<div className="flex flex-col gap-4 min-w-0">
