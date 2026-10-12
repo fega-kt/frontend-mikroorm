@@ -23,21 +23,6 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.UpdateDeparment,
 		PermissionType.DeleteDeparment,
 	],
-	PROJECT: [
-		PermissionType.MenuProject,
-		PermissionType.ViewProjectDetail,
-		PermissionType.CreateProject,
-		PermissionType.UpdateProject,
-		PermissionType.DeleteProject,
-	],
-	TASK: [
-		PermissionType.MenuTask,
-		PermissionType.ViewTaskDetail,
-		PermissionType.CreateTask,
-		PermissionType.UpdateTask,
-		PermissionType.DeleteTask,
-		PermissionType.AssignTask,
-	],
 	GROUP: [
 		PermissionType.MenuGroup,
 		PermissionType.ViewGroupDetail,
@@ -58,6 +43,17 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.CreateRequestType,
 		PermissionType.UpdateRequestType,
 		PermissionType.DeleteRequestType,
+	],
+	APPROVAL_WORKFLOW: [
+		PermissionType.MenuApprovalWorkflow,
+		PermissionType.CreateApprovalWorkflow,
+		PermissionType.UpdateApprovalWorkflow,
+		PermissionType.PublishApprovalWorkflow,
+		PermissionType.DeleteApprovalWorkflow,
+	],
+	APPROVAL_REQUEST: [
+		PermissionType.MenuAllApprovalRequest,
+		PermissionType.ReassignApprovalTask,
 	],
 	APP_SETTING: [
 		PermissionType.MenuAppSetting,

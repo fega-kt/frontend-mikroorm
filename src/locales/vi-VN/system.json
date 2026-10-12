@@ -13,12 +13,12 @@
 			"role": "Quản lý vai trò",
 			"group": "Quản lý nhóm người dùng",
 			"department": "Quản lý phòng ban",
-			"project": "Quản lý dự án",
-			"task": "Quản lý công việc",
 			"category": "Quản lý danh mục",
-			"request_type": "Quản lý loại yêu cầu",
+			"request_type": "Quản lý loại tờ trình",
 			"app_setting": "Quản lý tham số hệ thống",
-			"activity_log": "Theo dõi hoạt động"
+			"activity_log": "Theo dõi hoạt động",
+			"approval_workflow": "Quy trình phê duyệt",
+			"approval_request": "Quản trị tờ trình phê duyệt"
 		},
 		"permission": {
 			"user": "Người dùng",
@@ -26,33 +26,21 @@
 			"create": "Tạo mới",
 			"update": "Cập nhật",
 			"delete": "Xóa",
-			"assign": "Giao việc",
 			"role": "Vai trò",
 			"department": "Phòng ban",
-			"project": "Dự án",
-			"task": "Công việc",
 			"group": "Nhóm",
 			"category": "Danh mục",
-			"request-type": "Loại yêu cầu",
-			"deploy": "Deploy",
-			"cancel": "Hủy",
-			"approve": "Duyệt",
-			"reject": "Từ chối",
-			"return": "Trả lại",
-			"request-change": "Yêu cầu bổ sung",
-			"apply-change": "Nộp bổ sung",
-			"request-review": "Yêu cầu soát xét",
-			"submit-review": "Nộp soát xét",
-			"request-to-cancel": "Yêu cầu hủy",
-			"approve-cancellation": "Duyệt hủy",
-			"reject-cancellation": "Từ chối hủy",
+			"request-type": "Loại tờ trình",
 			"app-setting": "Tham số hệ thống",
 			"activity-log": "Theo dõi hoạt động",
 			"view-all": "Xem toàn hệ thống",
-			"view-department": "Xem trong phòng ban (gồm phòng con)"
+			"view-department": "Xem trong phòng ban (gồm phòng con)",
+			"approval-workflow": "Quy trình phê duyệt",
+			"publish": "Xuất bản",
+			"approval-request-all": "Tất cả tờ trình",
+			"reassign": "Gán lại người duyệt"
 		}
 	},
-
 	"appSetting": {
 		"title": "Tham số hệ thống",
 		"editSetting": "Sửa cấu hình",
@@ -130,7 +118,6 @@
 			}
 		}
 	},
-
 	"userGroup": {
 		"title": "Quản lý nhóm người dùng",
 		"addGroup": "Thêm nhóm người dùng",
@@ -143,7 +130,6 @@
 		"nameInvalidFormat": "Tên nhóm chỉ được chứa chữ cái, các từ cách nhau bởi một dấu cách",
 		"descriptionMaxLength": "Mô tả không được vượt quá 500 ký tự"
 	},
-
 	"user": {
 		"name": "Tên người dùng",
 		"id": "ID người dùng",
@@ -181,7 +167,6 @@
 		"department": "Phòng ban",
 		"description": "Mô tả"
 	},
-
 	"dept": {
 		"name": "Tên phòng ban",
 		"code": "Mã phòng ban",

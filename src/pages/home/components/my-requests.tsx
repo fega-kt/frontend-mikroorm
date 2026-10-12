@@ -72,7 +72,7 @@ export function MyRequests({ items }: { items: MyRequest[] }) {
 					options={(["inProgress", "returned", "done"] as FilterKey[]).map(key => ({ value: key, label: filterLabel(key) }))}
 				/>
 			)}
-			footerLink={{ to: "/approval/my-requests", label: t("home.myRequests.viewAll") }}
+			footerLink={{ to: "/approval/my/all", label: t("home.myRequests.viewAll") }}
 		>
 			{visible.map(item => (
 				<div key={item.id} className="flex flex-wrap items-center gap-3.5 border-0 border-b border-solid border-colorBorderSecondary px-5 py-3.5">

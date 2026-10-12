@@ -1,0 +1,265 @@
+{
+	"title": "Quy trình",
+	"unsaved": "Chưa lưu thay đổi",
+	"savedAt": "Đã lưu lúc {{time}}",
+	"actions": {
+		"simulate": "Chạy thử",
+		"saveDraft": "Lưu nháp",
+		"publish": "Xuất bản",
+		"autoLayout": "Tự sắp xếp",
+		"zoomReset": "Về 100%",
+		"deleteStep": "Xóa bước",
+		"duplicate": "Nhân bản",
+		"save": "Lưu",
+		"restore": "Khôi phục làm bản nháp",
+		"addBranch": "Thêm nhánh",
+		"addApprover": "Thêm người duyệt",
+		"addRecipient": "Thêm người nhận",
+		"insertStep": "Chèn bước",
+		"close": "Đóng",
+		"back": "Quay lại",
+		"leave": "Rời trang"
+	},
+	"messages": {
+		"saved": "Đã lưu bản nháp",
+		"settingsSaved": "Đã lưu phạm vi áp dụng",
+		"noDraft": "Không có bản nháp nào để xuất bản",
+		"invalid": "Quy trình còn {{count}} lỗi, hãy sửa trước khi xuất bản",
+		"publishConfirmTitle": "Xuất bản quy trình?",
+		"publishConfirmContent": "Bản nháp v{{version}} sẽ được áp dụng cho các tờ trình tạo mới. Các tờ trình đang chạy vẫn dùng phiên bản cũ.",
+		"published": "Đã xuất bản v{{version}}",
+		"leaveConfirmTitle": "Rời trang khi chưa lưu?",
+		"leaveConfirmContent": "Các thay đổi chưa lưu sẽ bị mất.",
+		"restoreConfirmTitle": "Khôi phục v{{version}} làm bản nháp?",
+		"restoreConfirmContent": "Nội dung của phiên bản này sẽ được chép vào bản nháp hiện tại.",
+		"restoreConfirmDirty": "Nội dung của phiên bản này sẽ ghi đè bản nháp. Các thay đổi chưa lưu trên màn hình sẽ bị mất.",
+		"restored": "Đã khôi phục v{{version}} làm bản nháp",
+		"loadFailed": "Không tải được quy trình"
+	},
+	"version": {
+		"label": "v{{version}} · {{status}}",
+		"draft": "Bản nháp",
+		"published": "Đang áp dụng",
+		"archived": "Lưu trữ",
+		"editingTag": "Đang sửa",
+		"live": "Live",
+		"editingPublishedHint": "Chưa có bản nháp — lưu thay đổi sẽ tạo bản nháp mới từ phiên bản đang áp dụng"
+	},
+	"versions": {
+		"title": "Phiên bản",
+		"empty": "Chưa có phiên bản",
+		"preview": "Phiên bản v{{version}} · {{status}}",
+		"publishedAt": "Xuất bản lúc",
+		"publishedBy": "Người xuất bản",
+		"updatedAt": "Cập nhật"
+	},
+	"palette": {
+		"title": "Thành phần",
+		"hint": "Kéo thả vào khung để thêm bước",
+		"clickToAdd": "Kéo vào khung hoặc bấm để thêm",
+		"items": {
+			"approval": {
+				"title": "Người duyệt",
+				"desc": "Trưởng, phó phòng hoặc người cụ thể"
+			},
+			"condition": {
+				"title": "Điều kiện",
+				"desc": "Rẽ nhánh theo dữ liệu tờ trình"
+			},
+			"parallel": {
+				"title": "Duyệt song song",
+				"desc": "Nhiều người cùng duyệt"
+			},
+			"notify": {
+				"title": "Thông báo",
+				"desc": "Email hoặc trong ứng dụng"
+			},
+			"end": {
+				"title": "Kết thúc",
+				"desc": "Đóng quy trình"
+			}
+		}
+	},
+	"applyTo": {
+		"title": "Áp dụng cho",
+		"requestType": "Loại tờ trình",
+		"department": "Phòng ban",
+		"allDepartments": "Tất cả",
+		"priority": "Ưu tiên",
+		"priorityHint": "Khi nhiều quy trình cùng khớp một tờ trình, quy trình có số ưu tiên lớn hơn được chọn",
+		"active": "Đang hoạt động"
+	},
+	"nodeTypes": {
+		"start": "Bắt đầu",
+		"approval": "Bước duyệt",
+		"condition": "Điều kiện",
+		"parallel": "Duyệt song song",
+		"notify": "Thông báo",
+		"end": "Kết thúc"
+	},
+	"defaultNames": {
+		"start": "Gửi tờ trình",
+		"approval": "Bước duyệt",
+		"condition": "Điều kiện",
+		"parallel": "Duyệt song song",
+		"notify": "Gửi thông báo",
+		"end": "Kết thúc"
+	},
+	"approverType": {
+		"DEPT_HEAD": "Trưởng phòng",
+		"DEPT_DEPUTY": "Phó phòng",
+		"SPECIFIC_USER": "Người cụ thể (cũ)",
+		"PRINCIPAL": "Người cụ thể / nhóm"
+	},
+	"overdue": {
+		"REMIND": "Chỉ nhắc nhở",
+		"REMIND_THEN_ESCALATE": "Nhắc rồi chuyển cấp",
+		"AUTO_APPROVE": "Tự động duyệt"
+	},
+	"parallelMode": {
+		"ALL": "Tất cả",
+		"ANY": "Bất kỳ"
+	},
+	"parallelModeDesc": {
+		"ALL": "mọi người phải đồng ý",
+		"ANY": "một người đồng ý là đủ"
+	},
+	"channels": {
+		"EMAIL": "Email",
+		"IN_APP": "Trong ứng dụng"
+	},
+	"operators": {
+		"gt": "lớn hơn",
+		"gte": "lớn hơn hoặc bằng",
+		"lt": "nhỏ hơn",
+		"lte": "nhỏ hơn hoặc bằng",
+		"eq": "bằng",
+		"neq": "khác",
+		"in": "thuộc"
+	},
+	"summary": {
+		"start": "Người tạo gửi tờ trình",
+		"sla": "SLA {{hours}}h",
+		"noApprover": "Chưa chọn người duyệt",
+		"noChannel": "Chưa chọn kênh",
+		"requester": "Người tạo tờ trình",
+		"branches": "{{count}} nhánh",
+		"and": "và",
+		"or": "hoặc"
+	},
+	"edge": {
+		"default": "Mặc định",
+		"branch": "Nhánh {{index}}",
+		"yes": "Có",
+		"no": "Không"
+	},
+	"footer": {
+		"stats": "{{steps}} bước · {{branches}} nhánh điều kiện",
+		"valid": "Hợp lệ",
+		"errors": "{{count}} lỗi",
+		"errorsTitle": "Lỗi cần sửa",
+		"global": "Toàn quy trình"
+	},
+	"inspector": {
+		"empty": "Chọn một bước hoặc một nhánh trên khung để chỉnh sửa",
+		"branchOf": "Nhánh “{{label}}”",
+		"onlyWhen": "Chỉ chạy khi {{cond}}",
+		"runsByDefault": "Chạy khi không khớp nhánh nào khác",
+		"name": "Tên bước",
+		"approver": "Người duyệt",
+		"selectUser": "Chọn người dùng",
+		"sla": "Hạn xử lý",
+		"hours": "giờ",
+		"onOverdue": "Khi quá hạn",
+		"options": "Tùy chọn",
+		"opt": {
+			"allowDelegation": "Cho phép ủy quyền duyệt",
+			"skipIfRequester": "Bỏ qua nếu người duyệt là người tạo tờ trình",
+			"skipIfNoApprover": "Bỏ qua nếu không tìm thấy người duyệt",
+			"requireRejectReason": "Bắt buộc ghi lý do khi từ chối",
+			"allowReturn": "Cho phép trả lại để bổ sung"
+		},
+		"mode": "Cách duyệt",
+		"approvers": "Người duyệt",
+		"channels": "Kênh gửi",
+		"recipients": "Người nhận",
+		"recipientsHint": "Để trống = chỉ gửi cho người tạo tờ trình",
+		"message": "Nội dung thông báo",
+		"branches": "Các nhánh",
+		"branchLabel": "Nhãn nhánh",
+		"isDefault": "Mặc định (còn lại)",
+		"condition": "Điều kiện",
+		"edgeTitle": "Nhánh điều kiện",
+		"plainEdge": "Kết nối",
+		"plainEdgeHint": "Kết nối giữa hai bước thường không có điều kiện. Chỉ các nhánh đi ra từ bước Điều kiện mới cần điều kiện.",
+		"deleteEdge": "Xóa kết nối",
+		"startHint": "Quy trình bắt đầu khi người tạo gửi tờ trình.",
+		"endHint": "Tờ trình được duyệt xong khi đi tới bước kết thúc.",
+		"selectPrincipal": "Chọn người dùng hoặc nhóm",
+		"principalHint": "Chọn nhóm: mọi thành viên nhận việc, một người duyệt là đủ."
+	},
+	"condition": {
+		"field": "Trường",
+		"value": "Giá trị",
+		"addRow": "Thêm điều kiện",
+		"matchAll": "Tất cả (AND)",
+		"matchAny": "Một trong (OR)",
+		"builder": "Trình tạo",
+		"rawJson": "JSON",
+		"invalidJson": "JSON không hợp lệ",
+		"noFields": "Loại tờ trình chưa có trường nào trong form — có thể nhập điều kiện dạng JSON (json-logic), biến có dạng payload.<key>.",
+		"notRepresentable": "Biểu thức phức tạp, chỉ sửa được ở dạng JSON",
+		"empty": "Chưa có điều kiện",
+		"true": "Có",
+		"false": "Không"
+	},
+	"simulate": {
+		"title": "Chạy thử quy trình",
+		"usesUnsaved": "Chạy trên bản đang sửa trên màn hình (không cần lưu trước). Đường đi sẽ được tô trên khung cho tới khi đóng.",
+		"requester": "Người tạo tờ trình",
+		"requesterHint": "Để trống = bạn",
+		"payload": "Dữ liệu tờ trình mẫu",
+		"noFields": "Loại tờ trình chưa có trường nào trong form",
+		"run": "Chạy thử",
+		"result": "Kết quả",
+		"approved": "Tờ trình đi tới bước kết thúc",
+		"blocked": "Quy trình bị chặn — xem các bước lỗi bên dưới",
+		"skipped": "Bỏ qua",
+		"noApprover": "Không tìm thấy người duyệt",
+		"stepErrors": {
+			"NO_APPROVER": "Không tìm thấy người duyệt",
+			"INACTIVE_USER": "Người duyệt đã ngừng hoạt động"
+		}
+	},
+	"graph": {
+		"status": {
+			"done": "Đã xong",
+			"current": "Đang xử lý",
+			"rejected": "Từ chối",
+			"returned": "Trả lại",
+			"skipped": "Bỏ qua",
+			"pending": "Chưa tới"
+		}
+	},
+	"errors": {
+		"DUPLICATE_NODE_ID": "Trùng mã bước",
+		"UNKNOWN_EDGE_NODE": "Kết nối trỏ tới bước không tồn tại",
+		"START_COUNT": "Quy trình phải có đúng một bước Bắt đầu",
+		"NO_END": "Quy trình cần ít nhất một bước Kết thúc",
+		"START_HAS_INCOMING": "Bước Bắt đầu không được có kết nối đi vào",
+		"END_HAS_OUTGOING": "Bước Kết thúc không được có kết nối đi ra",
+		"UNREACHABLE": "Bước không đi tới được từ Bắt đầu",
+		"DEAD_END": "Bước không dẫn tới Kết thúc",
+		"CYCLE": "Bước nằm trong một vòng lặp",
+		"SINGLE_OUTGOING": "Bước phải có đúng một kết nối đi ra",
+		"CONDITION_OUTGOING": "Điều kiện cần ít nhất 2 nhánh",
+		"CONDITION_DEFAULT": "Điều kiện cần đúng một nhánh mặc định",
+		"EDGE_MISSING_CONDITION": "Nhánh không phải mặc định phải có điều kiện",
+		"EDGE_CONDITION_OUTSIDE_BRANCH": "Chỉ nhánh đi ra từ bước Điều kiện mới được có điều kiện",
+		"MISSING_APPROVER": "Bước duyệt chưa có người duyệt",
+		"PARALLEL_APPROVERS": "Duyệt song song cần ít nhất 2 người duyệt khác nhau",
+		"UNKNOWN_FIELD": "Điều kiện dùng trường không có trong form của loại tờ trình",
+		"SLA_REQUIRED": "Cần nhập hạn xử lý khi chọn chuyển cấp hoặc tự động duyệt",
+		"INACTIVE_USER": "Người duyệt đã ngừng hoạt động"
+	}
+}

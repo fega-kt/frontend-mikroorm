@@ -1,0 +1,267 @@
+{
+	"title": "Workflow",
+	"unsaved": "Unsaved changes",
+	"savedAt": "Saved at {{time}}",
+	"actions": {
+		"simulate": "Test run",
+		"saveDraft": "Save draft",
+		"publish": "Publish",
+		"autoLayout": "Auto layout",
+		"zoomReset": "Reset to 100%",
+		"deleteStep": "Delete step",
+		"duplicate": "Duplicate",
+		"save": "Save",
+		"restore": "Restore as draft",
+		"addBranch": "Add branch",
+		"addApprover": "Add approver",
+		"addRecipient": "Add recipient",
+		"insertStep": "Insert step",
+		"close": "Close",
+		"back": "Back",
+		"leave": "Leave"
+	},
+	"messages": {
+		"saved": "Draft saved",
+		"settingsSaved": "Scope saved",
+		"noDraft": "There is no draft to publish",
+		"invalid": "The workflow has {{count}} error(s); fix them before publishing",
+		"publishConfirmTitle": "Publish this workflow?",
+		"publishConfirmContent": "Draft v{{version}} will apply to new requests. Requests already in progress keep using the old version.",
+		"published": "Published v{{version}}",
+		"leaveConfirmTitle": "Leave without saving?",
+		"leaveConfirmContent": "Unsaved changes will be lost.",
+		"restoreConfirmTitle": "Restore v{{version}} as draft?",
+		"restoreConfirmContent": "This version's content will be copied into the current draft.",
+		"restoreConfirmDirty": "This version's content will overwrite the draft. Unsaved changes on screen will be lost.",
+		"restored": "Restored v{{version}} as draft",
+		"loadFailed": "Could not load the workflow"
+	},
+	"version": {
+		"label": "v{{version}} · {{status}}",
+		"draft": "Draft",
+		"published": "Live",
+		"archived": "Archived",
+		"editingTag": "Editing",
+		"live": "Live",
+		"editingPublishedHint": "No draft yet — saving will create a new draft from the live version"
+	},
+	"versions": {
+		"title": "Versions",
+		"empty": "No versions yet",
+		"preview": "Version v{{version}} · {{status}}",
+		"publishedAt": "Published at",
+		"publishedBy": "Published by",
+		"updatedAt": "Updated"
+	},
+	"palette": {
+		"title": "Components",
+		"hint": "Drag onto the canvas to add a step",
+		"clickToAdd": "Drag onto the canvas or click to add",
+		"items": {
+			"approval": {
+				"title": "Approver",
+				"desc": "Head, deputy or a specific person"
+			},
+			"condition": {
+				"title": "Condition",
+				"desc": "Branch on request data"
+			},
+			"parallel": {
+				"title": "Parallel approval",
+				"desc": "Several people approve together"
+			},
+			"notify": {
+				"title": "Notification",
+				"desc": "Email or in-app"
+			},
+			"end": {
+				"title": "End",
+				"desc": "Close the workflow"
+			}
+		}
+	},
+	"applyTo": {
+		"title": "Applies to",
+		"requestType": "Request type",
+		"department": "Department",
+		"allDepartments": "All",
+		"priority": "Priority",
+		"priorityHint": "When several workflows match a request, the one with the higher priority wins",
+		"active": "Active"
+	},
+	"nodeTypes": {
+		"start": "Start",
+		"approval": "Approval step",
+		"condition": "Condition",
+		"parallel": "Parallel approval",
+		"notify": "Notification",
+		"end": "End"
+	},
+	"defaultNames": {
+		"start": "Submit request",
+		"approval": "Approval step",
+		"condition": "Condition",
+		"parallel": "Parallel approval",
+		"notify": "Send notification",
+		"end": "End"
+	},
+	"approverType": {
+		"DEPT_HEAD": "Department head",
+		"DEPT_DEPUTY": "Deputy head",
+		"SPECIFIC_USER": "Specific user (legacy)",
+		"PRINCIPAL": "Specific user / group"
+	},
+	"overdue": {
+		"REMIND": "Remind only",
+		"REMIND_THEN_ESCALATE": "Remind, then escalate",
+		"AUTO_APPROVE": "Auto-approve"
+	},
+	"parallelMode": {
+		"ALL": "All",
+		"ANY": "Any"
+	},
+	"parallelModeDesc": {
+		"ALL": "everyone must approve",
+		"ANY": "one approval is enough"
+	},
+	"channels": {
+		"EMAIL": "Email",
+		"IN_APP": "In-app"
+	},
+	"operators": {
+		"gt": "greater than",
+		"gte": "greater than or equal",
+		"lt": "less than",
+		"lte": "less than or equal",
+		"eq": "equals",
+		"neq": "not equal",
+		"in": "is one of"
+	},
+	"summary": {
+		"start": "Requester submits",
+		"sla": "SLA {{hours}}h",
+		"noApprover": "No approver selected",
+		"noChannel": "No channel selected",
+		"requester": "Requester",
+		"branches_one": "{{count}} branch",
+		"branches_other": "{{count}} branches",
+		"and": "and",
+		"or": "or"
+	},
+	"edge": {
+		"default": "Default",
+		"branch": "Branch {{index}}",
+		"yes": "Yes",
+		"no": "No"
+	},
+	"footer": {
+		"stats": "{{steps}} steps · {{branches}} condition branches",
+		"valid": "Valid",
+		"errors_one": "{{count}} error",
+		"errors_other": "{{count}} errors",
+		"errorsTitle": "Errors to fix",
+		"global": "Whole workflow"
+	},
+	"inspector": {
+		"empty": "Select a step or a branch on the canvas to edit it",
+		"branchOf": "Branch “{{label}}”",
+		"onlyWhen": "Only runs when {{cond}}",
+		"runsByDefault": "Runs when no other branch matches",
+		"name": "Step name",
+		"approver": "Approver",
+		"selectUser": "Select a user",
+		"sla": "Deadline",
+		"hours": "hours",
+		"onOverdue": "When overdue",
+		"options": "Options",
+		"opt": {
+			"allowDelegation": "Allow delegating approval",
+			"skipIfRequester": "Skip if the approver is the requester",
+			"skipIfNoApprover": "Skip if no approver is found",
+			"requireRejectReason": "Require a reason when rejecting",
+			"allowReturn": "Allow returning for more information"
+		},
+		"mode": "Approval mode",
+		"approvers": "Approvers",
+		"channels": "Channels",
+		"recipients": "Recipients",
+		"recipientsHint": "Empty = notify the requester only",
+		"message": "Message",
+		"branches": "Branches",
+		"branchLabel": "Branch label",
+		"isDefault": "Default (otherwise)",
+		"condition": "Condition",
+		"edgeTitle": "Condition branch",
+		"plainEdge": "Connection",
+		"plainEdgeHint": "A connection between two regular steps has no condition. Only branches leaving a Condition step need one.",
+		"deleteEdge": "Delete connection",
+		"startHint": "The workflow starts when the requester submits the request.",
+		"endHint": "The request is fully approved when it reaches an end step.",
+		"selectPrincipal": "Select a user or group",
+		"principalHint": "Group: every member gets the task, one approval is enough."
+	},
+	"condition": {
+		"field": "Field",
+		"value": "Value",
+		"addRow": "Add condition",
+		"matchAll": "All (AND)",
+		"matchAny": "Any (OR)",
+		"builder": "Builder",
+		"rawJson": "JSON",
+		"invalidJson": "Invalid JSON",
+		"noFields": "This request type has no form fields — you can enter the condition as JSON (json-logic); variables look like payload.<key>.",
+		"notRepresentable": "This expression is too complex for the builder and can only be edited as JSON",
+		"empty": "No condition yet",
+		"true": "Yes",
+		"false": "No"
+	},
+	"simulate": {
+		"title": "Test run",
+		"usesUnsaved": "Runs against what is currently on screen (no need to save first). The path stays highlighted on the canvas until you close this panel.",
+		"requester": "Requester",
+		"requesterHint": "Empty = you",
+		"payload": "Sample request data",
+		"noFields": "This request type has no form fields",
+		"run": "Run",
+		"result": "Result",
+		"approved": "The request reaches an end step",
+		"blocked": "The workflow is blocked — see the failing steps below",
+		"skipped": "Skipped",
+		"noApprover": "No approver found",
+		"stepErrors": {
+			"NO_APPROVER": "No approver found",
+			"INACTIVE_USER": "The approver is inactive"
+		}
+	},
+	"graph": {
+		"status": {
+			"done": "Done",
+			"current": "In progress",
+			"rejected": "Rejected",
+			"returned": "Returned",
+			"skipped": "Skipped",
+			"pending": "Not reached"
+		}
+	},
+	"errors": {
+		"DUPLICATE_NODE_ID": "Duplicate step id",
+		"UNKNOWN_EDGE_NODE": "A connection points to a missing step",
+		"START_COUNT": "The workflow must have exactly one Start step",
+		"NO_END": "The workflow needs at least one End step",
+		"START_HAS_INCOMING": "The Start step cannot have incoming connections",
+		"END_HAS_OUTGOING": "An End step cannot have outgoing connections",
+		"UNREACHABLE": "This step cannot be reached from Start",
+		"DEAD_END": "This step does not lead to an End step",
+		"CYCLE": "This step is part of a loop",
+		"SINGLE_OUTGOING": "This step must have exactly one outgoing connection",
+		"CONDITION_OUTGOING": "A condition needs at least 2 branches",
+		"CONDITION_DEFAULT": "A condition needs exactly one default branch",
+		"EDGE_MISSING_CONDITION": "A non-default branch needs a condition",
+		"EDGE_CONDITION_OUTSIDE_BRANCH": "Only branches leaving a Condition step can have a condition",
+		"MISSING_APPROVER": "This approval step has no approver",
+		"PARALLEL_APPROVERS": "Parallel approval needs at least 2 different approvers",
+		"UNKNOWN_FIELD": "The condition uses a field that is not in the request type's form",
+		"SLA_REQUIRED": "A deadline is required for escalation or auto-approval",
+		"INACTIVE_USER": "The approver is inactive"
+	}
+}

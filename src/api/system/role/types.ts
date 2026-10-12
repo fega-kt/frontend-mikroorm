@@ -23,21 +23,6 @@ export enum PermissionType {
 	UpdateDeparment = "permission:department:update",
 	DeleteDeparment = "permission:department:delete",
 
-	/** ===== PROJECT ===== */
-	MenuProject = "permission:menu:project",
-	ViewProjectDetail = "permission:project:view",
-	CreateProject = "permission:project:create",
-	UpdateProject = "permission:project:update",
-	DeleteProject = "permission:project:delete",
-
-	/** ===== TASK ===== */
-	MenuTask = "permission:menu:task",
-	ViewTaskDetail = "permission:task:view",
-	CreateTask = "permission:task:create",
-	UpdateTask = "permission:task:update",
-	DeleteTask = "permission:task:delete",
-	AssignTask = "permission:task:assign",
-
 	/** ===== GROUP ===== */
 
 	/** vào menu group */
@@ -68,6 +53,31 @@ export enum PermissionType {
 	CreateRequestType = "permission:request-type:create",
 	UpdateRequestType = "permission:request-type:update",
 	DeleteRequestType = "permission:request-type:delete",
+
+	/** ===== APPROVAL WORKFLOW ===== */
+
+	/** vào menu quy trình phê duyệt (danh sách + thiết kế) */
+	MenuApprovalWorkflow = "permission:menu:approval-workflow",
+
+	/** tạo quy trình phê duyệt */
+	CreateApprovalWorkflow = "permission:approval-workflow:create",
+
+	/** sửa thông tin + lưu bản nháp quy trình */
+	UpdateApprovalWorkflow = "permission:approval-workflow:update",
+
+	/** xuất bản phiên bản quy trình */
+	PublishApprovalWorkflow = "permission:approval-workflow:publish",
+
+	/** xóa quy trình phê duyệt */
+	DeleteApprovalWorkflow = "permission:approval-workflow:delete",
+
+	/** ===== APPROVAL REQUEST (quản trị) ===== */
+
+	/** vào menu tất cả đơn + xem chi tiết mọi đơn */
+	MenuAllApprovalRequest = "permission:menu:approval-request-all",
+
+	/** gán lại người duyệt của bước đang chờ */
+	ReassignApprovalTask = "permission:approval-task:reassign",
 
 	/** ===== APP SETTING ===== */
 

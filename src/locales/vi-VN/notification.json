@@ -10,5 +10,37 @@
 	"LOGIN_NEW_DEVICE": {
 		"title": "Đăng nhập trên thiết bị mới",
 		"message": "Tài khoản của bạn vừa đăng nhập trên {{browser}} ({{os}}), IP {{ip}}. Nếu không phải bạn, hãy đổi mật khẩu ngay."
+	},
+	"APPROVAL_PENDING": {
+		"title": "Tờ trình chờ bạn duyệt",
+		"message": "{{code}} {{title}} đang chờ bạn duyệt ({{step}})."
+	},
+	"APPROVAL_APPROVED": {
+		"title": "Tờ trình đã được duyệt",
+		"message": "Tờ trình {{code}} {{title}} đã được duyệt xong."
+	},
+	"APPROVAL_REJECTED": {
+		"title": "Tờ trình bị từ chối",
+		"message": "Tờ trình {{code}} {{title}} bị từ chối ở bước {{step}}."
+	},
+	"APPROVAL_RETURNED": {
+		"title": "Tờ trình được trả lại",
+		"message": "Tờ trình {{code}} {{title}} được trả lại để bổ sung ({{step}})."
+	},
+	"APPROVAL_CANCELLED": {
+		"title": "Tờ trình đã bị hủy",
+		"message": "Tờ trình {{code}} {{title}} đã bị người tạo hủy."
+	},
+	"APPROVAL_REMINDER": {
+		"title": "Nhắc duyệt tờ trình quá hạn",
+		"message": "{{code}} {{title}} đã quá hạn xử lý ({{step}})."
+	},
+	"APPROVAL_ESCALATED": {
+		"title": "Tờ trình được chuyển cấp cho bạn",
+		"message": "{{code}} {{title}} quá hạn nên được chuyển cho bạn ({{step}})."
+	},
+	"APPROVAL_NOTIFY": {
+		"title": "Thông báo về tờ trình",
+		"message": "{{code}} {{title}} — {{step}}."
 	}
 }

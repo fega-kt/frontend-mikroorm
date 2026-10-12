@@ -10,15 +10,15 @@
 		"codePattern": "Mã chỉ được chứa chữ cái và chữ số"
 	},
 	"requestType": {
-		"code": "Mã loại yêu cầu",
-		"name": "Tên loại yêu cầu",
+		"code": "Mã loại tờ trình",
+		"name": "Tên loại tờ trình",
 		"category": "Danh mục",
 		"prefix": "Tiền tố",
 		"description": "Mô tả",
 		"status": "Trạng thái",
-		"detailTitle": "Chi tiết Loại yêu cầu",
-		"addRequestType": "Thêm loại yêu cầu",
-		"editRequestType": "Sửa loại yêu cầu",
+		"detailTitle": "Chi tiết Loại tờ trình",
+		"addRequestType": "Thêm loại tờ trình",
+		"editRequestType": "Sửa loại tờ trình",
 		"basicInfo": "Thông tin cơ bản",
 		"tabs": {
 			"general": "Thông tin chung",
