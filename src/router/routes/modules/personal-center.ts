@@ -1,5 +1,5 @@
 import type { AppRouteRecordRaw } from "#src/router/types";
-import { ProfileCardIcon, RiAccountCircleLine, RiUserSettingsLine } from "#src/icons";
+import { ProfileCardIcon } from "#src/icons";
 import ContainerLayout from "#src/layout/container-layout";
 import { $t } from "#src/locales";
 import { personalCenter } from "#src/router/extra-info";
@@ -7,16 +7,16 @@ import { personalCenter } from "#src/router/extra-info";
 import { createElement, lazy } from "react";
 
 const MyProfile = lazy(() => import("#src/pages/personal-center/my-profile"));
-const Settings = lazy(() => import("#src/pages/personal-center/settings"));
 
+/** Hồ sơ cá nhân — một mục đơn (đồng bộ với route trả về từ backend) */
 const routes: AppRouteRecordRaw[] = [
 	{
 		path: "/personal-center",
 		Component: ContainerLayout,
 		handle: {
 			order: personalCenter,
-			title: $t("common.menu.personalCenter"),
-			icon: createElement(RiAccountCircleLine),
+			title: $t("common.menu.profile"),
+			icon: createElement(ProfileCardIcon),
 		},
 		children: [
 			{
@@ -25,14 +25,6 @@ const routes: AppRouteRecordRaw[] = [
 				handle: {
 					title: $t("common.menu.profile"),
 					icon: createElement(ProfileCardIcon),
-				},
-			},
-			{
-				path: "/personal-center/settings",
-				Component: Settings,
-				handle: {
-					title: $t("common.menu.settings"),
-					icon: createElement(RiUserSettingsLine),
 				},
 			},
 		],

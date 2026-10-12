@@ -24,7 +24,7 @@ export function firstAdminPath(menus: MenuItemType[]) {
 
 /**
  * Tách menu theo khu vực.
- * - Menu chính: bỏ các nhóm quản trị, thêm mục "Quản trị hệ thống" (trước Trung tâm cá nhân nếu có).
+ * - Menu chính: bỏ các nhóm quản trị, thêm mục "Quản trị hệ thống" (trước Hồ sơ cá nhân nếu có).
  * - Menu quản trị: dòng "Quay lại trang chủ" + các nhóm quản trị (đóng/mở như menu chính).
  */
 export function scopeMenus(menus: MenuItemType[], options: { admin: boolean, t: (key: string) => string }): MenuItemType[] {
@@ -39,6 +39,6 @@ export function scopeMenus(menus: MenuItemType[], options: { admin: boolean, t: 
 
 	const entry: MenuItemType = { key: ADMIN_ENTRY_KEY, label: options.t("common.menu.administration"), icon: <SettingOutlined /> };
 	const main = menus.filter(item => !isAdminRoot(item.key));
-	const at = main.findIndex(item => item.key === "/personal-center");
+	const at = main.findIndex(item => item.key.startsWith("/personal-center"));
 	return at < 0 ? [...main, entry] : [...main.slice(0, at), entry, ...main.slice(at)];
 }
