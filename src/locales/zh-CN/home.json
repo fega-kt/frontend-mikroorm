@@ -14,7 +14,6 @@
 	"unit": {
 		"request": "个申请"
 	},
-
 	"kpi": {
 		"pending": "待我审批",
 		"pendingNote": "{{count}} 个已等待超过 2 天",
@@ -25,15 +24,14 @@
 		"approvalRate": "通过率",
 		"approvalRateNote": "本月驳回 {{rejected}} · 退回 {{returned}}"
 	},
-
 	"requestType": {
 		"leave": "请假",
 		"advance": "预支",
 		"purchase": "采购",
 		"trip": "出差",
-		"payment": "付款"
+		"payment": "付款",
+		"other": "其他"
 	},
-
 	"pending": {
 		"title": "待我审批",
 		"sortHint": "按等待时间排序",
@@ -48,7 +46,6 @@
 		"rejectedMsg": "已驳回「{{title}}」",
 		"viewAll": "查看全部待审批"
 	},
-
 	"myRequests": {
 		"title": "我的申请",
 		"filter": {
@@ -58,7 +55,7 @@
 		},
 		"status": {
 			"draft": "草稿",
-			"in_progress": "审批中",
+			"pending": "审批中",
 			"approved": "已通过",
 			"rejected": "已驳回",
 			"returned": "已退回",
@@ -69,7 +66,6 @@
 		"empty": "暂无申请",
 		"viewAll": "查看我的全部申请"
 	},
-
 	"delegation": {
 		"title": "委托",
 		"outgoing": "你正在委托",
@@ -77,7 +73,6 @@
 		"until": "至 {{date}}",
 		"empty": "暂无生效的委托"
 	},
-
 	"avgTime": {
 		"title": "平均审批时长",
 		"unit": "天 / 步",
@@ -85,7 +80,6 @@
 		"slower": "慢了 {{days}} 天",
 		"days": "{{days}} 天"
 	},
-
 	"activity": {
 		"title": "审批动态",
 		"kind": {
@@ -96,7 +90,6 @@
 			"delegated": "委托审批给"
 		}
 	},
-
 	"pet": {
 		"label": "zhizhu 小猫 — 点我加油",
 		"cheers": [

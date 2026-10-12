@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { useMatches, useNavigate } from "react-router";
 
 import { useLayout } from "../hooks";
+import { ADMIN_BACK_KEY, ADMIN_ENTRY_KEY, firstAdminPath, isAdminPath, scopeMenus } from "./admin-scope";
 import { findDeepestFirstItem, findRootMenuByPath, translateMenus } from "./utils";
 
 export function useMenu() {
@@ -16,7 +17,7 @@ export function useMenu() {
 	const { isMixedNav, isTwoColumnNav } = useLayout();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const translatedMenus = translateMenus(wholeMenus, t);
+	const allMenus = useMemo(() => translateMenus(wholeMenus, t), [wholeMenus, t]);
 
 	const { pathname } = useCurrentRoute();
 	const matches = useMatches();
@@ -26,6 +27,14 @@ export function useMenu() {
 	const shouldSplitMenuItems = useMemo(
 		() => isMixedNav || isTwoColumnNav,
 		[isMixedNav, isTwoColumnNav],
+	);
+
+	/** Đang ở khu quản trị (theo currentActiveMenu nếu có, không thì theo pathname) → sidebar hiện menu quản trị */
+	const activePath = removeTrailingSlash(matches.findLast(m => m.handle?.currentActiveMenu)?.handle?.currentActiveMenu ?? pathname);
+	const inAdminScope = isAdminPath(activePath);
+	const translatedMenus = useMemo(
+		() => scopeMenus(allMenus, { admin: inAdminScope, t }),
+		[allMenus, inAdminScope, t],
 	);
 
 	/**
@@ -45,7 +54,7 @@ export function useMenu() {
 
 		const { rootMenuPath } = findRootMenuByPath(translatedMenus, targetPath);
 		return rootMenuPath ?? "";
-	}, [shouldSplitMenuItems, pathname, matches]);
+	}, [shouldSplitMenuItems, pathname, matches, translatedMenus]);
 
 	/* 混合菜单模式下需要拆分 menu 的 items */
 	const splitSideNavItems = useMemo(
@@ -86,6 +95,16 @@ export function useMenu() {
 	 * 菜单点击事件处理
 	 */
 	const handleMenuSelect = (key: string, mode: MenuProps["mode"]) => {
+		if (key === ADMIN_BACK_KEY) {
+			navigate(import.meta.env.VITE_BASE_HOME_PATH || "/home");
+			return;
+		}
+		if (key === ADMIN_ENTRY_KEY) {
+			const target = firstAdminPath(allMenus);
+			if (target)
+				navigate(target);
+			return;
+		}
 		if (key === removeTrailingSlash(pathname)) {
 			return;
 		}

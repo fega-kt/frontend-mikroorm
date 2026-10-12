@@ -1,4 +1,4 @@
-import type { RequestTypeEntity } from "#src/api/setting/request-type";
+import type { FormField, RequestTypeEntity } from "#src/api/setting/request-type";
 import type { FullscreenModalRef } from "#src/components/fullscreen-modal";
 import type { Tab } from "./tab-bar";
 import { requestTypeService, RequestTypeStatus } from "#src/api/setting/request-type";
@@ -7,6 +7,7 @@ import { Button, Form, Spin, Tag } from "antd";
 import * as React from "react";
 import { useImperativeHandle, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { validateFormSchema } from "../form-schema";
 import { FormDocTab } from "./form-doc-tab";
 import { GeneralTab } from "./general-tab";
 import { Header } from "./header";
@@ -39,6 +40,7 @@ export function Detail({ ref }: DetailProps) {
 	const [submitting, setSubmitting] = useState(false);
 	const [editingId, setEditingId] = useState<string | null>(null);
 	const [activeTab, setActiveTab] = useState("general");
+	const [formSchema, setFormSchema] = useState<FormField[]>([]);
 
 	const watchedName = Form.useWatch("name", form);
 	const watchedStatus = Form.useWatch("status", form);
@@ -48,12 +50,14 @@ export function Detail({ ref }: DetailProps) {
 			form.resetFields();
 			setEditingId(id ?? null);
 			setActiveTab("general");
+			setFormSchema([]);
 			modalRef.current?.open();
 			if (id) {
 				setLoading(true);
 				try {
 					const data = await requestTypeService.fetchRequestTypeItem(id);
 					form.setFieldsValue(data);
+					setFormSchema(data.formSchema ?? []);
 				}
 				catch {
 					window.$message?.error(t("common.fetchError"));
@@ -68,7 +72,14 @@ export function Detail({ ref }: DetailProps) {
 		},
 	}));
 
-	const onFinish = async (values: RequestTypeEntity) => {
+	const onFinish = async (formValues: RequestTypeEntity) => {
+		const schemaError = validateFormSchema(formSchema, t);
+		if (schemaError) {
+			setActiveTab("formDoc");
+			window.$message?.error(schemaError);
+			return;
+		}
+		const values = { ...formValues, formSchema };
 		setSubmitting(true);
 		try {
 			if (editingId) {
@@ -116,7 +127,7 @@ export function Detail({ ref }: DetailProps) {
 
 	const tabs: Tab[] = [
 		{ key: "general", label: t("setting.requestType.tabs.general"), children: <GeneralTab form={form} onFinish={onFinish} /> },
-		{ key: "formDoc", label: t("setting.requestType.tabs.formDoc"), children: <FormDocTab /> },
+		{ key: "formDoc", label: t("setting.requestType.tabs.formDoc"), children: <FormDocTab value={formSchema} onChange={setFormSchema} /> },
 		{ key: "permission", label: t("setting.requestType.tabs.permission"), children: <PermissionTab /> },
 		{ key: "workflow", label: t("setting.requestType.tabs.workflow"), children: <WorkflowTab /> },
 		{ key: "integration", label: t("setting.requestType.tabs.integration"), children: <IntegrationTab /> },

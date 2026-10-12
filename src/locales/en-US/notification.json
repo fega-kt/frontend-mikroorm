@@ -10,5 +10,37 @@
 	"LOGIN_NEW_DEVICE": {
 		"title": "New device sign-in",
 		"message": "Your account was just signed in on {{browser}} ({{os}}), IP {{ip}}. If this wasn't you, change your password immediately."
+	},
+	"APPROVAL_PENDING": {
+		"title": "Request awaiting your approval",
+		"message": "{{code}} {{title}} is waiting for your approval ({{step}})."
+	},
+	"APPROVAL_APPROVED": {
+		"title": "Request approved",
+		"message": "Request {{code}} {{title}} has been fully approved."
+	},
+	"APPROVAL_REJECTED": {
+		"title": "Request rejected",
+		"message": "Request {{code}} {{title}} was rejected at {{step}}."
+	},
+	"APPROVAL_RETURNED": {
+		"title": "Request returned",
+		"message": "Request {{code}} {{title}} was returned for changes ({{step}})."
+	},
+	"APPROVAL_CANCELLED": {
+		"title": "Request cancelled",
+		"message": "Request {{code}} {{title}} was cancelled by the requester."
+	},
+	"APPROVAL_REMINDER": {
+		"title": "Overdue approval reminder",
+		"message": "{{code}} {{title}} is overdue ({{step}})."
+	},
+	"APPROVAL_ESCALATED": {
+		"title": "Request escalated to you",
+		"message": "{{code}} {{title}} was overdue and escalated to you ({{step}})."
+	},
+	"APPROVAL_NOTIFY": {
+		"title": "Request update",
+		"message": "{{code}} {{title}} — {{step}}."
 	}
 }

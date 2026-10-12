@@ -14,7 +14,6 @@
 	"unit": {
 		"request": "requests"
 	},
-
 	"kpi": {
 		"pending": "Awaiting my approval",
 		"pendingNote": "{{count}} waiting over 2 days",
@@ -25,15 +24,14 @@
 		"approvalRate": "Approval rate",
 		"approvalRateNote": "{{rejected}} rejected · {{returned}} returned this month"
 	},
-
 	"requestType": {
 		"leave": "Leave",
 		"advance": "Advance",
 		"purchase": "Purchase",
 		"trip": "Business trip",
-		"payment": "Payment"
+		"payment": "Payment",
+		"other": "Other"
 	},
-
 	"pending": {
 		"title": "Awaiting my approval",
 		"sortHint": "Sorted by waiting time",
@@ -48,7 +46,6 @@
 		"rejectedMsg": "Rejected \"{{title}}\"",
 		"viewAll": "View all pending approvals"
 	},
-
 	"myRequests": {
 		"title": "My requests",
 		"filter": {
@@ -58,7 +55,7 @@
 		},
 		"status": {
 			"draft": "Draft",
-			"in_progress": "In review",
+			"pending": "In review",
 			"approved": "Approved",
 			"rejected": "Rejected",
 			"returned": "Returned",
@@ -69,7 +66,6 @@
 		"empty": "No requests",
 		"viewAll": "View all my requests"
 	},
-
 	"delegation": {
 		"title": "Delegation",
 		"outgoing": "You are delegating to",
@@ -77,7 +73,6 @@
 		"until": "until {{date}}",
 		"empty": "No active delegation"
 	},
-
 	"avgTime": {
 		"title": "Average approval time",
 		"unit": "days / step",
@@ -85,7 +80,6 @@
 		"slower": "{{days}} days slower",
 		"days": "{{days}} d"
 	},
-
 	"activity": {
 		"title": "Approval activity",
 		"kind": {
@@ -96,7 +90,6 @@
 			"delegated": "delegated approval to"
 		}
 	},
-
 	"pet": {
 		"label": "zhizhu cat — click for a cheer",
 		"cheers": [

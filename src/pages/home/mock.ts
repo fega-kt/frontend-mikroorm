@@ -1,12 +1,16 @@
-import { WorkflowInstanceStatus } from "#src/api/workflow-instance/types";
-import dayjs from "dayjs";
+import { ApprovalRequestStatus as RequestStatus } from "#src/api/approval-request/types";
 
 /**
  * Dữ liệu giả cho dashboard phê duyệt — chưa có API thống kê.
- * TODO: thay bằng workflowTaskService.fetchMyTasks / workflowInstanceService / delegation setting / API thống kê khi BE sẵn sàng.
+ * Đơn chờ duyệt / đơn của tôi / ủy quyền đã lấy từ API (use-approval-dashboard.ts).
+ * TODO: thống kê tháng, thời gian duyệt trung bình và hoạt động gần đây — chưa có API.
  */
 
-export type RequestTypeCode = "leave" | "advance" | "purchase" | "trip" | "payment";
+import dayjs from "dayjs";
+
+export { RequestStatus };
+
+export type RequestTypeCode = "leave" | "advance" | "purchase" | "trip" | "payment" | "other";
 
 export interface PendingApproval {
 	id: string
@@ -27,7 +31,7 @@ export interface MyRequest {
 	type: RequestTypeCode
 	title: string
 	submittedAt: string
-	status: WorkflowInstanceStatus
+	status: RequestStatus
 	steps: ApprovalStep[]
 	/** Vị trí bước hiện tại (bằng steps.length khi đã hoàn tất) */
 	currentStep: number
@@ -53,29 +57,6 @@ export interface ApprovalActivity {
 }
 
 const ago = (value: number, unit: dayjs.ManipulateType) => dayjs().subtract(value, unit).toISOString();
-
-export const MOCK_PENDING: PendingApproval[] = [
-	{ id: "p1", type: "purchase", title: "Mua 5 màn hình cho phòng Thiết kế", requesterId: "u-ha", requesterName: "Lê Hoàng Hà", stepName: "Trưởng phòng duyệt", createdAt: ago(3, "day") },
-	{ id: "p2", type: "advance", title: "Tạm ứng chi phí sự kiện tháng 10", requesterId: "u-long", requesterName: "Phạm Văn Long", stepName: "Kế toán duyệt", createdAt: ago(2, "day") },
-	{ id: "p3", type: "trip", title: "Công tác Đà Nẵng gặp khách hàng", requesterId: "u-tuan", requesterName: "Trần Minh Tuấn", stepName: "Trưởng phòng duyệt", createdAt: ago(1, "day") },
-	{ id: "p4", type: "leave", title: "Nghỉ phép 13/10 – 14/10", requesterId: "u-nhung", requesterName: "Nguyễn Thị Nhung", stepName: "Quản lý trực tiếp", createdAt: ago(5, "hour") },
-	{ id: "p5", type: "payment", title: "Thanh toán hóa đơn hosting quý 4", requesterId: "u-quan", requesterName: "Đỗ Quân", stepName: "Giám đốc duyệt", createdAt: ago(2, "hour") },
-];
-
-export const MOCK_MY_REQUESTS: MyRequest[] = [
-	{ id: "r1", type: "trip", title: "Công tác Hà Nội hội thảo DevOps", submittedAt: ago(3, "day"), status: WorkflowInstanceStatus.InProgress, steps: [{ name: "Quản lý" }, { name: "Trưởng phòng" }, { name: "Giám đốc" }], currentStep: 2, note: "Đang chờ Giám đốc" },
-	{ id: "r2", type: "purchase", title: "Mua license JetBrains cho team", submittedAt: ago(2, "day"), status: WorkflowInstanceStatus.InProgress, steps: [{ name: "Trưởng phòng" }, { name: "Kế toán" }, { name: "Giám đốc" }], currentStep: 1, note: "Đang chờ Kế toán" },
-	{ id: "r3", type: "leave", title: "Nghỉ phép 20/10", submittedAt: ago(3, "hour"), status: WorkflowInstanceStatus.InProgress, steps: [{ name: "Quản lý" }, { name: "Nhân sự" }], currentStep: 0, note: "Đang chờ Quản lý" },
-	{ id: "r4", type: "advance", title: "Tạm ứng mua thiết bị test", submittedAt: ago(5, "day"), status: WorkflowInstanceStatus.Returned, steps: [{ name: "Trưởng phòng" }, { name: "Kế toán" }], currentStep: 1, note: "Thiếu báo giá, cần bổ sung" },
-	{ id: "r5", type: "leave", title: "Nghỉ phép 02/10", submittedAt: ago(13, "day"), status: WorkflowInstanceStatus.Approved, steps: [{ name: "Quản lý" }, { name: "Nhân sự" }], currentStep: 2, note: "Hoàn tất" },
-	{ id: "r6", type: "payment", title: "Thanh toán khóa học AWS", submittedAt: ago(21, "day"), status: WorkflowInstanceStatus.Approved, steps: [{ name: "Trưởng phòng" }, { name: "Kế toán" }, { name: "Giám đốc" }], currentStep: 3, note: "Hoàn tất" },
-	{ id: "r7", type: "purchase", title: "Mua ghế công thái học", submittedAt: ago(26, "day"), status: WorkflowInstanceStatus.Rejected, steps: [{ name: "Trưởng phòng" }, { name: "Kế toán" }, { name: "Giám đốc" }], currentStep: 2, note: "Từ chối bởi Giám đốc" },
-];
-
-export const MOCK_DELEGATION: { outgoing?: Delegation, incoming?: Delegation } = {
-	outgoing: { userId: "u-nhung", fullName: "Nguyễn Thị Nhung", scope: "Nghỉ phép, Công tác", fromDate: ago(1, "day"), toDate: dayjs().add(6, "day").toISOString() },
-	incoming: { userId: "u-tuan", fullName: "Trần Minh Tuấn", scope: "Tất cả loại yêu cầu", toDate: dayjs().add(9, "day").toISOString() },
-};
 
 export const MOCK_STATS = {
 	approvedThisMonth: 42,

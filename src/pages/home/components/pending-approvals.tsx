@@ -3,7 +3,7 @@ import type { PendingApproval } from "../mock";
 import { getAvatarColor } from "#src/utils/avatar";
 
 import { ClockCircleOutlined } from "@ant-design/icons";
-import { Avatar, Button, Popconfirm, Tag, theme } from "antd";
+import { Avatar, Button, Tag, theme } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
@@ -47,7 +47,7 @@ export function PendingApprovals({ items, results, onAction }: PendingApprovalsP
 				</div>
 			)}
 			extra={<span className="text-xs font-normal text-colorTextTertiary">{t("home.pending.sortHint")}</span>}
-			footerLink={{ to: "/setting/my-tasks", label: t("home.pending.viewAll") }}
+			footerLink={{ to: "/approval/review/pending", label: t("home.pending.viewAll") }}
 		>
 			{items.map((item) => {
 				const result = results[item.id];
@@ -94,9 +94,7 @@ export function PendingApprovals({ items, results, onAction }: PendingApprovalsP
 								)
 								: (
 									<>
-										<Popconfirm title={t("home.pending.rejectConfirm")} onConfirm={() => onAction(item, "rejected")}>
-											<Button danger>{t("home.pending.reject")}</Button>
-										</Popconfirm>
+										<Button danger onClick={() => onAction(item, "rejected")}>{t("home.pending.reject")}</Button>
 										<Button type="primary" onClick={() => onAction(item, "approved")}>{t("home.pending.approve")}</Button>
 									</>
 								)}

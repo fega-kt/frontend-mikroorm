@@ -1,0 +1,265 @@
+{
+	"title": "流程",
+	"unsaved": "有未保存的更改",
+	"savedAt": "已于 {{time}} 保存",
+	"actions": {
+		"simulate": "试运行",
+		"saveDraft": "保存草稿",
+		"publish": "发布",
+		"autoLayout": "自动排列",
+		"zoomReset": "恢复 100%",
+		"deleteStep": "删除步骤",
+		"duplicate": "复制",
+		"save": "保存",
+		"restore": "恢复为草稿",
+		"addBranch": "添加分支",
+		"addApprover": "添加审批人",
+		"addRecipient": "添加接收人",
+		"insertStep": "插入步骤",
+		"close": "关闭",
+		"back": "返回",
+		"leave": "离开"
+	},
+	"messages": {
+		"saved": "草稿已保存",
+		"settingsSaved": "适用范围已保存",
+		"noDraft": "没有可发布的草稿",
+		"invalid": "流程还有 {{count}} 个错误，请修正后再发布",
+		"publishConfirmTitle": "发布此流程？",
+		"publishConfirmContent": "草稿 v{{version}} 将应用于新提交的申请。进行中的申请仍使用旧版本。",
+		"published": "已发布 v{{version}}",
+		"leaveConfirmTitle": "未保存就离开？",
+		"leaveConfirmContent": "未保存的更改将会丢失。",
+		"restoreConfirmTitle": "将 v{{version}} 恢复为草稿？",
+		"restoreConfirmContent": "此版本的内容将复制到当前草稿。",
+		"restoreConfirmDirty": "此版本的内容将覆盖草稿，屏幕上未保存的更改将会丢失。",
+		"restored": "已将 v{{version}} 恢复为草稿",
+		"loadFailed": "无法加载流程"
+	},
+	"version": {
+		"label": "v{{version}} · {{status}}",
+		"draft": "草稿",
+		"published": "生效中",
+		"archived": "已归档",
+		"editingTag": "编辑中",
+		"live": "生效",
+		"editingPublishedHint": "暂无草稿 — 保存更改将基于生效版本创建新草稿"
+	},
+	"versions": {
+		"title": "版本",
+		"empty": "暂无版本",
+		"preview": "版本 v{{version}} · {{status}}",
+		"publishedAt": "发布时间",
+		"publishedBy": "发布人",
+		"updatedAt": "更新时间"
+	},
+	"palette": {
+		"title": "组件",
+		"hint": "拖到画布中以添加步骤",
+		"clickToAdd": "拖到画布或点击添加",
+		"items": {
+			"approval": {
+				"title": "审批人",
+				"desc": "负责人、副职或指定人员"
+			},
+			"condition": {
+				"title": "条件",
+				"desc": "根据申请数据分支"
+			},
+			"parallel": {
+				"title": "并行审批",
+				"desc": "多人同时审批"
+			},
+			"notify": {
+				"title": "通知",
+				"desc": "邮件或站内通知"
+			},
+			"end": {
+				"title": "结束",
+				"desc": "结束流程"
+			}
+		}
+	},
+	"applyTo": {
+		"title": "适用于",
+		"requestType": "申请类型",
+		"department": "部门",
+		"allDepartments": "全部",
+		"priority": "优先级",
+		"priorityHint": "多个流程同时匹配一个申请时，选择优先级数值更大的流程",
+		"active": "启用"
+	},
+	"nodeTypes": {
+		"start": "开始",
+		"approval": "审批步骤",
+		"condition": "条件",
+		"parallel": "并行审批",
+		"notify": "通知",
+		"end": "结束"
+	},
+	"defaultNames": {
+		"start": "提交申请",
+		"approval": "审批步骤",
+		"condition": "条件",
+		"parallel": "并行审批",
+		"notify": "发送通知",
+		"end": "结束"
+	},
+	"approverType": {
+		"DEPT_HEAD": "部门负责人",
+		"DEPT_DEPUTY": "部门副职",
+		"SPECIFIC_USER": "指定人员（旧）",
+		"PRINCIPAL": "指定人员 / 群组"
+	},
+	"overdue": {
+		"REMIND": "仅提醒",
+		"REMIND_THEN_ESCALATE": "提醒后升级",
+		"AUTO_APPROVE": "自动通过"
+	},
+	"parallelMode": {
+		"ALL": "全部",
+		"ANY": "任一"
+	},
+	"parallelModeDesc": {
+		"ALL": "所有人都需同意",
+		"ANY": "一人同意即可"
+	},
+	"channels": {
+		"EMAIL": "邮件",
+		"IN_APP": "站内"
+	},
+	"operators": {
+		"gt": "大于",
+		"gte": "大于等于",
+		"lt": "小于",
+		"lte": "小于等于",
+		"eq": "等于",
+		"neq": "不等于",
+		"in": "属于"
+	},
+	"summary": {
+		"start": "申请人提交",
+		"sla": "时限 {{hours}} 小时",
+		"noApprover": "未选择审批人",
+		"noChannel": "未选择渠道",
+		"requester": "申请人",
+		"branches": "{{count}} 个分支",
+		"and": "且",
+		"or": "或"
+	},
+	"edge": {
+		"default": "默认",
+		"branch": "分支 {{index}}",
+		"yes": "是",
+		"no": "否"
+	},
+	"footer": {
+		"stats": "{{steps}} 个步骤 · {{branches}} 个条件分支",
+		"valid": "有效",
+		"errors": "{{count}} 个错误",
+		"errorsTitle": "需要修正的错误",
+		"global": "整个流程"
+	},
+	"inspector": {
+		"empty": "在画布上选择一个步骤或分支进行编辑",
+		"branchOf": "分支“{{label}}”",
+		"onlyWhen": "仅当 {{cond}} 时执行",
+		"runsByDefault": "当其他分支都不匹配时执行",
+		"name": "步骤名称",
+		"approver": "审批人",
+		"selectUser": "选择用户",
+		"sla": "处理时限",
+		"hours": "小时",
+		"onOverdue": "超时处理",
+		"options": "选项",
+		"opt": {
+			"allowDelegation": "允许委托审批",
+			"skipIfRequester": "审批人为申请人时跳过",
+			"skipIfNoApprover": "找不到审批人时跳过",
+			"requireRejectReason": "驳回时必须填写原因",
+			"allowReturn": "允许退回补充"
+		},
+		"mode": "审批方式",
+		"approvers": "审批人",
+		"channels": "通知渠道",
+		"recipients": "接收人",
+		"recipientsHint": "留空 = 仅通知申请人",
+		"message": "通知内容",
+		"branches": "分支",
+		"branchLabel": "分支名称",
+		"isDefault": "默认（其余情况）",
+		"condition": "条件",
+		"edgeTitle": "条件分支",
+		"plainEdge": "连线",
+		"plainEdgeHint": "普通步骤之间的连线没有条件。只有从条件步骤发出的分支才需要条件。",
+		"deleteEdge": "删除连线",
+		"startHint": "申请人提交申请时流程开始。",
+		"endHint": "到达结束步骤时申请审批完成。",
+		"selectPrincipal": "选择用户或群组",
+		"principalHint": "选择群组：所有成员都会收到任务，任一成员审批即可。"
+	},
+	"condition": {
+		"field": "字段",
+		"value": "值",
+		"addRow": "添加条件",
+		"matchAll": "全部 (AND)",
+		"matchAny": "任一 (OR)",
+		"builder": "构建器",
+		"rawJson": "JSON",
+		"invalidJson": "JSON 无效",
+		"noFields": "此申请类型的表单没有字段 — 可以用 JSON (json-logic) 填写条件，变量格式为 payload.<key>。",
+		"notRepresentable": "表达式较复杂，只能以 JSON 方式编辑",
+		"empty": "暂无条件",
+		"true": "是",
+		"false": "否"
+	},
+	"simulate": {
+		"title": "试运行流程",
+		"usesUnsaved": "基于屏幕上正在编辑的内容运行（无需先保存）。关闭面板前，路径会在画布上高亮显示。",
+		"requester": "申请人",
+		"requesterHint": "留空 = 你自己",
+		"payload": "示例申请数据",
+		"noFields": "此申请类型的表单没有字段",
+		"run": "运行",
+		"result": "结果",
+		"approved": "申请到达结束步骤",
+		"blocked": "流程被阻塞 — 请查看下方出错的步骤",
+		"skipped": "已跳过",
+		"noApprover": "找不到审批人",
+		"stepErrors": {
+			"NO_APPROVER": "找不到审批人",
+			"INACTIVE_USER": "审批人已停用"
+		}
+	},
+	"graph": {
+		"status": {
+			"done": "已完成",
+			"current": "处理中",
+			"rejected": "已驳回",
+			"returned": "已退回",
+			"skipped": "已跳过",
+			"pending": "未到达"
+		}
+	},
+	"errors": {
+		"DUPLICATE_NODE_ID": "步骤 ID 重复",
+		"UNKNOWN_EDGE_NODE": "连线指向不存在的步骤",
+		"START_COUNT": "流程必须有且只有一个开始步骤",
+		"NO_END": "流程至少需要一个结束步骤",
+		"START_HAS_INCOMING": "开始步骤不能有进入的连线",
+		"END_HAS_OUTGOING": "结束步骤不能有发出的连线",
+		"UNREACHABLE": "无法从开始步骤到达此步骤",
+		"DEAD_END": "此步骤无法到达结束步骤",
+		"CYCLE": "此步骤处于循环中",
+		"SINGLE_OUTGOING": "此步骤必须有且只有一条发出的连线",
+		"CONDITION_OUTGOING": "条件至少需要 2 个分支",
+		"CONDITION_DEFAULT": "条件需要且只能有一个默认分支",
+		"EDGE_MISSING_CONDITION": "非默认分支必须设置条件",
+		"EDGE_CONDITION_OUTSIDE_BRANCH": "只有从条件步骤发出的分支才能设置条件",
+		"MISSING_APPROVER": "审批步骤尚未设置审批人",
+		"PARALLEL_APPROVERS": "并行审批至少需要 2 位不同的审批人",
+		"UNKNOWN_FIELD": "条件使用了申请类型表单中不存在的字段",
+		"SLA_REQUIRED": "选择升级或自动通过时必须设置处理时限",
+		"INACTIVE_USER": "审批人已停用"
+	}
+}

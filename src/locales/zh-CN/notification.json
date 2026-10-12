@@ -10,5 +10,37 @@
 	"LOGIN_NEW_DEVICE": {
 		"title": "新设备登录",
 		"message": "您的账号刚刚在 {{browser}}（{{os}}）上登录，IP {{ip}}。如果不是您本人操作，请立即修改密码。"
+	},
+	"APPROVAL_PENDING": {
+		"title": "待您审批",
+		"message": "{{code}} {{title}} 等待您审批（{{step}}）。"
+	},
+	"APPROVAL_APPROVED": {
+		"title": "申请已通过",
+		"message": "申请 {{code}} {{title}} 已全部审批通过。"
+	},
+	"APPROVAL_REJECTED": {
+		"title": "申请被驳回",
+		"message": "申请 {{code}} {{title}} 在 {{step}} 被驳回。"
+	},
+	"APPROVAL_RETURNED": {
+		"title": "申请被退回",
+		"message": "申请 {{code}} {{title}} 被退回补充（{{step}}）。"
+	},
+	"APPROVAL_CANCELLED": {
+		"title": "申请已撤销",
+		"message": "申请 {{code}} {{title}} 已被申请人撤销。"
+	},
+	"APPROVAL_REMINDER": {
+		"title": "审批超时提醒",
+		"message": "{{code}} {{title}} 已超时（{{step}}）。"
+	},
+	"APPROVAL_ESCALATED": {
+		"title": "申请已升级给您",
+		"message": "{{code}} {{title}} 超时，已升级给您（{{step}}）。"
+	},
+	"APPROVAL_NOTIFY": {
+		"title": "申请通知",
+		"message": "{{code}} {{title}} — {{step}}。"
 	}
 }

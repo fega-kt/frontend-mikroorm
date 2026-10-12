@@ -1,0 +1,22 @@
+/* Hiệu ứng nhấp nháy cho bước đang xử lý (đồ thị theo dõi đơn) */
+@keyframes awf-pulse {
+	0% {
+		box-shadow: 0 0 0 0 var(--awf-pulse-color);
+	}
+	70% {
+		box-shadow: 0 0 0 10px transparent;
+	}
+	100% {
+		box-shadow: 0 0 0 0 transparent;
+	}
+}
+
+.awf-pulse {
+	animation: awf-pulse 1.8s ease-out infinite;
+}
+
+/* Kéo thả từ bảng thành phần: khung canvas sáng lên */
+.awf-drop-active .react-flow__pane {
+	outline: 2px dashed var(--awf-drop-color);
+	outline-offset: -6px;
+}

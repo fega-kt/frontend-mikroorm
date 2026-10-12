@@ -23,21 +23,6 @@ export enum PermissionType {
 	UpdateDeparment = "permission:department:update",
 	DeleteDeparment = "permission:department:delete",
 
-	/** ===== PROJECT ===== */
-	MenuProject = "permission:menu:project",
-	ViewProjectDetail = "permission:project:view",
-	CreateProject = "permission:project:create",
-	UpdateProject = "permission:project:update",
-	DeleteProject = "permission:project:delete",
-
-	/** ===== TASK ===== */
-	MenuTask = "permission:menu:task",
-	ViewTaskDetail = "permission:task:view",
-	CreateTask = "permission:task:create",
-	UpdateTask = "permission:task:update",
-	DeleteTask = "permission:task:delete",
-	AssignTask = "permission:task:assign",
-
 	/** ===== GROUP ===== */
 
 	/** vào menu group */
@@ -69,45 +54,30 @@ export enum PermissionType {
 	UpdateRequestType = "permission:request-type:update",
 	DeleteRequestType = "permission:request-type:delete",
 
-	/** ===== WORKFLOW SETTING ===== */
+	/** ===== APPROVAL WORKFLOW ===== */
 
-	MenuWorkflowSetting = "permission:menu:workflow-setting",
-	ViewWorkflowSettingDetail = "permission:workflow-setting:view",
-	CreateWorkflowSetting = "permission:workflow-setting:create",
-	UpdateWorkflowSetting = "permission:workflow-setting:update",
-	DeleteWorkflowSetting = "permission:workflow-setting:delete",
-	DeployWorkflowSetting = "permission:workflow-setting:deploy",
+	/** vào menu quy trình phê duyệt (danh sách + thiết kế) */
+	MenuApprovalWorkflow = "permission:menu:approval-workflow",
 
-	/** ===== WORKFLOW INSTANCE ===== */
+	/** tạo quy trình phê duyệt */
+	CreateApprovalWorkflow = "permission:approval-workflow:create",
 
-	MenuWorkflowInstance = "permission:menu:workflow-instance",
-	ViewWorkflowInstanceDetail = "permission:workflow-instance:view",
-	CreateWorkflowInstance = "permission:workflow-instance:create",
-	UpdateWorkflowInstance = "permission:workflow-instance:update",
-	CancelWorkflowInstance = "permission:workflow-instance:cancel",
-	RequestToCancelWorkflowInstance = "permission:workflow-instance:request-to-cancel",
-	ApproveCancellationWorkflowInstance = "permission:workflow-instance:approve-cancellation",
-	RejectCancellationWorkflowInstance = "permission:workflow-instance:reject-cancellation",
+	/** sửa thông tin + lưu bản nháp quy trình */
+	UpdateApprovalWorkflow = "permission:approval-workflow:update",
 
-	/** ===== WORKFLOW TASK ===== */
+	/** xuất bản phiên bản quy trình */
+	PublishApprovalWorkflow = "permission:approval-workflow:publish",
 
-	MenuWorkflowTask = "permission:menu:workflow-task",
-	ViewWorkflowTaskDetail = "permission:workflow-task:view",
-	ApproveWorkflowTask = "permission:workflow-task:approve",
-	RejectWorkflowTask = "permission:workflow-task:reject",
-	ReturnWorkflowTask = "permission:workflow-task:return",
-	RequestChangeWorkflowTask = "permission:workflow-task:request-change",
-	ApplyChangeWorkflowTask = "permission:workflow-task:apply-change",
-	RequestReviewWorkflowTask = "permission:workflow-task:request-review",
-	SubmitReviewWorkflowTask = "permission:workflow-task:submit-review",
+	/** xóa quy trình phê duyệt */
+	DeleteApprovalWorkflow = "permission:approval-workflow:delete",
 
-	/** ===== WORKFLOW DELEGATION SETTING ===== */
+	/** ===== APPROVAL REQUEST (quản trị) ===== */
 
-	MenuWorkflowDelegationSetting = "permission:menu:workflow-delegation-setting",
-	ViewWorkflowDelegationSettingDetail = "permission:workflow-delegation-setting:view",
-	CreateWorkflowDelegationSetting = "permission:workflow-delegation-setting:create",
-	UpdateWorkflowDelegationSetting = "permission:workflow-delegation-setting:update",
-	DeleteWorkflowDelegationSetting = "permission:workflow-delegation-setting:delete",
+	/** vào menu tất cả đơn + xem chi tiết mọi đơn */
+	MenuAllApprovalRequest = "permission:menu:approval-request-all",
+
+	/** gán lại người duyệt của bước đang chờ */
+	ReassignApprovalTask = "permission:approval-task:reassign",
 
 	/** ===== APP SETTING ===== */
 

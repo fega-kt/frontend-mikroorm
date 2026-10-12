@@ -2,9 +2,9 @@ import type { GlobalToken } from "antd";
 import type { ReactNode } from "react";
 import type { RequestTypeCode } from "./mock";
 
-import { CalendarOutlined, CarOutlined, CreditCardOutlined, ShoppingCartOutlined, WalletOutlined } from "@ant-design/icons";
+import { CalendarOutlined, CarOutlined, CreditCardOutlined, FileTextOutlined, ShoppingCartOutlined, WalletOutlined } from "@ant-design/icons";
 
-type PresetColor = "cyan" | "gold" | "purple" | "blue" | "magenta";
+type PresetColor = "cyan" | "gold" | "purple" | "blue" | "magenta" | "geekblue";
 
 /** Màu tag theo loại yêu cầu — dùng preset color của antd để tự đổi theo theme */
 export const REQUEST_TYPE_COLOR: Record<RequestTypeCode, PresetColor> = {
@@ -13,6 +13,7 @@ export const REQUEST_TYPE_COLOR: Record<RequestTypeCode, PresetColor> = {
 	purchase: "purple",
 	trip: "blue",
 	payment: "magenta",
+	other: "geekblue",
 };
 
 export const REQUEST_TYPE_ICON: Record<RequestTypeCode, ReactNode> = {
@@ -21,6 +22,7 @@ export const REQUEST_TYPE_ICON: Record<RequestTypeCode, ReactNode> = {
 	purchase: <ShoppingCartOutlined />,
 	trip: <CarOutlined />,
 	payment: <CreditCardOutlined />,
+	other: <FileTextOutlined />,
 };
 
 /** Bộ màu (chữ / nền / viền) của loại yêu cầu lấy từ dải màu preset trong token (vd cyan6, cyan1, cyan3) */

@@ -97,7 +97,7 @@ export function GreetingBanner({ pendingCount, overdueCount, returnedCount, petR
 
 			<BannerPet ref={petRef} />
 
-			<Button className="relative" type="primary" size="large" icon={<PlusOutlined />} onClick={() => navigate("/setting/workflow-instance")}>
+			<Button className="relative" type="primary" size="large" icon={<PlusOutlined />} onClick={() => navigate("/approval/requests/new")}>
 				{t("home.createRequest")}
 			</Button>
 		</section>

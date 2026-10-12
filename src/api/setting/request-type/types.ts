@@ -8,6 +8,30 @@ export enum RequestTypeStatus {
 	Cancelled = "cancelled",
 }
 
+/** Kiểu trường trong form của loại đơn — đồng bộ với backend form-schema.ts */
+export enum FormFieldType {
+	Text = "text",
+	Textarea = "textarea",
+	Number = "number",
+	Money = "money",
+	Date = "date",
+	DateRange = "dateRange",
+	Select = "select",
+	Switch = "switch",
+}
+
+export interface FormField {
+	/** Tên trường trong payload, dùng trong điều kiện quy trình: { var: "payload.<key>" } */
+	key: string
+	label: string
+	type: FormFieldType
+	required?: boolean
+	options?: { label: string, value: string }[]
+	min?: number
+	max?: number
+	placeholder?: string
+}
+
 export interface RequestTypeSearchParams extends SearchParamsBase {
 	page?: number
 	limit?: number
@@ -24,4 +48,5 @@ export interface RequestTypeEntity extends EntityBase {
 	prefix: string
 	description?: string
 	status: RequestTypeStatus
+	formSchema?: FormField[]
 }
