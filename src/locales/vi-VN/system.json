@@ -19,7 +19,8 @@
 			"activity_log": "Theo dõi hoạt động",
 			"approval_workflow": "Quy trình phê duyệt",
 			"approval_request": "Quản trị tờ trình phê duyệt",
-			"email_template": "Mẫu email"
+			"email_template": "Mẫu email",
+			"activity_log_queue": "Hàng đợi gửi mail"
 		},
 		"permission": {
 			"user": "Người dùng",
@@ -40,7 +41,8 @@
 			"publish": "Xuất bản",
 			"approval-request-all": "Tất cả tờ trình",
 			"reassign": "Gán lại người duyệt",
-			"email-template": "Mẫu email"
+			"email-template": "Mẫu email",
+			"retry": "Gửi lại"
 		}
 	},
 	"appSetting": {
@@ -117,6 +119,10 @@
 			"content_focus_outline_enabled": {
 				"label": "Viền khung vùng nội dung",
 				"hint": "Bật: hiện viền đen quanh vùng nội dung chính khi vùng này được focus. Tắt: ẩn viền. Mặc định tắt nếu chưa cấu hình"
+			},
+			"outbox_retention_days": {
+				"label": "Số ngày giữ event outbox",
+				"hint": "Event đã đẩy lên RabbitMQ được tự động xoá sau số ngày này (event đang chờ / lỗi không bị xoá). Để trống hoặc 0 thì giữ vĩnh viễn"
 			}
 		}
 	},
@@ -224,6 +230,31 @@
 			"app_settings": "Tham số hệ thống",
 			"auth": "Xác thực",
 			"unknown": "Không xác định"
+		}
+	},
+	"mailQueue": {
+		"keyword": "Tìm kiếm",
+		"keywordPlaceholder": "Email người nhận / tiêu đề",
+		"type": "Loại email",
+		"recipient": "Người nhận",
+		"subject": "Tiêu đề",
+		"openRef": "Mở tờ trình",
+		"status": "Trạng thái",
+		"attempts": "Số lần thử",
+		"lastAttemptAt": "Lần thử gần nhất",
+		"error": "Lỗi / lý do",
+		"retry": "Gửi lại",
+		"confirmRetry": "Gửi lại email này?",
+		"confirmResend": "Email này đã gửi thành công. Vẫn gửi lại?",
+		"retryQueued": "Đã đưa email vào hàng đợi để gửi lại",
+		"retryFailed": "Không gửi lại được",
+		"filteredByRef": "Đang lọc theo tờ trình",
+		"statuses": {
+			"draft": "Chờ gửi",
+			"in_progress": "Đang gửi",
+			"completed": "Đã gửi",
+			"failed": "Lỗi",
+			"skipped": "Bỏ qua"
 		}
 	}
 }

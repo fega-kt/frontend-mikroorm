@@ -21,11 +21,13 @@
 	},
 	"APPROVAL_REJECTED": {
 		"title": "申请被驳回",
-		"message": "申请 {{code}} {{title}} 在 {{step}} 被驳回。"
+		"message": "申请 {{code}} {{title}} 在 {{step}} 被驳回。",
+		"message_withMessage": "申请 {{code}} {{title}} 已被驳回（{{step}}）。内容：“{{message}}”"
 	},
 	"APPROVAL_RETURNED": {
 		"title": "申请被退回",
-		"message": "申请 {{code}} {{title}} 被退回补充（{{step}}）。"
+		"message": "申请 {{code}} {{title}} 被退回补充（{{step}}）。",
+		"message_withMessage": "申请 {{code}} {{title}} 已被退回（{{step}}）。内容：“{{message}}”"
 	},
 	"APPROVAL_CANCELLED": {
 		"title": "申请已撤销",
@@ -44,5 +46,10 @@
 		"message": "您收到关于申请 {{code}} {{title}} 的通知（步骤：{{step}}）。",
 		"message_withMessage": "您收到关于申请 {{code}} {{title}} 的通知。内容：“{{message}}”",
 		"message_noStep": "您收到关于申请 {{code}} {{title}} 的通知。"
+	},
+	"APPROVAL_STEP_APPROVED": {
+		"title": "申请的某一步骤已审批通过",
+		"message": "申请 {{code}} {{title}} 的步骤 {{step}} 已审批通过。",
+		"message_withMessage": "申请 {{code}} {{title}} 的步骤 {{step}} 已审批通过。内容：“{{message}}”"
 	}
 }

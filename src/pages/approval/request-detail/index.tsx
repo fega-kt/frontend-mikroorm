@@ -7,6 +7,8 @@ import { ApprovalFlowGraph } from "#src/components/approval-flow-graph";
 import { BasicContent } from "#src/components/basic-content";
 import { PeoplePicker } from "#src/components/people-picker";
 import { SectionCard } from "#src/components/section-card";
+import { useAccess } from "#src/hooks/use-access";
+import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import {
 	ArrowLeftOutlined,
 	CheckOutlined,
@@ -15,6 +17,7 @@ import {
 	EditOutlined,
 	FileTextOutlined,
 	HistoryOutlined,
+	MailOutlined,
 	NodeIndexOutlined,
 	PaperClipOutlined,
 	ReloadOutlined,
@@ -43,6 +46,7 @@ const formatDate = (value?: string) => (value ? dayjs(value).format(DATE_TIME_FO
 export default function ApprovalRequestDetailPage() {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
+	const canViewMailQueue = useAccess().canAccess(PermissionType.ViewActivityLogQueue);
 	const { id } = useParams<{ id: string }>();
 	const actionModalRef = useRef<ActionModalRef>(null);
 	const [detail, setDetail] = useState<ApprovalRequestDetail>();
@@ -155,6 +159,9 @@ export default function ApprovalRequestDetailPage() {
 					</div>
 					<Space wrap>
 						<Button icon={<ReloadOutlined />} onClick={load} disabled={busy} />
+						{canViewMailQueue && (
+							<Button icon={<MailOutlined />} onClick={() => navigate(`/activity-log/mail-queue?refId=${detail.id}`)}>{t("approval.actions.viewEmails")}</Button>
+						)}
 						{permissions.canEdit && (
 							<Button icon={<EditOutlined />} onClick={() => navigate(`/approval/requests/${detail.id}/edit`)}>{t("approval.actions.edit")}</Button>
 						)}

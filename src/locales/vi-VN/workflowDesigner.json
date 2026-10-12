@@ -272,6 +272,21 @@
 		"UNKNOWN_FIELD": "Điều kiện dùng trường không có trong form của loại tờ trình",
 		"SLA_REQUIRED": "Cần nhập hạn xử lý khi chọn chuyển cấp hoặc tự động duyệt",
 		"INACTIVE_USER": "Người duyệt đã ngừng hoạt động",
-		"NOTIFY_NO_RECIPIENT": "Bước thông báo cần ít nhất một người nhận"
+		"NOTIFY_NO_RECIPIENT": "Bước thông báo cần ít nhất một người nhận",
+		"STEP_NOTIFY_NO_RECIPIENT": "Bật thông báo theo kết quả nhưng chưa chọn người nhận"
+	},
+	"stepNotify": {
+		"title": "Thông báo theo kết quả của bước",
+		"hint": "Gửi thông báo / email khi bước này được duyệt xong, bị từ chối hoặc bị trả lại.",
+		"events": {
+			"approved": "Khi duyệt xong",
+			"rejected": "Khi từ chối",
+			"returned": "Khi trả lại"
+		},
+		"defaultRequester": "Mặc định: gửi người trình",
+		"previousApprovers": "Những người đã duyệt trước đó",
+		"off": "Không gửi",
+		"noRecipient": "Chưa chọn người nhận",
+		"fixedCount": "{{count}} người/nhóm cố định"
 	}
 }

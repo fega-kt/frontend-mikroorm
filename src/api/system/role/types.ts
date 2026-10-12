@@ -95,6 +95,14 @@ export enum PermissionType {
 	UpdateAppSetting = "permission:app-setting:update",
 	DeleteAppSetting = "permission:app-setting:delete",
 
+	/** ===== ACTIVITY LOG QUEUE (hàng đợi gửi mail) ===== */
+
+	/** xem hàng đợi gửi mail (menu Theo dõi hoạt động → Hàng đợi gửi mail) */
+	ViewActivityLogQueue = "permission:activity-log-queue:view",
+
+	/** gửi lại email trong hàng đợi */
+	RetryActivityLogQueue = "permission:activity-log-queue:retry",
+
 	/** ===== ACTIVITY LOG ===== */
 
 	MenuActivityLog = "permission:menu:activity-log",

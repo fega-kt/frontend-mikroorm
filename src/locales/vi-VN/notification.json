@@ -21,11 +21,13 @@
 	},
 	"APPROVAL_REJECTED": {
 		"title": "Tờ trình bị từ chối",
-		"message": "Tờ trình {{code}} {{title}} bị từ chối ở bước {{step}}."
+		"message": "Tờ trình {{code}} {{title}} bị từ chối ở bước {{step}}.",
+		"message_withMessage": "Tờ trình {{code}} {{title}} bị từ chối ({{step}}). Nội dung: “{{message}}”"
 	},
 	"APPROVAL_RETURNED": {
 		"title": "Tờ trình được trả lại",
-		"message": "Tờ trình {{code}} {{title}} được trả lại để bổ sung ({{step}})."
+		"message": "Tờ trình {{code}} {{title}} được trả lại để bổ sung ({{step}}).",
+		"message_withMessage": "Tờ trình {{code}} {{title}} được trả lại ({{step}}). Nội dung: “{{message}}”"
 	},
 	"APPROVAL_CANCELLED": {
 		"title": "Tờ trình đã bị hủy",
@@ -44,5 +46,10 @@
 		"message": "Bạn nhận được thông báo về tờ trình {{code}} {{title}} (bước {{step}}).",
 		"message_withMessage": "Bạn nhận được thông báo về tờ trình {{code}} {{title}}. Nội dung: “{{message}}”",
 		"message_noStep": "Bạn nhận được thông báo về tờ trình {{code}} {{title}}."
+	},
+	"APPROVAL_STEP_APPROVED": {
+		"title": "Một bước của tờ trình đã được duyệt",
+		"message": "Bước {{step}} của tờ trình {{code}} {{title}} đã được duyệt.",
+		"message_withMessage": "Bước {{step}} của tờ trình {{code}} {{title}} đã được duyệt. Nội dung: “{{message}}”"
 	}
 }

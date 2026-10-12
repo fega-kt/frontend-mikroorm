@@ -92,6 +92,7 @@ export enum GraphErrorCode {
 	UnknownField = "UNKNOWN_FIELD",
 	SlaRequired = "SLA_REQUIRED",
 	NotifyNoRecipient = "NOTIFY_NO_RECIPIENT",
+	StepNotifyNoRecipient = "STEP_NOTIFY_NO_RECIPIENT",
 	InactiveUser = "INACTIVE_USER",
 }
 

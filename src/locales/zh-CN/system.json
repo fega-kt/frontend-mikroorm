@@ -19,7 +19,8 @@
 			"activity_log": "操作日志",
 			"approval_workflow": "审批流程",
 			"approval_request": "审批申请管理",
-			"email_template": "邮件模板"
+			"email_template": "邮件模板",
+			"activity_log_queue": "邮件发送队列"
 		},
 		"permission": {
 			"user": "用户",
@@ -40,7 +41,8 @@
 			"publish": "发布",
 			"approval-request-all": "全部申请",
 			"reassign": "重新指派审批人",
-			"email-template": "邮件模板"
+			"email-template": "邮件模板",
+			"retry": "重新发送"
 		}
 	},
 	"appSetting": {
@@ -117,6 +119,10 @@
 			"content_focus_outline_enabled": {
 				"label": "内容区域边框",
 				"hint": "开启：主内容区域获得焦点时显示黑色边框；关闭：隐藏边框。未配置时默认关闭"
+			},
+			"outbox_retention_days": {
+				"label": "Outbox 事件保留天数",
+				"hint": "已推送到 RabbitMQ 的事件在此天数后自动删除（待推送 / 失败的事件不删除）。留空或 0 表示永久保留"
 			}
 		}
 	},
@@ -245,6 +251,31 @@
 			"app_settings": "系统参数",
 			"auth": "认证",
 			"unknown": "未知"
+		}
+	},
+	"mailQueue": {
+		"keyword": "搜索",
+		"keywordPlaceholder": "收件人邮箱 / 标题",
+		"type": "邮件类型",
+		"recipient": "收件人",
+		"subject": "标题",
+		"openRef": "打开申请",
+		"status": "状态",
+		"attempts": "尝试次数",
+		"lastAttemptAt": "最近尝试",
+		"error": "错误 / 原因",
+		"retry": "重新发送",
+		"confirmRetry": "重新发送此邮件？",
+		"confirmResend": "此邮件已发送成功，仍要重新发送？",
+		"retryQueued": "邮件已加入队列等待重新发送",
+		"retryFailed": "无法重新发送",
+		"filteredByRef": "按申请筛选",
+		"statuses": {
+			"draft": "待发送",
+			"in_progress": "发送中",
+			"completed": "已发送",
+			"failed": "失败",
+			"skipped": "已跳过"
 		}
 	}
 }

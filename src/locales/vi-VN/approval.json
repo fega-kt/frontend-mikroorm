@@ -64,7 +64,8 @@
 		"return": "Trả lại",
 		"bulkApprove": "Duyệt {{count}} tờ trình",
 		"reassign": "Gán lại người duyệt",
-		"back": "Quay lại"
+		"back": "Quay lại",
+		"viewEmails": "Mail đã gửi"
 	},
 	"messages": {
 		"submitted": "Đã gửi tờ trình",
