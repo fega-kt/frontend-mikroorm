@@ -41,6 +41,8 @@
 	},
 	"APPROVAL_NOTIFY": {
 		"title": "Request update",
-		"message": "{{code}} {{title}} — {{step}}."
+		"message": "You have a notification about request {{code}} {{title}} (step {{step}}).",
+		"message_withMessage": "You have a notification about request {{code}} {{title}}. Message: “{{message}}”",
+		"message_noStep": "You have a notification about request {{code}} {{title}}."
 	}
 }

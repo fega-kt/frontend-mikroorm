@@ -80,8 +80,14 @@ export interface ParallelNode extends NodeBase, SlaFields {
 export interface NotifyNode extends NodeBase {
 	type: NodeType.Notify
 	channels: NotifyChannel[]
-	/** Rỗng → chỉ báo cho người tạo đơn */
+	/** Gửi cho người trình. Bỏ trống (định nghĩa cũ) → gửi khi không có người nhận nào khác */
+	notifyRequester?: boolean
+	/** Gửi cho người được giao duyệt ở bước duyệt kế tiếp */
+	notifyNextApprovers?: boolean
+	/** Người nhận cố định (người dùng / nhóm) */
 	recipients: Approver[]
+	/** Mã mẫu email (bỏ trống → mẫu mặc định approval.notify) */
+	emailTemplate?: string
 	message?: string
 }
 export interface EndNode extends NodeBase { type: NodeType.End }
@@ -114,6 +120,11 @@ export const DEFAULT_STEP_OPTIONS: StepOptions = {
 	requireRejectReason: true,
 	allowReturn: true,
 };
+
+/** Bước thông báo có gửi cho người trình không (tương thích định nghĩa cũ chưa có cờ) — đồng bộ backend */
+export function notifiesRequester(node: NotifyNode) {
+	return node.notifyRequester ?? (node.recipients.length === 0 && !node.notifyNextApprovers);
+}
 
 export function isWaitNode(node: WorkflowNode): node is WaitNode {
 	return node.type === NodeType.Approval || node.type === NodeType.Parallel;

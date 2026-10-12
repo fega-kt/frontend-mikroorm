@@ -81,6 +81,9 @@ export function NotificationContainer({ ...restProps }: ButtonProps) {
 		fetchPage(last.id).catch(() => {}).finally(() => setLoadingMore(false));
 	};
 
+	/** Biến thể câu dịch: có nội dung riêng (bước Thông báo) / không có tên bước */
+	const messageContext = (data?: Record<string, unknown>) => (data?.message ? "withMessage" : data && "step" in data && !data.step ? "noStep" : undefined);
+
 	// BE chỉ lưu type + data — dịch tại đây để đổi ngôn ngữ là cập nhật ngay
 	const notifications = useMemo<NotificationItem[]>(() => rawNotifications.map((n) => {
 		const key = i18n.exists(`notification.${n.type}.title`) ? n.type : "unknown";
@@ -89,7 +92,7 @@ export function NotificationContainer({ ...restProps }: ButtonProps) {
 			id: n.id,
 			link: getNotificationRoute(n.refType, n.refId),
 			title: t(`notification.${key}.title`, n.data),
-			message: t(`notification.${key}.message`, n.data),
+			message: t(`notification.${key}.message`, { ...n.data, context: messageContext(n.data) }),
 			date: n.createdAt ? dayjs(n.createdAt).fromNow() : "",
 			isRead: n.isRead,
 			avatar: n.actor?.avatar,

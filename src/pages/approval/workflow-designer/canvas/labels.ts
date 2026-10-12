@@ -2,7 +2,7 @@ import type { Approver, WorkflowEdge, WorkflowNode } from "#src/api/approval-wor
 import type { FormField } from "#src/api/setting/request-type/types";
 import type { TFunction } from "i18next";
 import type { ConditionInfo } from "./display-context";
-import { ApproverType, NodeType } from "#src/api/approval-workflow/types";
+import { ApproverType, NodeType, notifiesRequester } from "#src/api/approval-workflow/types";
 import { summarizeCondition } from "../lib/condition";
 import { collectPayloadVars } from "../lib/validate-graph";
 
@@ -82,9 +82,11 @@ export function nodeSummary(
 			const channels = node.channels.length
 				? node.channels.map(c => t(`workflowDesigner.channels.${c}`)).join(", ")
 				: t("workflowDesigner.summary.noChannel");
-			const to = node.recipients.length
-				? node.recipients.map(a => approverLabel(a, t, ctx.userNames)).join(", ")
-				: t("workflowDesigner.summary.requester");
+			const to = [
+				...(notifiesRequester(node) ? [t("workflowDesigner.summary.requester")] : []),
+				...(node.notifyNextApprovers ? [t("workflowDesigner.summary.nextApprovers")] : []),
+				...node.recipients.map(a => approverLabel(a, t, ctx.userNames)),
+			].join(", ") || t("workflowDesigner.summary.noRecipient");
 			return `${channels} → ${to}`;
 		}
 		default:

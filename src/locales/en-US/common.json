@@ -55,7 +55,8 @@
 		"approvalReview": "Approvals",
 		"approvalReviewDone": "Handled",
 		"approvalReviewPending": "Awaiting me",
-		"approvalReviewAll": "All"
+		"approvalReviewAll": "All",
+		"emailTemplate": "Email templates"
 	},
 	"appLoading": "Loading Resources...",
 	"back": "Back",

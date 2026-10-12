@@ -18,7 +18,8 @@
 			"app_setting": "Quản lý tham số hệ thống",
 			"activity_log": "Theo dõi hoạt động",
 			"approval_workflow": "Quy trình phê duyệt",
-			"approval_request": "Quản trị tờ trình phê duyệt"
+			"approval_request": "Quản trị tờ trình phê duyệt",
+			"email_template": "Mẫu email"
 		},
 		"permission": {
 			"user": "Người dùng",
@@ -38,7 +39,8 @@
 			"approval-workflow": "Quy trình phê duyệt",
 			"publish": "Xuất bản",
 			"approval-request-all": "Tất cả tờ trình",
-			"reassign": "Gán lại người duyệt"
+			"reassign": "Gán lại người duyệt",
+			"email-template": "Mẫu email"
 		}
 	},
 	"appSetting": {

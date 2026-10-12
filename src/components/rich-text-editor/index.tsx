@@ -1,4 +1,4 @@
-import type { Extensions } from "@tiptap/react";
+import type { Editor, Extensions } from "@tiptap/react";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import TaskItem from "@tiptap/extension-task-item";
@@ -28,6 +28,8 @@ export interface RichTextEditorProps {
 	hideToolbar?: boolean
 	/** CSS class for the outer wrapper */
 	className?: string
+	/** Nhận instance editor (vd: để chèn nội dung tại con trỏ từ bên ngoài) */
+	onReady?: (editor: Editor) => void
 }
 
 export function RichTextEditor({
@@ -39,6 +41,7 @@ export function RichTextEditor({
 	extensions: extraExtensions = [],
 	hideToolbar = false,
 	className,
+	onReady,
 }: RichTextEditorProps) {
 	const { token } = theme.useToken();
 	const isInternalUpdate = useRef(false);
@@ -64,6 +67,11 @@ export function RichTextEditor({
 			onChange?.(html === "<p></p>" ? "" : html);
 		},
 	});
+
+	useEffect(() => {
+		if (editor)
+			onReady?.(editor);
+	}, [editor, onReady]);
 
 	/* Sync external value → editor (e.g. form reset) */
 	useEffect(() => {

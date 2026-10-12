@@ -1,5 +1,5 @@
 import type { Approver, GraphError, WorkflowDefinition, WorkflowEdge } from "#src/api/approval-workflow/types";
-import { ApproverType, GraphErrorCode, NodeType, OverdueAction } from "#src/api/approval-workflow/types";
+import { ApproverType, GraphErrorCode, NodeType, notifiesRequester, OverdueAction } from "#src/api/approval-workflow/types";
 
 /**
  * Bản sao của backend libs/app/services/approval-engine/validate-graph.ts để báo lỗi tức thì trên canvas.
@@ -111,6 +111,8 @@ export function validateGraph(definition: WorkflowDefinition, formFields?: strin
 			errors.push({ code: GraphErrorCode.MissingApprover, message: "Approval step needs an approver", nodeId: node.id });
 		if ((node.type === NodeType.Approval || node.type === NodeType.Parallel) && node.onOverdue !== OverdueAction.Remind && !node.slaHours)
 			errors.push({ code: GraphErrorCode.SlaRequired, message: "Overdue handling needs an SLA", nodeId: node.id });
+		if (node.type === NodeType.Notify && !notifiesRequester(node) && !node.notifyNextApprovers && !node.recipients.length)
+			errors.push({ code: GraphErrorCode.NotifyNoRecipient, message: "Notification step needs at least one recipient", nodeId: node.id });
 		if (node.type === NodeType.Parallel && new Set(node.approvers.map(approverKey)).size < 2)
 			errors.push({ code: GraphErrorCode.ParallelApprovers, message: "Parallel step needs at least 2 different approvers", nodeId: node.id });
 	}

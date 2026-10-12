@@ -1,17 +1,23 @@
 import type { ApprovalNode, NotifyNode, ParallelNode, StepOptions, WorkflowNode } from "#src/api/approval-workflow/types";
+import type { EmailTemplate } from "#src/api/email-template";
 import type { ApproverFormItem } from "./approver-form";
 import {
 	ApproverType,
 	DEFAULT_STEP_OPTIONS,
+	notifiesRequester,
 	NotifyChannel,
 	OverdueAction,
 	ParallelMode,
 } from "#src/api/approval-workflow/types";
-import { Checkbox, Form, Input, InputNumber, Radio, Select, Space, Switch, theme, Typography } from "antd";
+import { emailTemplateService, NOTIFY_DEFAULT_TEMPLATE } from "#src/api/email-template";
+import { Checkbox, Form, Input, InputNumber, Radio, Select, Space, Switch, Tag, theme, Typography } from "antd";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { approverLabel } from "../canvas/labels";
 import { useDesigner } from "../store/designer.store";
 import { fromApproverForm, fromApproverFormItem, toApproverForm, useApproverTypeOptions } from "./approver-form";
 import { ApproverListField } from "./ApproverListField";
+import { PrincipalMultiSelect } from "./PrincipalMultiSelect";
 import { PrincipalSelect } from "./PrincipalSelect";
 import { UserPicker } from "./UserPicker";
 
@@ -191,23 +197,45 @@ export function ParallelPanel({ node, disabled }: PanelProps<ParallelNode>) {
 export function NotifyPanel({ node, disabled }: PanelProps<NotifyNode>) {
 	const { t } = useTranslation();
 	const updateNode = useDesigner(s => s.updateNode);
+	const userNames = useDesigner(s => s.userNames);
+	const [form] = Form.useForm();
+	const channels = Form.useWatch("channels", form) as NotifyChannel[] | undefined ?? node.channels;
+	const [templates, setTemplates] = useState<EmailTemplate[]>([]);
+	useEffect(() => {
+		emailTemplateService.fetchList().then(setTemplates).catch(() => setTemplates([]));
+	}, []);
+	const templateOptions = templates
+		.filter(tpl => !tpl.system || tpl.code === NOTIFY_DEFAULT_TEMPLATE)
+		.map(tpl => ({ value: tpl.code, label: tpl.code === NOTIFY_DEFAULT_TEMPLATE ? t("workflowDesigner.inspector.defaultTemplate", { name: tpl.name }) : tpl.name }));
+	// Người nhận cố định chọn ở đây là người dùng / nhóm; cấu hình cũ (trưởng/phó phòng…) được giữ nguyên
+	const principalIds = node.recipients.flatMap(a => (a.type === ApproverType.Principal ? [a.principalId] : []));
+	const legacy = node.recipients.filter(a => a.type !== ApproverType.Principal);
 
 	return (
 		<Form
+			form={form}
 			layout="vertical"
 			disabled={disabled}
 			initialValues={{
 				name: node.name,
 				channels: node.channels,
-				recipients: node.recipients.map(toApproverForm),
+				emailTemplate: node.emailTemplate ?? NOTIFY_DEFAULT_TEMPLATE,
+				targets: [
+					...(notifiesRequester(node) ? ["requester"] : []),
+					...(node.notifyNextApprovers ? ["nextApprovers"] : []),
+				],
+				principals: principalIds,
 				message: node.message,
 			}}
-			onValuesChange={(_, all: { name?: string, channels?: NotifyChannel[], recipients?: ApproverFormItem[], message?: string }) => {
+			onValuesChange={(_, all: { name?: string, channels?: NotifyChannel[], emailTemplate?: string, targets?: string[], principals?: string[], message?: string }) => {
 				updateNode(node.id, n => ({
 					...(n as NotifyNode),
 					name: trimName(all.name),
 					channels: all.channels ?? [],
-					recipients: fromApproverForm(all.recipients),
+					notifyRequester: all.targets?.includes("requester") ?? false,
+					notifyNextApprovers: all.targets?.includes("nextApprovers") ?? false,
+					recipients: [...legacy, ...(all.principals ?? []).map(principalId => ({ type: ApproverType.Principal as const, principalId }))],
+					emailTemplate: all.emailTemplate && all.emailTemplate !== NOTIFY_DEFAULT_TEMPLATE ? all.emailTemplate : undefined,
 					message: all.message?.trim() ? all.message : undefined,
 				}));
 			}}
@@ -218,10 +246,46 @@ export function NotifyPanel({ node, disabled }: PanelProps<NotifyNode>) {
 					options={[NotifyChannel.InApp, NotifyChannel.Email].map(c => ({ value: c, label: t(`workflowDesigner.channels.${c}`) }))}
 				/>
 			</Form.Item>
-			<Form.Item label={t("workflowDesigner.inspector.recipients")} extra={t("workflowDesigner.inspector.recipientsHint")}>
-				<ApproverListField name="recipients" addText={t("workflowDesigner.actions.addRecipient")} disabled={disabled} />
+			{channels.includes(NotifyChannel.Email) && (
+				<Form.Item name="emailTemplate" label={t("workflowDesigner.inspector.emailTemplate")} extra={t("workflowDesigner.inspector.emailTemplateHint")}>
+					<Select options={templateOptions} showSearch optionFilterProp="label" />
+				</Form.Item>
+			)}
+			<Form.Item name="targets" label={t("workflowDesigner.inspector.recipients")} className="mb-3">
+				<Checkbox.Group className="flex flex-col gap-2">
+					<Checkbox value="requester">{t("workflowDesigner.inspector.notifyRequester")}</Checkbox>
+					<Checkbox value="nextApprovers">
+						<span className="flex flex-col">
+							<span>{t("workflowDesigner.inspector.notifyNextApprovers")}</span>
+							<span className="text-xs opacity-60">{t("workflowDesigner.inspector.notifyNextApproversHint")}</span>
+						</span>
+					</Checkbox>
+				</Checkbox.Group>
 			</Form.Item>
-			<Form.Item name="message" label={t("workflowDesigner.inspector.message")}>
+			<Form.Item name="principals" label={t("workflowDesigner.inspector.fixedRecipients")}>
+				<PrincipalMultiSelect disabled={disabled} placeholder={t("workflowDesigner.inspector.selectPrincipal")} />
+			</Form.Item>
+			{legacy.length > 0 && (
+				<div className="-mt-2 mb-4 flex flex-col gap-1.5">
+					<Typography.Text type="secondary" className="text-xs">{t("workflowDesigner.inspector.legacyRecipients")}</Typography.Text>
+					<div className="flex flex-wrap gap-1">
+						{legacy.map((approver, index) => (
+							<Tag
+								key={`${approver.type}-${index}`}
+								closable={!disabled}
+								className="m-0"
+								onClose={(e) => {
+									e.preventDefault();
+									updateNode(node.id, n => ({ ...(n as NotifyNode), recipients: (n as NotifyNode).recipients.filter(a => a !== approver) }));
+								}}
+							>
+								{approverLabel(approver, t, userNames)}
+							</Tag>
+						))}
+					</div>
+				</div>
+			)}
+			<Form.Item name="message" label={t("workflowDesigner.inspector.message")} extra={t("workflowDesigner.inspector.messageHint")}>
 				<Input.TextArea autoSize={{ minRows: 3, maxRows: 8 }} maxLength={1000} showCount />
 			</Form.Item>
 		</Form>

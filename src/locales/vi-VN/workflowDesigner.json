@@ -145,7 +145,9 @@
 		"requester": "Người tạo tờ trình",
 		"branches": "{{count}} nhánh",
 		"and": "và",
-		"or": "hoặc"
+		"or": "hoặc",
+		"nextApprovers": "Người duyệt bước sau",
+		"noRecipient": "Chưa có người nhận"
 	},
 	"edge": {
 		"default": "Mặc định",
@@ -196,7 +198,16 @@
 		"startHint": "Quy trình bắt đầu khi người tạo gửi tờ trình.",
 		"endHint": "Tờ trình được duyệt xong khi đi tới bước kết thúc.",
 		"selectPrincipal": "Chọn người dùng hoặc nhóm",
-		"principalHint": "Chọn nhóm: mọi thành viên nhận việc, một người duyệt là đủ."
+		"principalHint": "Chọn nhóm: mọi thành viên nhận việc, một người duyệt là đủ.",
+		"notifyRequester": "Người trình",
+		"notifyNextApprovers": "Người duyệt bước sau",
+		"notifyNextApproversHint": "Người được giao duyệt ở bước duyệt kế tiếp",
+		"fixedRecipients": "Người nhận cố định",
+		"legacyRecipients": "Người nhận theo cấu hình cũ (vẫn được gửi) — bấm × để bỏ",
+		"emailTemplate": "Mẫu email",
+		"emailTemplateHint": "Soạn / sửa mẫu ở Quản trị hệ thống → Mẫu email",
+		"defaultTemplate": "Mặc định — {{name}}",
+		"messageHint": "Hiện trong thông báo và chèn vào email qua biến {{message}}"
 	},
 	"condition": {
 		"field": "Trường",
@@ -260,6 +271,7 @@
 		"PARALLEL_APPROVERS": "Duyệt song song cần ít nhất 2 người duyệt khác nhau",
 		"UNKNOWN_FIELD": "Điều kiện dùng trường không có trong form của loại tờ trình",
 		"SLA_REQUIRED": "Cần nhập hạn xử lý khi chọn chuyển cấp hoặc tự động duyệt",
-		"INACTIVE_USER": "Người duyệt đã ngừng hoạt động"
+		"INACTIVE_USER": "Người duyệt đã ngừng hoạt động",
+		"NOTIFY_NO_RECIPIENT": "Bước thông báo cần ít nhất một người nhận"
 	}
 }

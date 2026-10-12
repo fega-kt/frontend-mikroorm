@@ -146,7 +146,9 @@
 		"branches_one": "{{count}} branch",
 		"branches_other": "{{count}} branches",
 		"and": "and",
-		"or": "or"
+		"or": "or",
+		"nextApprovers": "Next approvers",
+		"noRecipient": "No recipient"
 	},
 	"edge": {
 		"default": "Default",
@@ -198,7 +200,16 @@
 		"startHint": "The workflow starts when the requester submits the request.",
 		"endHint": "The request is fully approved when it reaches an end step.",
 		"selectPrincipal": "Select a user or group",
-		"principalHint": "Group: every member gets the task, one approval is enough."
+		"principalHint": "Group: every member gets the task, one approval is enough.",
+		"notifyRequester": "Requester",
+		"notifyNextApprovers": "Next step approvers",
+		"notifyNextApproversHint": "Whoever is assigned the next approval step",
+		"fixedRecipients": "Fixed recipients",
+		"legacyRecipients": "Recipients from the old setup (still notified) — click × to remove",
+		"emailTemplate": "Email template",
+		"emailTemplateHint": "Create / edit templates in Administration → Email templates",
+		"defaultTemplate": "Default — {{name}}",
+		"messageHint": "Shown in the notification and inserted into the email as {{message}}"
 	},
 	"condition": {
 		"field": "Field",
@@ -262,6 +273,7 @@
 		"PARALLEL_APPROVERS": "Parallel approval needs at least 2 different approvers",
 		"UNKNOWN_FIELD": "The condition uses a field that is not in the request type's form",
 		"SLA_REQUIRED": "A deadline is required for escalation or auto-approval",
-		"INACTIVE_USER": "The approver is inactive"
+		"INACTIVE_USER": "The approver is inactive",
+		"NOTIFY_NO_RECIPIENT": "A notification step needs at least one recipient"
 	}
 }

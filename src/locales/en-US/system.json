@@ -17,7 +17,8 @@
 			"app_setting": "App Parameter Management",
 			"activity_log": "Activity Log",
 			"approval_workflow": "Approval workflows",
-			"approval_request": "Approval request administration"
+			"approval_request": "Approval request administration",
+			"email_template": "Email templates"
 		},
 		"permission": {
 			"user": "User",
@@ -37,7 +38,8 @@
 			"approval-workflow": "Approval workflows",
 			"publish": "Publish",
 			"approval-request-all": "All requests",
-			"reassign": "Reassign approver"
+			"reassign": "Reassign approver",
+			"email-template": "Email templates"
 		}
 	},
 	"appSetting": {

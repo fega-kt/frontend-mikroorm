@@ -41,6 +41,8 @@
 	},
 	"APPROVAL_NOTIFY": {
 		"title": "Thông báo về tờ trình",
-		"message": "{{code}} {{title}} — {{step}}."
+		"message": "Bạn nhận được thông báo về tờ trình {{code}} {{title}} (bước {{step}}).",
+		"message_withMessage": "Bạn nhận được thông báo về tờ trình {{code}} {{title}}. Nội dung: “{{message}}”",
+		"message_noStep": "Bạn nhận được thông báo về tờ trình {{code}} {{title}}."
 	}
 }

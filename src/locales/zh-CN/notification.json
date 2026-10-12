@@ -41,6 +41,8 @@
 	},
 	"APPROVAL_NOTIFY": {
 		"title": "申请通知",
-		"message": "{{code}} {{title}} — {{step}}。"
+		"message": "您收到关于申请 {{code}} {{title}} 的通知（步骤：{{step}}）。",
+		"message_withMessage": "您收到关于申请 {{code}} {{title}} 的通知。内容：“{{message}}”",
+		"message_noStep": "您收到关于申请 {{code}} {{title}} 的通知。"
 	}
 }

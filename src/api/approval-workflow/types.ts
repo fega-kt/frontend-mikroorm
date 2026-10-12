@@ -91,6 +91,7 @@ export enum GraphErrorCode {
 	ParallelApprovers = "PARALLEL_APPROVERS",
 	UnknownField = "UNKNOWN_FIELD",
 	SlaRequired = "SLA_REQUIRED",
+	NotifyNoRecipient = "NOTIFY_NO_RECIPIENT",
 	InactiveUser = "INACTIVE_USER",
 }
 
