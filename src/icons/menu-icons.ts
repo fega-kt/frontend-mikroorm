@@ -18,6 +18,7 @@ import {
 	HistoryOutlined,
 	HomeOutlined,
 	LockOutlined,
+	MailOutlined,
 	MenuOutlined,
 	NodeExpandOutlined,
 	NodeIndexOutlined,
@@ -41,6 +42,7 @@ import { RiAccountCircleLine, RiReactjsLine, RiUserSettingsLine } from "./ri";
  * Icons used in the menu.
  */
 export const menuIcons: Record<string, any> = {
+	MailOutlined,
 	CheckCircleOutlined,
 	ClockCircleOutlined,
 	AuditOutlined,

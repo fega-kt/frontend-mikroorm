@@ -85,6 +85,15 @@ describe("validate-graph (FE)", () => {
 		expect(validateGraph(def)).toContainEqual(expect.objectContaining({ code: GraphErrorCode.SlaRequired, nodeId: "n2" }));
 	});
 
+	it("notification steps need at least one recipient", () => {
+		const def = leaveWorkflow();
+		const notify = def.nodes.find(n => n.id === "notify1")!;
+		if (notify.type === NodeType.Notify)
+			Object.assign(notify, { notifyRequester: false, notifyNextApprovers: false, recipients: [] });
+		expect(codes(def)).toContain(GraphErrorCode.NotifyNoRecipient);
+		expect(codes(leaveWorkflow())).not.toContain(GraphErrorCode.NotifyNoRecipient);
+	});
+
 	it("collects nested payload vars", () => {
 		const vars = collectPayloadVars({ and: [{ ">": [{ var: "payload.days" }, 3] }, { in: [{ var: ["payload.kind", ""] }, ["a"]] }] });
 		expect([...vars]).toEqual(["payload.days", "payload.kind"]);

@@ -18,7 +18,8 @@
 			"app_setting": "系统参数管理",
 			"activity_log": "操作日志",
 			"approval_workflow": "审批流程",
-			"approval_request": "审批申请管理"
+			"approval_request": "审批申请管理",
+			"email_template": "邮件模板"
 		},
 		"permission": {
 			"user": "用户",
@@ -38,7 +39,8 @@
 			"approval-workflow": "审批流程",
 			"publish": "发布",
 			"approval-request-all": "全部申请",
-			"reassign": "重新指派审批人"
+			"reassign": "重新指派审批人",
+			"email-template": "邮件模板"
 		}
 	},
 	"appSetting": {

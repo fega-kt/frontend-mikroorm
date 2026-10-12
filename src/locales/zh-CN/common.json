@@ -55,7 +55,8 @@
 		"approvalReview": "申请审批",
 		"approvalReviewDone": "已处理",
 		"approvalReviewPending": "待处理",
-		"approvalReviewAll": "全部"
+		"approvalReviewAll": "全部",
+		"emailTemplate": "邮件模板"
 	},
 	"appLoading": "资源正在加载中...",
 	"back": "返回",

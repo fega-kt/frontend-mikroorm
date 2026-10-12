@@ -57,7 +57,8 @@
 		"approvalReview": "Phê duyệt tờ trình",
 		"approvalReviewDone": "Đã xử lý",
 		"approvalReviewPending": "Sắp xử lý",
-		"approvalReviewAll": "Toàn bộ"
+		"approvalReviewAll": "Toàn bộ",
+		"emailTemplate": "Mẫu email"
 	},
 	"appLoading": "Đang tải tài nguyên...",
 	"back": "Quay lại",

@@ -145,7 +145,9 @@
 		"requester": "申请人",
 		"branches": "{{count}} 个分支",
 		"and": "且",
-		"or": "或"
+		"or": "或",
+		"nextApprovers": "下一步审批人",
+		"noRecipient": "无接收人"
 	},
 	"edge": {
 		"default": "默认",
@@ -196,7 +198,16 @@
 		"startHint": "申请人提交申请时流程开始。",
 		"endHint": "到达结束步骤时申请审批完成。",
 		"selectPrincipal": "选择用户或群组",
-		"principalHint": "选择群组：所有成员都会收到任务，任一成员审批即可。"
+		"principalHint": "选择群组：所有成员都会收到任务，任一成员审批即可。",
+		"notifyRequester": "申请人",
+		"notifyNextApprovers": "下一步审批人",
+		"notifyNextApproversHint": "被分配下一审批步骤的人员",
+		"fixedRecipients": "固定接收人",
+		"legacyRecipients": "旧配置中的接收人（仍会收到）— 点击 × 移除",
+		"emailTemplate": "邮件模板",
+		"emailTemplateHint": "在 系统管理 → 邮件模板 中创建/编辑模板",
+		"defaultTemplate": "默认 — {{name}}",
+		"messageHint": "显示在通知中，并通过 {{message}} 变量插入邮件"
 	},
 	"condition": {
 		"field": "字段",
@@ -260,6 +271,7 @@
 		"PARALLEL_APPROVERS": "并行审批至少需要 2 位不同的审批人",
 		"UNKNOWN_FIELD": "条件使用了申请类型表单中不存在的字段",
 		"SLA_REQUIRED": "选择升级或自动通过时必须设置处理时限",
-		"INACTIVE_USER": "审批人已停用"
+		"INACTIVE_USER": "审批人已停用",
+		"NOTIFY_NO_RECIPIENT": "通知步骤至少需要一个接收人"
 	}
 }

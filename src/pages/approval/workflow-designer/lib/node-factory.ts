@@ -58,7 +58,7 @@ export function createWorkflowNode(type: NodeType): WorkflowNode {
 				options: { ...DEFAULT_STEP_OPTIONS },
 			};
 		case NodeType.Notify:
-			return { id, type, name, channels: [NotifyChannel.InApp], recipients: [] };
+			return { id, type, name, channels: [NotifyChannel.InApp], notifyRequester: true, notifyNextApprovers: false, recipients: [] };
 		case NodeType.Condition:
 			return { id, type, name };
 		case NodeType.Start:
