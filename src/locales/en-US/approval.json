@@ -231,6 +231,8 @@
 	"files": {
 		"viewError": "Cannot open the file for viewing. Please try again later.",
 		"viewUnsupported": "This file type cannot be viewed in the system",
+		"view": "View",
+		"download": "Download",
 		"documents": "Request documents",
 		"attachments": "Attachments",
 		"required": "Required",

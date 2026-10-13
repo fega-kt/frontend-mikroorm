@@ -3,7 +3,7 @@ import type { FileBlockConfig } from "#src/api/setting/request-type/types";
 import type { AttachmentUploadRef } from "#src/components/attachment-upload";
 import type { FileViewTarget } from "#src/components/file-viewer";
 import { approvalRequestService } from "#src/api/approval-request";
-import { FileContextType } from "#src/api/file-view";
+import { FileContextType, fileViewService } from "#src/api/file-view";
 import { AttachmentUpload } from "#src/components/attachment-upload";
 import { FileViewer } from "#src/components/file-viewer";
 import { STORAGE_PATH } from "#src/constants/storage-path";
@@ -53,6 +53,7 @@ export function FileBlock({ index, name, requestId, config, disabled, uploadRef 
 						storagePath={STORAGE_PATH.ATTACHMENTS}
 						presign={file => approvalRequestService.fetchPresignFileUpload(requestId, name, file)}
 						onViewFile={file => setViewing({ contextType: FileContextType.ApprovalRequest, fileId: file.id, filename: file.filename })}
+						onDownloadFile={file => fileViewService.download(FileContextType.ApprovalRequest, file.id)}
 						accept={acceptFor(config.fileTypes)}
 						maxCount={config.maxFiles}
 						maxSize={config.maxSizeMb * 1024 * 1024}

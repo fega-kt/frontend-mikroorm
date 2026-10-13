@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import type { ActionModalRef } from "../components/action-modal";
 import { ApprovalHistoryAction, approvalRequestService, ApprovalRequestStatus, ApprovalTaskStatus } from "#src/api/approval-request";
 import { approvalTaskService } from "#src/api/approval-task";
-import { FileContextType } from "#src/api/file-view";
+import { FileContextType, fileViewService } from "#src/api/file-view";
 import { ApprovalFlowGraph } from "#src/components/approval-flow-graph";
 import { BasicContent } from "#src/components/basic-content";
 import { FileViewer } from "#src/components/file-viewer";
@@ -41,9 +41,11 @@ import { useNavigate, useParams, useSearchParams } from "react-router";
 import { ActionModal } from "../components/action-modal";
 import { PayloadDescriptions } from "../components/form-fields";
 import { PriorityTag, RequestStatusTag } from "../components/status-tag";
+import { fileListSummary } from "../lib/files";
 import { DATE_TIME_FORMAT } from "../lib/payload";
 import { collectUserNames, computeNodeStatus } from "../lib/progress";
 import { HistoryTimeline } from "./components/history-timeline";
+import { RequestFileList } from "./components/request-file-list";
 import { ReviewProgress } from "./components/review-progress";
 import { TaskList } from "./components/task-list";
 
@@ -83,6 +85,7 @@ export default function ApprovalRequestDetailPage() {
 	const [error, setError] = useState(false);
 	const [busy, setBusy] = useState(false);
 	const [viewing, setViewing] = useState<FileViewTarget | null>(null);
+	const [downloadingId, setDownloadingId] = useState<string | null>(null);
 	const [reassignTask, setReassignTask] = useState<ApprovalTaskItem | null>(null);
 	const [reassignTo, setReassignTo] = useState<string>();
 	const [reassignComment, setReassignComment] = useState("");
@@ -168,6 +171,12 @@ export default function ApprovalRequestDetailPage() {
 			return;
 		await run(() => approvalTaskService.fetchReassign(reassignTask.id, reassignTo, reassignComment || undefined), "approval.messages.reassigned");
 		setReassignTask(null);
+	};
+
+	const downloadFile = async (file: { id: string }) => {
+		setDownloadingId(file.id);
+		await fileViewService.download(FileContextType.ApprovalRequest, file.id);
+		setDownloadingId(null);
 	};
 
 	if (error)
@@ -354,19 +363,21 @@ export default function ApprovalRequestDetailPage() {
 							children: (
 								<div className="flex flex-col gap-4">
 									{(["documents", "attachments"] as const).map(block => (
-										<SectionCard key={block} icon={<PaperClipOutlined />} title={t(`approval.files.${block}`)}>
+										<SectionCard
+											key={block}
+											icon={<PaperClipOutlined />}
+											title={t(`approval.files.${block}`)}
+											extra={detail[block].length > 0 && <Text type="secondary" className="text-[13px]">{fileListSummary(detail[block], t)}</Text>}
+											bodyClassName={detail[block].length ? "px-2 py-2" : undefined}
+										>
 											{detail[block].length
 												? (
-													<ul className="m-0 pl-0 list-none flex flex-col gap-1">
-														{detail[block].map(file => (
-															<li key={file.id}>
-																<Typography.Link onClick={() => setViewing({ contextType: FileContextType.ApprovalRequest, fileId: file.id, filename: file.filename })}>
-																	<PaperClipOutlined className="mr-1" />
-																	{file.filename}
-																</Typography.Link>
-															</li>
-														))}
-													</ul>
+													<RequestFileList
+														files={detail[block]}
+														downloadingId={downloadingId}
+														onView={file => setViewing({ contextType: FileContextType.ApprovalRequest, fileId: file.id, filename: file.filename })}
+														onDownload={downloadFile}
+													/>
 												)
 												: <Text type="secondary">{t("common.noData")}</Text>}
 										</SectionCard>

@@ -44,6 +44,12 @@ export interface FileViewDescriptor {
 	config?: Record<string, unknown>
 }
 
+/** Link tải tệp: ký thẳng tới R2, sống rất ngắn — mở ngay sau khi nhận */
+export interface FileDownloadLink {
+	url: string
+	expiresAt: string
+}
+
 class FileViewApi extends CrudServiceBase<never> {
 	constructor(service: ApiService) {
 		super({ endpoint: "file-view", service });
@@ -56,6 +62,10 @@ class FileViewApi extends CrudServiceBase<never> {
 			// để không phải chờ nhiều lần và không hiện thông báo lỗi lặp
 			retry: 0,
 		});
+	}
+
+	fetchDownloadUrl(fileId: string) {
+		return this.get<FileDownloadLink>(`${fileId}/download`, { ignoreLoading: true, retry: 0 });
 	}
 }
 
@@ -71,6 +81,21 @@ export const fileViewService = {
 	 */
 	fetchView(contextType: FileContextType, fileId: string) {
 		return clients[CONTEXT_SERVICE[contextType]].fetchView(fileId);
+	},
+
+	/** Link tải tệp (cùng quyền với xem tệp) */
+	fetchDownloadUrl(contextType: FileContextType, fileId: string) {
+		return clients[CONTEXT_SERVICE[contextType]].fetchDownloadUrl(fileId);
+	},
+
+	/** Tải tệp: xin link rồi mở ngay. Lỗi API đã được request util báo bằng message nên ở đây bỏ qua */
+	async download(contextType: FileContextType, fileId: string) {
+		try {
+			const { url } = await this.fetchDownloadUrl(contextType, fileId);
+			// Link ký trả Content-Disposition: attachment nên trình duyệt chỉ tải tệp, không rời trang
+			window.location.assign(url);
+		}
+		catch {}
 	},
 
 	/** URL đầy đủ để thẻ img/video/audio phát tệp từ đường dẫn stream backend trả về */

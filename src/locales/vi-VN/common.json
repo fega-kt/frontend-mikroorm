@@ -148,6 +148,7 @@
 		"maxSize": "Tối đa",
 		"maxCount": "tối đa",
 		"statusDone": "Đã upload",
+		"download": "Tải xuống",
 		"statusPendingSync": "Chờ sync",
 		"statusPending": "Đang chờ",
 		"statusUploading": "Đang upload",

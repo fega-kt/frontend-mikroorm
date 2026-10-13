@@ -144,6 +144,7 @@
 		"maxSize": "Max",
 		"maxCount": "up to",
 		"statusDone": "Uploaded",
+		"download": "Download",
 		"statusPendingSync": "Pending Sync",
 		"statusPending": "Pending",
 		"statusUploading": "Uploading",

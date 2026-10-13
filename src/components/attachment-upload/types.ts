@@ -23,6 +23,8 @@ export interface AttachmentUploadProps {
 	storagePath?: string
 	/** Bấm xem một tệp đã upload: tệp private không có URL công khai nên nơi dùng mở trình xem (FileViewer) */
 	onViewFile?: (file: AttachmentEntity) => void
+	/** Bấm tải một tệp đã upload: có thì hiện nút tải (nút quay trong lúc promise chưa xong) */
+	onDownloadFile?: (file: AttachmentEntity) => Promise<void>
 	/** Xin link upload thẳng lên R2 (file private): có thì upload bằng link ký thay vì qua backend */
 	presign?: (file: File) => Promise<PresignedUpload>
 	multiple?: boolean
