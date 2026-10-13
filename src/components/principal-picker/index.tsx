@@ -1,12 +1,12 @@
 import type { PrincipalEntity } from "#src/api/system/principal";
 import type { FormItemProps, SelectProps } from "antd";
 import { principalService, PrincipalType } from "#src/api/system/principal";
-import { getAvatarColorStyle } from "#src/utils/avatar";
+import { UserAvatar } from "#src/components/user-avatar";
 import { cn } from "#src/utils/cn";
-import { TeamOutlined, UserOutlined } from "@ant-design/icons";
+import { TeamOutlined } from "@ant-design/icons";
 import { ProFormItem } from "@ant-design/pro-components";
 import { useDebounceFn } from "ahooks";
-import { Avatar, Select, Space, Spin, Tag, theme, Typography } from "antd";
+import { Select, Space, Spin, Tag, theme, Typography } from "antd";
 import * as React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -23,7 +23,6 @@ export function PrincipalDisplay({
 	showAvatar?: boolean
 	size?: "small" | "middle"
 }) {
-	const style = getAvatarColorStyle(principal.id);
 	const iconSize = size === "small" ? 18 : 22;
 	const nameSize = size === "small" ? "text-[12px]" : "text-[13px]";
 
@@ -33,21 +32,13 @@ export function PrincipalDisplay({
 	return (
 		<Space size={size} className="p-0">
 			{showAvatar && (
-				<Avatar
+				<UserAvatar
 					size={iconSize}
-					src={isUser && user?.avatar ? user.avatar : undefined}
-					icon={!isUser ? <TeamOutlined className="text-[12px]" /> : (user?.avatar ? undefined : <UserOutlined className="text-[12px]" />)}
-					className={cn("shrink-0 font-semibold border-solid", size === "small" ? "text-[10px]" : "text-[11px]")}
-					style={(!isUser || !user?.avatar)
-						? {
-							backgroundColor: style.backgroundColor,
-							color: style.color,
-							borderColor: style.borderColor,
-						}
-						: undefined}
-				>
-					{isUser && !user?.avatar ? (principal.name?.[0]?.toUpperCase() || "?") : ""}
-				</Avatar>
+					variant="soft"
+					user={{ id: principal.id, fullName: principal.name, avatar: isUser ? user?.avatar : undefined }}
+					fallbackIcon={!isUser ? <TeamOutlined className="text-[12px]" /> : undefined}
+					className={size === "small" ? "text-[10px]" : "text-[11px]"}
+				/>
 			)}
 			<div className="flex flex-col overflow-hidden leading-none">
 				<Text strong className={cn(nameSize)} ellipsis>{principal.name}</Text>
@@ -223,19 +214,14 @@ export function PrincipalPicker(props: PrincipalPickerProps) {
 				)}
 			>
 				{p && showAvatar && (
-					<Avatar
+					<UserAvatar
 						size={16}
-						src={p.type === PrincipalType.User ? p.user?.avatar : undefined}
-						icon={p.type === PrincipalType.Group ? <TeamOutlined className="text-[10px]" /> : (p.user?.avatar ? undefined : <UserOutlined className="text-[10px]" />)}
-						className="shrink-0 font-bold border-none"
-						style={{
-							backgroundColor: getAvatarColorStyle(p.id).backgroundColor,
-							color: getAvatarColorStyle(p.id).color,
-							fontSize: "9px",
-						}}
-					>
-						{p.type === PrincipalType.User && !p.user?.avatar ? (p.name?.[0]?.toUpperCase() || "?") : ""}
-					</Avatar>
+						variant="soft"
+						user={{ id: p.id, fullName: p.name, avatar: p.type === PrincipalType.User ? p.user?.avatar : undefined }}
+						fallbackIcon={p.type === PrincipalType.Group ? <TeamOutlined className="text-[10px]" /> : undefined}
+						className="border-none"
+						style={{ fontSize: "9px" }}
+					/>
 				)}
 				<span className="max-w-[100px] truncate text-inherit">
 					{label || (p && (p.name || p.group?.name)) || value}

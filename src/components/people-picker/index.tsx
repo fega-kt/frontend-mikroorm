@@ -1,19 +1,22 @@
 import type { UserEntity } from "#src/api/user/types";
 import type { FormItemProps, SelectProps } from "antd";
 import { userService } from "#src/api/user";
-import { getAvatarColor } from "#src/utils/avatar/index";
+import { UserAvatar } from "#src/components/user-avatar";
 import { cn } from "#src/utils/cn";
 import { ProFormItem } from "@ant-design/pro-components";
 import { useDebounceFn } from "ahooks";
-import { Avatar, Select, Space, Spin, Tag, theme, Typography } from "antd";
+import { Select, Space, Spin, Tag, theme, Typography } from "antd";
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const { Text } = Typography;
 
+/** Thông tin tối thiểu để hiển thị 1 user (UserEntity đầy đủ hoặc bản rút gọn từ các API khác) */
+export type PeopleUser = Pick<UserEntity, "id"> & Partial<Pick<UserEntity, "fullName" | "loginName" | "workEmail" | "avatar">>;
+
 /** UserDisplay: Static component to show user info consistently (avatar + name + subtext) */
-function UserDisplay({ user, showAvatar = true, showEmail = true, size = "middle" }: { user: UserEntity, showAvatar?: boolean, showEmail?: boolean, size?: "small" | "middle" }) {
+function UserDisplay({ user, showAvatar = true, showEmail = true, size = "middle" }: { user: PeopleUser, showAvatar?: boolean, showEmail?: boolean, size?: "small" | "middle" }) {
 	const avatarSize = size === "small" ? 18 : 22;
 	const nameSize = size === "small" ? "text-[12px]" : "text-[13px]";
 	const subSize = size === "small" ? "text-[9px]" : "text-[10px]";
@@ -21,16 +24,11 @@ function UserDisplay({ user, showAvatar = true, showEmail = true, size = "middle
 	return (
 		<Space size={size} className="p-0">
 			{showAvatar && (
-				<Avatar
+				<UserAvatar
 					size={avatarSize}
-					src={user.avatar}
-					className={cn("shrink-0 font-semibold border-solid", size === "small" ? "text-[10px]" : "text-[11px]")}
-					style={{
-						backgroundColor: getAvatarColor(user.id),
-					}}
-				>
-					{user.fullName?.[0]?.toUpperCase() || user.loginName?.[0]?.toUpperCase() || "?"}
-				</Avatar>
+					user={user}
+					className={size === "small" ? "text-[10px]" : "text-[11px]"}
+				/>
 			)}
 			<div className="flex flex-col overflow-hidden leading-none">
 				<Text strong className={cn(nameSize, "-mb-0.5")} ellipsis>{user.fullName || user.loginName}</Text>
@@ -75,7 +73,7 @@ export interface PeoplePickerProps extends Omit<SelectProps<string | string[], P
 	/** Readonly mode */
 	readonly?: boolean
 	/** Fixed user for display in readonly mode */
-	user?: UserEntity
+	user?: PeopleUser
 	/** Ref to internal Select */
 	ref?: React.Ref<React.ComponentRef<typeof Select>>
 
@@ -162,7 +160,7 @@ export function PeoplePicker(props: PeoplePickerProps) {
 		(dataSource || []).forEach(u => map.set(u.id, u));
 		apiOptions.forEach(u => map.set(u.id, u));
 		if (readonlyUser) {
-			map.set(readonlyUser.id, readonlyUser);
+			map.set(readonlyUser.id, readonlyUser as UserEntity);
 		}
 
 		// 2. Add objects from current value (most up-to-date labels)
@@ -242,17 +240,7 @@ export function PeoplePicker(props: PeoplePickerProps) {
 				)}
 			>
 				{user && showAvatar && (
-					<Avatar
-						size={16}
-						src={user.avatar}
-						className="shrink-0 font-bold border-none"
-						style={{
-							backgroundColor: getAvatarColor(user.id),
-							fontSize: "9px",
-						}}
-					>
-						{user.fullName?.[0]?.toUpperCase() || user.loginName?.[0]?.toUpperCase() || "?"}
-					</Avatar>
+					<UserAvatar size={16} user={user} className="border-none" style={{ fontSize: "9px" }} />
 				)}
 				<span className="max-w-[100px] truncate text-inherit">
 					{label || value || "..."}
@@ -289,7 +277,7 @@ export function PeoplePicker(props: PeoplePickerProps) {
 		const displayUser = readonlyUser || (Array.isArray(props.value) ? (props.value[0] as UserEntity) : (props.value as UserEntity));
 		return (
 			<div className={cn("flex min-h-[32px] items-center", className)}>
-				{displayUser ? <UserDisplay user={displayUser} showAvatar={showAvatar} showEmail={showEmail} /> : <div className="text-[12px] opacity-45">{t("common.noData")}</div>}
+				{displayUser ? <UserDisplay user={displayUser} showAvatar={showAvatar} showEmail={showEmail} size={props.size === "small" ? "small" : "middle"} /> : <div className="text-[12px] opacity-45">{t("common.noData")}</div>}
 			</div>
 		);
 	}

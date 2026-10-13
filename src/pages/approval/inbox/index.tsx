@@ -6,8 +6,9 @@ import { ApprovalTaskStatus } from "#src/api/approval-request/types";
 import { approvalTaskService } from "#src/api/approval-task";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
+import { UserAvatar } from "#src/components/user-avatar";
 import { CheckOutlined, CloseOutlined, EyeOutlined, RollbackOutlined } from "@ant-design/icons";
-import { Avatar, Button, Drawer, Modal, Space, Tag, Tooltip, Typography } from "antd";
+import { Button, Drawer, Modal, Space, Tag, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useEffect, useRef, useState } from "react";
@@ -135,7 +136,7 @@ export default function ApprovalInbox() {
 			hideInSearch: true,
 			render: (_, item) => (
 				<Space size={6}>
-					<Avatar size={22} src={item.request.requester.avatar}>{item.request.requester.fullName?.[0]}</Avatar>
+					<UserAvatar size={22} user={item.request.requester} />
 					<div className="flex flex-col leading-tight">
 						<span>{item.request.requester.fullName}</span>
 						<Typography.Text type="secondary" className="text-xs">{item.request.department.name}</Typography.Text>

@@ -1,8 +1,8 @@
 import type { Delegation } from "../mock";
 
-import { getAvatarColor } from "#src/utils/avatar";
+import { UserAvatar } from "#src/components/user-avatar";
 
-import { Avatar, theme } from "antd";
+import { theme } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
@@ -34,9 +34,7 @@ export function DelegationCard({ outgoing, incoming }: DelegationCardProps) {
 				{label}
 			</span>
 			<div className="flex items-center gap-2.5">
-				<Avatar size={28} className="shrink-0 text-xs font-bold" style={{ backgroundColor: getAvatarColor(item.userId) }}>
-					{item.fullName.split(" ").pop()?.[0]}
-				</Avatar>
+				<UserAvatar size={28} user={{ id: item.userId, fullName: item.fullName, avatar: item.avatar }} />
 				<div className="flex min-w-0 flex-col">
 					<span className="text-sm text-colorText">{item.fullName}</span>
 					<span className="text-xs text-colorTextSecondary">

@@ -18,6 +18,7 @@ export interface PendingApproval {
 	title: string
 	requesterId: string
 	requesterName: string
+	requesterAvatar?: string
 	stepName: string
 	createdAt: string
 }
@@ -41,6 +42,7 @@ export interface MyRequest {
 export interface Delegation {
 	userId: string
 	fullName: string
+	avatar?: string
 	scope: string
 	fromDate?: string
 	toDate: string

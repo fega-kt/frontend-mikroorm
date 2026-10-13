@@ -1,6 +1,7 @@
 import type { ButtonProps, MenuProps } from "antd";
 
 import { BasicButton } from "#src/components/basic-button";
+import { UserAvatar } from "#src/components/user-avatar";
 import { RiAccountCircleLine } from "#src/icons";
 import { loginPath } from "#src/router/extra-info";
 import { useAuthStore } from "#src/store/auth";
@@ -10,7 +11,7 @@ import { isWindowsOs } from "#src/utils/is-windows-os";
 
 import { KeyOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useKeyPress } from "ahooks";
-import { Avatar, Dropdown } from "antd";
+import { Dropdown } from "antd";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
@@ -20,6 +21,8 @@ import { ChangePasswordModal } from "./change-password-modal";
 export function UserMenu({ ...restProps }: ButtonProps) {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
+	const id = useUserStore(state => state.id);
+	const fullName = useUserStore(state => state.fullName);
 	const avatar = useUserStore(state => state.avatar);
 	const logout = useAuthStore(state => state.logout);
 	const [changePasswordOpen, setChangePasswordOpen] = useState(false);
@@ -84,7 +87,7 @@ export function UserMenu({ ...restProps }: ButtonProps) {
 					{...restProps}
 					className={cn(restProps.className, "rounded-full px-1")}
 				>
-					<Avatar src={avatar} />
+					<UserAvatar user={{ id, fullName, avatar }} />
 				</BasicButton>
 			</Dropdown>
 			<ChangePasswordModal open={changePasswordOpen} onOpenChange={setChangePasswordOpen} />

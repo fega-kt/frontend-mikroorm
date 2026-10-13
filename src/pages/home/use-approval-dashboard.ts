@@ -52,6 +52,7 @@ export function useApprovalDashboard(): ApprovalDashboardData {
 				title: item.request.title,
 				requesterId: item.request.requester.id,
 				requesterName: item.request.requester.fullName,
+				requesterAvatar: item.request.requester.avatar,
 				stepName: item.nodeName ?? item.nodeId,
 				createdAt: item.createdAt,
 				dueAt: item.dueAt,
@@ -76,6 +77,7 @@ export function useApprovalDashboard(): ApprovalDashboardData {
 				outgoing: out && {
 					userId: out.toUser.id,
 					fullName: out.toUser.fullName,
+					avatar: out.toUser.avatar,
 					scope: out.requestType?.name ?? t("approval.delegation.allTypes"),
 					fromDate: out.startAt,
 					toDate: out.endAt,
@@ -83,6 +85,7 @@ export function useApprovalDashboard(): ApprovalDashboardData {
 				incoming: inc && {
 					userId: inc.fromUser.id,
 					fullName: inc.fromUser.fullName,
+					avatar: inc.fromUser.avatar,
 					scope: inc.requestType?.name ?? t("approval.delegation.allTypes"),
 					fromDate: inc.startAt,
 					toDate: inc.endAt,
