@@ -1,7 +1,8 @@
 import type { ApprovalTaskItem } from "#src/api/approval-request";
 import { ApprovalTaskStatus } from "#src/api/approval-request/types";
+import { UserAvatar } from "#src/components/user-avatar";
 import { UserSwitchOutlined } from "@ant-design/icons";
-import { Avatar, Button, Divider, Tag, Tooltip, Typography } from "antd";
+import { Button, Divider, Tag, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
@@ -34,7 +35,7 @@ export function TaskList({ tasks, canReassign, onReassign }: TaskListProps) {
 							const overdue = task.status === ApprovalTaskStatus.Pending && task.dueAt && dayjs(task.dueAt).isBefore(dayjs());
 							return (
 								<div key={task.id} className="flex items-start gap-3">
-									<Avatar size={28} src={task.approver?.avatar}>{task.approver?.fullName?.[0]}</Avatar>
+									<UserAvatar size={28} user={task.approver} />
 									<div className="flex-1 min-w-0">
 										<div className="flex items-center justify-between gap-2">
 											<Text strong ellipsis>{task.approver?.fullName}</Text>

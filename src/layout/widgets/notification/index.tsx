@@ -2,8 +2,8 @@ import type { ButtonProps } from "antd";
 import type { NotificationItem } from "./types";
 
 import { BasicButton } from "#src/components/basic-button";
+import { UserAvatar } from "#src/components/user-avatar";
 import { RiMailCheckLine } from "#src/icons";
-import { getAvatarColor } from "#src/utils/avatar";
 import { cn } from "#src/utils/cn";
 
 import { BellOutlined } from "@ant-design/icons";
@@ -195,9 +195,7 @@ export const NotificationPopup: React.FC<Props> = ({ dot, count, notifications, 
 								{hasMore && index === notifications!.length - 1 && <span ref={loadMoreSentinelRef} className="absolute bottom-0 left-0 h-px w-px" />}
 								{item.avatar || item.actorName
 									? (
-										<Avatar size={40} src={item.avatar} className="shrink-0 font-semibold" style={{ backgroundColor: getAvatarColor(item.actorId) }}>
-											{item.actorName?.[0]?.toUpperCase()}
-										</Avatar>
+										<UserAvatar size={40} user={{ id: item.actorId, fullName: item.actorName, avatar: item.avatar }} />
 									)
 									: (
 										<Avatar size={40} icon={item.icon} className="shrink-0" style={{ backgroundColor: item.iconColor }} />

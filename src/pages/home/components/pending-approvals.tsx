@@ -1,9 +1,9 @@
 import type { PendingApproval } from "../mock";
 
-import { getAvatarColor } from "#src/utils/avatar";
+import { UserAvatar } from "#src/components/user-avatar";
 
 import { ClockCircleOutlined } from "@ant-design/icons";
-import { Avatar, Button, Tag, theme } from "antd";
+import { Button, Tag, theme } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
@@ -71,9 +71,7 @@ export function PendingApprovals({ items, results, onAction }: PendingApprovalsP
 								<span className="truncate text-sm text-colorText">{item.title}</span>
 							</div>
 							<span className="flex items-center gap-1.5 text-xs text-colorTextTertiary">
-								<Avatar size={16} className="shrink-0 text-[9px] font-bold" style={{ backgroundColor: getAvatarColor(item.requesterId) }}>
-									{item.requesterName.split(" ").pop()?.[0]}
-								</Avatar>
+								<UserAvatar size={16} className="text-[9px]" user={{ id: item.requesterId, fullName: item.requesterName, avatar: item.requesterAvatar }} />
 								<span className="truncate">
 									{item.requesterName}
 									{" · "}

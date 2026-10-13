@@ -5,10 +5,11 @@ import type { AttachmentUploadRef } from "#src/components/attachment-upload";
 import { ApprovalHistoryAction, ApprovalPriority, approvalRequestService, ApprovalRequestStatus } from "#src/api/approval-request";
 import { DEFAULT_ATTACHMENT_CONFIG } from "#src/api/setting/request-type/types";
 import { BasicContent } from "#src/components/basic-content";
+import { UserAvatar } from "#src/components/user-avatar";
 import { useUserStore } from "#src/store/user";
 import { SaveOutlined, SendOutlined } from "@ant-design/icons";
 import { useDebounceFn } from "ahooks";
-import { Alert, Avatar, Button, Descriptions, Form, Input, Radio, Result, Select, Skeleton, Tag, theme, Typography } from "antd";
+import { Alert, Button, Descriptions, Form, Input, Radio, Result, Select, Skeleton, Tag, theme, Typography } from "antd";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams, useSearchParams } from "react-router";
@@ -337,9 +338,7 @@ export default function ApprovalRequestForm() {
 										className="flex h-8 items-center gap-2 rounded-md px-3"
 										style={{ border: `1px solid ${token.colorBorderSecondary}`, background: token.colorFillQuaternary }}
 									>
-										<Avatar size={20} src={existing?.requester.avatar ?? currentUser.avatar}>
-											{(existing?.requester.fullName ?? currentUser.fullName)?.[0]}
-										</Avatar>
+										<UserAvatar size={20} user={existing?.requester ?? currentUser} />
 										<span>{existing?.requester.fullName ?? currentUser.fullName}</span>
 									</div>
 								</Form.Item>

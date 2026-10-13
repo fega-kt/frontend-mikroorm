@@ -2,8 +2,9 @@ import type { ApprovalRequestListItem } from "#src/api/approval-request";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import { approvalRequestService, ApprovalRequestStatus } from "#src/api/approval-request";
 import { BasicTable } from "#src/components/basic-table";
+import { PeoplePicker } from "#src/components/people-picker";
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Avatar, Button, Popconfirm, Space, Tooltip, Typography } from "antd";
+import { Button, Popconfirm, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -83,10 +84,7 @@ export function RequestTable({ mode, title, scope = "all" }: RequestTableProps) 
 					width: 200,
 					hideInSearch: true,
 					render: (_: unknown, record: ApprovalRequestListItem) => (
-						<Space size={6}>
-							<Avatar size={22} src={record.requester.avatar}>{record.requester.fullName?.[0]}</Avatar>
-							<span>{record.requester.fullName}</span>
-						</Space>
+						<PeoplePicker readonly user={record.requester} showEmail={false} />
 					),
 				} satisfies ProColumns<ApprovalRequestListItem>,
 				{

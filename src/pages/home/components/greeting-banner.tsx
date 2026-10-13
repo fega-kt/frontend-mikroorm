@@ -1,11 +1,11 @@
 import type { Ref } from "react";
 import type { BannerPetRef } from "./banner-pet";
 
+import { UserAvatar } from "#src/components/user-avatar";
 import { useUserStore } from "#src/store/user";
-import { getAvatarColor } from "#src/utils/avatar";
 
 import { PlusOutlined } from "@ant-design/icons";
-import { Avatar, Button, theme } from "antd";
+import { Button, theme } from "antd";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
@@ -63,14 +63,12 @@ export function GreetingBanner({ pendingCount, overdueCount, returnedCount, petR
 			</svg>
 
 			<div className="relative flex min-w-0 items-center gap-4">
-				<Avatar
+				<UserAvatar
 					size={60}
-					src={avatar || undefined}
-					className="shrink-0 text-[22px] font-bold"
-					style={{ backgroundColor: getAvatarColor(id), boxShadow: `0 0 0 3px ${token.colorPrimaryBg}, 0 0 0 5px ${token.colorPrimary}` }}
-				>
-					{fullName?.[0]?.toUpperCase()}
-				</Avatar>
+					user={{ id, fullName, avatar }}
+					className="text-[22px]"
+					style={{ boxShadow: `0 0 0 3px ${token.colorPrimaryBg}, 0 0 0 5px ${token.colorPrimary}` }}
+				/>
 				<div className="flex min-w-0 flex-col gap-2">
 					<div className="flex flex-col gap-0.5">
 						<span className="text-[13px] capitalize text-colorTextTertiary">{dateLabel}</span>

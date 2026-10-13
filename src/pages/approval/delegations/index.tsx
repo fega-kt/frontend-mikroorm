@@ -4,8 +4,9 @@ import type { DetailRef } from "./components/detail";
 import { approvalDelegationService } from "#src/api/approval-delegation";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
+import { PeoplePicker } from "#src/components/people-picker";
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Avatar, Badge, Button, Popconfirm, Segmented, Space, Tooltip, Typography } from "antd";
+import { Badge, Button, Popconfirm, Segmented, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -44,10 +45,7 @@ export default function ApprovalDelegations() {
 	};
 
 	const userCell = (user: ApprovalDelegationEntity["toUser"]) => (
-		<Space size={6}>
-			<Avatar size={22} src={user.avatar}>{user.fullName?.[0]}</Avatar>
-			<span>{user.fullName}</span>
-		</Space>
+		<PeoplePicker readonly user={user} showEmail={false} />
 	);
 
 	const columns: ProColumns<ApprovalDelegationEntity>[] = [

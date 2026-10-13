@@ -1,5 +1,6 @@
 import type { ActivityLogEntity } from "#src/api/activity-log/types";
 import { ActivityLogAction } from "#src/api/activity-log/types";
+import { PeoplePicker } from "#src/components/people-picker";
 import { RichTextEditor } from "#src/components/rich-text-editor";
 import {
 	CheckCircleOutlined,
@@ -16,7 +17,6 @@ import {
 	RobotOutlined,
 	SwapOutlined,
 	TeamOutlined,
-	UserOutlined,
 	WarningOutlined,
 } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
@@ -382,8 +382,7 @@ function ActivityItem({ log, options }: { log: ActivityLogEntity, options: Displ
 				{user
 					? (
 						<Space size={6}>
-							<Avatar src={user.avatar} icon={<UserOutlined />} size={20} className="shrink-0" />
-							<Text strong className="text-sm">{user.fullName ?? user.loginName ?? t("common.history.user")}</Text>
+							<PeoplePicker readonly user={user} showEmail={false} />
 						</Space>
 					)
 					: (
