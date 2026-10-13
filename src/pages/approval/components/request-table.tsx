@@ -44,6 +44,8 @@ export function RequestTable({ mode, title, scope = "all" }: RequestTableProps) 
 	}, []);
 
 	const view = (id: string) => navigate(`/approval/requests/${id}`);
+	// Sửa/xóa chỉ có ở "tờ trình của tôi" và nhóm có đơn đang soạn / bị trả lại
+	const hasRowActions = mode === "mine" && (!scopeStatuses || scopeStatuses.includes(ApprovalRequestStatus.Draft));
 
 	const handleDelete = async (id: string) => {
 		await approvalRequestService.fetchDelete(id);
@@ -66,7 +68,15 @@ export function RequestTable({ mode, title, scope = "all" }: RequestTableProps) 
 			ellipsis: true,
 			width: 280,
 			hideInSearch: true,
-			render: (_, record) => <Typography.Link onClick={() => view(record.id)}>{record.title}</Typography.Link>,
+			render: (_, record) => (
+				<Typography.Link onClick={(e) => {
+					e.stopPropagation();
+					view(record.id);
+				}}
+				>
+					{record.title}
+				</Typography.Link>
+			),
 		},
 		{
 			title: t("approval.fields.requestType"),
@@ -126,39 +136,47 @@ export function RequestTable({ mode, title, scope = "all" }: RequestTableProps) 
 			hideInSearch: true,
 			render: (_, record) => dayjs(record.updatedAt).format(DATE_TIME_FORMAT),
 		},
-		{
-			title: t("common.action"),
-			valueType: "option",
-			key: "option",
-			width: 110,
-			fixed: "right",
-			render: (_, record) => {
-				const editable = mode === "mine" && [ApprovalRequestStatus.Draft, ApprovalRequestStatus.Returned].includes(record.status);
-				return [
-					<Tooltip key="view" title={t("approval.actions.view")}>
-						<Button type="text" size="small" icon={<EyeOutlined />} onClick={() => view(record.id)} />
-					</Tooltip>,
-					editable && (
-						<Tooltip key="edit" title={t("approval.actions.edit")}>
-							<Button type="text" size="small" icon={<EditOutlined />} onClick={() => navigate(`/approval/requests/${record.id}/edit`)} />
-						</Tooltip>
-					),
-					mode === "mine" && record.status === ApprovalRequestStatus.Draft && (
-						<Popconfirm
-							key="delete"
-							title={t("approval.messages.confirmDelete")}
-							onConfirm={() => handleDelete(record.id)}
-							okText={t("common.confirm")}
-							cancelText={t("common.cancel")}
-						>
-							<Tooltip title={t("approval.actions.delete")}>
-								<Button type="text" size="small" danger icon={<DeleteOutlined />} />
-							</Tooltip>
-						</Popconfirm>
-					),
-				].filter(Boolean);
-			},
-		},
+		// Chỉ hiện cột thao tác ở nhóm có thể sửa/xóa (các nhóm còn lại xem chi tiết bằng cách bấm vào dòng)
+		...(hasRowActions
+			? [
+				{
+					title: t("common.action"),
+					valueType: "option",
+					key: "option",
+					width: 110,
+					fixed: "right",
+					render: (_: unknown, record: ApprovalRequestListItem) => {
+						const editable = [ApprovalRequestStatus.Draft, ApprovalRequestStatus.Returned].includes(record.status);
+						const deletable = record.status === ApprovalRequestStatus.Draft;
+						// Chặn nổi bọt (kể cả từ popup của Popconfirm) để không kích hoạt mở chi tiết của dòng
+						return (
+							<span className="inline-flex" onClick={e => e.stopPropagation()}>
+								<Tooltip title={t("approval.actions.view")}>
+									<Button type="text" size="small" icon={<EyeOutlined />} onClick={() => view(record.id)} />
+								</Tooltip>
+								{editable && (
+									<Tooltip title={t("approval.actions.edit")}>
+										<Button type="text" size="small" icon={<EditOutlined />} onClick={() => navigate(`/approval/requests/${record.id}/edit`)} />
+									</Tooltip>
+								)}
+								{deletable && (
+									<Popconfirm
+										title={t("approval.messages.confirmDelete")}
+										onConfirm={() => handleDelete(record.id)}
+										okText={t("common.confirm")}
+										cancelText={t("common.cancel")}
+									>
+										<Tooltip title={t("approval.actions.delete")}>
+											<Button type="text" size="small" danger icon={<DeleteOutlined />} />
+										</Tooltip>
+									</Popconfirm>
+								)}
+							</span>
+						);
+					},
+				} satisfies ProColumns<ApprovalRequestListItem>,
+			]
+			: []),
 	];
 
 	return (
@@ -172,7 +190,7 @@ export function RequestTable({ mode, title, scope = "all" }: RequestTableProps) 
 					: await approvalRequestService.fetchAll(params);
 				return { data, total, success: true };
 			}}
-			onRow={record => ({ onDoubleClick: () => view(record.id) })}
+			onRow={record => ({ onClick: () => view(record.id), style: { cursor: "pointer" } })}
 			headerTitle={title}
 			toolBarRender={() => mode === "mine"
 				? [

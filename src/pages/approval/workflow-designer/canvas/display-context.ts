@@ -2,7 +2,7 @@ import type { FormField } from "#src/api/setting/request-type/types";
 import type { AddableNodeType } from "../lib/node-factory";
 import { createContext, use } from "react";
 
-export type NodeStatus = "done" | "current" | "rejected" | "returned" | "skipped" | "pending";
+export type NodeStatus = "done" | "current" | "rejected" | "returned" | "skipped" | "cancelled" | "pending";
 
 export interface ConditionInfo {
 	branches: number

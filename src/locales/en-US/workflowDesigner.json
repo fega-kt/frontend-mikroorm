@@ -251,6 +251,7 @@
 			"rejected": "Rejected",
 			"returned": "Returned",
 			"skipped": "Skipped",
+			"cancelled": "Cancelled",
 			"pending": "Not reached"
 		}
 	},

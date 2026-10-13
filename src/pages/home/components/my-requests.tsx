@@ -25,7 +25,7 @@ const STATUS_TAG: Partial<Record<RequestStatus, string>> = {
 	[RequestStatus.Returned]: "warning",
 	[RequestStatus.Approved]: "success",
 	[RequestStatus.Rejected]: "error",
-	[RequestStatus.Cancelled]: "default",
+	[RequestStatus.Cancelled]: "magenta",
 };
 
 export function MyRequests({ items }: { items: MyRequest[] }) {
