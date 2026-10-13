@@ -1,4 +1,4 @@
-import type { DownloadDisposition, SignedFileUrl } from "#src/api/attachment";
+import type { DownloadDisposition, PresignedUpload, SignedFileUrl } from "#src/api/attachment";
 import type {
 	ApprovalRequestDetail,
 	ApprovalRequestListItem,
@@ -6,6 +6,7 @@ import type {
 	ApprovalRequestSearchParams,
 	CreatableRequestType,
 	PreviewFlowResult,
+	RequestFileCategory,
 	SubmitUnit,
 } from "./types";
 import { ApiService, CrudServiceBase } from "../service-base";
@@ -55,6 +56,14 @@ export class ApprovalRequestService extends CrudServiceBase<ApprovalRequestListI
 
 	fetchSubmit(id: string) {
 		return this.post<{ id: string }>(`${id}/submit`, { ignoreLoading: true });
+	}
+
+	/** Xin link upload thẳng lên R2 cho tệp của tờ trình (id có thể chưa tồn tại — phiếu đang soạn ở client) */
+	fetchPresignFileUpload(id: string, category: RequestFileCategory, file: File) {
+		return this.post<PresignedUpload>(`${id}/files/presign-upload`, {
+			json: { category, filename: file.name, mimetype: file.type, size: file.size } as never,
+			ignoreLoading: true,
+		});
 	}
 
 	/** Link xem/tải tạm thời của tệp thuộc tờ trình (backend kiểm quyền xem tờ trình) */

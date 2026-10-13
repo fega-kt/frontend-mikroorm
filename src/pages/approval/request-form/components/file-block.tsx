@@ -1,5 +1,7 @@
+import type { RequestFileCategory } from "#src/api/approval-request";
 import type { FileBlockConfig } from "#src/api/setting/request-type/types";
 import type { AttachmentUploadRef } from "#src/components/attachment-upload";
+import { approvalRequestService } from "#src/api/approval-request";
 import { AttachmentUpload } from "#src/components/attachment-upload";
 import { STORAGE_PATH } from "#src/constants/storage-path";
 import { InfoCircleOutlined } from "@ant-design/icons";
@@ -10,7 +12,9 @@ import { NumberedCard } from "./numbered-card";
 
 interface FileBlockProps {
 	index: number
-	name: "documents" | "attachments"
+	name: RequestFileCategory
+	/** Id phiếu (đã có hoặc sinh sẵn ở client) — tệp upload vào Attachments/{requestId}/{name}/ */
+	requestId: string
 	config: FileBlockConfig
 	disabled?: boolean
 	/** Tệp chỉ được tải lên khi gọi uploadRef.current.sync() (lúc bấm Lưu nháp / Gửi) */
@@ -18,7 +22,7 @@ interface FileBlockProps {
 }
 
 /** Một khối tệp (Văn bản tờ trình / Tài liệu đính kèm) theo cấu hình của loại tờ trình */
-export function FileBlock({ index, name, config, disabled, uploadRef }: FileBlockProps) {
+export function FileBlock({ index, name, requestId, config, disabled, uploadRef }: FileBlockProps) {
 	const { t } = useTranslation();
 	return (
 		<NumberedCard
@@ -41,6 +45,7 @@ export function FileBlock({ index, name, config, disabled, uploadRef }: FileBloc
 					ref={uploadRef}
 					mode="manual"
 					storagePath={STORAGE_PATH.ATTACHMENTS}
+					presign={file => approvalRequestService.fetchPresignFileUpload(requestId, name, file)}
 					accept={acceptFor(config.fileTypes)}
 					maxCount={config.maxFiles}
 					maxSize={config.maxSizeMb * 1024 * 1024}

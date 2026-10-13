@@ -1,6 +1,7 @@
 import type { AttachmentEntity, AttachmentUploadProps, AttachmentUploadRef, PendingItem, PendingStatus } from "./types";
 
 import { attachmentService, AttachmentVisibility } from "#src/api/attachment";
+import { isPrivateStoragePath } from "#src/constants/storage-path";
 import { openSignedUrl } from "#src/utils/open-signed-url";
 import { DeleteOutlined, EyeOutlined, LoadingOutlined, PaperClipOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, message, Progress, Tag, Upload } from "antd";
@@ -37,6 +38,7 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 		onChange,
 		mode = "auto",
 		storagePath,
+		presign,
 		multiple = true,
 		accept = ".pdf,.docx,.xlsx,.pptx,.png,.jpg,.zip,.mp3,.mp4,.txt",
 		maxCount,
@@ -65,11 +67,16 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 			);
 
 			try {
-				const attachment = await attachmentService.uploadFile({
-					file: item.file,
-					storagePath,
-					onProgress: progress => setPendingItems(prev => prev.map(p => p.uid === uid ? { ...p, progress } : p)),
-				});
+				// File private phải đi thẳng lên R2 bằng link ký (presign); file public qua backend
+				if (isPrivateStoragePath(storagePath) && !presign)
+					throw new Error("Thiếu presign cho thư mục private");
+				const attachment = presign
+					? await attachmentService.uploadWithPresign({
+						file: item.file,
+						presign,
+						onProgress: progress => setPendingItems(prev => prev.map(p => p.uid === uid ? { ...p, progress } : p)),
+					})
+					: await attachmentService.upload({ file: item.file, storagePath });
 				setPendingItems(prev => prev.filter(p => p.uid !== uid));
 				return attachment;
 			}
@@ -81,7 +88,7 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 				return null;
 			}
 		},
-		[storagePath, t],
+		[storagePath, presign, t],
 	);
 
 	// ── Validate + enqueue ────────────────────────────────────────────────

@@ -3,6 +3,7 @@ import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import { approvalRequestService, ApprovalRequestStatus } from "#src/api/approval-request";
 import { BasicTable } from "#src/components/basic-table";
 import { PeoplePicker } from "#src/components/people-picker";
+import { approvalRequestPath } from "#src/router/extra-info";
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Popconfirm, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
@@ -43,7 +44,7 @@ export function RequestTable({ mode, title, scope = "all" }: RequestTableProps) 
 			.catch(() => {});
 	}, []);
 
-	const view = (id: string) => navigate(`/approval/requests/${id}`);
+	const view = (id: string) => navigate(approvalRequestPath.detail(id));
 	// Sửa/xóa chỉ có ở "tờ trình của tôi" và nhóm có đơn đang soạn / bị trả lại
 	const hasRowActions = mode === "mine" && (!scopeStatuses || scopeStatuses.includes(ApprovalRequestStatus.Draft));
 
@@ -156,7 +157,7 @@ export function RequestTable({ mode, title, scope = "all" }: RequestTableProps) 
 								</Tooltip>
 								{editable && (
 									<Tooltip title={t("approval.actions.edit")}>
-										<Button type="text" size="small" icon={<EditOutlined />} onClick={() => navigate(`/approval/requests/${record.id}/edit`)} />
+										<Button type="text" size="small" icon={<EditOutlined />} onClick={() => navigate(approvalRequestPath.edit(record.id))} />
 									</Tooltip>
 								)}
 								{deletable && (
@@ -194,7 +195,7 @@ export function RequestTable({ mode, title, scope = "all" }: RequestTableProps) 
 			headerTitle={title}
 			toolBarRender={() => mode === "mine"
 				? [
-					<Button key="create" type="primary" icon={<PlusCircleOutlined />} onClick={() => navigate("/approval/requests/new")}>
+					<Button key="create" type="primary" icon={<PlusCircleOutlined />} onClick={() => navigate(approvalRequestPath.create)}>
 						{t("approval.actions.create")}
 					</Button>,
 				]

@@ -7,6 +7,7 @@ import { approvalTaskService } from "#src/api/approval-task";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
 import { UserAvatar } from "#src/components/user-avatar";
+import { approvalRequestPath } from "#src/router/extra-info";
 import { CheckOutlined, CloseOutlined, EyeOutlined, RollbackOutlined } from "@ant-design/icons";
 import { Button, Drawer, Modal, Space, Tag, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
@@ -238,7 +239,7 @@ export default function ApprovalInbox() {
 					</Space>
 				)}
 				onClose={() => setPreview(null)}
-				extra={preview && <Button onClick={() => navigate(`/approval/requests/${preview.request.id}`)}>{t("approval.actions.view")}</Button>}
+				extra={preview && <Button onClick={() => navigate(approvalRequestPath.detail(preview.request.id))}>{t("approval.actions.view")}</Button>}
 				footer={preview && preview.status === ApprovalTaskStatus.Pending && (
 					<div className="flex justify-end gap-2">
 						<Button icon={<RollbackOutlined />} disabled={acting} onClick={() => act(preview, "return")}>{t("approval.actions.return")}</Button>

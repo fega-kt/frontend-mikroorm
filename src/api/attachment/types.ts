@@ -43,6 +43,4 @@ export interface PresignedUpload {
 export interface UploadAttachmentParams {
 	file: File
 	storagePath?: string
-	/** Tiến trình upload 0–100 (chỉ có với upload thẳng lên R2) */
-	onProgress?: (percent: number) => void
 }

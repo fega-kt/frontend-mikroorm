@@ -14,3 +14,17 @@ export const exception403Path = `${exceptionPath}/403`;
 export const exception404Path = `${exceptionPath}/404`;
 export const exception500Path = `${exceptionPath}/500`;
 export const exceptionUnknownComponentPath = `${exceptionPath}/not-found-component`;
+
+/** Đường dẫn phần duyệt tờ trình (menu do backend cấp, nên path được gom ở đây để đổi một chỗ là đủ) */
+export enum ApprovalPath {
+	Requests = "/approval/requests",
+	MyDraft = "/approval/my/draft",
+	MyAll = "/approval/my/all",
+	ReviewPending = "/approval/review/pending",
+}
+
+export const approvalRequestPath = {
+	create: `${ApprovalPath.Requests}/new`,
+	detail: (id: string) => `${ApprovalPath.Requests}/${id}`,
+	edit: (id: string) => `${ApprovalPath.Requests}/${id}/edit`,
+};

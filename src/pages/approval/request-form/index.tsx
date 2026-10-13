@@ -6,6 +6,7 @@ import { ApprovalHistoryAction, ApprovalPriority, approvalRequestService, Approv
 import { DEFAULT_ATTACHMENT_CONFIG } from "#src/api/setting/request-type/types";
 import { BasicContent } from "#src/components/basic-content";
 import { UserAvatar } from "#src/components/user-avatar";
+import { approvalRequestPath } from "#src/router/extra-info";
 import { useUserStore } from "#src/store/user";
 import { SaveOutlined, SendOutlined } from "@ant-design/icons";
 import { useDebounceFn } from "ahooks";
@@ -47,6 +48,9 @@ export default function ApprovalRequestForm() {
 	const [types, setTypes] = useState<CreatableRequestType[]>();
 	const [units, setUnits] = useState<SubmitUnit[]>([]);
 	const [existing, setExisting] = useState<ApprovalRequestDetail>();
+	// Phiếu mới chưa có id: sinh sẵn để tệp upload vào đúng thư mục Attachments/{id}/... và dùng lại khi tạo phiếu
+	const [draftId] = useState(() => crypto.randomUUID());
+	const requestFileId = existing?.id ?? draftId;
 	const [loadError, setLoadError] = useState(false);
 	const [saving, setSaving] = useState<"draft" | "submit" | null>(null);
 	const [preview, setPreview] = useState<PreviewFlowResult | null>(null);
@@ -190,10 +194,20 @@ export default function ApprovalRequestForm() {
 					await approvalRequestService.fetchSubmit(requestId);
 			}
 			else {
-				requestId = (await approvalRequestService.fetchCreate({ ...body, requestType: selectedType!.id, submit })).id;
+				requestId = (await approvalRequestService.fetchCreate({ ...body, id: draftId, requestType: selectedType!.id, submit })).id;
 			}
 			window.$message?.success(t(submit ? "approval.messages.submitted" : "approval.messages.saved"));
-			navigate(`/approval/requests/${requestId}`, { replace: true });
+			if (submit) {
+				navigate(approvalRequestPath.detail(requestId), { replace: true });
+			}
+			else if (existing) {
+				// Lưu nháp: ở lại form để sửa tiếp nhiều lần, chỉ làm mới thông tin phiếu (trạng thái, mã…)
+				setExisting(await approvalRequestService.fetchDetail(requestId));
+			}
+			else {
+				// Phiếu vừa được tạo: chuyển sang màn sửa của chính nó để các lần lưu sau là cập nhật
+				navigate(approvalRequestPath.edit(requestId), { replace: true });
+			}
 		}
 		catch {
 			// lỗi upload / API đã được báo (AttachmentUpload hoặc interceptor)
@@ -368,11 +382,12 @@ export default function ApprovalRequestForm() {
 							)}
 						</NumberedCard>
 
-						{fileConfig.documents.enabled && <FileBlock index={3} name="documents" config={fileConfig.documents} disabled={!editable} uploadRef={documentsRef} />}
+						{fileConfig.documents.enabled && <FileBlock index={3} name="documents" requestId={requestFileId} config={fileConfig.documents} disabled={!editable} uploadRef={documentsRef} />}
 						{fileConfig.attachments.enabled && (
 							<FileBlock
 								index={fileConfig.documents.enabled ? 4 : 3}
 								name="attachments"
+								requestId={requestFileId}
 								config={fileConfig.attachments}
 								disabled={!editable}
 								uploadRef={attachmentsRef}

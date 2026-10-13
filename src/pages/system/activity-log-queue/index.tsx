@@ -6,6 +6,7 @@ import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
+import { approvalRequestPath } from "#src/router/extra-info";
 import { RedoOutlined } from "@ant-design/icons";
 import { Button, Popconfirm, Tag, Tooltip, Typography } from "antd";
 import { useRef } from "react";
@@ -26,7 +27,7 @@ const STATUS_COLOR: Record<ActivityLogQueueStatus, string> = {
 const MAIL_TYPES = Object.values(NotificationType).filter(type => type.startsWith("APPROVAL_") || type === NotificationType.LOGIN_INACTIVE_REMINDER);
 
 const REF_ROUTE: Record<string, (id: string) => string> = {
-	approval_requests: id => `/approval/requests/${id}`,
+	approval_requests: id => approvalRequestPath.detail(id),
 };
 
 /** Hàng đợi gửi mail: mỗi dòng là một email cho một người nhận — trạng thái, số lần thử, lỗi; gửi lại được */
