@@ -1,4 +1,4 @@
-import type { AttachmentEntity, DownloadDisposition, PresignedUpload, SignedFileUrl, UploadAttachmentParams } from "./types";
+import type { AttachmentEntity, PresignedUpload, UploadAttachmentParams } from "./types";
 
 import { ApiService, CrudServiceBase } from "../service-base";
 
@@ -50,11 +50,6 @@ export class AttachmentService extends CrudServiceBase<AttachmentEntity> {
 			formData.append("path", storagePath);
 		}
 		return this.post<AttachmentEntity>("", { body: formData });
-	}
-
-	/** Link xem/tải tạm thời cho file private do chính mình upload (vd: xem lại tệp chưa lưu vào tờ trình) */
-	fetchDownloadUrl(id: string, disposition: DownloadDisposition = "attachment") {
-		return this.get<SignedFileUrl>(`${id}/download-url`, { searchParams: { disposition }, ignoreLoading: true });
 	}
 
 	/** Xóa attachment theo id */

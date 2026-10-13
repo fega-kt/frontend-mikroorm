@@ -1,4 +1,4 @@
-import type { DownloadDisposition, PresignedUpload, SignedFileUrl } from "#src/api/attachment";
+import type { PresignedUpload } from "#src/api/attachment";
 import type {
 	ApprovalRequestDetail,
 	ApprovalRequestListItem,
@@ -64,11 +64,6 @@ export class ApprovalRequestService extends CrudServiceBase<ApprovalRequestListI
 			json: { category, filename: file.name, mimetype: file.type, size: file.size } as never,
 			ignoreLoading: true,
 		});
-	}
-
-	/** Link xem/tải tạm thời của tệp thuộc tờ trình (backend kiểm quyền xem tờ trình) */
-	fetchFileUrl(id: string, fileId: string, disposition: DownloadDisposition = "attachment") {
-		return this.get<SignedFileUrl>(`${id}/files/${fileId}/download-url`, { searchParams: { disposition }, ignoreLoading: true });
 	}
 
 	fetchCancel(id: string, comment?: string) {

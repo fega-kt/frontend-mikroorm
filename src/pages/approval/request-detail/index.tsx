@@ -1,18 +1,19 @@
 import type { ApprovalRequestDetail, ApprovalTaskItem } from "#src/api/approval-request";
 import type { ApprovalActionType } from "#src/api/approval-task";
+import type { FileViewTarget } from "#src/components/file-viewer";
 import type { ReactNode } from "react";
 import type { ActionModalRef } from "../components/action-modal";
 import { ApprovalHistoryAction, approvalRequestService, ApprovalRequestStatus, ApprovalTaskStatus } from "#src/api/approval-request";
 import { approvalTaskService } from "#src/api/approval-task";
-import { AttachmentVisibility } from "#src/api/attachment";
+import { FileContextType } from "#src/api/file-view";
 import { ApprovalFlowGraph } from "#src/components/approval-flow-graph";
 import { BasicContent } from "#src/components/basic-content";
+import { FileViewer } from "#src/components/file-viewer";
 import { PeoplePicker } from "#src/components/people-picker";
 import { SectionCard } from "#src/components/section-card";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import { ApprovalPath, approvalRequestPath } from "#src/router/extra-info";
-import { openSignedUrl } from "#src/utils/open-signed-url";
 import {
 	ArrowLeftOutlined,
 	ArrowRightOutlined,
@@ -81,6 +82,7 @@ export default function ApprovalRequestDetailPage() {
 	const activeTab = Object.values(DetailTab).find(key => key === searchParams.get("tab") && (key !== DetailTab.Progress || hasDefinition)) ?? DetailTab.Info;
 	const [error, setError] = useState(false);
 	const [busy, setBusy] = useState(false);
+	const [viewing, setViewing] = useState<FileViewTarget | null>(null);
 	const [reassignTask, setReassignTask] = useState<ApprovalTaskItem | null>(null);
 	const [reassignTo, setReassignTo] = useState<string>();
 	const [reassignComment, setReassignComment] = useState("");
@@ -358,11 +360,7 @@ export default function ApprovalRequestDetailPage() {
 													<ul className="m-0 pl-0 list-none flex flex-col gap-1">
 														{detail[block].map(file => (
 															<li key={file.id}>
-																<Typography.Link
-																	{...(file.visibility === AttachmentVisibility.Private
-																		? { onClick: () => openSignedUrl(() => approvalRequestService.fetchFileUrl(detail.id, file.id, "inline")) }
-																		: { href: file.url, target: "_blank", rel: "noreferrer" })}
-																>
+																<Typography.Link onClick={() => setViewing({ contextType: FileContextType.ApprovalRequest, fileId: file.id, filename: file.filename })}>
 																	<PaperClipOutlined className="mr-1" />
 																	{file.filename}
 																</Typography.Link>
@@ -389,6 +387,7 @@ export default function ApprovalRequestDetailPage() {
 				/>
 			</div>
 
+			<FileViewer target={viewing} onClose={() => setViewing(null)} />
 			<ActionModal ref={actionModalRef} />
 			<Modal
 				open={!!reassignTask}
