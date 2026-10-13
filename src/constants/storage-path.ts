@@ -6,6 +6,13 @@ export const STORAGE_PATH = {
 
 } as const;
 
+/** Thư mục chỉ lưu ở bucket private — upload thẳng lên R2 bằng link ký, xem/tải cũng bằng link ký (đồng bộ backend) */
+const PRIVATE_STORAGE_PATHS: readonly string[] = [STORAGE_PATH.ATTACHMENTS];
+
+export function isPrivateStoragePath(path?: string): boolean {
+	return !!path && PRIVATE_STORAGE_PATHS.some(p => path === p || path.startsWith(`${p}/`));
+}
+
 export type StoragePathKey = keyof typeof STORAGE_PATH;
 export type StoragePathValue = (typeof STORAGE_PATH)[StoragePathKey];
 

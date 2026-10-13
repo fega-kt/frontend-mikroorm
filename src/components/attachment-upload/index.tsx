@@ -1,8 +1,9 @@
 import type { AttachmentEntity, AttachmentUploadProps, AttachmentUploadRef, PendingItem, PendingStatus } from "./types";
 
-import { attachmentService } from "#src/api/attachment";
+import { attachmentService, AttachmentVisibility } from "#src/api/attachment";
+import { openSignedUrl } from "#src/utils/open-signed-url";
 import { DeleteOutlined, EyeOutlined, LoadingOutlined, PaperClipOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, message, Tag, Upload } from "antd";
+import { Button, message, Progress, Tag, Upload } from "antd";
 import * as React from "react";
 import { useCallback, useImperativeHandle, useRef, useState } from "react";
 
@@ -60,11 +61,15 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 				return null;
 
 			setPendingItems(prev =>
-				prev.map(p => p.uid === uid ? { ...p, status: "uploading" as PendingStatus, error: undefined } : p),
+				prev.map(p => p.uid === uid ? { ...p, status: "uploading" as PendingStatus, progress: undefined, error: undefined } : p),
 			);
 
 			try {
-				const attachment = await attachmentService.upload({ file: item.file, storagePath });
+				const attachment = await attachmentService.uploadFile({
+					file: item.file,
+					storagePath,
+					onProgress: progress => setPendingItems(prev => prev.map(p => p.uid === uid ? { ...p, progress } : p)),
+				});
 				setPendingItems(prev => prev.filter(p => p.uid !== uid));
 				return attachment;
 			}
@@ -227,7 +232,9 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 					name={att.filename}
 					size={att.size}
 					status="done"
-					previewUrl={att.url}
+					// File private không có URL công khai: xin link ký tạm khi bấm xem
+					previewUrl={att.visibility === AttachmentVisibility.Private ? undefined : att.url}
+					onPreview={att.visibility === AttachmentVisibility.Private ? () => openSignedUrl(() => attachmentService.fetchDownloadUrl(att.id, "inline")) : undefined}
 					disabled={disabled}
 					onRemove={() => handleRemoveDone(att.id)}
 					t={t}
@@ -240,6 +247,7 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 					name={item.file.name}
 					size={item.file.size}
 					status={item.status}
+					progress={item.progress}
 					mode={mode}
 					error={item.error}
 					onRemove={item.status !== "uploading" ? () => handleRemovePending(item.uid) : undefined}
@@ -258,7 +266,11 @@ interface FileRowProps {
 	size: number
 	status: "done" | PendingStatus
 	mode?: "auto" | "manual"
+	/** Tiến trình upload 0–100; có thì hiện thanh tiến trình */
+	progress?: number
 	previewUrl?: string
+	/** Thay cho previewUrl khi cần xin link trước khi mở (file private) */
+	onPreview?: () => void
 	error?: string
 	disabled?: boolean
 	onRemove?: () => void
@@ -266,7 +278,7 @@ interface FileRowProps {
 	t: any
 }
 
-function FileRow({ name, size, status, mode, previewUrl, error, disabled, onRemove, onRetry, t }: FileRowProps) {
+function FileRow({ name, size, status, mode, progress, previewUrl, onPreview, error, disabled, onRemove, onRetry, t }: FileRowProps) {
 	return (
 		<div className="flex flex-col gap-1 px-3 py-2 rounded border border-dashed">
 			<div className="flex items-center gap-2">
@@ -290,6 +302,9 @@ function FileRow({ name, size, status, mode, previewUrl, error, disabled, onRemo
 					{previewUrl && (
 						<Button type="text" size="small" icon={<EyeOutlined />} href={previewUrl} target="_blank" />
 					)}
+					{!previewUrl && onPreview && (
+						<Button type="text" size="small" icon={<EyeOutlined />} onClick={onPreview} />
+					)}
 					{onRetry && (
 						<Button type="text" size="small" onClick={onRetry}>{t("common.attachment.retry", "Thử lại")}</Button>
 					)}
@@ -298,6 +313,10 @@ function FileRow({ name, size, status, mode, previewUrl, error, disabled, onRemo
 					)}
 				</div>
 			</div>
+
+			{status === "uploading" && progress !== undefined && (
+				<Progress percent={progress} size="small" className="pl-5 !mb-0" />
+			)}
 
 			{status === "error" && error && (
 				<span className="text-xs text-red-500 pl-5">{error}</span>

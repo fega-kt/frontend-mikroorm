@@ -38,5 +38,7 @@ export interface PendingItem {
 	uid: string
 	file: File
 	status: PendingStatus
+	/** Tiến trình upload 0–100 (chỉ có khi upload thẳng lên R2) */
+	progress?: number
 	error?: string
 }

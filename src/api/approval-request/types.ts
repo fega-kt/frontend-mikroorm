@@ -150,8 +150,8 @@ export interface ApprovalRequestDetail {
 	requestType: { id: string, code: string, name: string, formSchema: FormField[], attachmentConfig: AttachmentConfig }
 	requester: UserBrief
 	department: { id: string, name: string }
-	documents: Pick<AttachmentEntity, "id" | "filename" | "url" | "size" | "mimetype">[]
-	attachments: Pick<AttachmentEntity, "id" | "filename" | "url" | "size" | "mimetype">[]
+	documents: Pick<AttachmentEntity, "id" | "filename" | "url" | "visibility" | "size" | "mimetype">[]
+	attachments: Pick<AttachmentEntity, "id" | "filename" | "url" | "visibility" | "size" | "mimetype">[]
 	workflow: { id: string, name: string, versionId: string, version: number } | null
 	definition: WorkflowDefinition | null
 	tasks: ApprovalTaskItem[]
