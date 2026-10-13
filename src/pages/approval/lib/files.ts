@@ -1,5 +1,6 @@
 import type { FileBlockConfig, FileKind } from "#src/api/setting/request-type/types";
 import { FILE_KIND_EXTENSIONS } from "#src/api/setting/request-type/types";
+import { formatBytes } from "#src/utils/format-bytes";
 
 /** Chuỗi accept cho <input type="file"> từ các nhóm loại tệp */
 export function acceptFor(kinds: FileKind[]) {
@@ -16,6 +17,12 @@ export function blockSummary(config: FileBlockConfig, t: (key: string, options?:
 		`≤ ${config.maxSizeMb} MB`,
 	];
 	return parts.join(" · ");
+}
+
+/** Tổng số tệp và dung lượng của một khối: "3 tệp · 44.4 MB" */
+export function fileListSummary(files: { size: number }[], t: (key: string, options?: Record<string, unknown>) => string) {
+	const total = files.reduce((sum, file) => sum + file.size, 0);
+	return `${t("approval.files.count", { count: files.length })} · ${formatBytes(total)}`;
 }
 
 const extOf = (filename: string) => filename.split(".").pop()?.toLowerCase() ?? "";

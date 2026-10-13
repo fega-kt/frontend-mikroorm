@@ -140,6 +140,7 @@
 		"maxSize": "最大",
 		"maxCount": "最多",
 		"statusDone": "已上传",
+		"download": "下载",
 		"statusPendingSync": "等待同步",
 		"statusPending": "等待中",
 		"statusUploading": "上传中",

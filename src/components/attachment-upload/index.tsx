@@ -2,7 +2,8 @@ import type { AttachmentEntity, AttachmentUploadProps, AttachmentUploadRef, Pend
 
 import { attachmentService, AttachmentVisibility } from "#src/api/attachment";
 import { isPrivateStoragePath } from "#src/constants/storage-path";
-import { DeleteOutlined, EyeOutlined, LoadingOutlined, PaperClipOutlined, UploadOutlined } from "@ant-design/icons";
+import { formatBytes } from "#src/utils/format-bytes";
+import { DeleteOutlined, DownloadOutlined, EyeOutlined, LoadingOutlined, PaperClipOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, message, Progress, Tag, Upload } from "antd";
 import * as React from "react";
 import { useCallback, useImperativeHandle, useRef, useState } from "react";
@@ -16,14 +17,6 @@ export type { AttachmentEntity, AttachmentUploadProps, AttachmentUploadRef };
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const DEFAULT_MAX_SIZE = 10 * 1024 * 1024; // 10 MB
-
-function formatBytes(bytes: number): string {
-	if (bytes < 1024)
-		return `${bytes} B`;
-	if (bytes < 1024 * 1024)
-		return `${(bytes / 1024).toFixed(1)} KB`;
-	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
 
 let _uidCounter = 0;
 function genUid(): string {
@@ -39,6 +32,7 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 		storagePath,
 		presign,
 		onViewFile,
+		onDownloadFile,
 		multiple = true,
 		accept = ".pdf,.docx,.xlsx,.pptx,.png,.jpg,.zip,.mp3,.mp4,.txt",
 		maxCount,
@@ -242,6 +236,7 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 					// File private không có URL công khai: xem qua trình xem do nơi dùng cung cấp (onViewFile)
 					previewUrl={att.visibility === AttachmentVisibility.Private ? undefined : att.url}
 					onPreview={att.visibility === AttachmentVisibility.Private && onViewFile ? () => onViewFile(att) : undefined}
+					onDownload={onDownloadFile ? () => onDownloadFile(att) : undefined}
 					disabled={disabled}
 					onRemove={() => handleRemoveDone(att.id)}
 					t={t}
@@ -278,6 +273,8 @@ interface FileRowProps {
 	previewUrl?: string
 	/** Thay cho previewUrl khi cần xin link trước khi mở (file private) */
 	onPreview?: () => void
+	/** Tải tệp đã upload (nút quay trong lúc chờ) */
+	onDownload?: () => Promise<void>
 	error?: string
 	disabled?: boolean
 	onRemove?: () => void
@@ -285,7 +282,12 @@ interface FileRowProps {
 	t: any
 }
 
-function FileRow({ name, size, status, mode, progress, previewUrl, onPreview, error, disabled, onRemove, onRetry, t }: FileRowProps) {
+function FileRow({ name, size, status, mode, progress, previewUrl, onPreview, onDownload, error, disabled, onRemove, onRetry, t }: FileRowProps) {
+	const [downloading, setDownloading] = useState(false);
+	const download = () => {
+		setDownloading(true);
+		onDownload?.().finally(() => setDownloading(false));
+	};
 	return (
 		<div className="flex flex-col gap-1 px-3 py-2 rounded border border-dashed">
 			<div className="flex items-center gap-2">
@@ -311,6 +313,17 @@ function FileRow({ name, size, status, mode, progress, previewUrl, onPreview, er
 					)}
 					{!previewUrl && onPreview && (
 						<Button type="text" size="small" icon={<EyeOutlined />} onClick={onPreview} />
+					)}
+					{onDownload && (
+						<Button
+							type="text"
+							size="small"
+							icon={<DownloadOutlined />}
+							loading={downloading}
+							aria-label={t("common.attachment.download", "Tải xuống")}
+							title={t("common.attachment.download", "Tải xuống")}
+							onClick={download}
+						/>
 					)}
 					{onRetry && (
 						<Button type="text" size="small" onClick={onRetry}>{t("common.attachment.retry", "Thử lại")}</Button>
