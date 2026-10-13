@@ -1,7 +1,8 @@
 import type { ApprovalRequestDetail, ApprovalTaskItem } from "#src/api/approval-request";
 import type { ApprovalActionType } from "#src/api/approval-task";
+import type { ReactNode } from "react";
 import type { ActionModalRef } from "../components/action-modal";
-import { ApprovalHistoryAction, approvalRequestService, ApprovalRequestStatus } from "#src/api/approval-request";
+import { ApprovalHistoryAction, approvalRequestService, ApprovalRequestStatus, ApprovalTaskStatus } from "#src/api/approval-request";
 import { approvalTaskService } from "#src/api/approval-task";
 import { ApprovalFlowGraph } from "#src/components/approval-flow-graph";
 import { BasicContent } from "#src/components/basic-content";
@@ -11,6 +12,7 @@ import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import {
 	ArrowLeftOutlined,
+	ArrowRightOutlined,
 	CheckOutlined,
 	CloseOutlined,
 	DeleteOutlined,
@@ -20,26 +22,46 @@ import {
 	MailOutlined,
 	NodeIndexOutlined,
 	PaperClipOutlined,
+	ProfileOutlined,
 	ReloadOutlined,
 	RollbackOutlined,
 	SendOutlined,
 	StopOutlined,
 	TeamOutlined,
 } from "@ant-design/icons";
-import { Alert, Button, Descriptions, Empty, Input, Modal, Popconfirm, Result, Skeleton, Space, Tag, Typography } from "antd";
+import { Alert, Button, Descriptions, Empty, Input, Modal, Popconfirm, Result, Skeleton, Space, Tabs, Tag, Typography } from "antd";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import { ActionModal } from "../components/action-modal";
 import { PayloadDescriptions } from "../components/form-fields";
 import { PriorityTag, RequestStatusTag } from "../components/status-tag";
 import { DATE_TIME_FORMAT } from "../lib/payload";
 import { collectUserNames, computeNodeStatus } from "../lib/progress";
 import { HistoryTimeline } from "./components/history-timeline";
+import { ReviewProgress } from "./components/review-progress";
 import { TaskList } from "./components/task-list";
 
 const { Text, Title } = Typography;
+
+/** Các tab của màn chi tiết; giá trị là tham số `?tab=` trên URL (info là mặc định nên không ghi ra URL) */
+enum DetailTab {
+	Info = "info",
+	Progress = "progress",
+	Files = "files",
+	History = "history",
+}
+
+function tabLabel(icon: ReactNode, text: string, count?: number) {
+	return (
+		<span className="inline-flex items-center gap-1.5">
+			{icon}
+			{text}
+			{!!count && <Tag bordered={false} className="m-0 rounded-full px-1.5 leading-4">{count}</Tag>}
+		</span>
+	);
+}
 
 const formatDate = (value?: string) => (value ? dayjs(value).format(DATE_TIME_FORMAT) : "—");
 
@@ -48,8 +70,12 @@ export default function ApprovalRequestDetailPage() {
 	const navigate = useNavigate();
 	const canViewMailQueue = useAccess().canAccess(PermissionType.ViewActivityLogQueue);
 	const { id } = useParams<{ id: string }>();
+	const [searchParams, setSearchParams] = useSearchParams();
 	const actionModalRef = useRef<ActionModalRef>(null);
 	const [detail, setDetail] = useState<ApprovalRequestDetail>();
+	// Tờ trình nháp chưa có quy trình thì không có tab sơ đồ
+	const hasDefinition = !!detail?.definition;
+	const activeTab = Object.values(DetailTab).find(key => key === searchParams.get("tab") && (key !== DetailTab.Progress || hasDefinition)) ?? DetailTab.Info;
 	const [error, setError] = useState(false);
 	const [busy, setBusy] = useState(false);
 	const [reassignTask, setReassignTask] = useState<ApprovalTaskItem | null>(null);
@@ -71,6 +97,18 @@ export default function ApprovalRequestDetailPage() {
 	useEffect(() => {
 		load();
 	}, [load]);
+
+	// Giữ tab đang xem trên URL để tải lại / chia sẻ link vẫn đúng tab
+	const changeTab = (key: string) => {
+		setSearchParams((prev) => {
+			const next = new URLSearchParams(prev);
+			if (key === DetailTab.Info)
+				next.delete("tab");
+			else
+				next.set("tab", key);
+			return next;
+		}, { replace: true });
+	};
 
 	const nodeStatus = useMemo(() => (detail ? computeNodeStatus(detail) : {}), [detail]);
 	const userNames = useMemo(() => (detail ? collectUserNames(detail) : {}), [detail]);
@@ -133,6 +171,8 @@ export default function ApprovalRequestDetailPage() {
 		return <BasicContent><Skeleton active paragraph={{ rows: 10 }} /></BasicContent>;
 
 	const { permissions } = detail;
+	const fileCount = detail.documents.length + detail.attachments.length;
+	const pendingTasks = detail.tasks.filter(task => task.round === detail.round && task.status === ApprovalTaskStatus.Pending);
 	const lastReturn = detail.status === ApprovalRequestStatus.Returned
 		? [...detail.histories].reverse().find(h => h.action === ApprovalHistoryAction.Return)
 		: undefined;
@@ -200,88 +240,146 @@ export default function ApprovalRequestDetailPage() {
 					/>
 				)}
 
-				<div className="grid grid-cols-1 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)] gap-4 items-start">
-					<div className="flex flex-col gap-4 min-w-0">
-						<SectionCard icon={<FileTextOutlined />} title={t("approval.detail.info")}>
-							<Descriptions
-								size="small"
-								column={{ xs: 1, sm: 2 }}
-								className="mb-4"
-								items={[
-									{ key: "code", label: t("approval.fields.code"), children: detail.code ?? "—" },
-									{ key: "type", label: t("approval.fields.requestType"), children: detail.requestType.name },
-									{ key: "requester", label: t("approval.fields.requester"), children: detail.requester.fullName },
-									{ key: "department", label: t("approval.fields.department"), children: detail.department.name },
-									{ key: "submittedAt", label: t("approval.fields.submittedAt"), children: formatDate(detail.submittedAt) },
-									{ key: "closedAt", label: t("approval.fields.closedAt"), children: formatDate(detail.closedAt) },
-									{
-										key: "workflow",
-										label: t("approval.fields.workflow"),
-										children: detail.workflow
-											? (
-												<Space size={4}>
-													{detail.workflow.name}
-													<Tag className="m-0">{`v${detail.workflow.version}`}</Tag>
-												</Space>
-											)
-											: "—",
-									},
-								]}
-							/>
-							<PayloadDescriptions fields={detail.requestType.formSchema} payload={detail.payload} />
-						</SectionCard>
+				<Tabs
+					activeKey={activeTab}
+					onChange={changeTab}
+					tabBarStyle={{ margin: "0 0 16px" }}
+					items={[
+						{
+							key: DetailTab.Info,
+							label: tabLabel(<FileTextOutlined />, t("approval.detail.info")),
+							children: (
+								<div className="flex flex-col gap-4">
+									{detail.definition && (
+										<SectionCard
+											icon={<NodeIndexOutlined />}
+											title={t("approval.detail.reviewProgress")}
+											extra={(
+												<Typography.Link onClick={() => changeTab(DetailTab.Progress)}>
+													{t("approval.detail.viewFullGraph")}
+													<ArrowRightOutlined className="ml-1.5" />
+												</Typography.Link>
+											)}
+										>
+											<ReviewProgress
+												definition={detail.definition}
+												nodeStatus={nodeStatus}
+												userNames={userNames}
+												fields={detail.requestType.formSchema}
+												pendingTasks={pendingTasks}
+											/>
+										</SectionCard>
+									)}
 
-						<SectionCard icon={<NodeIndexOutlined />} title={t("approval.detail.progress")} noPadding>
-							{detail.definition
-								? (
-									<ApprovalFlowGraph
-										definition={detail.definition}
-										nodeStatus={nodeStatus}
-										visitedNodeIds={detail.visitedNodeIds}
-										userNames={userNames}
-										height={460}
-									/>
-								)
-								: <Empty className="py-8" description={t("approval.detail.notSubmitted")} />}
-						</SectionCard>
+									<div className={detail.tasks.length ? "grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(320px,1fr)]" : "grid grid-cols-1 gap-4"}>
+										<div className="flex min-w-0 flex-col gap-4">
+											<SectionCard icon={<FileTextOutlined />} title={t("approval.detail.info")}>
+												<Descriptions
+													layout="vertical"
+													size="small"
+													column={{ xs: 1, sm: 2, xl: 3 }}
+													items={[
+														{ key: "code", label: t("approval.fields.code"), children: detail.code ?? "—" },
+														{ key: "type", label: t("approval.fields.requestType"), children: detail.requestType.name },
+														{ key: "requester", label: t("approval.fields.requester"), children: <PeoplePicker readonly user={detail.requester} showEmail={false} size="small" className="!min-h-0" /> },
+														{ key: "department", label: t("approval.fields.department"), children: detail.department.name },
+														{ key: "submittedAt", label: t("approval.fields.submittedAt"), children: formatDate(detail.submittedAt) },
+														{ key: "closedAt", label: t("approval.fields.closedAt"), children: formatDate(detail.closedAt) },
+														{
+															key: "workflow",
+															label: t("approval.fields.workflow"),
+															children: detail.workflow
+																? (
+																	<Space size={4}>
+																		{detail.workflow.name}
+																		<Tag className="m-0">{`v${detail.workflow.version}`}</Tag>
+																	</Space>
+																)
+																: "—",
+														},
+													]}
+												/>
+											</SectionCard>
+											<SectionCard icon={<ProfileOutlined />} title={t("approval.detail.content")}>
+												<PayloadDescriptions fields={detail.requestType.formSchema} payload={detail.payload} />
+											</SectionCard>
+										</div>
 
-						{(["documents", "attachments"] as const).map(block => (
-							<SectionCard key={block} icon={<PaperClipOutlined />} title={t(`approval.files.${block}`)}>
-								{detail[block].length
-									? (
-										<ul className="m-0 pl-0 list-none flex flex-col gap-1">
-											{detail[block].map(file => (
-												<li key={file.id}>
-													<Typography.Link href={file.url} target="_blank" rel="noreferrer">
-														<PaperClipOutlined className="mr-1" />
-														{file.filename}
-													</Typography.Link>
-												</li>
-											))}
-										</ul>
-									)
-									: <Text type="secondary">{t("common.noData")}</Text>}
-							</SectionCard>
-						))}
-					</div>
-
-					<div className="flex flex-col gap-4 min-w-0">
-						<SectionCard icon={<TeamOutlined />} title={t("approval.detail.tasks")}>
-							<TaskList
-								tasks={detail.tasks}
-								canReassign={permissions.canReassign}
-								onReassign={(task) => {
-									setReassignTo(undefined);
-									setReassignComment("");
-									setReassignTask(task);
-								}}
-							/>
-						</SectionCard>
-						<SectionCard icon={<HistoryOutlined />} title={t("approval.detail.timeline")}>
-							<HistoryTimeline histories={detail.histories} userNames={{ ...userNames, [detail.requester.id]: detail.requester.fullName }} />
-						</SectionCard>
-					</div>
-				</div>
+										{detail.tasks.length > 0 && (
+											<SectionCard icon={<TeamOutlined />} title={t("approval.detail.tasks")}>
+												<TaskList
+													tasks={detail.tasks}
+													canReassign={permissions.canReassign}
+													onReassign={(task) => {
+														setReassignTo(undefined);
+														setReassignComment("");
+														setReassignTask(task);
+													}}
+												/>
+											</SectionCard>
+										)}
+									</div>
+								</div>
+							),
+						},
+						{
+							key: DetailTab.Progress,
+							label: tabLabel(<NodeIndexOutlined />, t("approval.detail.progress")),
+							// Sơ đồ chỉ dựng khi mở tab để tự fit đúng kích thước
+							destroyOnHidden: true,
+							children: (
+								<SectionCard icon={<NodeIndexOutlined />} title={t("approval.detail.progress")} noPadding>
+									{detail.definition
+										? (
+											<ApprovalFlowGraph
+												definition={detail.definition}
+												nodeStatus={nodeStatus}
+												visitedNodeIds={detail.visitedNodeIds}
+												userNames={userNames}
+												height={560}
+											/>
+										)
+										: <Empty className="py-8" description={t("approval.detail.notSubmitted")} />}
+								</SectionCard>
+							),
+						},
+						{
+							key: DetailTab.Files,
+							label: tabLabel(<PaperClipOutlined />, t("approval.detail.files"), fileCount),
+							children: (
+								<div className="flex flex-col gap-4">
+									{(["documents", "attachments"] as const).map(block => (
+										<SectionCard key={block} icon={<PaperClipOutlined />} title={t(`approval.files.${block}`)}>
+											{detail[block].length
+												? (
+													<ul className="m-0 pl-0 list-none flex flex-col gap-1">
+														{detail[block].map(file => (
+															<li key={file.id}>
+																<Typography.Link href={file.url} target="_blank" rel="noreferrer">
+																	<PaperClipOutlined className="mr-1" />
+																	{file.filename}
+																</Typography.Link>
+															</li>
+														))}
+													</ul>
+												)
+												: <Text type="secondary">{t("common.noData")}</Text>}
+										</SectionCard>
+									))}
+								</div>
+							),
+						},
+						{
+							key: DetailTab.History,
+							label: tabLabel(<HistoryOutlined />, t("approval.detail.timeline"), detail.histories.length),
+							children: (
+								<SectionCard icon={<HistoryOutlined />} title={t("approval.detail.timeline")}>
+									<HistoryTimeline histories={detail.histories} userNames={{ ...userNames, [detail.requester.id]: detail.requester.fullName }} />
+								</SectionCard>
+							),
+						},
+					].filter(item => item.key !== DetailTab.Progress || hasDefinition)}
+				/>
 			</div>
 
 			<ActionModal ref={actionModalRef} />
