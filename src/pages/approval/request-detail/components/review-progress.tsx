@@ -4,6 +4,7 @@ import type { FormField } from "#src/api/setting/request-type/types";
 import type { ReactNode } from "react";
 import type { NodeProgress } from "../../lib/progress";
 import { NodeType } from "#src/api/approval-workflow/types";
+import { useWorkflowUserNames } from "#src/components/approval-flow-graph/user-names";
 import { UserAvatar } from "#src/components/user-avatar";
 import {
 	CheckOutlined,
@@ -13,13 +14,19 @@ import {
 	RollbackOutlined,
 	StopOutlined,
 } from "@ant-design/icons";
-import { Tag, theme, Typography } from "antd";
+import { Tag, theme, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DATE_TIME_FORMAT } from "../../lib/payload";
 import { nodeSummary, nodeTitle } from "../../workflow-designer/canvas/labels";
 
 const { Text } = Typography;
+
+/** Bề rộng tối thiểu của một bước; hẹp hơn thì chuyển bớt xuống hàng dưới */
+const MIN_STEP_WIDTH = 170;
+/** Bề rộng tối đa của cột cuối mỗi hàng */
+const LAST_STEP_MAX_WIDTH = 180;
 
 interface ReviewProgressProps {
 	definition: WorkflowDefinition
@@ -58,7 +65,21 @@ function orderNodes(definition: WorkflowDefinition): WorkflowNode[] {
 /** Tiến trình duyệt thu gọn: các bước nằm ngang + dòng "đang chờ ai", đọc lướt không cần mở sơ đồ */
 export function ReviewProgress({ definition, nodeStatus, userNames, fields, pendingTasks }: ReviewProgressProps) {
 	const { t } = useTranslation();
+	// Người/nhóm chưa có trong task thì tự tải tên, giống sơ đồ đầy đủ
+	const names = useWorkflowUserNames(definition, userNames);
 	const { token } = theme.useToken();
+
+	// Chia các bước thành nhiều hàng cân nhau khi chật: số cột theo bề rộng khung, mỗi hàng đều như nhau
+	const listRef = useRef<HTMLOListElement>(null);
+	const [width, setWidth] = useState(Infinity);
+	useLayoutEffect(() => {
+		const el = listRef.current;
+		if (!el)
+			return;
+		const observer = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width));
+		observer.observe(el);
+		return () => observer.disconnect();
+	}, []);
 
 	const visual: Record<NodeProgress, { color: string, icon: ReactNode }> = {
 		done: { color: token.colorSuccess, icon: <CheckOutlined /> },
@@ -71,19 +92,27 @@ export function ReviewProgress({ definition, nodeStatus, userNames, fields, pend
 	};
 
 	const nodes = orderNodes(definition);
+	const maxColumns = Math.max(1, Math.floor(width / MIN_STEP_WIDTH));
+	const rows = Math.max(1, Math.ceil(nodes.length / maxColumns));
+	const columns = Math.max(1, Math.ceil(nodes.length / rows));
+	// Cột cuối chỉ rộng vừa nội dung để bước cuối sát mép phải, các đường nối kéo dài ra lấp chỗ trống
+	const gridTemplateColumns = columns > 1 ? `repeat(${columns - 1}, minmax(0, 1fr)) fit-content(${LAST_STEP_MAX_WIDTH}px)` : "minmax(0, 1fr)";
 	const first = pendingTasks[0];
 	const extra = pendingTasks.length - 1;
 
 	return (
 		<div className="flex flex-col gap-5">
-			<ol className="m-0 flex list-none gap-0 overflow-x-auto p-0 pb-1">
+			<ol ref={listRef} className="m-0 grid list-none gap-y-5 p-0" style={{ gridTemplateColumns }}>
 				{nodes.map((node, index) => {
 					const status = nodeStatus[node.id] ?? "pending";
 					const { color, icon } = visual[status];
-					const summary = nodeSummary(node, t, { userNames, fields });
-					const last = index === nodes.length - 1;
+					const summary = nodeSummary(node, t, { userNames: names, fields });
+					// Bước thông báo có dạng "kênh → người nhận": hiện phần kênh, người nhận xem khi rê chuột
+					const shortSummary = summary.split(" → ")[0];
+					// Cuối hàng không nối tiếp xuống hàng dưới
+					const last = index === nodes.length - 1 || (index + 1) % columns === 0;
 					return (
-						<li key={node.id} className={last ? "flex min-w-[120px] shrink-0 flex-col gap-2.5" : "flex min-w-[150px] flex-1 flex-col gap-2.5"}>
+						<li key={node.id} className="flex min-w-0 flex-col gap-2.5">
 							<div className="flex items-center">
 								<span
 									className="flex size-[30px] shrink-0 items-center justify-center rounded-full text-sm"
@@ -105,9 +134,12 @@ export function ReviewProgress({ definition, nodeStatus, userNames, fields, pend
 								<div className="truncate font-semibold" style={{ color: status === "current" ? token.colorPrimary : status === "pending" ? token.colorTextSecondary : undefined }} title={nodeTitle(node, t)}>
 									{nodeTitle(node, t)}
 								</div>
-								<div className="mt-0.5 truncate text-xs text-colorTextSecondary" title={summary || undefined}>
-									{summary || (status === "pending" ? t("workflowDesigner.graph.status.pending") : t(`workflowDesigner.graph.status.${status}`))}
-								</div>
+								{/* Chỉ một dòng; rê chuột mới hiện đủ nội dung (vd: bước thông báo có nhiều kênh / người nhận) */}
+								<Tooltip title={summary || undefined} placement="bottomLeft">
+									<div className="mt-0.5 truncate text-xs text-colorTextSecondary">
+										{shortSummary || (status === "pending" ? t("workflowDesigner.graph.status.pending") : t(`workflowDesigner.graph.status.${status}`))}
+									</div>
+								</Tooltip>
 							</div>
 						</li>
 					);
