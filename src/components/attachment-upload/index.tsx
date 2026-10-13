@@ -2,7 +2,6 @@ import type { AttachmentEntity, AttachmentUploadProps, AttachmentUploadRef, Pend
 
 import { attachmentService, AttachmentVisibility } from "#src/api/attachment";
 import { isPrivateStoragePath } from "#src/constants/storage-path";
-import { openSignedUrl } from "#src/utils/open-signed-url";
 import { DeleteOutlined, EyeOutlined, LoadingOutlined, PaperClipOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, message, Progress, Tag, Upload } from "antd";
 import * as React from "react";
@@ -39,6 +38,7 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 		mode = "auto",
 		storagePath,
 		presign,
+		onViewFile,
 		multiple = true,
 		accept = ".pdf,.docx,.xlsx,.pptx,.png,.jpg,.zip,.mp3,.mp4,.txt",
 		maxCount,
@@ -239,9 +239,9 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 					name={att.filename}
 					size={att.size}
 					status="done"
-					// File private không có URL công khai: xin link ký tạm khi bấm xem
+					// File private không có URL công khai: xem qua trình xem do nơi dùng cung cấp (onViewFile)
 					previewUrl={att.visibility === AttachmentVisibility.Private ? undefined : att.url}
-					onPreview={att.visibility === AttachmentVisibility.Private ? () => openSignedUrl(() => attachmentService.fetchDownloadUrl(att.id, "inline")) : undefined}
+					onPreview={att.visibility === AttachmentVisibility.Private && onViewFile ? () => onViewFile(att) : undefined}
 					disabled={disabled}
 					onRemove={() => handleRemoveDone(att.id)}
 					t={t}

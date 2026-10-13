@@ -229,6 +229,8 @@
 		"3": "Khẩn"
 	},
 	"files": {
+		"viewError": "Không mở được tệp để xem. Vui lòng thử lại sau.",
+		"viewUnsupported": "Loại tệp này không hỗ trợ xem trong hệ thống",
 		"documents": "Văn bản tờ trình",
 		"attachments": "Tài liệu đính kèm",
 		"required": "Bắt buộc",

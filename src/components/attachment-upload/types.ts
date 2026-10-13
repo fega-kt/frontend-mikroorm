@@ -21,6 +21,8 @@ export interface AttachmentUploadProps {
 	mode?: "auto" | "manual"
 	/** storagePath gửi kèm lên backend (upload qua backend, dùng cho file public) */
 	storagePath?: string
+	/** Bấm xem một tệp đã upload: tệp private không có URL công khai nên nơi dùng mở trình xem (FileViewer) */
+	onViewFile?: (file: AttachmentEntity) => void
 	/** Xin link upload thẳng lên R2 (file private): có thì upload bằng link ký thay vì qua backend */
 	presign?: (file: File) => Promise<PresignedUpload>
 	multiple?: boolean
