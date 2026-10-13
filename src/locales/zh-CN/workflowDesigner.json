@@ -249,6 +249,7 @@
 			"rejected": "已驳回",
 			"returned": "已退回",
 			"skipped": "已跳过",
+			"cancelled": "已取消",
 			"pending": "未到达"
 		}
 	},

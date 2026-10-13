@@ -9,6 +9,7 @@ import {
 	ExclamationCircleFilled,
 	MinusCircleOutlined,
 	RollbackOutlined,
+	StopOutlined,
 } from "@ant-design/icons";
 import { Handle, Position } from "@xyflow/react";
 import { theme, Tooltip } from "antd";
@@ -74,6 +75,11 @@ export function NodeShell({ id, node, icon, color, compact, hasTarget = true, ha
 			borderColor = token.colorTextQuaternary;
 			background = token.colorFillQuaternary;
 			statusIcon = <MinusCircleOutlined style={{ color: token.colorTextTertiary }} />;
+			break;
+		case "cancelled":
+			borderColor = token.magenta6;
+			background = tint(token.magenta6, 12);
+			statusIcon = <StopOutlined style={{ color: token.magenta6 }} />;
 			break;
 		default:
 			break;

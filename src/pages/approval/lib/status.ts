@@ -1,4 +1,14 @@
+import type { ComponentType } from "react";
 import { ApprovalPriority, ApprovalRequestStatus, ApprovalTaskStatus } from "#src/api/approval-request/types";
+import {
+	CheckCircleOutlined,
+	CloseCircleOutlined,
+	EditOutlined,
+	MinusCircleOutlined,
+	RollbackOutlined,
+	StopOutlined,
+	SyncOutlined,
+} from "@ant-design/icons";
 
 export const REQUEST_STATUS_COLOR: Record<ApprovalRequestStatus, string> = {
 	[ApprovalRequestStatus.Draft]: "default",
@@ -6,7 +16,16 @@ export const REQUEST_STATUS_COLOR: Record<ApprovalRequestStatus, string> = {
 	[ApprovalRequestStatus.Approved]: "success",
 	[ApprovalRequestStatus.Rejected]: "error",
 	[ApprovalRequestStatus.Returned]: "warning",
-	[ApprovalRequestStatus.Cancelled]: "default",
+	[ApprovalRequestStatus.Cancelled]: "magenta",
+};
+
+export const REQUEST_STATUS_ICON: Record<ApprovalRequestStatus, ComponentType<{ spin?: boolean }>> = {
+	[ApprovalRequestStatus.Draft]: EditOutlined,
+	[ApprovalRequestStatus.Pending]: SyncOutlined,
+	[ApprovalRequestStatus.Approved]: CheckCircleOutlined,
+	[ApprovalRequestStatus.Rejected]: CloseCircleOutlined,
+	[ApprovalRequestStatus.Returned]: RollbackOutlined,
+	[ApprovalRequestStatus.Cancelled]: StopOutlined,
 };
 
 export const TASK_STATUS_COLOR: Record<ApprovalTaskStatus, string> = {
@@ -15,6 +34,14 @@ export const TASK_STATUS_COLOR: Record<ApprovalTaskStatus, string> = {
 	[ApprovalTaskStatus.Rejected]: "error",
 	[ApprovalTaskStatus.Returned]: "warning",
 	[ApprovalTaskStatus.Skipped]: "default",
+};
+
+export const TASK_STATUS_ICON: Record<ApprovalTaskStatus, ComponentType<{ spin?: boolean }>> = {
+	[ApprovalTaskStatus.Pending]: SyncOutlined,
+	[ApprovalTaskStatus.Approved]: CheckCircleOutlined,
+	[ApprovalTaskStatus.Rejected]: CloseCircleOutlined,
+	[ApprovalTaskStatus.Returned]: RollbackOutlined,
+	[ApprovalTaskStatus.Skipped]: MinusCircleOutlined,
 };
 
 /** Màu chấm + tag theo độ ưu tiên (thấp → khẩn) */

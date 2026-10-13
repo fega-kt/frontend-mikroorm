@@ -1,7 +1,7 @@
 import type { ApprovalRequestDetail } from "#src/api/approval-request/types";
 import { ApprovalRequestStatus, ApprovalTaskStatus } from "#src/api/approval-request/types";
 
-export type NodeProgress = "done" | "current" | "rejected" | "returned" | "skipped" | "pending";
+export type NodeProgress = "done" | "current" | "rejected" | "returned" | "skipped" | "cancelled" | "pending";
 
 /** Trạng thái từng node của sơ đồ tiến trình, tính từ task của lượt hiện tại */
 export function computeNodeStatus(detail: Pick<ApprovalRequestDetail, "tasks" | "round" | "visitedNodeIds" | "currentNodeIds" | "status">) {
@@ -26,6 +26,13 @@ export function computeNodeStatus(detail: Pick<ApprovalRequestDetail, "tasks" | 
 			status[nodeId] = "skipped";
 		else
 			status[nodeId] = "done";
+	}
+	// Đơn đã hủy: task chưa xử lý bị hệ thống chuyển sang Skipped, hiển thị là "đã hủy" thay vì "bỏ qua"
+	if (detail.status === ApprovalRequestStatus.Cancelled) {
+		for (const [id, s] of Object.entries(status)) {
+			if (s === "skipped")
+				status[id] = "cancelled";
+		}
 	}
 	if (detail.status === ApprovalRequestStatus.Pending) {
 		for (const id of detail.currentNodeIds)
