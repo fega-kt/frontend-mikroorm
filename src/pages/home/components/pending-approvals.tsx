@@ -1,6 +1,7 @@
 import type { PendingApproval } from "../mock";
 
 import { UserAvatar } from "#src/components/user-avatar";
+import { ApprovalPath } from "#src/router/extra-info";
 
 import { ClockCircleOutlined } from "@ant-design/icons";
 import { Button, Tag, theme } from "antd";
@@ -47,7 +48,7 @@ export function PendingApprovals({ items, results, onAction }: PendingApprovalsP
 				</div>
 			)}
 			extra={<span className="text-xs font-normal text-colorTextTertiary">{t("home.pending.sortHint")}</span>}
-			footerLink={{ to: "/approval/review/pending", label: t("home.pending.viewAll") }}
+			footerLink={{ to: ApprovalPath.ReviewPending, label: t("home.pending.viewAll") }}
 		>
 			{items.map((item) => {
 				const result = results[item.id];

@@ -171,7 +171,12 @@ export interface ApprovalRequestDetail {
 	}
 }
 
+/** Loại tệp của tờ trình — trùng tên trường và tên thư mục trên storage */
+export type RequestFileCategory = "documents" | "attachments";
+
 export interface ApprovalRequestPayload {
+	/** Id sinh sẵn ở client: tệp upload trước khi tạo phiếu nằm đúng thư mục Attachments/{id}/... */
+	id?: string
 	requestType: string
 	title: string
 	payload: Record<string, unknown>

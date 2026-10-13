@@ -1,10 +1,12 @@
+import { approvalRequestPath } from "#src/router/extra-info";
+
 /**
  * refType (tên bảng BE) → trang chi tiết của bản ghi `refId`, mở khi bấm vào noti.
  * Noti không có ref (vd: nhắc lâu không đăng nhập) → không chuyển trang, chỉ đánh dấu đã đọc.
  * Thêm bảng vào đây khi có noti trỏ tới bản ghi của bảng đó.
  */
 const ROUTE_BY_TABLE: Record<string, (refId: string) => string> = {
-	approval_requests: refId => `/approval/requests/${refId}`,
+	approval_requests: refId => approvalRequestPath.detail(refId),
 };
 
 export function getNotificationRoute(refType?: string | null, refId?: string | null): string | undefined {

@@ -1,4 +1,4 @@
-import type { AttachmentEntity } from "#src/api/attachment";
+import type { AttachmentEntity, PresignedUpload } from "#src/api/attachment";
 
 export type { AttachmentEntity };
 
@@ -19,8 +19,10 @@ export interface AttachmentUploadProps {
 	 * `manual` – chỉ upload khi gọi ref.sync()
 	 */
 	mode?: "auto" | "manual"
-	/** storagePath gửi kèm lên backend */
+	/** storagePath gửi kèm lên backend (upload qua backend, dùng cho file public) */
 	storagePath?: string
+	/** Xin link upload thẳng lên R2 (file private): có thì upload bằng link ký thay vì qua backend */
+	presign?: (file: File) => Promise<PresignedUpload>
 	multiple?: boolean
 	/** Chuỗi accept của <input type="file"> */
 	accept?: string

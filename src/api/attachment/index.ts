@@ -1,6 +1,5 @@
 import type { AttachmentEntity, DownloadDisposition, PresignedUpload, SignedFileUrl, UploadAttachmentParams } from "./types";
 
-import { isPrivateStoragePath } from "#src/constants/storage-path";
 import { ApiService, CrudServiceBase } from "../service-base";
 
 /** PUT file thẳng lên R2 qua link ký; dùng XHR để có tiến trình upload (fetch/ky không có) */
@@ -34,20 +33,12 @@ export class AttachmentService extends CrudServiceBase<AttachmentEntity> {
 	}
 
 	/**
-	 * Upload một file, trả về AttachmentEntity. File private (vd: tệp tờ trình) đi thẳng lên R2 bằng link ký
-	 * (hỗ trợ file lớn, có tiến trình); file public vẫn upload qua backend.
+	 * Upload thẳng lên R2 bằng link ký do nghiệp vụ sở hữu file cấp (`presign`), hỗ trợ file lớn và có tiến trình.
+	 * Xong bước PUT, backend kiểm file thật trên R2 rồi mới cho dùng.
 	 */
-	async uploadFile(params: UploadAttachmentParams): Promise<AttachmentEntity> {
-		if (!isPrivateStoragePath(params.storagePath))
-			return this.upload(params);
-
-		const { file, storagePath, onProgress } = params;
-		const target = await this.post<PresignedUpload>("presign-upload", {
-			json: { path: storagePath, filename: file.name, mimetype: file.type, size: file.size } as never,
-			ignoreLoading: true,
-		});
+	async uploadWithPresign({ file, presign, onProgress }: { file: File, presign: (file: File) => Promise<PresignedUpload>, onProgress?: (percent: number) => void }): Promise<AttachmentEntity> {
+		const target = await presign(file);
 		await putToStorage(target, file, onProgress);
-		// Backend kiểm file thật trên R2 rồi mới cho dùng
 		return this.post<AttachmentEntity>(`${target.attachmentId}/complete`, { ignoreLoading: true });
 	}
 

@@ -2,6 +2,7 @@ import type { Ref } from "react";
 import type { BannerPetRef } from "./banner-pet";
 
 import { UserAvatar } from "#src/components/user-avatar";
+import { approvalRequestPath } from "#src/router/extra-info";
 import { useUserStore } from "#src/store/user";
 
 import { PlusOutlined } from "@ant-design/icons";
@@ -95,7 +96,7 @@ export function GreetingBanner({ pendingCount, overdueCount, returnedCount, petR
 
 			<BannerPet ref={petRef} />
 
-			<Button className="relative" type="primary" size="large" icon={<PlusOutlined />} onClick={() => navigate("/approval/requests/new")}>
+			<Button className="relative" type="primary" size="large" icon={<PlusOutlined />} onClick={() => navigate(approvalRequestPath.create)}>
 				{t("home.createRequest")}
 			</Button>
 		</section>

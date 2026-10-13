@@ -11,6 +11,7 @@ import { PeoplePicker } from "#src/components/people-picker";
 import { SectionCard } from "#src/components/section-card";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
+import { ApprovalPath, approvalRequestPath } from "#src/router/extra-info";
 import { openSignedUrl } from "#src/utils/open-signed-url";
 import {
 	ArrowLeftOutlined,
@@ -157,7 +158,7 @@ export default function ApprovalRequestDetailPage() {
 			return;
 		await approvalRequestService.fetchDelete(detail.id);
 		window.$message?.success(t("approval.messages.deleted"));
-		navigate("/approval/my/draft", { replace: true });
+		navigate(ApprovalPath.MyDraft, { replace: true });
 	};
 
 	const confirmReassign = async () => {
@@ -205,7 +206,7 @@ export default function ApprovalRequestDetailPage() {
 							<Button icon={<MailOutlined />} onClick={() => navigate(`/activity-log/mail-queue?refId=${detail.id}`)}>{t("approval.actions.viewEmails")}</Button>
 						)}
 						{permissions.canEdit && (
-							<Button icon={<EditOutlined />} onClick={() => navigate(`/approval/requests/${detail.id}/edit`)}>{t("approval.actions.edit")}</Button>
+							<Button icon={<EditOutlined />} onClick={() => navigate(approvalRequestPath.edit(detail.id))}>{t("approval.actions.edit")}</Button>
 						)}
 						{permissions.canDelete && (
 							<Popconfirm title={t("approval.messages.confirmDelete")} onConfirm={remove} okText={t("common.confirm")} cancelText={t("common.cancel")}>
