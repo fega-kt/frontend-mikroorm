@@ -1,9 +1,10 @@
 import type { ApprovalTaskItem } from "#src/api/approval-request";
 import type { ApprovalActionType } from "#src/api/approval-task";
 import type { FileViewTarget } from "#src/components/file-viewer";
+import type { BadgeProps } from "antd";
 import type { ReactNode } from "react";
 import type { ActionModalRef } from "../components/action-modal";
-import { ApprovalHistoryAction, approvalRequestService, ApprovalRequestStatus, ApprovalTaskStatus } from "#src/api/approval-request";
+import { ApprovalHistoryAction, approvalRequestService, ApprovalRequestStatus } from "#src/api/approval-request";
 import { approvalTaskService } from "#src/api/approval-task";
 import { FileContextType, fileViewService } from "#src/api/file-view";
 import { ApprovalFlowGraph } from "#src/components/approval-flow-graph";
@@ -11,6 +12,7 @@ import { BasicContent } from "#src/components/basic-content";
 import { FileViewer } from "#src/components/file-viewer";
 import { PeoplePicker } from "#src/components/people-picker";
 import { SectionCard } from "#src/components/section-card";
+import { UserAvatar } from "#src/components/user-avatar";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import { ApprovalPath, approvalRequestPath } from "#src/router/extra-info";
@@ -31,10 +33,9 @@ import {
 	RollbackOutlined,
 	SendOutlined,
 	StopOutlined,
-	TeamOutlined,
 } from "@ant-design/icons";
 import { useRequest } from "ahooks";
-import { Alert, Button, Descriptions, Empty, Input, Modal, Popconfirm, Result, Space, Tabs, Tag, Typography } from "antd";
+import { Alert, Badge, Button, Descriptions, Empty, Input, Modal, Popconfirm, Result, Space, Tabs, Tag, Typography } from "antd";
 import dayjs from "dayjs";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -45,12 +46,14 @@ import { RequestDetailSkeleton } from "../components/page-skeleton";
 import { PriorityTag, RequestStatusTag } from "../components/status-tag";
 import { fileListSummary } from "../lib/files";
 import { DATE_TIME_FORMAT } from "../lib/payload";
-import { collectUserNames, computeNodeStatus } from "../lib/progress";
+import { collectUserNames } from "../lib/progress";
+import { buildRounds } from "../lib/rounds";
 import ApprovalRequestForm from "../request-form";
 import { HistoryTimeline } from "./components/history-timeline";
 import { RequestFileList } from "./components/request-file-list";
-import { ReviewProgress } from "./components/review-progress";
-import { TaskList } from "./components/task-list";
+import { RoundMeta } from "./components/round-meta";
+import { RoundTimeline } from "./components/round-timeline";
+import { StepDetailDrawer } from "./components/step-detail-drawer";
 
 const { Text, Title } = Typography;
 
@@ -73,6 +76,16 @@ function tabLabel(icon: ReactNode, text: string, count?: number) {
 }
 
 const formatDate = (value?: string) => (value ? dayjs(value).format(DATE_TIME_FORMAT) : "—");
+
+/** Chấm trạng thái trên tab con của từng vòng */
+const ROUND_BADGE: Record<ApprovalRequestStatus, BadgeProps["status"]> = {
+	[ApprovalRequestStatus.Draft]: "default",
+	[ApprovalRequestStatus.Pending]: "processing",
+	[ApprovalRequestStatus.Approved]: "success",
+	[ApprovalRequestStatus.Rejected]: "error",
+	[ApprovalRequestStatus.Returned]: "warning",
+	[ApprovalRequestStatus.Cancelled]: "default",
+};
 
 export default function ApprovalRequestDetailPage() {
 	const { t } = useTranslation();
@@ -97,6 +110,12 @@ export default function ApprovalRequestDetailPage() {
 	const [reassignTask, setReassignTask] = useState<ApprovalTaskItem | null>(null);
 	const [reassignTo, setReassignTo] = useState<string>();
 	const [reassignComment, setReassignComment] = useState("");
+	// Bước đang xem chi tiết trên sơ đồ (của vòng đang chọn)
+	const [stepNodeId, setStepNodeId] = useState<string | null>(null);
+	// Vòng đang chọn ở tab sơ đồ; undefined = vòng mới nhất. Gắn với id để sang tờ trình khác thì tự về mặc định
+	const [roundPick, setRoundPick] = useState<{ id?: string, round?: number }>({});
+	const selectedRound = roundPick.id === id ? roundPick.round : undefined;
+	const setSelectedRound = (round?: number) => setRoundPick({ id, round });
 
 	const load = useCallback(async () => {
 		try {
@@ -117,9 +136,21 @@ export default function ApprovalRequestDetailPage() {
 				next.set("tab", key);
 			return next;
 		}, { replace: true });
+		// Rời / quay lại tab sơ đồ thì về vòng mới nhất
+		setSelectedRound(undefined);
+		setStepNodeId(null);
 	};
 
-	const nodeStatus = useMemo(() => (detail ? computeNodeStatus(detail) : {}), [detail]);
+	const rounds = useMemo(() => (detail ? buildRounds(detail) : []), [detail]);
+	const currentRound = rounds.at(-1);
+	// Vòng đang xem ở tab sơ đồ — chỉ là state (không lên URL): tải lại / mở link luôn về vòng mới nhất
+	const viewingRound = rounds.find(item => item.round === selectedRound) ?? currentRound;
+
+	const changeRound = (key: string) => {
+		setSelectedRound(Number(key));
+		setStepNodeId(null);
+	};
+
 	const userNames = useMemo(() => (detail ? collectUserNames(detail) : {}), [detail]);
 
 	const run = async (fn: () => Promise<unknown>, successKey: string) => {
@@ -205,8 +236,8 @@ export default function ApprovalRequestDetailPage() {
 
 	const { permissions } = detail;
 	const fileCount = detail.documents.length + detail.attachments.length;
-	const pendingTasks = detail.tasks.filter(task => task.round === detail.round && task.status === ApprovalTaskStatus.Pending);
-	const lastReturn = detail.status === ApprovalRequestStatus.Returned
+	// Nhắc sửa & gửi lại chỉ dành cho người gửi lại được; người khác xem lý do ở thẻ quy trình
+	const lastReturn = detail.status === ApprovalRequestStatus.Returned && permissions.canSubmit
 		? [...detail.histories].reverse().find(h => h.action === ApprovalHistoryAction.Return)
 		: undefined;
 
@@ -269,7 +300,18 @@ export default function ApprovalRequestDetailPage() {
 						type="warning"
 						showIcon
 						message={t("approval.form.returnedNotice")}
-						description={lastReturn.comment && `${lastReturn.actor?.fullName ?? ""}: ${lastReturn.comment}`}
+						description={(
+							<div className="flex items-start gap-2.5">
+								<UserAvatar size={28} user={lastReturn.actor} />
+								<div className="flex min-w-0 flex-col">
+									<Text className="text-[13px]">
+										<Text strong>{lastReturn.actor?.fullName ?? t("approval.detail.system")}</Text>
+										<Text type="secondary">{` · ${t("approval.detail.roundEnd.returned")} ${formatDate(lastReturn.createdAt)}`}</Text>
+									</Text>
+									{lastReturn.comment && <Text className="whitespace-pre-wrap">{lastReturn.comment}</Text>}
+								</div>
+							</div>
+						)}
 					/>
 				)}
 
@@ -283,28 +325,7 @@ export default function ApprovalRequestDetailPage() {
 							label: tabLabel(<FileTextOutlined />, t("approval.detail.info")),
 							children: (
 								<div className="flex flex-col gap-4">
-									{detail.definition && (
-										<SectionCard
-											icon={<NodeIndexOutlined />}
-											title={t("approval.detail.reviewProgress")}
-											extra={(
-												<Typography.Link onClick={() => changeTab(DetailTab.Progress)}>
-													{t("approval.detail.viewFullGraph")}
-													<ArrowRightOutlined className="ml-1.5" />
-												</Typography.Link>
-											)}
-										>
-											<ReviewProgress
-												definition={detail.definition}
-												nodeStatus={nodeStatus}
-												userNames={userNames}
-												fields={detail.requestType.formSchema}
-												pendingTasks={pendingTasks}
-											/>
-										</SectionCard>
-									)}
-
-									<div className={detail.tasks.length ? "grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(320px,1fr)]" : "grid grid-cols-1 gap-4"}>
+									<div className={currentRound ? "grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(320px,1fr)]" : "grid grid-cols-1 gap-4"}>
 										<div className="flex min-w-0 flex-col gap-4">
 											<SectionCard icon={<FileTextOutlined />} title={t("approval.detail.info")}>
 												<Descriptions
@@ -338,10 +359,23 @@ export default function ApprovalRequestDetailPage() {
 											</SectionCard>
 										</div>
 
-										{detail.tasks.length > 0 && (
-											<SectionCard icon={<TeamOutlined />} title={t("approval.detail.tasks")}>
-												<TaskList
-													tasks={detail.tasks}
+										{/* Quy trình thu gọn chỉ của vòng hiện tại; các vòng trước xem ở tab sơ đồ */}
+										{currentRound && (
+											<SectionCard
+												icon={<NodeIndexOutlined />}
+												title={t("approval.detail.approvalFlow")}
+												extra={hasDefinition && (
+													<Typography.Link onClick={() => changeTab(DetailTab.Progress)}>
+														{rounds.length > 1 ? t("approval.detail.viewAllRounds", { n: rounds.length }) : t("approval.detail.viewFullGraph")}
+														<ArrowRightOutlined className="ml-1.5" />
+													</Typography.Link>
+												)}
+											>
+												<RoundTimeline
+													round={currentRound}
+													totalRounds={rounds.length}
+													definition={detail.definition}
+													userNames={userNames}
 													canReassign={permissions.canReassign}
 													onReassign={(task) => {
 														setReassignTo(undefined);
@@ -362,15 +396,48 @@ export default function ApprovalRequestDetailPage() {
 							destroyOnHidden: true,
 							children: (
 								<SectionCard icon={<NodeIndexOutlined />} title={t("approval.detail.progress")} noPadding>
-									{detail.definition
+									{/* Nhiều vòng (bị trả lại rồi gửi lại): mỗi vòng một tab con, mặc định vòng mới nhất */}
+									{rounds.length > 1 && (
+										<Tabs
+											size="small"
+											className="px-5"
+											tabBarStyle={{ margin: 0 }}
+											activeKey={String(viewingRound?.round)}
+											onChange={changeRound}
+											items={rounds.map(item => ({
+												key: String(item.round),
+												label: (
+													<span className="inline-flex items-center gap-1.5">
+														<Badge status={ROUND_BADGE[item.outcome]} />
+														{t("approval.detail.round", { n: item.round })}
+														<Text type="secondary" className="text-xs">{`· ${t(`approval.status.${item.outcome}`)}`}</Text>
+													</span>
+												),
+											}))}
+										/>
+									)}
+									{detail.definition && viewingRound
 										? (
-											<ApprovalFlowGraph
-												definition={detail.definition}
-												nodeStatus={nodeStatus}
-												visitedNodeIds={detail.visitedNodeIds}
-												userNames={userNames}
-												height={560}
-											/>
+											<div className="flex flex-col gap-4 p-4">
+												<RoundMeta round={viewingRound} />
+												<ApprovalFlowGraph
+													// Đổi vòng thì dựng lại để sơ đồ tự căn khung
+													key={viewingRound.round}
+													definition={detail.definition}
+													nodeStatus={viewingRound.nodeStatus}
+													visitedNodeIds={viewingRound.visitedNodeIds}
+													userNames={userNames}
+													height={560}
+													onNodeClick={setStepNodeId}
+												/>
+												<StepDetailDrawer
+													nodeId={stepNodeId}
+													round={viewingRound}
+													definition={detail.definition}
+													userNames={userNames}
+													onClose={() => setStepNodeId(null)}
+												/>
+											</div>
 										)
 										: <Empty className="py-8" description={t("approval.detail.notSubmitted")} />}
 								</SectionCard>

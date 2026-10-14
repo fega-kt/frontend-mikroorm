@@ -1,6 +1,7 @@
 import type { ApprovalHistoryItem, HistoryFieldChange, HistoryFileItem } from "#src/api/approval-request";
 import type { FormField } from "#src/api/setting/request-type/types";
 import { ApprovalHistoryAction } from "#src/api/approval-request/types";
+import { UserAvatar } from "#src/components/user-avatar";
 import {
 	BellOutlined,
 	CheckCircleOutlined,
@@ -14,6 +15,7 @@ import {
 	RiseOutlined,
 	RollbackOutlined,
 	SendOutlined,
+	SettingOutlined,
 	StepForwardOutlined,
 	StopOutlined,
 	SwapOutlined,
@@ -22,6 +24,7 @@ import { Segmented, theme, Timeline, Typography } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { historyActor, historyLabel } from "../../lib/history";
 import { DATE_TIME_FORMAT, formatPayloadValue } from "../../lib/payload";
 
 const { Text } = Typography;
@@ -114,6 +117,7 @@ export function HistoryTimeline({ histories, userNames, formSchema }: { historie
 		const to = typeof data.to === "string" ? userNames[data.to] : undefined;
 		const changes = Array.isArray(data.changes) ? (data.changes as HistoryFieldChange[]) : [];
 		const files = Array.isArray(data.files) ? (data.files as HistoryFileItem[]) : [];
+		const actor = historyActor(item);
 		return {
 			key: item.id,
 			color: toneColor[style.tone],
@@ -121,12 +125,18 @@ export function HistoryTimeline({ histories, userNames, formSchema }: { historie
 			children: (
 				<div className="flex flex-col gap-0.5 pb-1">
 					<Text strong>
-						{t(`approval.history.${item.action}`)}
+						{historyLabel(item, t)}
 						{item.action === ApprovalHistoryAction.Skip && typeof data.reason === "string" && ` (${t(`approval.skipReason.${data.reason}`)})`}
 					</Text>
-					<Text type="secondary" className="text-xs">
-						{[item.actor?.fullName ?? t("approval.detail.system"), item.nodeName, dayjs(item.createdAt).format(DATE_TIME_FORMAT)].filter(Boolean).join(" · ")}
-					</Text>
+					<div className="flex min-w-0 items-center gap-1.5">
+						{/* Dòng do hệ thống ghi (nhắc duyệt, tự động duyệt…) không có người thực hiện */}
+						{actor
+							? <UserAvatar size={20} user={actor} className="text-[10px]" />
+							: <UserAvatar size={20} fallbackIcon={<SettingOutlined />} className="text-[11px]" style={{ background: token.colorTextQuaternary }} />}
+						<Text type="secondary" className="text-xs" ellipsis>
+							{[actor?.fullName ?? t("approval.detail.system"), item.nodeName, dayjs(item.createdAt).format(DATE_TIME_FORMAT)].filter(Boolean).join(" · ")}
+						</Text>
+					</div>
 					{(from || to) && <Text className="text-xs">{[from, to].filter(Boolean).join(" → ")}</Text>}
 					{changes.length > 0 && (
 						<ul className="m-0 flex list-none flex-col gap-0.5 p-0 text-[13px]">

@@ -1,5 +1,7 @@
 import type { ApprovalRequestDetail } from "#src/api/approval-request/types";
+import type { WorkflowDefinition, WorkflowNode } from "#src/api/approval-workflow/types";
 import { ApprovalRequestStatus, ApprovalTaskStatus } from "#src/api/approval-request/types";
+import { NodeType } from "#src/api/approval-workflow/types";
 
 export type NodeProgress = "done" | "current" | "rejected" | "returned" | "skipped" | "cancelled" | "pending";
 
@@ -39,6 +41,31 @@ export function computeNodeStatus(detail: Pick<ApprovalRequestDetail, "tasks" | 
 			status[id] = "current";
 	}
 	return status;
+}
+
+/** Các bước theo thứ tự đi từ node Bắt đầu; bỏ node điều kiện / song song vì chỉ là điểm rẽ nhánh */
+export function orderNodes(definition: WorkflowDefinition): WorkflowNode[] {
+	const byId = new Map(definition.nodes.map(node => [node.id, node]));
+	const start = definition.nodes.find(node => node.type === NodeType.Start);
+	if (!start)
+		return definition.nodes;
+
+	const seen = new Set<string>([start.id]);
+	const queue = [start.id];
+	const ordered: WorkflowNode[] = [];
+	while (queue.length) {
+		const node = byId.get(queue.shift()!);
+		if (!node)
+			continue;
+		ordered.push(node);
+		for (const edge of definition.edges) {
+			if (edge.from === node.id && !seen.has(edge.to)) {
+				seen.add(edge.to);
+				queue.push(edge.to);
+			}
+		}
+	}
+	return ordered.filter(node => node.type !== NodeType.Condition && node.type !== NodeType.Parallel);
 }
 
 /** id → tên người duyệt (để sơ đồ hiển thị tên người cụ thể) */
