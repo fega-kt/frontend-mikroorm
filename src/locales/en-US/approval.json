@@ -151,6 +151,7 @@
 		"stepHint": "Click a step in the diagram to see approvers, comments and return / rejection reasons",
 		"stepEvents": "Other events",
 		"stepProcessing": "Processing in round {{n}}",
+		"canActOnBehalf": "Can act on behalf:",
 		"stepConfig": "Step settings",
 		"stepNotify": "Notifications",
 		"noSla": "No limit",
@@ -199,7 +200,24 @@
 		"active": "Active",
 		"upcoming": "Upcoming",
 		"expired": "Expired",
-		"hint": "During the period, new approval steps assigned to you go to the delegate (when the step allows delegation)."
+		"hint": "The delegator can still approve. Applies only to steps that allow delegation; delegates cannot act on requests they submitted.",
+		"all": "All",
+		"mode": "Delegation type",
+		"modes": {
+			"window": "Act on behalf during the period",
+			"handover": "Hand over new requests until done"
+		},
+		"modeDesc": {
+			"window": "The delegate can act on every pending request (including earlier ones). Access ends with the period.",
+			"handover": "Only requests arriving during the period. The delegate handles them until done, even after the period ends."
+		},
+		"modeShort": {
+			"window": "On behalf",
+			"handover": "Handover"
+		},
+		"createdBy": "Created by",
+		"onBehalf": "Created by {{name}} on behalf",
+		"fromUserHint": "Leave empty for your own delegation"
 	},
 	"workflow": {
 		"title": "Approval workflows",

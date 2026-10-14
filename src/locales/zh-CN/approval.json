@@ -151,6 +151,7 @@
 		"stepHint": "点击流程图中的步骤查看审批人、意见及退回 / 驳回原因",
 		"stepEvents": "其他记录",
 		"stepProcessing": "第 {{n}} 轮处理情况",
+		"canActOnBehalf": "可代为审批：",
 		"stepConfig": "步骤配置",
 		"stepNotify": "通知",
 		"noSla": "不限",
@@ -199,7 +200,24 @@
 		"active": "生效中",
 		"upcoming": "未开始",
 		"expired": "已过期",
-		"hint": "委托期间，新分配给您的审批步骤将转交给受托人（需该步骤允许委托）。"
+		"hint": "委托人仍可自行审批。仅适用于允许委托的步骤；被委托人不能代审本人提交的单据。",
+		"all": "全部",
+		"mode": "委托方式",
+		"modes": {
+			"window": "委托期间代为审批",
+			"handover": "移交新单据直至处理完毕"
+		},
+		"modeDesc": {
+			"window": "被委托人可处理所有待审批单据（包括之前到达的）。期满即失去权限。",
+			"handover": "仅限委托期间到达的单据，被委托人负责处理至完成，期满后仍可处理。"
+		},
+		"modeShort": {
+			"window": "代为审批",
+			"handover": "移交"
+		},
+		"createdBy": "创建人",
+		"onBehalf": "由 {{name}} 代为创建",
+		"fromUserHint": "本人委托可留空"
 	},
 	"workflow": {
 		"title": "审批流程",

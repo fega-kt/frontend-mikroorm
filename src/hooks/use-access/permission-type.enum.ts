@@ -137,6 +137,9 @@ export enum PermissionType {
 	/** gán lại người duyệt của bước đang chờ */
 	ReassignApprovalTask = "permission:approval-task:reassign",
 
+	/** tạo ủy quyền hộ người khác (vd: HR cho giám đốc), xem / sửa / xóa mọi ủy quyền */
+	ManageApprovalDelegation = "permission:approval-delegation:manage",
+
 	/** ===== APP SETTING ===== */
 
 	/** vào menu app setting */

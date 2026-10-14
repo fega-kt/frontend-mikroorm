@@ -43,6 +43,7 @@
 			"publish": "发布",
 			"approval-request-all": "全部申请",
 			"reassign": "重新指派审批人",
+			"manage": "管理委托（代为创建，查看 / 编辑全部）",
 			"email-template": "邮件模板",
 			"retry": "重新发送"
 		}

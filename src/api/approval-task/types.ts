@@ -20,6 +20,8 @@ export interface InboxItem {
 	comment?: string
 	createdAt: string
 	originalApprover: { id: string, fullName: string } | null
+	/** Task của người khác mà tôi xử lý / được xử lý thay theo ủy quyền */
+	onBehalfOf: { id: string, fullName: string } | null
 	request: {
 		id: string
 		code?: string

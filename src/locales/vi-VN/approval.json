@@ -151,6 +151,7 @@
 		"stepHint": "Bấm vào một bước trên sơ đồ để xem chi tiết người duyệt, ghi chú, lý do trả lại / từ chối",
 		"stepEvents": "Diễn biến khác",
 		"stepProcessing": "Xử lý trong vòng {{n}}",
+		"canActOnBehalf": "Có thể duyệt thay:",
 		"stepConfig": "Cấu hình bước",
 		"stepNotify": "Thông báo",
 		"noSla": "Không giới hạn",
@@ -199,7 +200,24 @@
 		"active": "Đang hiệu lực",
 		"upcoming": "Sắp tới",
 		"expired": "Hết hạn",
-		"hint": "Trong thời gian ủy quyền, các bước duyệt mới giao cho bạn sẽ được chuyển sang người được ủy quyền (nếu bước đó cho phép ủy quyền)."
+		"hint": "Người ủy quyền vẫn tự duyệt được. Chỉ áp dụng cho các bước cho phép ủy quyền; người được ủy quyền không duyệt thay tờ trình do chính mình trình.",
+		"all": "Tất cả",
+		"mode": "Kiểu ủy quyền",
+		"modes": {
+			"window": "Duyệt thay trong thời gian ủy quyền",
+			"handover": "Giao phiếu mới đến khi xử lý xong"
+		},
+		"modeDesc": {
+			"window": "Người được ủy quyền xử lý thay mọi phiếu đang chờ (kể cả phiếu đến trước). Hết thời gian là hết quyền.",
+			"handover": "Chỉ các phiếu đến trong thời gian ủy quyền. Người được ủy quyền xử lý các phiếu này đến khi xong, kể cả sau khi hết thời gian."
+		},
+		"modeShort": {
+			"window": "Duyệt thay",
+			"handover": "Giao phiếu"
+		},
+		"createdBy": "Người tạo",
+		"onBehalf": "Tạo hộ bởi {{name}}",
+		"fromUserHint": "Để trống nếu là ủy quyền của chính bạn"
 	},
 	"workflow": {
 		"title": "Quy trình phê duyệt",

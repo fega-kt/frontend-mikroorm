@@ -42,6 +42,7 @@
 			"publish": "Publish",
 			"approval-request-all": "All requests",
 			"reassign": "Reassign approver",
+			"manage": "Manage delegations (create on behalf, view / edit all)",
 			"email-template": "Email templates",
 			"retry": "Resend"
 		}

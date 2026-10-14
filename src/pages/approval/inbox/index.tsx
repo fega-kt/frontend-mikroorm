@@ -153,7 +153,12 @@ export default function ApprovalInbox() {
 			render: (_, item) => (
 				<div className="flex flex-col">
 					<span>{item.nodeName ?? item.nodeId}</span>
-					{item.originalApprover && <Typography.Text type="secondary" className="text-xs">{t("approval.inbox.delegatedFrom", { name: item.originalApprover.fullName })}</Typography.Text>}
+					{/* Xử lý thay theo ủy quyền (task vẫn của người khác) hoặc task đã chuyển sang mình (gán lại / chuyển cấp) */}
+					{(item.onBehalfOf ?? item.originalApprover) && (
+						<Typography.Text type="secondary" className="text-xs">
+							{t("approval.inbox.delegatedFrom", { name: (item.onBehalfOf ?? item.originalApprover)!.fullName })}
+						</Typography.Text>
+					)}
 				</div>
 			),
 		},

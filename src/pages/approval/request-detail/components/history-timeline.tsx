@@ -118,6 +118,8 @@ export function HistoryTimeline({ histories, userNames, formSchema }: { historie
 		const changes = Array.isArray(data.changes) ? (data.changes as HistoryFieldChange[]) : [];
 		const files = Array.isArray(data.files) ? (data.files as HistoryFileItem[]) : [];
 		const actor = historyActor(item);
+		// Duyệt / từ chối / trả lại thay người khác theo ủy quyền
+		const onBehalfOf = typeof data.onBehalfOf === "string" ? userNames[data.onBehalfOf] : undefined;
 		return {
 			key: item.id,
 			color: toneColor[style.tone],
@@ -134,7 +136,7 @@ export function HistoryTimeline({ histories, userNames, formSchema }: { historie
 							? <UserAvatar size={20} user={actor} className="text-[10px]" />
 							: <UserAvatar size={20} fallbackIcon={<SettingOutlined />} className="text-[11px]" style={{ background: token.colorTextQuaternary }} />}
 						<Text type="secondary" className="text-xs" ellipsis>
-							{[actor?.fullName ?? t("approval.detail.system"), item.nodeName, dayjs(item.createdAt).format(DATE_TIME_FORMAT)].filter(Boolean).join(" · ")}
+							{[actor?.fullName ?? t("approval.detail.system"), onBehalfOf && t("approval.detail.delegatedFrom", { name: onBehalfOf }), item.nodeName, dayjs(item.createdAt).format(DATE_TIME_FORMAT)].filter(Boolean).join(" · ")}
 						</Text>
 					</div>
 					{(from || to) && <Text className="text-xs">{[from, to].filter(Boolean).join(" → ")}</Text>}
