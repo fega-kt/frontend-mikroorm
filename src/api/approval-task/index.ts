@@ -7,7 +7,7 @@ export type ApprovalActionType = "approve" | "reject" | "return";
 
 export class ApprovalTaskService extends CrudServiceBase<InboxItem> {
 	constructor() {
-		super({ endpoint: "approval", service: ApiService.App });
+		super({ endpoint: "approval-task", service: ApiService.App });
 	}
 
 	fetchInbox(params?: InboxSearchParams) {
