@@ -9,7 +9,7 @@ import { BasicTable } from "#src/components/basic-table";
 import { UserAvatar } from "#src/components/user-avatar";
 import { approvalRequestPath } from "#src/router/extra-info";
 import { CheckOutlined, CloseOutlined, EyeOutlined, RollbackOutlined } from "@ant-design/icons";
-import { Button, Drawer, Modal, Space, Tag, Tooltip, Typography } from "antd";
+import { Button, Drawer, Space, Tag, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useEffect, useRef, useState } from "react";
@@ -73,7 +73,7 @@ export default function ApprovalInbox() {
 
 	const bulkApprove = () => {
 		const requestIds = [...new Set(rows.filter(r => selectedKeys.includes(r.id)).map(r => r.request.id))];
-		Modal.confirm({
+		window.$modal?.confirm({
 			title: t("approval.messages.confirmBulkApprove", { count: requestIds.length }),
 			okText: t("approval.actions.approve"),
 			cancelText: t("common.cancel"),

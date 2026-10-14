@@ -7,7 +7,7 @@ import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import { ArrowLeftOutlined, CloudUploadOutlined, PlayCircleOutlined, SaveOutlined } from "@ant-design/icons";
 import { ReactFlowProvider } from "@xyflow/react";
 import { useRequest } from "ahooks";
-import { Badge, Button, Modal, Result, Space, Spin, Tag, theme, Tooltip, Typography } from "antd";
+import { Badge, Button, Result, Space, Spin, Tag, theme, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -120,7 +120,7 @@ function WorkflowDesigner() {
 				return;
 			}
 			const draftVersion = (await approvalWorkflowService.fetchDetail(id)).draftVersion?.version;
-			Modal.confirm({
+			window.$modal?.confirm({
 				title: t("workflowDesigner.messages.publishConfirmTitle"),
 				content: t("workflowDesigner.messages.publishConfirmContent", { version: draftVersion ?? "" }),
 				okText: t("workflowDesigner.actions.publish"),
@@ -171,7 +171,7 @@ function WorkflowDesigner() {
 			navigate("/setting/approval-workflow");
 			return;
 		}
-		Modal.confirm({
+		window.$modal?.confirm({
 			title: t("workflowDesigner.messages.leaveConfirmTitle"),
 			content: t("workflowDesigner.messages.leaveConfirmContent"),
 			okButtonProps: { danger: true },

@@ -40,7 +40,7 @@ export function VersionPreviewModal({ workflowId, version, fields, userNames, ca
 	);
 
 	const confirmRestore = () => {
-		Modal.confirm({
+		window.$modal?.confirm({
 			title: t("workflowDesigner.messages.restoreConfirmTitle", { version: version?.version }),
 			content: dirty ? t("workflowDesigner.messages.restoreConfirmDirty") : t("workflowDesigner.messages.restoreConfirmContent"),
 			okText: t("workflowDesigner.actions.restore"),
