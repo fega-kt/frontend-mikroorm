@@ -17,7 +17,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router";
 import { PayloadFormItems } from "../components/form-fields";
 import { RequestFormSkeleton } from "../components/page-skeleton";
 import { checkFileBlock } from "../lib/files";
-import { formValuesToPayload, payloadToFormValues } from "../lib/payload";
+import { formValuesToPayload, PAYLOAD_FORM_LAYOUT, PAYLOAD_GRID_CLASS, payloadToFormValues } from "../lib/payload";
 import { PRIORITIES, PRIORITY_META } from "../lib/status";
 import { FileBlock } from "./components/file-block";
 import { FlowPreview } from "./components/flow-preview";
@@ -235,7 +235,7 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 		<BasicContent>
 			<Form<FormValues>
 				form={form}
-				layout="vertical"
+				layout={PAYLOAD_FORM_LAYOUT}
 				disabled={!editable}
 				initialValues={{ priority: ApprovalPriority.Normal, payload: {}, documents: [], attachments: [] }}
 				className="mx-auto flex max-w-[1280px] flex-col gap-5"
@@ -382,7 +382,7 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 							{!selectedType && <Text type="secondary">{t("approval.flow.chooseType")}</Text>}
 							{selectedType && !fields.length && <Text type="secondary">{t("approval.form.noFields")}</Text>}
 							{fields.length > 0 && (
-								<div className="grid grid-cols-1 gap-x-5 md:grid-cols-2 [&>.ant-form-item:has(textarea)]:md:col-span-2">
+								<div className={`${PAYLOAD_GRID_CLASS} [&>.ant-form-item:has(textarea)]:md:col-span-2`}>
 									<PayloadFormItems fields={fields} />
 								</div>
 							)}

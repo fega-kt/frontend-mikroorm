@@ -128,7 +128,8 @@ export default function ApprovalInbox() {
 			hideInSearch: true,
 			render: (_, item) => (
 				<div className="flex flex-col min-w-0">
-					<Typography.Link ellipsis onClick={() => setPreview(item)}>{item.request.title}</Typography.Link>
+					{/* Bấm tiêu đề (cũng như cả dòng) mở chi tiết; xem nhanh ở nút con mắt */}
+					<Typography.Link ellipsis>{item.request.title}</Typography.Link>
 					<Typography.Text type="secondary" className="text-xs">{item.request.code}</Typography.Text>
 				</div>
 			),
@@ -205,21 +206,24 @@ export default function ApprovalInbox() {
 			key: "option",
 			width: tab === "done" ? 70 : 120,
 			fixed: "right",
-			render: (_, item) => [
-				<Tooltip key="view" title={t("approval.inbox.quickView")}>
-					<Button type="text" size="small" icon={<EyeOutlined />} onClick={() => setPreview(item)} />
-				</Tooltip>,
-				...(item.status === ApprovalTaskStatus.Pending
-					? [
-						<Tooltip key="approve" title={t("approval.actions.approve")}>
-							<Button type="text" size="small" className="text-green-600" icon={<CheckOutlined />} onClick={() => act(item, "approve")} />
-						</Tooltip>,
-						<Tooltip key="reject" title={t("approval.actions.reject")}>
-							<Button type="text" size="small" danger icon={<CloseOutlined />} onClick={() => act(item, "reject")} />
-						</Tooltip>,
-					]
-					: []),
-			],
+			// Chặn nổi bọt để bấm nút không kích hoạt mở chi tiết của dòng
+			render: (_, item) => (
+				<span className="inline-flex" onClick={e => e.stopPropagation()}>
+					<Tooltip title={t("approval.inbox.quickView")}>
+						<Button type="text" size="small" icon={<EyeOutlined />} onClick={() => setPreview(item)} />
+					</Tooltip>
+					{item.status === ApprovalTaskStatus.Pending && (
+						<>
+							<Tooltip title={t("approval.actions.approve")}>
+								<Button type="text" size="small" className="text-green-600" icon={<CheckOutlined />} onClick={() => act(item, "approve")} />
+							</Tooltip>
+							<Tooltip title={t("approval.actions.reject")}>
+								<Button type="text" size="small" danger icon={<CloseOutlined />} onClick={() => act(item, "reject")} />
+							</Tooltip>
+						</>
+					)}
+				</span>
+			),
 		},
 	];
 
@@ -237,6 +241,14 @@ export default function ApprovalInbox() {
 					return { data, total, success: true };
 				}}
 				rowSelection={tab === "pending" ? { selectedRowKeys: selectedKeys, onChange: setSelectedKeys } : false}
+				// Bấm vào dòng mở chi tiết tờ trình (trừ ô chọn dòng dùng cho duyệt hàng loạt)
+				onRow={item => ({
+					onClick: (e) => {
+						if (!(e.target as HTMLElement).closest(".ant-table-selection-column"))
+							navigate(approvalRequestPath.detail(item.request.id));
+					},
+					style: { cursor: "pointer" },
+				})}
 				tableAlertRender={false}
 				headerTitle={t(TAB_TITLE[tab])}
 				toolBarRender={() => tab === "pending" && selectedKeys.length

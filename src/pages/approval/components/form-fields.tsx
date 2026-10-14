@@ -1,8 +1,9 @@
 import type { FormField } from "#src/api/setting/request-type/types";
+import type { FormProps } from "antd";
 import { FormFieldType } from "#src/api/setting/request-type/types";
-import { DatePicker, Descriptions, Form, Input, InputNumber, Select, Switch, Typography } from "antd";
+import { DatePicker, Descriptions, Form, Input, InputNumber, Select, Switch, theme, Typography } from "antd";
 import { useTranslation } from "react-i18next";
-import { DATE_FORMAT, formatMoney, formatPayloadValue, parseMoney } from "../lib/payload";
+import { DATE_FORMAT, formatMoney, formatPayloadValue, parseMoney, PAYLOAD_FORM_LAYOUT, PAYLOAD_GRID_CLASS } from "../lib/payload";
 
 interface FormFieldInputProps {
 	field: FormField
@@ -63,6 +64,46 @@ export function PayloadFormItems({ fields, disabled }: { fields: FormField[], di
 				</Form.Item>
 			))}
 		</>
+	);
+}
+
+/**
+ * Nội dung tờ trình chỉ đọc, cùng bố cục với form soạn (lưới 2 cột, nhãn trên, ô nhiều dòng chiếm cả hàng):
+ * mỗi giá trị nằm trong một ô viền giống ô nhập nhưng không sửa được.
+ */
+export function PayloadView({ fields, payload, layout = PAYLOAD_FORM_LAYOUT }: {
+	fields: FormField[]
+	payload: Record<string, unknown>
+	/** Mặc định theo form soạn; truyền "horizontal" khi cần nhãn nằm ngang (vd: khung hẹp) */
+	layout?: FormProps["layout"]
+}) {
+	const { t } = useTranslation();
+	const { token } = theme.useToken();
+	if (!fields.length)
+		return <Typography.Text type="secondary">{t("common.noData")}</Typography.Text>;
+	return (
+		<Form layout={layout} component="div" className={PAYLOAD_GRID_CLASS}>
+			{fields.map((field) => {
+				const multiline = field.type === FormFieldType.Textarea;
+				const value = payload[field.key];
+				// Trường không nhập: để ô trống như trên form (không hiện "—")
+				const empty = value == null || value === "" || (Array.isArray(value) && !value.length);
+				return (
+					<Form.Item key={field.key} label={field.label} className={multiline ? "md:col-span-2" : undefined}>
+						<div
+							className="whitespace-pre-wrap break-words rounded-md px-[11px] py-[4px] leading-[22px]"
+							style={{
+								minHeight: multiline ? 98 : 32,
+								border: `1px solid ${token.colorBorder}`,
+								background: token.colorFillQuaternary,
+							}}
+						>
+							{!empty && formatPayloadValue(field, value, t)}
+						</div>
+					</Form.Item>
+				);
+			})}
+		</Form>
 	);
 }
 

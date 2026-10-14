@@ -19,6 +19,7 @@ import { ApprovalPath, approvalRequestPath } from "#src/router/extra-info";
 import {
 	ArrowLeftOutlined,
 	ArrowRightOutlined,
+	BranchesOutlined,
 	CheckOutlined,
 	CloseOutlined,
 	DeleteOutlined,
@@ -41,7 +42,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import { ActionModal } from "../components/action-modal";
-import { PayloadDescriptions } from "../components/form-fields";
+import { PayloadView } from "../components/form-fields";
 import { RequestDetailSkeleton } from "../components/page-skeleton";
 import { PriorityTag, RequestStatusTag } from "../components/status-tag";
 import { fileListSummary } from "../lib/files";
@@ -346,7 +347,7 @@ export default function ApprovalRequestDetailPage() {
 																? (
 																	<Space size={4}>
 																		{detail.workflow.name}
-																		<Tag className="m-0">{`v${detail.workflow.version}`}</Tag>
+																		<Tag color="geekblue" icon={<BranchesOutlined />} className="m-0 font-semibold">{`v${detail.workflow.version}`}</Tag>
 																	</Space>
 																)
 																: "—",
@@ -355,7 +356,7 @@ export default function ApprovalRequestDetailPage() {
 												/>
 											</SectionCard>
 											<SectionCard icon={<ProfileOutlined />} title={t("approval.detail.content")}>
-												<PayloadDescriptions fields={detail.requestType.formSchema} payload={detail.payload} />
+												<PayloadView fields={detail.requestType.formSchema} payload={detail.payload} />
 											</SectionCard>
 										</div>
 
