@@ -35,6 +35,7 @@
 		"setting": "General Settings",
 		"category": "Category Management",
 		"requestType": "Request Type Management",
+		"form": "Forms",
 		"group": "User Group Management",
 		"appSetting": "App Parameters",
 		"systemConfig": "System Configuration",

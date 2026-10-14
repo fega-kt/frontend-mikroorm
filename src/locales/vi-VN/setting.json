@@ -33,6 +33,48 @@
 			"draft": "Nháp",
 			"published": "Đã xuất bản",
 			"cancelled": "Đã hủy"
+		},
+		"form": "Biểu mẫu",
+		"formHint": "Nhiều loại tờ trình có thể dùng chung một biểu mẫu. Sửa biểu mẫu chỉ ảnh hưởng các tờ trình tạo sau đó.",
+		"versions": {
+			"title": "Phiên bản",
+			"empty": "Chưa có phiên bản nào",
+			"label": "Phiên bản {{version}}",
+			"current": "Hiện hành",
+			"preview": "Xem phiên bản {{version}}",
+			"createdBy": "Người tạo",
+			"createdAt": "Thời gian",
+			"disabled": "Không dùng",
+			"close": "Đóng",
+			"restore": "Khôi phục",
+			"restoreConfirmTitle": "Khôi phục phiên bản {{version}}?",
+			"restoreConfirmContent": "Loại tờ trình sẽ được cập nhật NGAY theo phiên bản này và lưu thành một phiên bản mới. Phiên bản cũ không bị thay đổi; phiếu đã tạo vẫn giữ cấu hình của mình.",
+			"restored": "Đã khôi phục phiên bản {{version}}. Loại tờ trình đã được cập nhật."
+		}
+	},
+	"form": {
+		"code": "Mã biểu mẫu",
+		"name": "Tên biểu mẫu",
+		"description": "Mô tả",
+		"detailTitle": "Chi tiết biểu mẫu",
+		"basicInfo": "Thông tin cơ bản",
+		"codePattern": "Mã chỉ được chứa chữ cái hoa, chữ số và dấu gạch dưới",
+		"versions": {
+			"title": "Phiên bản",
+			"empty": "Chưa có phiên bản nào",
+			"label": "Phiên bản {{version}}",
+			"current": "Hiện hành",
+			"fieldCount": "{{count}} trường",
+			"preview": "Xem phiên bản {{version}}",
+			"createdBy": "Người tạo",
+			"createdAt": "Thời gian",
+			"status": "Trạng thái",
+			"noFields": "Phiên bản này không có trường nào",
+			"close": "Đóng",
+			"restore": "Khôi phục để sửa",
+			"restoreConfirmTitle": "Khôi phục phiên bản {{version}}?",
+			"restoreConfirmContent": "Các trường đang soạn sẽ được thay bằng nội dung của phiên bản này. Chỉ khi bấm Lưu mới sinh phiên bản mới; phiên bản cũ không bị thay đổi và phiếu đã tạo vẫn giữ form của mình.",
+			"restored": "Đã nạp phiên bản {{version}} vào trình soạn. Bấm Lưu để áp dụng cho các phiếu tạo sau."
 		}
 	}
 }

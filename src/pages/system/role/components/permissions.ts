@@ -44,6 +44,13 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.UpdateRequestType,
 		PermissionType.DeleteRequestType,
 	],
+	FORM: [
+		PermissionType.MenuForm,
+		PermissionType.ViewFormDetail,
+		PermissionType.CreateForm,
+		PermissionType.UpdateForm,
+		PermissionType.DeleteForm,
+	],
 	APPROVAL_WORKFLOW: [
 		PermissionType.MenuApprovalWorkflow,
 		PermissionType.CreateApprovalWorkflow,

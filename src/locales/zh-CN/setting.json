@@ -33,6 +33,48 @@
 			"draft": "草稿",
 			"published": "已发布",
 			"cancelled": "已取消"
+		},
+		"form": "表单",
+		"formHint": "多个请求类型可共用同一个表单。修改表单只影响此后创建的申请。",
+		"versions": {
+			"title": "版本",
+			"empty": "暂无版本",
+			"label": "版本 {{version}}",
+			"current": "当前",
+			"preview": "查看版本 {{version}}",
+			"createdBy": "创建人",
+			"createdAt": "时间",
+			"disabled": "未启用",
+			"close": "关闭",
+			"restore": "恢复",
+			"restoreConfirmTitle": "恢复版本 {{version}}？",
+			"restoreConfirmContent": "请求类型将立即按此版本更新，并保存为新版本。旧版本不会被修改；已创建的申请仍使用其原有设置。",
+			"restored": "已恢复版本 {{version}}，请求类型已更新。"
+		}
+	},
+	"form": {
+		"code": "表单编码",
+		"name": "表单名称",
+		"description": "描述",
+		"detailTitle": "表单详情",
+		"basicInfo": "基本信息",
+		"codePattern": "编码只能包含大写字母、数字和下划线",
+		"versions": {
+			"title": "版本",
+			"empty": "暂无版本",
+			"label": "版本 {{version}}",
+			"current": "当前",
+			"fieldCount": "{{count}} 个字段",
+			"preview": "查看版本 {{version}}",
+			"createdBy": "创建人",
+			"createdAt": "时间",
+			"status": "状态",
+			"noFields": "此版本没有字段",
+			"close": "关闭",
+			"restore": "恢复并编辑",
+			"restoreConfirmTitle": "恢复版本 {{version}}？",
+			"restoreConfirmContent": "正在编辑的字段将被此版本的内容替换。只有点击保存才会生成新版本；旧版本不会被修改，已创建的申请仍使用其原有表单。",
+			"restored": "已将版本 {{version}} 载入编辑器。点击保存后将应用于之后创建的申请。"
 		}
 	}
 }

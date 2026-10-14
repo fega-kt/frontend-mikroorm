@@ -1,7 +1,9 @@
 import type { CategoryEntity } from "#src/api/setting/category";
+import type { FormEntity } from "#src/api/setting/form";
 import type { RequestTypeEntity } from "#src/api/setting/request-type";
 import type { FormInstance } from "antd";
 import { categoryService } from "#src/api/setting/category";
+import { formService } from "#src/api/setting/form";
 import { RequestTypeStatus } from "#src/api/setting/request-type";
 import { ProFormApiSelect } from "#src/components/api-select";
 import { SectionCard } from "#src/components/section-card";
@@ -43,6 +45,20 @@ export function GeneralTab({ form, onFinish }: GeneralTabProps) {
 						}))}
 					/>
 				</div>
+
+				<ProFormApiSelect<FormEntity>
+					name="form"
+					label={t("setting.requestType.form")}
+					extra={t("setting.requestType.formHint")}
+					rules={[{ required: true }]}
+					fetcher={async (keyword) => {
+						// Danh sách rút gọn chỉ có id / mã / tên — đủ cho ô chọn (backend trả bản rút gọn, không kèm các trường audit)
+						const options = (await formService.fetchFormOptions()) as FormEntity[];
+						const key = keyword?.trim().toLowerCase();
+						return key ? options.filter(o => o.name.toLowerCase().includes(key) || o.code.toLowerCase().includes(key)) : options;
+					}}
+					fieldProps={{ placeholder: t("common.pleaseSelect") }}
+				/>
 
 				<div className="grid grid-cols-2 gap-x-4">
 					<ProFormText
