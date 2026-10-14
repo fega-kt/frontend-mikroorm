@@ -27,7 +27,17 @@
 		"escalate": "Escalated after the deadline",
 		"remind": "Reminder sent",
 		"notify": "Notification sent",
-		"complete": "Completed – request approved"
+		"complete": "Completed – request approved",
+		"create": "Created request",
+		"update": "Updated information",
+		"file_add": "Added files",
+		"file_remove": "Removed files",
+		"filter": {
+			"all": "All",
+			"approval": "Approval",
+			"edit": "Edits",
+			"files": "Files"
+		}
 	},
 	"fields": {
 		"code": "Code",

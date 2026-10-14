@@ -1,4 +1,4 @@
-import type { ApprovalRequestDetail, CreatableRequestType, PreviewFlowResult, SubmitUnit } from "#src/api/approval-request";
+import type { ApprovalRequestDetail, PreviewFlowResult } from "#src/api/approval-request";
 import type { AttachmentEntity } from "#src/api/attachment";
 import type { AttachmentConfig } from "#src/api/setting/request-type/types";
 import type { AttachmentUploadRef } from "#src/components/attachment-upload";
@@ -9,12 +9,13 @@ import { UserAvatar } from "#src/components/user-avatar";
 import { approvalRequestPath } from "#src/router/extra-info";
 import { useUserStore } from "#src/store/user";
 import { SaveOutlined, SendOutlined } from "@ant-design/icons";
-import { useDebounceFn } from "ahooks";
-import { Alert, Button, Descriptions, Form, Input, Radio, Result, Select, Skeleton, Tag, theme, Typography } from "antd";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useDebounceFn, useRequest } from "ahooks";
+import { Alert, Button, Descriptions, Form, Input, Radio, Result, Select, Tag, theme, Typography } from "antd";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import { PayloadFormItems } from "../components/form-fields";
+import { RequestFormSkeleton } from "../components/page-skeleton";
 import { checkFileBlock } from "../lib/files";
 import { formValuesToPayload, payloadToFormValues } from "../lib/payload";
 import { PRIORITIES, PRIORITY_META } from "../lib/status";
@@ -36,22 +37,37 @@ interface FormValues {
 }
 
 /** Tạo tờ trình (/approval/requests/new) hoặc sửa tờ trình nháp / bị trả lại (/approval/requests/:id/edit) */
-export default function ApprovalRequestForm() {
+export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit }: {
+	/** Truyền khi nhúng trong trang chi tiết (chế độ sửa); mặc định lấy từ route */
+	id?: string
+	/** Dữ liệu phiếu trang chi tiết đã tải sẵn, dùng ngay để khỏi fetch lại */
+	initialDetail?: ApprovalRequestDetail
+	/** Có khi nhúng: Hủy / gửi duyệt xong thì thoát chế độ sửa thay vì điều hướng */
+	onExit?: () => void
+} = {}) {
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
 	const navigate = useNavigate();
-	const { id } = useParams<{ id: string }>();
+	const params = useParams<{ id: string }>();
+	const id = idProp ?? params.id;
 	const [searchParams] = useSearchParams();
 	const [form] = Form.useForm<FormValues>();
 	const currentUser = useUserStore();
 
-	const [types, setTypes] = useState<CreatableRequestType[]>();
-	const [units, setUnits] = useState<SubmitUnit[]>([]);
-	const [existing, setExisting] = useState<ApprovalRequestDetail>();
+	// Loại tờ trình / đơn vị trình ít đổi: cache để mở lại form là có ngay, dữ liệu mới về thì cập nhật ngầm
+	const { data: types, error: typesError } = useRequest(() => approvalRequestService.fetchRequestTypes(), { cacheKey: "approval-request-types", staleTime: 60_000 });
+	const { data: unitList, error: unitsError } = useRequest(() => approvalRequestService.fetchSubmitUnits(), { cacheKey: "approval-submit-units", staleTime: 60_000 });
+	const units = useMemo(() => unitList ?? [], [unitList]);
+	// Nhúng trong trang chi tiết đã có sẵn dữ liệu thì không fetch lại
+	const { data: fetchedDetail, error: detailError } = useRequest(() => approvalRequestService.fetchDetail(id!), { ready: !!id && !initialDetail, refreshDeps: [id] });
+	// Bản vừa lưu của chính form (trạng thái, mã…) ưu tiên hơn dữ liệu tải ban đầu
+	const [saved, setSaved] = useState<ApprovalRequestDetail>();
+	const existing = saved ?? initialDetail ?? fetchedDetail;
 	// Phiếu mới chưa có id: sinh sẵn để tệp upload vào đúng thư mục Attachments/{id}/... và dùng lại khi tạo phiếu
 	const [draftId] = useState(() => crypto.randomUUID());
 	const requestFileId = existing?.id ?? draftId;
-	const [loadError, setLoadError] = useState(false);
+	const loadError = !!(typesError || unitsError || detailError);
+	const initializedFor = useRef<string>(undefined);
 	const [saving, setSaving] = useState<"draft" | "submit" | null>(null);
 	const [preview, setPreview] = useState<PreviewFlowResult | null>(null);
 	const [previewLoading, setPreviewLoading] = useState(false);
@@ -66,52 +82,38 @@ export default function ApprovalRequestForm() {
 	const documents = Form.useWatch("documents", form) ?? [];
 	const attachments = Form.useWatch("attachments", form) ?? [];
 
-	useEffect(() => {
-		let cancelled = false;
-		(async () => {
-			try {
-				const [typeList, unitList, detail] = await Promise.all([
-					approvalRequestService.fetchRequestTypes(),
-					approvalRequestService.fetchSubmitUnits(),
-					id ? approvalRequestService.fetchDetail(id) : Promise.resolve(undefined),
-				]);
-				if (cancelled)
-					return;
-				setTypes(typeList);
-				setUnits(unitList);
-				if (detail) {
-					setExisting(detail);
-					const type = typeList.find(item => item.id === detail.requestType.id);
-					form.setFieldsValue({
-						category: type?.category?.id,
-						requestType: detail.requestType.id,
-						priority: detail.priority,
-						department: detail.department.id,
-						title: detail.title,
-						payload: payloadToFormValues(detail.requestType.formSchema, detail.payload),
-						documents: detail.documents as AttachmentEntity[],
-						attachments: detail.attachments as AttachmentEntity[],
-					});
-				}
-				else {
-					const preset = searchParams.get("type");
-					const type = typeList.find(item => item.id === preset || item.code === preset);
-					form.setFieldsValue({
-						category: type?.category?.id ?? typeList[0]?.category?.id,
-						requestType: type?.id,
-						department: unitList.find(u => u.isOwn)?.id,
-					});
-				}
-			}
-			catch {
-				if (!cancelled)
-					setLoadError(true);
-			}
-		})();
-		return () => {
-			cancelled = true;
-		};
-	}, [id, form, searchParams]);
+	// Đổ dữ liệu vào form đúng một lần cho mỗi phiếu — dữ liệu cache làm mới ngầm sau đó không được ghi đè phần đang nhập
+	useLayoutEffect(() => {
+		const detail = initialDetail ?? fetchedDetail;
+		if (!types || !unitList || (id && !detail))
+			return;
+		const key = id ?? "new";
+		if (initializedFor.current === key)
+			return;
+		initializedFor.current = key;
+		if (detail) {
+			const type = types.find(item => item.id === detail.requestType.id);
+			form.setFieldsValue({
+				category: type?.category?.id,
+				requestType: detail.requestType.id,
+				priority: detail.priority,
+				department: detail.department.id,
+				title: detail.title,
+				payload: payloadToFormValues(detail.requestType.formSchema, detail.payload),
+				documents: detail.documents as AttachmentEntity[],
+				attachments: detail.attachments as AttachmentEntity[],
+			});
+		}
+		else {
+			const preset = searchParams.get("type");
+			const type = types.find(item => item.id === preset || item.code === preset);
+			form.setFieldsValue({
+				category: type?.category?.id ?? types[0]?.category?.id,
+				requestType: type?.id,
+				department: unitList.find(u => u.isOwn)?.id,
+			});
+		}
+	}, [id, form, searchParams, types, unitList, initialDetail, fetchedDetail]);
 
 	/** Nhóm tờ trình = danh mục của loại tờ trình */
 	const categories = useMemo(() => {
@@ -198,11 +200,14 @@ export default function ApprovalRequestForm() {
 			}
 			window.$message?.success(t(submit ? "approval.messages.submitted" : "approval.messages.saved"));
 			if (submit) {
-				navigate(approvalRequestPath.detail(requestId), { replace: true });
+				if (onExit)
+					onExit();
+				else
+					navigate(approvalRequestPath.detail(requestId), { replace: true });
 			}
 			else if (existing) {
 				// Lưu nháp: ở lại form để sửa tiếp nhiều lần, chỉ làm mới thông tin phiếu (trạng thái, mã…)
-				setExisting(await approvalRequestService.fetchDetail(requestId));
+				setSaved(await approvalRequestService.fetchDetail(requestId));
 			}
 			else {
 				// Phiếu vừa được tạo: chuyển sang màn sửa của chính nó để các lần lưu sau là cập nhật
@@ -219,8 +224,9 @@ export default function ApprovalRequestForm() {
 
 	if (loadError)
 		return <Result status="404" subTitle={t("approval.messages.notFound")} />;
-	if (!types)
-		return <BasicContent><Skeleton active paragraph={{ rows: 10 }} /></BasicContent>;
+	// Chờ đủ dữ liệu và đã đổ vào form (existing có sau effect) để không nháy form trống
+	if (!types || !unitList || (id && !existing))
+		return <RequestFormSkeleton />;
 
 	const unitName = units.find(u => u.id === department)?.name ?? existing?.department.name;
 	const card = { background: token.colorBgContainer, border: `1px solid ${token.colorBorderSecondary}`, borderRadius: token.borderRadiusLG };
@@ -244,7 +250,7 @@ export default function ApprovalRequestForm() {
 						</div>
 					</div>
 					<div className="flex flex-wrap gap-2">
-						<Button disabled={false} onClick={() => navigate(-1)}>{t("common.cancel")}</Button>
+						<Button disabled={false} onClick={() => (onExit ? onExit() : navigate(-1))}>{t("common.cancel")}</Button>
 						{editable && (
 							<>
 								<Button icon={<SaveOutlined />} loading={saving === "draft"} disabled={!!saving || !selectedType} onClick={() => save(false)}>

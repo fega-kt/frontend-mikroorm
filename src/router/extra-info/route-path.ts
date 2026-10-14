@@ -26,5 +26,6 @@ export enum ApprovalPath {
 export const approvalRequestPath = {
 	create: `${ApprovalPath.Requests}/new`,
 	detail: (id: string) => `${ApprovalPath.Requests}/${id}`,
-	edit: (id: string) => `${ApprovalPath.Requests}/${id}/edit`,
+	/** Sửa là chế độ của trang chi tiết (cùng pathname → dùng chung 1 tab); route `/:id/edit` cũ vẫn mở được form */
+	edit: (id: string) => `${ApprovalPath.Requests}/${id}?mode=edit`,
 };

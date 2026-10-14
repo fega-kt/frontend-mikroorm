@@ -27,7 +27,17 @@
 		"escalate": "超时升级",
 		"remind": "催办提醒",
 		"notify": "发送通知",
-		"complete": "完成 – 申请已通过"
+		"complete": "完成 – 申请已通过",
+		"create": "创建申请",
+		"update": "更新信息",
+		"file_add": "添加文件",
+		"file_remove": "移除文件",
+		"filter": {
+			"all": "全部",
+			"approval": "审批",
+			"edit": "编辑",
+			"files": "文件"
+		}
 	},
 	"fields": {
 		"code": "编号",
