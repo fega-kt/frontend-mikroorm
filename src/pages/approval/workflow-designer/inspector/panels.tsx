@@ -4,6 +4,7 @@ import type { ApproverFormItem } from "./approver-form";
 import {
 	ApproverType,
 	DEFAULT_STEP_OPTIONS,
+	GroupMode,
 	notifiesRequester,
 	NotifyChannel,
 	OverdueAction,
@@ -27,7 +28,7 @@ interface PanelProps<T extends WorkflowNode> {
 	disabled: boolean
 }
 
-const OPTION_KEYS: (keyof StepOptions)[] = ["allowDelegation", "skipIfRequester", "skipIfNoApprover", "requireRejectReason", "allowReturn"];
+const OPTION_KEYS: (keyof StepOptions)[] = ["allowDelegation", "skipIfRequester", "skipIfNoApprover", "requireRejectReason", "allowReturn", "emailGroup"];
 
 /** Tên bước — dùng chung */
 function NameField() {
@@ -59,6 +60,19 @@ function SlaFields() {
 					/>
 				</Form.Item>
 			</div>
+			{/* Áp dụng khi người duyệt của bước là nhóm */}
+			<Form.Item
+				name={["options", "groupMode"]}
+				label={t("workflowDesigner.inspector.groupMode")}
+				tooltip={t("workflowDesigner.inspector.groupModeHint")}
+			>
+				<Radio.Group
+					optionType="button"
+					buttonStyle="solid"
+					size="small"
+					options={Object.values(GroupMode).map(mode => ({ value: mode, label: t(`workflowDesigner.groupMode.${mode}`) }))}
+				/>
+			</Form.Item>
 			<Typography.Text strong className="mb-2 block text-[13px]">{t("workflowDesigner.inspector.options")}</Typography.Text>
 			<div className="flex flex-col">
 				{OPTION_KEYS.map(key => (

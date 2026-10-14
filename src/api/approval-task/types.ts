@@ -1,6 +1,7 @@
 import type { ApprovalPriority, ApprovalRequestStatus, ApprovalTaskStatus, UserBrief } from "#src/api/approval-request";
 import type { SearchParamsBase } from "#src/api/service-base";
 import type { FormField } from "#src/api/setting/request-type";
+import type { PrincipalType } from "#src/api/system/principal";
 
 export interface InboxSearchParams extends SearchParamsBase {
 	page?: number
@@ -19,7 +20,10 @@ export interface InboxItem {
 	actedAt?: string
 	comment?: string
 	createdAt: string
-	originalApprover: { id: string, fullName: string } | null
+	/** Người / nhóm duyệt theo quy trình */
+	originApprover: { id: string, type: PrincipalType, name: string }
+	/** Người / nhóm đang giữ task */
+	approver: { id: string, type: PrincipalType, name: string }
 	/** Task của người khác mà tôi xử lý / được xử lý thay theo ủy quyền */
 	onBehalfOf: { id: string, fullName: string } | null
 	request: {

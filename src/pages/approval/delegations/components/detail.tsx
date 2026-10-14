@@ -35,20 +35,22 @@ export function Detail({ ref }: { ref: React.Ref<DetailRef> }) {
 	const [form] = Form.useForm<FormValues>();
 	const [open, setOpen] = useState(false);
 	const [editingId, setEditingId] = useState<string>();
-	// Người ủy quyền của bản đang sửa — chỉ hiển thị, không đổi được
+	// Người ủy quyền / người được ủy quyền của bản đang sửa — chỉ hiển thị, không đổi được sau khi tạo
 	const [fromUser, setFromUser] = useState<UserBrief>();
+	const [toUser, setToUser] = useState<UserBrief>();
 
 	useImperativeHandle(ref, () => ({
 		show: async (id) => {
 			form.resetFields();
 			setEditingId(id);
 			setFromUser(undefined);
+			setToUser(undefined);
 			setOpen(true);
 			if (id) {
 				const item = await approvalDelegationService.fetchItem(id);
 				setFromUser(item.fromUser);
+				setToUser(item.toUser);
 				form.setFieldsValue({
-					toUser: item.toUser.id,
 					period: [dayjs(item.startAt), dayjs(item.endAt)],
 					mode: item.mode,
 					requestType: item.requestType?.id,
@@ -80,17 +82,23 @@ export function Detail({ ref }: { ref: React.Ref<DetailRef> }) {
 			onFinish={async (values) => {
 				const [startAt, endAt] = values.period!.map(v => dayjs(v));
 				const payload = {
-					toUser: userId(values.toUser)!,
 					startAt: startAt.toISOString(),
 					endAt: endAt.toISOString(),
-					mode: values.mode,
 					requestType: values.requestType || null,
 					reason: values.reason || null,
 				};
-				if (editingId)
+				// Người ủy quyền / người được ủy quyền / kiểu ủy quyền chỉ chọn lúc tạo
+				if (editingId) {
 					await approvalDelegationService.fetchUpdate(editingId, payload);
-				else
-					await approvalDelegationService.fetchCreate({ ...payload, fromUser: userId(values.fromUser) || null });
+				}
+				else {
+					await approvalDelegationService.fetchCreate({
+						...payload,
+						mode: values.mode,
+						toUser: userId(values.toUser)!,
+						fromUser: userId(values.fromUser) || null,
+					});
+				}
 				window.$message?.success(t(editingId ? "common.updateSuccess" : "common.addSuccess"));
 				close({ isChange: true });
 				return true;
@@ -111,7 +119,13 @@ export function Detail({ ref }: { ref: React.Ref<DetailRef> }) {
 						fieldProps={{ placeholder: t("approval.delegation.fromUserHint"), allowClear: true }}
 					/>
 				)}
-			<ProFormPeoplePicker name="toUser" label={t("approval.delegation.toUser")} rules={[{ required: true }]} />
+			{editingId
+				? toUser && (
+					<ProFormItem label={t("approval.delegation.toUser")} extra={t("approval.delegation.toUserLocked")}>
+						<PeoplePicker readonly user={toUser} showEmail={false} />
+					</ProFormItem>
+				)
+				: <ProFormPeoplePicker name="toUser" label={t("approval.delegation.toUser")} rules={[{ required: true }]} />}
 			{/* RangePicker antd (không qua ProFormDateTimeRangePicker) để giá trị submit luôn là dayjs */}
 			<ProFormItem name="period" label={t("approval.delegation.period")} rules={[{ required: true }]}>
 				<DatePicker.RangePicker className="w-full" format="DD/MM/YYYY HH:mm" showTime={{ format: "HH:mm" }} />
@@ -120,6 +134,9 @@ export function Detail({ ref }: { ref: React.Ref<DetailRef> }) {
 				name="mode"
 				label={t("approval.delegation.mode")}
 				rules={[{ required: true }]}
+				// Khóa sau khi tạo: đổi kiểu giữa chừng làm quyền trên các phiếu đã giao khó lường
+				disabled={!!editingId}
+				extra={editingId ? t("approval.delegation.modeLocked") : undefined}
 				fieldProps={{ className: "flex flex-col gap-2" }}
 				options={Object.values(ApprovalDelegationMode).map(mode => ({
 					value: mode,

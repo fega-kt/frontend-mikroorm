@@ -38,7 +38,9 @@
 			"approval": "审批",
 			"edit": "编辑",
 			"files": "文件"
-		}
+		},
+		"regroup": "组内重新分派",
+		"sameApprover": "自动审批（同一审批人）"
 	},
 	"fields": {
 		"code": "编号",
@@ -130,7 +132,9 @@
 		"done": "已处理",
 		"delegatedFrom": "代 {{name}}",
 		"quickView": "快速查看",
-		"selected": "已选 {{count}} 条"
+		"selected": "已选 {{count}} 条",
+		"groupTask": "小组 {{name}}",
+		"fromGroup": "来自小组 {{name}}"
 	},
 	"myRequests": {
 		"all": "全部"
@@ -182,7 +186,10 @@
 		"approveTitle": "通过申请",
 		"rejectTitle": "驳回申请",
 		"returnTitle": "退回补充",
-		"cancelTitle": "撤销申请"
+		"cancelTitle": "撤销申请",
+		"forGroup": "代表 {{name}}",
+		"groupShared": "全组共同处理",
+		"assignedFrom": "由 {{name}} 分派"
 	},
 	"delegation": {
 		"title": "审批委托",
@@ -217,7 +224,9 @@
 		},
 		"createdBy": "创建人",
 		"onBehalf": "由 {{name}} 代为创建",
-		"fromUserHint": "本人委托可留空"
+		"fromUserHint": "本人委托可留空",
+		"toUserLocked": "创建后不能更改被委托人。如需委托他人，请新建委托。",
+		"modeLocked": "创建后不能更改委托方式。如需其他方式，请删除本委托并新建。"
 	},
 	"workflow": {
 		"title": "审批流程",
@@ -271,7 +280,8 @@
 	"no": "否",
 	"skipReason": {
 		"requester": "审批人为申请人",
-		"no_approver": "找不到审批人"
+		"no_approver": "找不到审批人",
+		"no_member": "小组没有成员"
 	},
 	"priority": {
 		"0": "低",

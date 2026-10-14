@@ -1,4 +1,4 @@
-import type { ApprovalDelegationEntity, ApprovalDelegationPayload, ApprovalDelegationSearchParams } from "./types";
+import type { ApprovalDelegationEntity, ApprovalDelegationPayload, ApprovalDelegationSearchParams, ApprovalDelegationUpdatePayload } from "./types";
 import { ApiService, CrudServiceBase } from "../service-base";
 
 export * from "./types";
@@ -20,7 +20,7 @@ export class ApprovalDelegationService extends CrudServiceBase<ApprovalDelegatio
 		return this.post<{ id: string }>("", { json: data as never, ignoreLoading: true });
 	}
 
-	fetchUpdate(id: string, data: Partial<ApprovalDelegationPayload>) {
+	fetchUpdate(id: string, data: ApprovalDelegationUpdatePayload) {
 		return this.patch<{ id: string }>(id, { json: data as never, ignoreLoading: true });
 	}
 

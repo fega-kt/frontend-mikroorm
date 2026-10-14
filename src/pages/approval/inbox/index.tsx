@@ -4,6 +4,7 @@ import type { ActionModalRef } from "../components/action-modal";
 import { approvalRequestService } from "#src/api/approval-request";
 import { ApprovalTaskStatus } from "#src/api/approval-request/types";
 import { approvalTaskService } from "#src/api/approval-task";
+import { PrincipalType } from "#src/api/system/principal";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
 import { UserAvatar } from "#src/components/user-avatar";
@@ -86,6 +87,23 @@ export default function ApprovalInbox() {
 		});
 	};
 
+	/**
+	 * Ghi chú dưới tên bước: xử lý thay theo ủy quyền ("Thay A"), task của cả nhóm ("Nhóm X"),
+	 * được chia từ nhóm ("Từ nhóm X"), hoặc được gán lại / chuyển cấp từ người khác ("Thay A").
+	 */
+	const inboxNote = (item: InboxItem) => {
+		if (item.onBehalfOf)
+			return t("approval.inbox.delegatedFrom", { name: item.onBehalfOf.fullName });
+		if (item.approver.type === PrincipalType.Group)
+			return t("approval.inbox.groupTask", { name: item.approver.name });
+		if (item.originApprover.id !== item.approver.id) {
+			return item.originApprover.type === PrincipalType.Group
+				? t("approval.inbox.fromGroup", { name: item.originApprover.name })
+				: t("approval.inbox.delegatedFrom", { name: item.originApprover.name });
+		}
+		return null;
+	};
+
 	const dueCell = (item: InboxItem) => {
 		if (!item.dueAt)
 			return "—";
@@ -153,12 +171,8 @@ export default function ApprovalInbox() {
 			render: (_, item) => (
 				<div className="flex flex-col">
 					<span>{item.nodeName ?? item.nodeId}</span>
-					{/* Xử lý thay theo ủy quyền (task vẫn của người khác) hoặc task đã chuyển sang mình (gán lại / chuyển cấp) */}
-					{(item.onBehalfOf ?? item.originalApprover) && (
-						<Typography.Text type="secondary" className="text-xs">
-							{t("approval.inbox.delegatedFrom", { name: (item.onBehalfOf ?? item.originalApprover)!.fullName })}
-						</Typography.Text>
-					)}
+					{/* Xử lý thay / task của nhóm / được chia từ nhóm / gán lại — xem inboxNote */}
+					{inboxNote(item) && <Typography.Text type="secondary" className="text-xs">{inboxNote(item)}</Typography.Text>}
 				</div>
 			),
 		},

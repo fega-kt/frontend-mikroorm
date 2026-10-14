@@ -179,7 +179,8 @@
 			"skipIfRequester": "Bỏ qua nếu người duyệt là người tạo tờ trình",
 			"skipIfNoApprover": "Bỏ qua nếu không tìm thấy người duyệt",
 			"requireRejectReason": "Bắt buộc ghi lý do khi từ chối",
-			"allowReturn": "Cho phép trả lại để bổ sung"
+			"allowReturn": "Cho phép trả lại để bổ sung",
+			"emailGroup": "Gửi email cho cả nhóm (nhóm cùng xử lý; mặc định chỉ thông báo trong ứng dụng)"
 		},
 		"mode": "Cách duyệt",
 		"approvers": "Người duyệt",
@@ -207,7 +208,9 @@
 		"emailTemplate": "Mẫu email",
 		"emailTemplateHint": "Soạn / sửa mẫu ở Quản trị hệ thống → Mẫu email",
 		"defaultTemplate": "Mặc định — {{name}}",
-		"messageHint": "Hiện trong thông báo và chèn vào email qua biến {{message}}"
+		"messageHint": "Hiện trong thông báo và chèn vào email qua biến {{message}}",
+		"groupMode": "Khi người duyệt là nhóm",
+		"groupModeHint": "Cả nhóm cùng xử lý: thành viên nào cũng duyệt được, ai duyệt trước thì xong. Chia cho một người: hệ thống chọn ngẫu nhiên một thành viên; người đó rời nhóm hoặc bị khóa thì chia lại. Nhóm không còn ai thì bỏ qua."
 	},
 	"condition": {
 		"field": "Trường",
@@ -289,5 +292,9 @@
 		"off": "Không gửi",
 		"noRecipient": "Chưa chọn người nhận",
 		"fixedCount": "{{count}} người/nhóm cố định"
+	},
+	"groupMode": {
+		"shared": "Cả nhóm cùng xử lý",
+		"assign": "Chia cho một người"
 	}
 }

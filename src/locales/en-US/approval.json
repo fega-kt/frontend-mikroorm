@@ -38,7 +38,9 @@
 			"approval": "Approval",
 			"edit": "Edits",
 			"files": "Files"
-		}
+		},
+		"regroup": "Reassigned within group",
+		"sameApprover": "Auto-approved (same approver)"
 	},
 	"fields": {
 		"code": "Code",
@@ -130,7 +132,9 @@
 		"done": "Handled",
 		"delegatedFrom": "On behalf of {{name}}",
 		"quickView": "Quick view",
-		"selected": "{{count}} selected"
+		"selected": "{{count}} selected",
+		"groupTask": "Group {{name}}",
+		"fromGroup": "From group {{name}}"
 	},
 	"myRequests": {
 		"all": "All"
@@ -182,7 +186,10 @@
 		"approveTitle": "Approve request",
 		"rejectTitle": "Reject request",
 		"returnTitle": "Return request for changes",
-		"cancelTitle": "Cancel request"
+		"cancelTitle": "Cancel request",
+		"forGroup": "on behalf of {{name}}",
+		"groupShared": "Whole group can act",
+		"assignedFrom": "assigned from {{name}}"
 	},
 	"delegation": {
 		"title": "Approval delegation",
@@ -217,7 +224,9 @@
 		},
 		"createdBy": "Created by",
 		"onBehalf": "Created by {{name}} on behalf",
-		"fromUserHint": "Leave empty for your own delegation"
+		"fromUserHint": "Leave empty for your own delegation",
+		"toUserLocked": "The delegate cannot be changed after creation. Create a new delegation for someone else.",
+		"modeLocked": "The delegation type cannot be changed after creation. Delete this delegation and create a new one for a different type."
 	},
 	"workflow": {
 		"title": "Approval workflows",
@@ -271,7 +280,8 @@
 	"no": "No",
 	"skipReason": {
 		"requester": "approver is the requester",
-		"no_approver": "no approver found"
+		"no_approver": "no approver found",
+		"no_member": "group has no members"
 	},
 	"priority": {
 		"0": "Low",

@@ -181,7 +181,8 @@
 			"skipIfRequester": "Skip if the approver is the requester",
 			"skipIfNoApprover": "Skip if no approver is found",
 			"requireRejectReason": "Require a reason when rejecting",
-			"allowReturn": "Allow returning for more information"
+			"allowReturn": "Allow returning for more information",
+			"emailGroup": "Email the whole group (shared groups; in-app only by default)"
 		},
 		"mode": "Approval mode",
 		"approvers": "Approvers",
@@ -209,7 +210,9 @@
 		"emailTemplate": "Email template",
 		"emailTemplateHint": "Create / edit templates in Administration → Email templates",
 		"defaultTemplate": "Default — {{name}}",
-		"messageHint": "Shown in the notification and inserted into the email as {{message}}"
+		"messageHint": "Shown in the notification and inserted into the email as {{message}}",
+		"groupMode": "When the approver is a group",
+		"groupModeHint": "Whole group: any member can approve, first one wins. Assign one: a random member is picked; if they leave the group or are deactivated, the task is reassigned. An empty group is skipped."
 	},
 	"condition": {
 		"field": "Field",
@@ -291,5 +294,9 @@
 		"off": "Not sent",
 		"noRecipient": "No recipient selected",
 		"fixedCount": "{{count}} fixed recipient(s)"
+	},
+	"groupMode": {
+		"shared": "Whole group",
+		"assign": "Assign one member"
 	}
 }
