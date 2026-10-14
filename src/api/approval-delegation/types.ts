@@ -42,3 +42,6 @@ export interface ApprovalDelegationPayload {
 	requestType?: string | null
 	reason?: string | null
 }
+
+/** Sửa ủy quyền: người ủy quyền, người được ủy quyền, kiểu ủy quyền không đổi được sau khi tạo */
+export type ApprovalDelegationUpdatePayload = Partial<Pick<ApprovalDelegationPayload, "startAt" | "endAt" | "requestType" | "reason">>;

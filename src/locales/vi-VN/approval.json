@@ -38,7 +38,9 @@
 			"approval": "Phê duyệt",
 			"edit": "Chỉnh sửa",
 			"files": "Tệp"
-		}
+		},
+		"regroup": "Chia lại trong nhóm",
+		"sameApprover": "Tự động duyệt (cùng người duyệt)"
 	},
 	"fields": {
 		"code": "Mã tờ trình",
@@ -130,7 +132,9 @@
 		"done": "Đã xử lý",
 		"delegatedFrom": "Thay {{name}}",
 		"quickView": "Xem nhanh",
-		"selected": "Đã chọn {{count}} tờ trình"
+		"selected": "Đã chọn {{count}} tờ trình",
+		"groupTask": "Nhóm {{name}}",
+		"fromGroup": "Từ nhóm {{name}}"
 	},
 	"myRequests": {
 		"all": "Tất cả"
@@ -182,7 +186,10 @@
 		"approveTitle": "Duyệt tờ trình",
 		"rejectTitle": "Từ chối tờ trình",
 		"returnTitle": "Trả lại tờ trình để bổ sung",
-		"cancelTitle": "Hủy tờ trình"
+		"cancelTitle": "Hủy tờ trình",
+		"forGroup": "thay mặt {{name}}",
+		"groupShared": "Cả nhóm cùng xử lý",
+		"assignedFrom": "được chia từ {{name}}"
 	},
 	"delegation": {
 		"title": "Ủy quyền duyệt",
@@ -217,7 +224,9 @@
 		},
 		"createdBy": "Người tạo",
 		"onBehalf": "Tạo hộ bởi {{name}}",
-		"fromUserHint": "Để trống nếu là ủy quyền của chính bạn"
+		"fromUserHint": "Để trống nếu là ủy quyền của chính bạn",
+		"toUserLocked": "Không đổi được người được ủy quyền sau khi tạo. Cần người khác thì tạo ủy quyền mới.",
+		"modeLocked": "Không đổi được kiểu ủy quyền sau khi tạo. Cần kiểu khác thì xóa ủy quyền này và tạo ủy quyền mới."
 	},
 	"workflow": {
 		"title": "Quy trình phê duyệt",
@@ -271,7 +280,8 @@
 	"no": "Không",
 	"skipReason": {
 		"requester": "người duyệt là người tạo tờ trình",
-		"no_approver": "không tìm thấy người duyệt"
+		"no_approver": "không tìm thấy người duyệt",
+		"no_member": "nhóm không có thành viên"
 	},
 	"priority": {
 		"0": "Thấp",

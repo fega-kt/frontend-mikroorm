@@ -6,6 +6,7 @@ import type { NodeProgress } from "../../lib/progress";
 import type { ApprovalRound, StepGroup } from "../../lib/rounds";
 import { ApprovalHistoryAction, ApprovalRequestStatus, ApprovalTaskStatus } from "#src/api/approval-request/types";
 import { ApproverType, NodeType } from "#src/api/approval-workflow/types";
+import { PrincipalType } from "#src/api/system/principal";
 import { useWorkflowApproverProfiles, useWorkflowUserNames } from "#src/components/approval-flow-graph/user-names";
 import { UserAvatar } from "#src/components/user-avatar";
 import { CheckOutlined, ClockCircleOutlined, TeamOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
@@ -96,17 +97,31 @@ export function StepEntries({ group, node, names, profiles = {}, canReassign, on
 
 	if (group?.tasks.length) {
 		return group.tasks.map((task) => {
-			// Xử lý thay theo ủy quyền: người bấm khác người duyệt → hiện "B · thay A"
-			const onBehalf = !!task.actedBy && !!task.approver && task.actedBy.id !== task.approver.id;
-			const person = onBehalf ? task.actedBy : task.approver;
-			const note = onBehalf
-				? t("approval.detail.delegatedFrom", { name: task.approver?.fullName })
-				: task.originalApprover && t(task.escalatedAt ? "approval.detail.escalatedFrom" : "approval.detail.delegatedFrom", { name: task.originalApprover.fullName });
+			const holder = task.approver.user;
+			const groupTask = task.approver.type === PrincipalType.Group;
+			const origin = task.originApprover;
+			// Hiện người đã bấm (nếu có), không thì người giữ; task cả nhóm chưa ai xử lý thì hiện nhóm
+			const person = task.actedBy ?? holder;
+			const note = (() => {
+				if (task.actedBy && holder && task.actedBy.id !== holder.id)
+					return t("approval.detail.delegatedFrom", { name: holder.fullName });
+				if (groupTask)
+					return task.actedBy ? t("approval.detail.forGroup", { name: task.approver.name }) : t("approval.detail.groupShared");
+				if (task.escalatedAt)
+					return t("approval.detail.escalatedFrom", { name: origin.name });
+				if (task.assignedFromGroup)
+					return t("approval.detail.assignedFrom", { name: origin.name });
+				if (origin.id !== task.approver.id)
+					return t("approval.detail.delegatedFrom", { name: origin.name });
+				return null;
+			})();
 			return (
 				<EntryCard key={task.id}>
 					<PersonRow
-						avatar={<UserAvatar size={28} user={person} />}
-						name={person?.fullName ?? "—"}
+						avatar={person
+							? <UserAvatar size={28} user={person} />
+							: <UserAvatar size={28} user={{ id: task.approver.id }} fallbackIcon={<TeamOutlined />} />}
+						name={person?.fullName ?? task.approver.name}
 						note={note}
 						extra={(
 							<>

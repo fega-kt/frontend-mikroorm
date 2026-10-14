@@ -68,11 +68,16 @@ export function orderNodes(definition: WorkflowDefinition): WorkflowNode[] {
 	return ordered.filter(node => node.type !== NodeType.Condition && node.type !== NodeType.Parallel);
 }
 
-/** id → tên người duyệt (để sơ đồ hiển thị tên người cụ thể) */
+/** id → tên (người dùng và principal người / nhóm của task) — để sơ đồ, lịch sử hiển thị tên cụ thể */
 export function collectUserNames(detail: Pick<ApprovalRequestDetail, "tasks">) {
 	const names: Record<string, string> = {};
 	for (const task of detail.tasks) {
-		for (const user of [task.approver, task.originalApprover, task.actedBy]) {
+		for (const principal of [task.approver, task.originApprover]) {
+			names[principal.id] = principal.name;
+			if (principal.user)
+				names[principal.user.id] = principal.user.fullName;
+		}
+		for (const user of [task.actedBy, ...(task.delegates ?? [])]) {
 			if (user)
 				names[user.id] = user.fullName;
 		}

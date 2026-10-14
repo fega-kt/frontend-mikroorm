@@ -2,6 +2,7 @@ import type { WorkflowDefinition } from "#src/api/approval-workflow";
 import type { AttachmentEntity } from "#src/api/attachment";
 import type { SearchParamsBase } from "#src/api/service-base";
 import type { AttachmentConfig, FormField } from "#src/api/setting/request-type";
+import type { PrincipalType } from "#src/api/system/principal";
 
 export enum ApprovalRequestStatus {
 	Draft = "draft",
@@ -109,16 +110,29 @@ export interface PreviewFlowResult {
 	outcome: "approved" | "blocked"
 }
 
+/** Người hoặc nhóm (principal) giữ / được giao task */
+export interface PrincipalBrief {
+	id: string
+	type: PrincipalType
+	name: string
+	/** Có khi là người */
+	user: UserBrief | null
+}
+
 export interface ApprovalTaskItem {
 	id: string
 	round: number
 	nodeId: string
 	nodeName?: string
 	status: ApprovalTaskStatus
-	approver: UserBrief | null
-	originalApprover: UserBrief | null
-	/** Người đang được ủy quyền xử lý thay (chỉ task đang chờ) */
-	delegates?: UserBrief[]
+	/** Người / nhóm đang giữ task */
+	approver: PrincipalBrief
+	/** Người / nhóm duyệt theo quy trình — khác `approver` khi được chia từ nhóm, gán lại, chuyển cấp */
+	originApprover: PrincipalBrief
+	/** Hệ thống chia ngẫu nhiên từ nhóm cho `approver` */
+	assignedFromGroup: boolean
+	/** Người đang được ủy quyền xử lý thay (chỉ task đang chờ; rỗng nếu không có) */
+	delegates: UserBrief[]
 	actedBy: UserBrief | null
 	comment?: string
 	dueAt?: string

@@ -20,6 +20,14 @@ export enum OverdueAction {
 	AutoApprove = "AUTO_APPROVE",
 }
 
+/** Người duyệt là nhóm — đồng bộ backend GroupMode */
+export enum GroupMode {
+	/** Cả nhóm cùng xử lý: thành viên hiện tại nào cũng duyệt được, ai trước xong trước */
+	Shared = "shared",
+	/** Chia cho một người: hệ thống chọn ngẫu nhiên một thành viên */
+	Assign = "assign",
+}
+
 export enum ParallelMode {
 	All = "ALL",
 	Any = "ANY",
@@ -53,6 +61,10 @@ export interface StepOptions {
 	skipIfNoApprover: boolean
 	requireRejectReason: boolean
 	allowReturn: boolean
+	/** Người duyệt là nhóm: cả nhóm cùng xử lý / chia cho một người */
+	groupMode: GroupMode
+	/** Nhóm "cùng xử lý": gửi email cho cả nhóm khi task tới (mặc định chỉ thông báo trong ứng dụng) */
+	emailGroup: boolean
 }
 
 interface NodeBase {
@@ -141,6 +153,8 @@ export const DEFAULT_STEP_OPTIONS: StepOptions = {
 	skipIfNoApprover: false,
 	requireRejectReason: true,
 	allowReturn: true,
+	groupMode: GroupMode.Shared,
+	emailGroup: false,
 };
 
 /** Bước thông báo có gửi cho người trình không (tương thích định nghĩa cũ chưa có cờ) — đồng bộ backend */

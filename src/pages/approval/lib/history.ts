@@ -10,9 +10,17 @@ export function isAutoDelegation(item: ApprovalHistoryItem) {
 	return item.action === ApprovalHistoryAction.Delegate && item.data?.reason === "delegation";
 }
 
-/** Nhãn hành động của một dòng lịch sử */
+/** Nhãn hành động của một dòng lịch sử (một số hành động tách nhãn theo data.reason) */
 export function historyLabel(item: ApprovalHistoryItem, t: TFunction) {
-	return isAutoDelegation(item) ? t("approval.history.delegation") : t(`approval.history.${item.action}`);
+	if (isAutoDelegation(item))
+		return t("approval.history.delegation");
+	// Hệ thống chia lại task nhóm khi người được chia rời nhóm / bị khóa
+	if (item.action === ApprovalHistoryAction.Delegate && item.data?.reason === "regroup")
+		return t("approval.history.regroup");
+	// Duyệt kèm suất mà người bấm là người duy nhất xử lý được (khác tự duyệt do quá hạn)
+	if (item.action === ApprovalHistoryAction.AutoApprove && item.data?.reason === "same_approver")
+		return t("approval.history.sameApprover");
+	return t(`approval.history.${item.action}`);
 }
 
 /**

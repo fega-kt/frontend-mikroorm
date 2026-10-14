@@ -497,7 +497,7 @@ export default function ApprovalRequestDetailPage() {
 				destroyOnHidden
 			>
 				<div className="flex flex-col gap-3">
-					<Text type="secondary">{`${reassignTask?.nodeName ?? ""} · ${reassignTask?.approver?.fullName ?? ""}`}</Text>
+					<Text type="secondary">{`${reassignTask?.nodeName ?? ""} · ${reassignTask?.approver.name ?? ""}`}</Text>
 					<div>
 						<Text>{t("approval.detail.reassignTo")}</Text>
 						<PeoplePicker
