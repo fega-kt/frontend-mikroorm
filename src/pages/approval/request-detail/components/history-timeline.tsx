@@ -135,8 +135,13 @@ export function HistoryTimeline({ histories, userNames, formSchema }: { historie
 								return (
 									<li key={change.field} className="whitespace-pre-wrap">
 										<Text type="secondary">{`${row.label}: `}</Text>
-										<Text delete type="secondary">{row.from}</Text>
-										<Text type="secondary">{" → "}</Text>
+										{/* Dòng "tạo": chưa có giá trị cũ nên chỉ hiện giá trị ban đầu */}
+										{item.action !== ApprovalHistoryAction.Create && (
+											<>
+												<Text delete type="secondary">{row.from}</Text>
+												<Text type="secondary">{" → "}</Text>
+											</>
+										)}
 										<Text strong>{row.to}</Text>
 									</li>
 								);
