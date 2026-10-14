@@ -27,7 +27,17 @@
 		"escalate": "Chuyển cấp do quá hạn",
 		"remind": "Nhắc duyệt",
 		"notify": "Gửi thông báo",
-		"complete": "Hoàn tất – tờ trình đã được duyệt"
+		"complete": "Hoàn tất – tờ trình đã được duyệt",
+		"create": "Tạo tờ trình",
+		"update": "Cập nhật thông tin",
+		"file_add": "Thêm tệp",
+		"file_remove": "Gỡ tệp",
+		"filter": {
+			"all": "Tất cả",
+			"approval": "Phê duyệt",
+			"edit": "Chỉnh sửa",
+			"files": "Tệp"
+		}
 	},
 	"fields": {
 		"code": "Mã tờ trình",

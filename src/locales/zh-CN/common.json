@@ -35,6 +35,7 @@
 		"setting": "通用设置",
 		"category": "分类管理",
 		"requestType": "请求类型管理",
+		"form": "表单管理",
 		"group": "用户组管理",
 		"appSetting": "系统参数",
 		"systemConfig": "系统配置",

@@ -1,11 +1,16 @@
-import type { ApprovalHistoryItem } from "#src/api/approval-request";
+import type { ApprovalHistoryItem, HistoryFieldChange, HistoryFileItem } from "#src/api/approval-request";
+import type { FormField } from "#src/api/setting/request-type/types";
 import { ApprovalHistoryAction } from "#src/api/approval-request/types";
 import {
 	BellOutlined,
 	CheckCircleOutlined,
 	ClockCircleOutlined,
 	CloseCircleOutlined,
+	EditOutlined,
+	FileAddOutlined,
+	FileExcelOutlined,
 	FlagOutlined,
+	PlusCircleOutlined,
 	RiseOutlined,
 	RollbackOutlined,
 	SendOutlined,
@@ -13,10 +18,11 @@ import {
 	StopOutlined,
 	SwapOutlined,
 } from "@ant-design/icons";
-import { theme, Timeline, Typography } from "antd";
+import { Segmented, theme, Timeline, Typography } from "antd";
 import dayjs from "dayjs";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { DATE_TIME_FORMAT } from "../../lib/payload";
+import { DATE_TIME_FORMAT, formatPayloadValue } from "../../lib/payload";
 
 const { Text } = Typography;
 
@@ -36,12 +42,62 @@ const ACTION_STYLE: Record<ApprovalHistoryAction, { icon: React.ReactNode, tone:
 	[ApprovalHistoryAction.Remind]: { icon: <ClockCircleOutlined />, tone: "warning" },
 	[ApprovalHistoryAction.Notify]: { icon: <BellOutlined />, tone: "info" },
 	[ApprovalHistoryAction.Complete]: { icon: <FlagOutlined />, tone: "success" },
+	[ApprovalHistoryAction.Create]: { icon: <PlusCircleOutlined />, tone: "primary" },
+	[ApprovalHistoryAction.Update]: { icon: <EditOutlined />, tone: "info" },
+	[ApprovalHistoryAction.FileAdd]: { icon: <FileAddOutlined />, tone: "info" },
+	[ApprovalHistoryAction.FileRemove]: { icon: <FileExcelOutlined />, tone: "warning" },
 };
 
+enum HistoryFilter {
+	All = "all",
+	Approval = "approval",
+	Edit = "edit",
+	Files = "files",
+}
+
+const EDIT_ACTIONS = [ApprovalHistoryAction.Create, ApprovalHistoryAction.Update];
+const FILE_ACTIONS = [ApprovalHistoryAction.FileAdd, ApprovalHistoryAction.FileRemove];
+
+function matchesFilter(action: ApprovalHistoryAction, filter: HistoryFilter) {
+	switch (filter) {
+		case HistoryFilter.Edit: return EDIT_ACTIONS.includes(action);
+		case HistoryFilter.Files: return FILE_ACTIONS.includes(action);
+		case HistoryFilter.Approval: return !EDIT_ACTIONS.includes(action) && !FILE_ACTIONS.includes(action);
+		default: return true;
+	}
+}
+
+/** Nhãn + giá trị hiển thị của một trường đổi; trường eform tra theo formSchema nên nhãn / lựa chọn theo ngôn ngữ hiện tại */
+function describeChange(change: HistoryFieldChange, formSchema: FormField[], t: (key: string) => string) {
+	const { field, from, to } = change;
+	const text = (value: unknown) => (value == null || value === "" ? "—" : String(value));
+	if (field.startsWith("payload.")) {
+		const key = field.slice("payload.".length);
+		const def = formSchema.find(item => item.key === key);
+		// Trường đã bị gỡ khỏi eform: không còn nhãn để tra nên hiện khóa kỹ thuật
+		if (!def)
+			return { label: key, from: text(from), to: text(to) };
+		return { label: def.label, from: formatPayloadValue(def, from, t), to: formatPayloadValue(def, to, t) };
+	}
+	switch (field) {
+		case "title":
+			return { label: t("approval.fields.title"), from: text(from), to: text(to) };
+		case "priority":
+			return { label: t("approval.form.priority"), from: t(`approval.priority.${from}`), to: t(`approval.priority.${to}`) };
+		case "department": {
+			const name = (value: unknown) => (value && typeof value === "object" ? text((value as { name?: string }).name) : text(value));
+			return { label: t("approval.form.submitUnit"), from: name(from), to: name(to) };
+		}
+		default:
+			return { label: field, from: text(from), to: text(to) };
+	}
+}
+
 /** Lịch sử xử lý đơn (mới nhất ở trên) */
-export function HistoryTimeline({ histories, userNames }: { histories: ApprovalHistoryItem[], userNames: Record<string, string> }) {
+export function HistoryTimeline({ histories, userNames, formSchema }: { histories: ApprovalHistoryItem[], userNames: Record<string, string>, formSchema: FormField[] }) {
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
+	const [filter, setFilter] = useState(HistoryFilter.All);
 	const toneColor: Record<Tone, string> = {
 		primary: token.colorPrimary,
 		success: token.colorSuccess,
@@ -51,11 +107,13 @@ export function HistoryTimeline({ histories, userNames }: { histories: ApprovalH
 		default: token.colorTextTertiary,
 	};
 
-	const items = [...histories].reverse().map((item) => {
+	const items = [...histories].reverse().filter(item => matchesFilter(item.action, filter)).map((item) => {
 		const style = ACTION_STYLE[item.action] ?? { icon: <ClockCircleOutlined />, tone: "default" as Tone };
 		const data = item.data ?? {};
 		const from = typeof data.from === "string" ? userNames[data.from] : undefined;
 		const to = typeof data.to === "string" ? userNames[data.to] : undefined;
+		const changes = Array.isArray(data.changes) ? (data.changes as HistoryFieldChange[]) : [];
+		const files = Array.isArray(data.files) ? (data.files as HistoryFileItem[]) : [];
 		return {
 			key: item.id,
 			color: toneColor[style.tone],
@@ -70,6 +128,31 @@ export function HistoryTimeline({ histories, userNames }: { histories: ApprovalH
 						{[item.actor?.fullName ?? t("approval.detail.system"), item.nodeName, dayjs(item.createdAt).format(DATE_TIME_FORMAT)].filter(Boolean).join(" · ")}
 					</Text>
 					{(from || to) && <Text className="text-xs">{[from, to].filter(Boolean).join(" → ")}</Text>}
+					{changes.length > 0 && (
+						<ul className="m-0 flex list-none flex-col gap-0.5 p-0 text-[13px]">
+							{changes.map((change) => {
+								const row = describeChange(change, formSchema, t);
+								return (
+									<li key={change.field} className="whitespace-pre-wrap">
+										<Text type="secondary">{`${row.label}: `}</Text>
+										<Text delete type="secondary">{row.from}</Text>
+										<Text type="secondary">{" → "}</Text>
+										<Text strong>{row.to}</Text>
+									</li>
+								);
+							})}
+						</ul>
+					)}
+					{files.length > 0 && (
+						<ul className="m-0 flex list-none flex-col gap-0.5 p-0 text-[13px]">
+							{files.map(file => (
+								<li key={file.id}>
+									<Text delete={item.action === ApprovalHistoryAction.FileRemove}>{file.filename}</Text>
+									<Text type="secondary">{` · ${t(`approval.files.${file.block}`)}`}</Text>
+								</li>
+							))}
+						</ul>
+					)}
 					{item.comment && (
 						<div className="mt-1 px-2 py-1 rounded text-[13px] whitespace-pre-wrap" style={{ background: token.colorFillTertiary }}>
 							{item.comment}
@@ -80,7 +163,21 @@ export function HistoryTimeline({ histories, userNames }: { histories: ApprovalH
 		};
 	});
 
-	if (!items.length)
+	// Chỉ hiện bộ lọc khi phiếu có dòng chỉnh sửa / tệp, tránh thêm nhiễu cho phiếu chỉ có luồng duyệt
+	const hasEdits = histories.some(item => !matchesFilter(item.action, HistoryFilter.Approval));
+	if (!histories.length)
 		return <Text type="secondary">{t("approval.detail.notSubmitted")}</Text>;
-	return <Timeline items={items} />;
+	return (
+		<div className="flex flex-col gap-4">
+			{hasEdits && (
+				<Segmented
+					className="self-start"
+					value={filter}
+					onChange={setFilter}
+					options={Object.values(HistoryFilter).map(value => ({ value, label: t(`approval.history.filter.${value}`) }))}
+				/>
+			)}
+			{items.length ? <Timeline items={items} /> : <Text type="secondary">{t("common.noData")}</Text>}
+		</div>
+	);
 }

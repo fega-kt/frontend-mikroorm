@@ -13,10 +13,12 @@ type BlockKey = keyof AttachmentConfig;
 interface AttachmentConfigTabProps {
 	value: AttachmentConfig
 	onChange: (value: AttachmentConfig) => void
+	/** Xem phiên bản cũ: khóa mọi ô nhập. Phải truyền xuống từng ô vì ô đã có `disabled` tường minh nên không nhận khóa chung của ConfigProvider */
+	readOnly?: boolean
 }
 
 /** Cấu hình 2 khối tệp (Văn bản tờ trình, Tài liệu đính kèm) của loại tờ trình + xem trước phía người tạo */
-export function AttachmentConfigTab({ value, onChange }: AttachmentConfigTabProps) {
+export function AttachmentConfigTab({ value, onChange, readOnly }: AttachmentConfigTabProps) {
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
 
@@ -24,7 +26,7 @@ export function AttachmentConfigTab({ value, onChange }: AttachmentConfigTabProp
 
 	const renderBlock = (block: BlockKey) => {
 		const config = value[block];
-		const disabled = !config.enabled;
+		const disabled = !!readOnly || !config.enabled;
 		return (
 			<SectionCard
 				key={block}
@@ -33,7 +35,7 @@ export function AttachmentConfigTab({ value, onChange }: AttachmentConfigTabProp
 				extra={(
 					<label className="flex cursor-pointer items-center gap-2">
 						<span className="text-[13px]" style={{ color: token.colorTextSecondary }}>{t("approval.attachmentConfig.enabled")}</span>
-						<Switch checked={config.enabled} onChange={enabled => update(block, { enabled })} />
+						<Switch disabled={readOnly} checked={config.enabled} onChange={enabled => update(block, { enabled })} />
 					</label>
 				)}
 			>

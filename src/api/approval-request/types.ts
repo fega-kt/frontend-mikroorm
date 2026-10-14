@@ -42,6 +42,10 @@ export enum ApprovalHistoryAction {
 	Remind = "remind",
 	Notify = "notify",
 	Complete = "complete",
+	Create = "create",
+	Update = "update",
+	FileAdd = "file_add",
+	FileRemove = "file_remove",
 }
 
 export interface UserBrief {
@@ -120,6 +124,20 @@ export interface ApprovalTaskItem {
 	escalatedAt?: string
 	actedAt?: string
 	createdAt: string
+}
+
+/** data.changes của dòng "update": field là khóa kỹ thuật (title, priority, department, payload.<key>) — nhãn tra theo formSchema / ngôn ngữ người xem */
+export interface HistoryFieldChange {
+	field: string
+	from: unknown
+	to: unknown
+}
+
+/** data.files của dòng "file_add" / "file_remove" */
+export interface HistoryFileItem {
+	id: string
+	filename: string
+	block: "documents" | "attachments"
 }
 
 export interface ApprovalHistoryItem {

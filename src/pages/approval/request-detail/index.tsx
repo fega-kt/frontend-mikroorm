@@ -1,4 +1,4 @@
-import type { ApprovalRequestDetail, ApprovalTaskItem } from "#src/api/approval-request";
+import type { ApprovalTaskItem } from "#src/api/approval-request";
 import type { ApprovalActionType } from "#src/api/approval-task";
 import type { FileViewTarget } from "#src/components/file-viewer";
 import type { ReactNode } from "react";
@@ -33,17 +33,20 @@ import {
 	StopOutlined,
 	TeamOutlined,
 } from "@ant-design/icons";
-import { Alert, Button, Descriptions, Empty, Input, Modal, Popconfirm, Result, Skeleton, Space, Tabs, Tag, Typography } from "antd";
+import { useRequest } from "ahooks";
+import { Alert, Button, Descriptions, Empty, Input, Modal, Popconfirm, Result, Space, Tabs, Tag, Typography } from "antd";
 import dayjs from "dayjs";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import { ActionModal } from "../components/action-modal";
 import { PayloadDescriptions } from "../components/form-fields";
+import { RequestDetailSkeleton } from "../components/page-skeleton";
 import { PriorityTag, RequestStatusTag } from "../components/status-tag";
 import { fileListSummary } from "../lib/files";
 import { DATE_TIME_FORMAT } from "../lib/payload";
 import { collectUserNames, computeNodeStatus } from "../lib/progress";
+import ApprovalRequestForm from "../request-form";
 import { HistoryTimeline } from "./components/history-timeline";
 import { RequestFileList } from "./components/request-file-list";
 import { ReviewProgress } from "./components/review-progress";
@@ -78,11 +81,16 @@ export default function ApprovalRequestDetailPage() {
 	const { id } = useParams<{ id: string }>();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const actionModalRef = useRef<ActionModalRef>(null);
-	const [detail, setDetail] = useState<ApprovalRequestDetail>();
+	// Cache theo id: quay lại tab là có dữ liệu ngay, bản mới tải ngầm rồi cập nhật (chỉ lần đầu mới có skeleton)
+	const { data: detail, error: loadError, refreshAsync } = useRequest(
+		() => approvalRequestService.fetchDetail(id!),
+		{ ready: !!id, refreshDeps: [id], cacheKey: `approval-request-${id}`, staleTime: 5000 },
+	);
 	// Tờ trình nháp chưa có quy trình thì không có tab sơ đồ
 	const hasDefinition = !!detail?.definition;
 	const activeTab = Object.values(DetailTab).find(key => key === searchParams.get("tab") && (key !== DetailTab.Progress || hasDefinition)) ?? DetailTab.Info;
-	const [error, setError] = useState(false);
+	// Chỉ báo không tìm thấy khi chưa có dữ liệu nào; làm mới ngầm lỗi thì giữ bản đang hiện
+	const error = !!loadError && !detail;
 	const [busy, setBusy] = useState(false);
 	const [viewing, setViewing] = useState<FileViewTarget | null>(null);
 	const [downloadingId, setDownloadingId] = useState<string | null>(null);
@@ -91,20 +99,13 @@ export default function ApprovalRequestDetailPage() {
 	const [reassignComment, setReassignComment] = useState("");
 
 	const load = useCallback(async () => {
-		if (!id)
-			return;
 		try {
-			setDetail(await approvalRequestService.fetchDetail(id));
-			setError(false);
+			await refreshAsync();
 		}
 		catch {
-			setError(true);
+			// lỗi đã được interceptor hiển thị
 		}
-	}, [id]);
-
-	useEffect(() => {
-		load();
-	}, [load]);
+	}, [refreshAsync]);
 
 	// Giữ tab đang xem trên URL để tải lại / chia sẻ link vẫn đúng tab
 	const changeTab = (key: string) => {
@@ -179,10 +180,28 @@ export default function ApprovalRequestDetailPage() {
 		setDownloadingId(null);
 	};
 
+	// Chế độ sửa nằm ngay trong trang chi tiết nên cùng 1 tab; thoát thì tải lại chi tiết
+	if (searchParams.get("mode") === "edit" && id) {
+		return (
+			<ApprovalRequestForm
+				id={id}
+				initialDetail={detail}
+				onExit={() => {
+					setSearchParams((prev) => {
+						const next = new URLSearchParams(prev);
+						next.delete("mode");
+						return next;
+					}, { replace: true });
+					load();
+				}}
+			/>
+		);
+	}
+
 	if (error)
 		return <Result status="404" subTitle={t("approval.messages.notFound")} extra={<Button onClick={() => navigate(-1)}>{t("approval.actions.back")}</Button>} />;
 	if (!detail)
-		return <BasicContent><Skeleton active paragraph={{ rows: 10 }} /></BasicContent>;
+		return <RequestDetailSkeleton />;
 
 	const { permissions } = detail;
 	const fileCount = detail.documents.length + detail.attachments.length;
@@ -390,7 +409,7 @@ export default function ApprovalRequestDetailPage() {
 							label: tabLabel(<HistoryOutlined />, t("approval.detail.timeline"), detail.histories.length),
 							children: (
 								<SectionCard icon={<HistoryOutlined />} title={t("approval.detail.timeline")}>
-									<HistoryTimeline histories={detail.histories} userNames={{ ...userNames, [detail.requester.id]: detail.requester.fullName }} />
+									<HistoryTimeline histories={detail.histories} formSchema={detail.requestType.formSchema} userNames={{ ...userNames, [detail.requester.id]: detail.requester.fullName }} />
 								</SectionCard>
 							),
 						},

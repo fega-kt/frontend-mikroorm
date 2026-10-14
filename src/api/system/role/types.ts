@@ -54,6 +54,14 @@ export enum PermissionType {
 	UpdateRequestType = "permission:request-type:update",
 	DeleteRequestType = "permission:request-type:delete",
 
+	/** ===== FORM ===== */
+
+	MenuForm = "permission:menu:form",
+	ViewFormDetail = "permission:form:view",
+	CreateForm = "permission:form:create",
+	UpdateForm = "permission:form:update",
+	DeleteForm = "permission:form:delete",
+
 	/** ===== APPROVAL WORKFLOW ===== */
 
 	/** vào menu quy trình phê duyệt (danh sách + thiết kế) */

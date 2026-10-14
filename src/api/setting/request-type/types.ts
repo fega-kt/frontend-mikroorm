@@ -1,6 +1,7 @@
 import type { EntityBase } from "#src/api/entity-base.js";
 import type { SearchParamsBase } from "#src/api/service-base.js";
 import type { CategoryEntity } from "#src/api/setting/category";
+import type { FormOption } from "#src/api/setting/form/types";
 
 export enum RequestTypeStatus {
 	Draft = "draft",
@@ -83,13 +84,41 @@ export interface RequestTypeSearchParams extends SearchParamsBase {
 	status?: RequestTypeStatus
 }
 
+/** Một phiên bản cấu hình của loại tờ trình (danh sách); isCurrent = bản hiện hành */
+export interface RequestTypeVersionBrief {
+	id: string
+	version: number
+	name: string
+	status: RequestTypeStatus
+	form: { id: string, name: string }
+	createdAt: string
+	createdBy: { id: string, fullName: string } | null
+	isCurrent: boolean
+}
+
+export interface RequestTypeVersionDetail {
+	id: string
+	version: number
+	code: string
+	name: string
+	prefix: string
+	status: RequestTypeStatus
+	description?: string | null
+	category: { id: string, name: string }
+	form: { id: string, code: string, name: string }
+	attachmentConfig: AttachmentConfig | null
+	createdAt: string
+	createdBy: { id: string, fullName: string } | null
+}
+
 export interface RequestTypeEntity extends EntityBase {
 	code: string
 	name: string
 	category: CategoryEntity
 	prefix: string
-	description?: string
+	description?: string | null
 	status: RequestTypeStatus
-	formSchema?: FormField[]
+	/** Biểu mẫu loại tờ trình dùng (nhiều loại có thể dùng chung một biểu mẫu) */
+	form: FormOption
 	attachmentConfig?: AttachmentConfig | null
 }

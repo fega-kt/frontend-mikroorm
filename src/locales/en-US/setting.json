@@ -33,6 +33,48 @@
 			"draft": "Draft",
 			"published": "Published",
 			"cancelled": "Cancelled"
+		},
+		"form": "Form",
+		"formHint": "Several request types can share one form. Editing a form only affects requests created afterwards.",
+		"versions": {
+			"title": "Versions",
+			"empty": "No versions yet",
+			"label": "Version {{version}}",
+			"current": "Current",
+			"preview": "View version {{version}}",
+			"createdBy": "Created by",
+			"createdAt": "Time",
+			"disabled": "Not used",
+			"close": "Close",
+			"restore": "Restore",
+			"restoreConfirmTitle": "Restore version {{version}}?",
+			"restoreConfirmContent": "The request type will be updated IMMEDIATELY to match this version and saved as a new version. Old versions are never changed; existing requests keep their own settings.",
+			"restored": "Version {{version}} restored. The request type has been updated."
+		}
+	},
+	"form": {
+		"code": "Form code",
+		"name": "Form name",
+		"description": "Description",
+		"detailTitle": "Form details",
+		"basicInfo": "Basic information",
+		"codePattern": "Code may only contain uppercase letters, digits and underscores",
+		"versions": {
+			"title": "Versions",
+			"empty": "No versions yet",
+			"label": "Version {{version}}",
+			"current": "Current",
+			"fieldCount": "{{count}} fields",
+			"preview": "View version {{version}}",
+			"createdBy": "Created by",
+			"createdAt": "Time",
+			"status": "Status",
+			"noFields": "This version has no fields",
+			"close": "Close",
+			"restore": "Restore to edit",
+			"restoreConfirmTitle": "Restore version {{version}}?",
+			"restoreConfirmContent": "The fields being edited will be replaced with this version. A new version is only created when you click Save; old versions are never changed and existing requests keep their own form.",
+			"restored": "Version {{version}} loaded into the editor. Click Save to apply it to requests created afterwards."
 		}
 	}
 }
