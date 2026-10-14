@@ -1,7 +1,13 @@
 import type { FormField } from "#src/api/setting/request-type/types";
+import type { FormProps } from "antd";
 import type { Dayjs } from "dayjs";
 import { FormFieldType } from "#src/api/setting/request-type/types";
 import dayjs from "dayjs";
+
+/** Bố cục form tờ trình — dùng chung cho form soạn và màn xem nội dung để hai bên luôn giống nhau */
+export const PAYLOAD_FORM_LAYOUT: FormProps["layout"] = "vertical";
+/** Lưới các trường nội dung tờ trình: 2 cột, ô nhiều dòng chiếm cả hàng (tự thêm col-span ở chỗ dùng) */
+export const PAYLOAD_GRID_CLASS = "grid grid-cols-1 gap-x-5 md:grid-cols-2";
 
 export const DATE_FORMAT = "DD/MM/YYYY";
 export const DATE_TIME_FORMAT = "DD/MM/YYYY HH:mm";
