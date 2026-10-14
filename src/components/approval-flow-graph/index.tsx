@@ -9,9 +9,9 @@ import { buildConditionInfo } from "#src/pages/approval/workflow-designer/canvas
 import { flowNodeTypes } from "#src/pages/approval/workflow-designer/canvas/nodes";
 import { layoutGraph } from "#src/pages/approval/workflow-designer/canvas/useAutoLayout";
 import { hasCompleteLayout, toFlow } from "#src/pages/approval/workflow-designer/lib/to-definition";
-import { Background, BackgroundVariant, Controls, MarkerType, ReactFlow, ReactFlowProvider } from "@xyflow/react";
+import { Background, BackgroundVariant, Controls, MarkerType, ReactFlow, ReactFlowProvider, useNodesInitialized, useReactFlow } from "@xyflow/react";
 import { theme } from "antd";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useWorkflowUserNames } from "./user-names";
 import "@xyflow/react/dist/style.css";
 
@@ -40,6 +40,29 @@ function Graph({ definition, nodeStatus, visitedNodeIds, height = 420, userNames
 	const { token } = theme.useToken();
 	const { isDark } = usePreferences();
 	const names = useWorkflowUserNames(definition, userNames);
+	const { fitView } = useReactFlow();
+	const nodesInitialized = useNodesInitialized();
+	const wrapperRef = useRef<HTMLDivElement>(null);
+
+	// `fitView` của ReactFlow chỉ căn một lần lúc khởi tạo, khi khung tab còn đang trượt vào nên kích thước chưa đúng
+	// → sơ đồ lệch / quá nhỏ. Căn lại khi các node đã đo xong và mỗi khi khung đổi kích thước.
+	useEffect(() => {
+		const el = wrapperRef.current;
+		if (!el)
+			return;
+		let frame = 0;
+		const refit = () => {
+			cancelAnimationFrame(frame);
+			frame = requestAnimationFrame(() => fitView({ padding: 0.15, maxZoom: 1 }));
+		};
+		const observer = new ResizeObserver(refit);
+		observer.observe(el);
+		refit();
+		return () => {
+			observer.disconnect();
+			cancelAnimationFrame(frame);
+		};
+	}, [fitView, nodesInitialized, definition]);
 
 	const { nodes, edges } = useMemo(() => {
 		const flow = toFlow(definition);
@@ -87,7 +110,7 @@ function Graph({ definition, nodeStatus, visitedNodeIds, height = 420, userNames
 
 	return (
 		<FlowDisplayContext value={display}>
-			<div className={className} style={{ height, width: "100%" }}>
+			<div ref={wrapperRef} className={className} style={{ height, width: "100%" }}>
 				<ReactFlow<FlowNode, FlowEdge>
 					nodes={nodes}
 					edges={edges}
