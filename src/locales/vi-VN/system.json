@@ -43,6 +43,7 @@
 			"publish": "Xuất bản",
 			"approval-request-all": "Tất cả tờ trình",
 			"reassign": "Gán lại người duyệt",
+			"manage": "Quản lý ủy quyền (tạo hộ, xem / sửa mọi ủy quyền)",
 			"email-template": "Mẫu email",
 			"retry": "Gửi lại"
 		}

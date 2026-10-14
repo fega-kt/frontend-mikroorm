@@ -95,33 +95,53 @@ export function StepEntries({ group, node, names, profiles = {}, canReassign, on
 	const { t } = useTranslation();
 
 	if (group?.tasks.length) {
-		return group.tasks.map(task => (
-			<EntryCard key={task.id}>
-				<PersonRow
-					avatar={<UserAvatar size={28} user={task.approver} />}
-					name={task.approver?.fullName ?? "—"}
-					note={task.originalApprover && t(task.escalatedAt ? "approval.detail.escalatedFrom" : "approval.detail.delegatedFrom", { name: task.originalApprover.fullName })}
-					extra={(
-						<>
-							<TaskStatusTag status={task.status} />
-							{canReassign && onReassign && task.status === ApprovalTaskStatus.Pending && (
-								<Tooltip title={t("approval.actions.reassign")}>
-									<Button size="small" type="link" className="!px-0" icon={<UserSwitchOutlined />} onClick={() => onReassign(task)} />
-								</Tooltip>
-							)}
-						</>
-					)}
-				>
-					{task.actedAt && <Text type="secondary" className="text-xs">{formatTime(task.actedAt)}</Text>}
-					{task.status === ApprovalTaskStatus.Pending && task.dueAt && (
-						<Text type={dayjs(task.dueAt).isBefore(dayjs()) ? "danger" : "secondary"} className="text-xs">
-							{`${t("approval.fields.dueAt")}: ${formatTime(task.dueAt)}`}
-						</Text>
-					)}
-					{task.comment && <Comment>{task.comment}</Comment>}
-				</PersonRow>
-			</EntryCard>
-		));
+		return group.tasks.map((task) => {
+			// Xử lý thay theo ủy quyền: người bấm khác người duyệt → hiện "B · thay A"
+			const onBehalf = !!task.actedBy && !!task.approver && task.actedBy.id !== task.approver.id;
+			const person = onBehalf ? task.actedBy : task.approver;
+			const note = onBehalf
+				? t("approval.detail.delegatedFrom", { name: task.approver?.fullName })
+				: task.originalApprover && t(task.escalatedAt ? "approval.detail.escalatedFrom" : "approval.detail.delegatedFrom", { name: task.originalApprover.fullName });
+			return (
+				<EntryCard key={task.id}>
+					<PersonRow
+						avatar={<UserAvatar size={28} user={person} />}
+						name={person?.fullName ?? "—"}
+						note={note}
+						extra={(
+							<>
+								<TaskStatusTag status={task.status} />
+								{canReassign && onReassign && task.status === ApprovalTaskStatus.Pending && (
+									<Tooltip title={t("approval.actions.reassign")}>
+										<Button size="small" type="link" className="!px-0" icon={<UserSwitchOutlined />} onClick={() => onReassign(task)} />
+									</Tooltip>
+								)}
+							</>
+						)}
+					>
+						{task.actedAt && <Text type="secondary" className="text-xs">{formatTime(task.actedAt)}</Text>}
+						{task.status === ApprovalTaskStatus.Pending && task.dueAt && (
+							<Text type={dayjs(task.dueAt).isBefore(dayjs()) ? "danger" : "secondary"} className="text-xs">
+								{`${t("approval.fields.dueAt")}: ${formatTime(task.dueAt)}`}
+							</Text>
+						)}
+						{/* Người đang được ủy quyền xử lý thay task này */}
+						{!!task.delegates?.length && (
+							<span className="flex flex-wrap items-center gap-1.5 text-xs">
+								<Text type="secondary" className="text-xs">{t("approval.detail.canActOnBehalf")}</Text>
+								{task.delegates.map(user => (
+									<span key={user.id} className="inline-flex items-center gap-1">
+										<UserAvatar size={16} user={user} className="text-[9px]" />
+										<Text className="text-xs">{user.fullName}</Text>
+									</span>
+								))}
+							</span>
+						)}
+						{task.comment && <Comment>{task.comment}</Comment>}
+					</PersonRow>
+				</EntryCard>
+			);
+		});
 	}
 	if (group?.events.length) {
 		return group.events.map(item => (

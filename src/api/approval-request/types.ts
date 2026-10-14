@@ -117,6 +117,8 @@ export interface ApprovalTaskItem {
 	status: ApprovalTaskStatus
 	approver: UserBrief | null
 	originalApprover: UserBrief | null
+	/** Người đang được ủy quyền xử lý thay (chỉ task đang chờ) */
+	delegates?: UserBrief[]
 	actedBy: UserBrief | null
 	comment?: string
 	dueAt?: string

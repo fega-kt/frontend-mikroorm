@@ -1,19 +1,21 @@
-import type { ApprovalDelegationEntity } from "#src/api/approval-delegation";
+import type { ApprovalDelegationEntity, ApprovalDelegationTab } from "#src/api/approval-delegation";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import type { DetailRef } from "./components/detail";
-import { approvalDelegationService } from "#src/api/approval-delegation";
+import { ApprovalDelegationMode, approvalDelegationService } from "#src/api/approval-delegation";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
 import { PeoplePicker } from "#src/components/people-picker";
+import { useAccess } from "#src/hooks/use-access";
+import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Badge, Button, Popconfirm, Segmented, Tooltip, Typography } from "antd";
+import { Badge, Button, Popconfirm, Segmented, Tag, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DATE_TIME_FORMAT } from "../lib/payload";
 import { Detail } from "./components/detail";
 
-type Tab = "mine" | "toMe";
+type Tab = ApprovalDelegationTab;
 
 function delegationState(item: ApprovalDelegationEntity) {
 	const now = dayjs();
@@ -31,6 +33,7 @@ export default function ApprovalDelegations() {
 	const actionRef = useRef<ActionType>(null);
 	const detailRef = useRef<DetailRef>(null);
 	const [tab, setTab] = useState<Tab>("mine");
+	const canManage = useAccess().canAccess(PermissionType.ManageApprovalDelegation);
 
 	const openDetail = async (id?: string) => {
 		const res = await detailRef.current?.show(id);
@@ -48,10 +51,35 @@ export default function ApprovalDelegations() {
 		<PeoplePicker readonly user={user} showEmail={false} />
 	);
 
+	// Người ủy quyền + ghi chú "tạo hộ" khi người tạo khác người ủy quyền (vd: HR tạo cho giám đốc)
+	const fromUserCell = (item: ApprovalDelegationEntity) => (
+		<div className="flex flex-col gap-0.5">
+			{userCell(item.fromUser)}
+			{item.createdBy && item.createdBy.id !== item.fromUser.id && (
+				<Typography.Text type="secondary" className="text-xs">{t("approval.delegation.onBehalf", { name: item.createdBy.fullName })}</Typography.Text>
+			)}
+		</div>
+	);
+	const fromUserColumn: ProColumns<ApprovalDelegationEntity> = { title: t("approval.delegation.fromUser"), dataIndex: "fromUser", width: 220, render: (_, item) => fromUserCell(item) };
+	const toUserColumn: ProColumns<ApprovalDelegationEntity> = { title: t("approval.delegation.toUser"), dataIndex: "toUser", width: 220, render: (_, item) => userCell(item.toUser) };
+	// Tab của tôi: không cần cột người ủy quyền trừ khi có bản được tạo hộ
+	const userColumns = tab === "all" ? [fromUserColumn, toUserColumn] : tab === "mine" ? [toUserColumn] : [fromUserColumn];
+	const editable = tab !== "toMe";
+
 	const columns: ProColumns<ApprovalDelegationEntity>[] = [
-		tab === "mine"
-			? { title: t("approval.delegation.toUser"), dataIndex: "toUser", width: 220, render: (_, item) => userCell(item.toUser) }
-			: { title: t("approval.delegation.fromUser"), dataIndex: "fromUser", width: 220, render: (_, item) => userCell(item.fromUser) },
+		...userColumns,
+		{
+			title: t("approval.delegation.mode"),
+			dataIndex: "mode",
+			width: 130,
+			render: (_, item) => (
+				<Tooltip title={t(`approval.delegation.modeDesc.${item.mode}`)}>
+					<Tag bordered={false} color={item.mode === ApprovalDelegationMode.Handover ? "purple" : "blue"} className="m-0">
+						{t(`approval.delegation.modeShort.${item.mode}`)}
+					</Tag>
+				</Tooltip>
+			),
+		},
 		{
 			title: t("approval.delegation.period"),
 			dataIndex: "startAt",
@@ -74,7 +102,7 @@ export default function ApprovalDelegations() {
 			render: (_, item) => item.requestType?.name ?? <Typography.Text type="secondary">{t("approval.delegation.allTypes")}</Typography.Text>,
 		},
 		{ title: t("approval.delegation.reason"), dataIndex: "reason", ellipsis: true },
-		...(tab === "mine"
+		...(editable
 			? [{
 				title: t("common.action"),
 				valueType: "option",
@@ -121,10 +149,12 @@ export default function ApprovalDelegations() {
 						options={[
 							{ value: "mine", label: t("approval.delegation.mine") },
 							{ value: "toMe", label: t("approval.delegation.toMe") },
+							// Mọi ủy quyền (kể cả tạo hộ) — chỉ người quản lý ủy quyền
+							...(canManage ? [{ value: "all" as const, label: t("approval.delegation.all") }] : []),
 						]}
 					/>
 				)}
-				toolBarRender={() => tab === "mine"
+				toolBarRender={() => editable
 					? [
 						<Button key="add" type="primary" icon={<PlusCircleOutlined />} onClick={() => openDetail()}>
 							{t("approval.delegation.add")}
