@@ -2,6 +2,7 @@ import type { WorkflowDefinition } from "#src/api/approval-workflow/types";
 import type { FormField } from "#src/api/setting/request-type/types";
 import type { FlowDisplay, NodeStatus } from "#src/pages/approval/workflow-designer/canvas/display-context";
 import type { FlowEdge, FlowNode } from "#src/pages/approval/workflow-designer/lib/to-definition";
+import { NodeType } from "#src/api/approval-workflow/types";
 import { usePreferences } from "#src/hooks/use-preferences";
 import { FlowDisplayContext } from "#src/pages/approval/workflow-designer/canvas/display-context";
 import { flowEdgeTypes } from "#src/pages/approval/workflow-designer/canvas/edges";
@@ -29,14 +30,19 @@ export interface ApprovalFlowGraphProps {
 	/** formSchema của loại đơn — để hiển thị nhãn trường trong điều kiện (tùy chọn) */
 	fields?: FormField[]
 	className?: string
+	/** Bấm vào bước duyệt / song song / thông báo (vd: xem chi tiết bước) */
+	onNodeClick?: (nodeId: string) => void
 }
+
+/** Loại node bấm được để xem chi tiết; điểm bắt đầu / kết thúc / rẽ nhánh không có gì để xem */
+const CLICKABLE_TYPES = new Set<string>([NodeType.Approval, NodeType.Parallel, NodeType.Notify]);
 
 /** Lớp các cạnh nối hai node đã đi qua */
 function visitedEdgeIds(edges: FlowEdge[], visited: Set<string>): Set<string> {
 	return new Set(edges.filter(e => visited.has(e.source) && visited.has(e.target)).map(e => e.id));
 }
 
-function Graph({ definition, nodeStatus, visitedNodeIds, height = 420, userNames, fields, className }: ApprovalFlowGraphProps) {
+function Graph({ definition, nodeStatus, visitedNodeIds, height = 420, userNames, fields, className, onNodeClick }: ApprovalFlowGraphProps) {
 	const { token } = theme.useToken();
 	const { isDark } = usePreferences();
 	const names = useWorkflowUserNames(definition, userNames);
@@ -64,6 +70,7 @@ function Graph({ definition, nodeStatus, visitedNodeIds, height = 420, userNames
 		};
 	}, [fitView, nodesInitialized, definition]);
 
+	const clickable = !!onNodeClick;
 	const { nodes, edges } = useMemo(() => {
 		const flow = toFlow(definition);
 		if (!hasCompleteLayout(definition)) {
@@ -77,9 +84,11 @@ function Graph({ definition, nodeStatus, visitedNodeIds, height = 420, userNames
 			n.draggable = false;
 			n.connectable = false;
 			n.selectable = false;
+			if (clickable && CLICKABLE_TYPES.has(n.type ?? ""))
+				n.style = { ...n.style, cursor: "pointer" };
 		});
 		return flow as { nodes: FlowNode[], edges: FlowEdge[] };
-	}, [definition]);
+	}, [definition, clickable]);
 
 	const display = useMemo<FlowDisplay>(() => {
 		const tracking = !!nodeStatus || !!visitedNodeIds;
@@ -120,6 +129,7 @@ function Graph({ definition, nodeStatus, visitedNodeIds, height = 420, userNames
 					nodesConnectable={false}
 					elementsSelectable={false}
 					deleteKeyCode={null}
+					onNodeClick={onNodeClick && ((_, node) => CLICKABLE_TYPES.has(node.type ?? "") && onNodeClick(node.id))}
 					defaultEdgeOptions={{ markerEnd: { type: MarkerType.ArrowClosed, width: 16, height: 16 } }}
 					colorMode={isDark ? "dark" : "light"}
 					fitView
