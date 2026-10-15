@@ -13,31 +13,20 @@ import { FileViewer } from "#src/components/file-viewer";
 import { PeoplePicker } from "#src/components/people-picker";
 import { SectionCard } from "#src/components/section-card";
 import { UserAvatar } from "#src/components/user-avatar";
-import { useAccess } from "#src/hooks/use-access";
-import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
-import { ApprovalPath, approvalRequestPath } from "#src/router/extra-info";
+import { ApprovalPath } from "#src/router/extra-info";
 import {
 	ArrowLeftOutlined,
 	ArrowRightOutlined,
 	BranchesOutlined,
-	CheckOutlined,
-	CloseOutlined,
-	DeleteOutlined,
-	EditOutlined,
 	FileTextOutlined,
 	HistoryOutlined,
-	MailOutlined,
 	NodeIndexOutlined,
 	PaperClipOutlined,
 	ProfileOutlined,
-	ReloadOutlined,
-	RollbackOutlined,
-	SendOutlined,
 	ShareAltOutlined,
-	StopOutlined,
 } from "@ant-design/icons";
 import { useRequest } from "ahooks";
-import { Alert, Badge, Button, Descriptions, Empty, Input, Modal, Popconfirm, Result, Space, Tabs, Tag, Tooltip, Typography } from "antd";
+import { Alert, Badge, Button, Descriptions, Empty, Input, Modal, Result, Space, Tabs, Tag, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -52,6 +41,7 @@ import { collectUserNames } from "../lib/progress";
 import { buildRounds } from "../lib/rounds";
 import ApprovalRequestForm from "../request-form";
 import { HistoryTimeline } from "./components/history-timeline";
+import { RequestActions } from "./components/request-actions";
 import { RequestFileList } from "./components/request-file-list";
 import { RoundMeta } from "./components/round-meta";
 import { RoundTimeline } from "./components/round-timeline";
@@ -93,7 +83,6 @@ const ROUND_BADGE: Record<ApprovalRequestStatus, BadgeProps["status"]> = {
 export default function ApprovalRequestDetailPage() {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const canViewMailQueue = useAccess().canAccess(PermissionType.ViewActivityLogQueue);
 	const { id } = useParams<{ id: string }>();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const actionModalRef = useRef<ActionModalRef>(null);
@@ -268,40 +257,16 @@ export default function ApprovalRequestDetailPage() {
 							</div>
 						</div>
 					</div>
-					<Space wrap>
-						<Button icon={<ReloadOutlined />} onClick={load} disabled={busy} />
-						{canViewMailQueue && (
-							<Button icon={<MailOutlined />} onClick={() => navigate(`/activity-log/mail-queue?refId=${detail.id}`)}>{t("approval.actions.viewEmails")}</Button>
-						)}
-						{permissions.canShare && (
-							<Button icon={<ShareAltOutlined />} disabled={busy} onClick={() => setShareOpen(true)}>{t("approval.actions.share")}</Button>
-						)}
-						{permissions.canEdit && (
-							<Button icon={<EditOutlined />} onClick={() => navigate(approvalRequestPath.edit(detail.id))}>{t("approval.actions.edit")}</Button>
-						)}
-						{permissions.canDelete && (
-							<Popconfirm title={t("approval.messages.confirmDelete")} onConfirm={remove} okText={t("common.confirm")} cancelText={t("common.cancel")}>
-								<Button danger icon={<DeleteOutlined />}>{t("approval.actions.delete")}</Button>
-							</Popconfirm>
-						)}
-						{permissions.canCancel && detail.status !== ApprovalRequestStatus.Draft && (
-							<Button icon={<StopOutlined />} disabled={busy} onClick={cancel}>{t("approval.actions.cancel")}</Button>
-						)}
-						{permissions.canSubmit && (
-							<Button type="primary" icon={<SendOutlined />} loading={busy} onClick={submit}>
-								{t(detail.status === ApprovalRequestStatus.Returned ? "approval.actions.resubmit" : "approval.actions.submit")}
-							</Button>
-						)}
-						{permissions.canReturn && (
-							<Button icon={<RollbackOutlined />} disabled={busy} onClick={() => act("return")}>{t("approval.actions.return")}</Button>
-						)}
-						{permissions.canReject && (
-							<Button danger icon={<CloseOutlined />} disabled={busy} onClick={() => act("reject")}>{t("approval.actions.reject")}</Button>
-						)}
-						{permissions.canApprove && (
-							<Button type="primary" icon={<CheckOutlined />} loading={busy} onClick={() => act("approve")}>{t("approval.actions.approve")}</Button>
-						)}
-					</Space>
+					<RequestActions
+						detail={detail}
+						busy={busy}
+						onReload={load}
+						onAct={act}
+						onSubmit={submit}
+						onCancel={cancel}
+						onDelete={remove}
+						onShare={() => setShareOpen(true)}
+					/>
 				</div>
 
 				{permissions.canApprove && permissions.isParallel && <Alert type="info" showIcon message={t("approval.detail.waitingParallel")} />}
