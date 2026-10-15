@@ -1,4 +1,4 @@
-import type { EmailTemplate, EmailTemplatePayload, EmailTemplatePreview, TemplateVariable } from "./types";
+import type { EmailBrand, EmailTemplate, EmailTemplateCategory, EmailTemplatePayload, EmailTemplatePreview, TemplateVariable } from "./types";
 import { ApiService, CrudServiceBase } from "../service-base";
 
 export * from "./types";
@@ -17,11 +17,21 @@ export class EmailTemplateService extends CrudServiceBase<EmailTemplate> {
 	}
 
 	fetchVariables() {
-		return this.get<TemplateVariable[]>("variables", { ignoreLoading: true });
+		return this.get<Record<EmailTemplateCategory, TemplateVariable[]>>("variables", { ignoreLoading: true });
 	}
 
-	fetchPreview(data: { subject: string, body: string }) {
+	/** `code`: mẫu đang sửa — chọn dữ liệu mẫu theo nhóm; bỏ trống = mẫu tùy chỉnh */
+	fetchPreview(data: { subject: string, body: string, code?: string }) {
 		return this.post<EmailTemplatePreview>("preview", { json: data as never, ignoreLoading: true });
+	}
+
+	fetchBrand() {
+		return this.get<EmailBrand>("brand", { ignoreLoading: true });
+	}
+
+	/** Nội dung khởi đầu khi tạo mẫu tùy chỉnh */
+	fetchStarter() {
+		return this.get<{ body: string }>("starter", { ignoreLoading: true });
 	}
 
 	fetchCreate(data: EmailTemplatePayload & { code: string }) {

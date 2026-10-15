@@ -87,26 +87,6 @@
 		"keyRequired": "请选择配置项",
 		"noAvailableKeys": "所有配置项均已设置",
 		"keys": {
-			"mail_template_password_changed": {
-				"label": "邮件模板：修改密码",
-				"hint": "用户修改密码时发送的 Resend 模板 ID"
-			},
-			"mail_template_forgot_password_otp": {
-				"label": "邮件模板：忘记密码验证码",
-				"hint": "忘记密码时发送验证码的 Resend 模板 ID"
-			},
-			"mail_template_new_password": {
-				"label": "邮件模板：新密码",
-				"hint": "向用户发送新密码的 Resend 模板 ID"
-			},
-			"mail_template_account_created": {
-				"label": "邮件模板：账号创建",
-				"hint": "账号创建时发送的 Resend 模板 ID"
-			},
-			"mail_template_login_otp": {
-				"label": "邮件模板：登录验证码",
-				"hint": "登录时发送验证码的 Resend 模板 ID"
-			},
 			"inactive_days_threshold": {
 				"label": "未活跃天数阈值",
 				"hint": "超过该天数未登录则发送提醒邮件，未配置时默认 7 天"
@@ -114,10 +94,6 @@
 			"inactive_email_allowed_list": {
 				"label": "提醒邮件白名单",
 				"hint": "仅白名单中的邮箱会收到提醒邮件，留空则不发送"
-			},
-			"mail_template_inactive_reminder": {
-				"label": "邮件模板：未活跃提醒",
-				"hint": "发送给长期未登录用户的 Resend 模板 ID"
 			},
 			"content_focus_outline_enabled": {
 				"label": "内容区域边框",
