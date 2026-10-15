@@ -87,26 +87,6 @@
 		"keyRequired": "Vui lòng chọn cấu hình",
 		"noAvailableKeys": "Tất cả cấu hình đã được thiết lập",
 		"keys": {
-			"mail_template_password_changed": {
-				"label": "Mẫu email: đổi mật khẩu",
-				"hint": "ID template Resend gửi khi người dùng đổi mật khẩu"
-			},
-			"mail_template_forgot_password_otp": {
-				"label": "Mẫu email: OTP quên mật khẩu",
-				"hint": "ID template Resend gửi mã OTP khi quên mật khẩu"
-			},
-			"mail_template_new_password": {
-				"label": "Mẫu email: mật khẩu mới",
-				"hint": "ID template Resend gửi mật khẩu mới cho người dùng"
-			},
-			"mail_template_account_created": {
-				"label": "Mẫu email: tạo tài khoản",
-				"hint": "ID template Resend gửi khi tài khoản được tạo"
-			},
-			"mail_template_login_otp": {
-				"label": "Mẫu email: OTP đăng nhập",
-				"hint": "ID template Resend gửi mã OTP khi đăng nhập"
-			},
 			"inactive_days_threshold": {
 				"label": "Số ngày không hoạt động",
 				"hint": "Số ngày không đăng nhập trước khi gửi email nhắc nhở. Mặc định 7 ngày nếu chưa cấu hình"
@@ -114,10 +94,6 @@
 			"inactive_email_allowed_list": {
 				"label": "Danh sách email nhận nhắc nhở",
 				"hint": "Chỉ các email trong danh sách mới nhận email nhắc nhở. Để trống thì không gửi cho ai"
-			},
-			"mail_template_inactive_reminder": {
-				"label": "Mẫu email: nhắc nhở không hoạt động",
-				"hint": "ID template Resend gửi cho người dùng lâu không đăng nhập"
 			},
 			"content_focus_outline_enabled": {
 				"label": "Viền khung vùng nội dung",

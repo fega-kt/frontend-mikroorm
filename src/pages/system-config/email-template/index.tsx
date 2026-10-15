@@ -1,7 +1,7 @@
-import type { EmailTemplate } from "#src/api/email-template";
+import type { EmailTemplate, EmailTemplateCategory } from "#src/api/email-template";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import type { DetailRef } from "./components/detail";
-import { emailTemplateService } from "#src/api/email-template";
+import { EMAIL_TEMPLATE_CATEGORIES, emailTemplateService } from "#src/api/email-template";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
 import { useAccess } from "#src/hooks/use-access";
@@ -13,7 +13,11 @@ import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Detail } from "./components/detail";
 
-/** Mẫu email — mẫu hệ thống (gắn với sự kiện tờ trình) + mẫu tùy chỉnh cho bước Thông báo */
+const CATEGORY_COLOR: Record<EmailTemplateCategory, string> = { approval: "blue", auth: "purple", system: "cyan", custom: "default" };
+
+/**
+ * Mẫu email — mẫu hệ thống (sự kiện tờ trình; đăng nhập, mật khẩu; nhắc nhở) + mẫu tùy chỉnh cho bước Thông báo
+ */
 export default function EmailTemplates() {
 	const { t } = useTranslation();
 	const { canAccess } = useAccess();
@@ -47,11 +51,13 @@ export default function EmailTemplates() {
 		},
 		{
 			title: t("approval.emailTemplate.type"),
-			dataIndex: "system",
-			width: 170,
+			dataIndex: "category",
+			width: 190,
+			filters: EMAIL_TEMPLATE_CATEGORIES.map(value => ({ value, text: t(`approval.emailTemplate.category.${value}`) })),
+			onFilter: (value, item) => item.category === value,
 			render: (_, item) => (
 				<Space size={4} wrap>
-					<Tag color={item.system ? "blue" : "default"} className="m-0">{t(item.system ? "approval.emailTemplate.system" : "approval.emailTemplate.custom")}</Tag>
+					<Tag color={CATEGORY_COLOR[item.category]} className="m-0">{t(`approval.emailTemplate.category.${item.category}`)}</Tag>
 					{item.system && item.customized && <Tag color="orange" className="m-0">{t("approval.emailTemplate.customized")}</Tag>}
 				</Space>
 			),
