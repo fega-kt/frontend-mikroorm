@@ -29,6 +29,20 @@ export interface PresignedUpload {
 	/** Header bắt buộc gửi kèm khi PUT (đã được ký) */
 	headers: Record<string, string>
 	expiresAt: string
+	/** Có khi file lớn: upload theo từng phần (uploadUrl/headers bỏ trống), xong gửi uploadId + ETag từng phần */
+	multipart?: MultipartUpload
+}
+
+export interface MultipartUpload {
+	uploadId: string
+	/** Dung lượng mỗi phần (phần cuối có thể nhỏ hơn) */
+	partSize: number
+	parts: { partNumber: number, url: string }[]
+}
+
+export interface UploadedPart {
+	partNumber: number
+	etag: string
 }
 
 export interface UploadAttachmentParams {
