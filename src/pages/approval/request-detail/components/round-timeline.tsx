@@ -33,10 +33,10 @@ const OUTCOME_PROGRESS: Partial<Record<ApprovalRequestStatus, NodeProgress>> = {
 const formatTime = (value: string) => dayjs(value).format(DATE_TIME_FORMAT);
 
 /** Ô nội dung một lượt xử lý trong bước */
-function EntryCard({ children }: { children: ReactNode }) {
+function EntryCard({ children, compact }: { children: ReactNode, compact?: boolean }) {
 	const { token } = theme.useToken();
 	return (
-		<div className="flex flex-col gap-1 rounded-md px-2.5 py-2" style={{ background: token.colorFillQuaternary }}>
+		<div className={compact ? "flex flex-col gap-0.5 rounded-md px-2 py-1.5" : "flex flex-col gap-1 rounded-md px-2.5 py-2"} style={{ background: token.colorFillQuaternary }}>
 			{children}
 		</div>
 	);
@@ -60,15 +60,17 @@ interface PersonRowProps {
 	/** Phía phải dòng tên: trạng thái, nút thao tác */
 	extra?: ReactNode
 	children?: ReactNode
+	/** Gọn: dòng tên thấp hơn, khoảng cách hẹp (thẻ quy trình thu gọn) */
+	compact?: boolean
 }
 
 /** Avatar + tên người xử lý, các dòng chi tiết thụt vào thẳng hàng với tên */
-function PersonRow({ avatar, name, note, extra, children }: PersonRowProps) {
+function PersonRow({ avatar, name, note, extra, children, compact }: PersonRowProps) {
 	return (
-		<div className="flex items-start gap-2.5">
+		<div className={compact ? "flex items-start gap-2" : "flex items-start gap-2.5"}>
 			{avatar}
 			<div className="flex min-w-0 flex-1 flex-col gap-0.5">
-				<div className="flex min-h-7 flex-wrap items-center gap-x-2 gap-y-1">
+				<div className={compact ? "flex min-h-[22px] flex-wrap items-center gap-x-2 gap-y-0.5" : "flex min-h-7 flex-wrap items-center gap-x-2 gap-y-1"}>
 					<Text strong className="text-[13px]">{name}</Text>
 					{note && <Text type="secondary" className="text-xs">{note}</Text>}
 					{extra && <span className="ml-auto flex items-center gap-1">{extra}</span>}
@@ -89,11 +91,14 @@ interface StepEntriesProps {
 	profiles?: Record<string, ApproverProfile>
 	canReassign?: boolean
 	onReassign?: (task: ApprovalTaskItem) => void
+	/** Hiển thị gọn (avatar nhỏ, khoảng cách hẹp) cho thẻ quy trình thu gọn */
+	compact?: boolean
 }
 
 /** Các lượt xử lý của một bước: người duyệt, kết quả, thời gian, ý kiến / lý do */
-export function StepEntries({ group, node, names, profiles = {}, canReassign, onReassign }: StepEntriesProps) {
+export function StepEntries({ group, node, names, profiles = {}, canReassign, onReassign, compact }: StepEntriesProps) {
 	const { t } = useTranslation();
+	const avatarSize = compact ? 22 : 28;
 
 	if (group?.tasks.length) {
 		return group.tasks.map((task) => {
@@ -119,8 +124,8 @@ export function StepEntries({ group, node, names, profiles = {}, canReassign, on
 				<EntryCard key={task.id}>
 					<PersonRow
 						avatar={person
-							? <UserAvatar size={28} user={person} />
-							: <UserAvatar size={28} user={{ id: task.approver.id }} fallbackIcon={<TeamOutlined />} />}
+							? <UserAvatar size={avatarSize} user={person} />
+							: <UserAvatar size={avatarSize} user={{ id: task.approver.id }} fallbackIcon={<TeamOutlined />} />}
 						name={person?.fullName ?? task.approver.name}
 						note={note}
 						extra={(
@@ -160,7 +165,7 @@ export function StepEntries({ group, node, names, profiles = {}, canReassign, on
 	}
 	if (group?.events.length) {
 		return group.events.map(item => (
-			<EntryCard key={item.id}>
+			<EntryCard key={item.id} compact={compact}>
 				<Text className="text-[13px]">
 					{t(`approval.history.${item.action}`)}
 					{item.action === ApprovalHistoryAction.Skip && typeof item.data?.reason === "string" && ` (${t(`approval.skipReason.${item.data.reason}`)})`}
@@ -184,8 +189,8 @@ export function StepEntries({ group, node, names, profiles = {}, canReassign, on
 		const refId = approver?.type === ApproverType.SpecificUser ? approver.userId : approver?.type === ApproverType.Principal ? approver.principalId : undefined;
 		const profile = refId ? profiles[refId] : undefined;
 		const avatar = refId && !profile?.isGroup
-			? <UserAvatar size={28} user={{ id: profile?.userId ?? refId, fullName: label, avatar: profile?.avatar }} />
-			: <UserAvatar size={28} user={{ id: refId ?? approver?.type }} fallbackIcon={profile?.isGroup ? <TeamOutlined /> : <UserOutlined />} />;
+			? <UserAvatar size={avatarSize} user={{ id: profile?.userId ?? refId, fullName: label, avatar: profile?.avatar }} />
+			: <UserAvatar size={avatarSize} user={{ id: refId ?? approver?.type }} fallbackIcon={profile?.isGroup ? <TeamOutlined /> : <UserOutlined />} />;
 		return (
 			// eslint-disable-next-line react/no-array-index-key -- người duyệt của bước không có id riêng, thứ tự cố định
 			<EntryCard key={index}>
@@ -230,7 +235,7 @@ export function RoundTimeline({ round, totalRounds, definition, userNames, canRe
 
 	const stepLabel = (name: string, status: NodeProgress) => (
 		<span
-			className="self-start rounded px-2 py-0.5 text-[13px] font-medium"
+			className="self-start rounded px-1.5 text-xs font-medium leading-5"
 			style={status === "pending" ? { background: token.colorFillSecondary, color: token.colorTextSecondary } : { background: visual[status].color, color: token.colorWhite }}
 		>
 			{name}
@@ -246,8 +251,8 @@ export function RoundTimeline({ round, totalRounds, definition, userNames, canRe
 			key: "submit",
 			color: token.colorPrimary,
 			children: (
-				<div className="pb-1">
-					<PersonRow avatar={<UserAvatar size={28} user={round.submittedBy} />} name={round.submittedBy?.fullName ?? "—"}>
+				<div className="pb-0">
+					<PersonRow compact avatar={<UserAvatar size={22} user={round.submittedBy} />} name={round.submittedBy?.fullName ?? "—"}>
 						<Text type="secondary" className="text-xs">
 							<span style={{ color: token.colorPrimary }}>{t(round.round > 1 ? "approval.detail.resubmittedAt" : "approval.detail.submittedAt")}</span>
 							{round.submittedAt && ` ${formatTime(round.submittedAt)}`}
@@ -262,9 +267,9 @@ export function RoundTimeline({ round, totalRounds, definition, userNames, canRe
 				key: group.nodeId,
 				color: visual[status].color,
 				children: (
-					<div className="flex flex-col gap-1.5 pb-1">
+					<div className="flex flex-col gap-1 pb-0">
 						{stepLabel(group.name, status)}
-						<StepEntries group={group} names={names} canReassign={canReassign} onReassign={onReassign} />
+						<StepEntries compact group={group} names={names} canReassign={canReassign} onReassign={onReassign} />
 					</div>
 				),
 			};
@@ -273,9 +278,9 @@ export function RoundTimeline({ round, totalRounds, definition, userNames, canRe
 			key: node.id,
 			color: token.colorTextQuaternary,
 			children: (
-				<div className="flex flex-col gap-1.5 pb-1">
+				<div className="flex flex-col gap-1 pb-0">
 					{stepLabel(nodeTitle(node, t), "pending")}
-					<StepEntries node={node} names={names} profiles={profiles} />
+					<StepEntries compact node={node} names={names} profiles={profiles} />
 				</div>
 			),
 		})),
@@ -284,10 +289,11 @@ export function RoundTimeline({ round, totalRounds, definition, userNames, canRe
 				key: "end",
 				color: endColor,
 				children: (
-					<div className="pb-1">
+					<div className="pb-0">
 						<PersonRow
+							compact
 							// Hoàn tất do hệ thống ghi nhận nên không có người thực hiện
-							avatar={end.actor ? <UserAvatar size={28} user={end.actor} /> : <UserAvatar size={28} fallbackIcon={<CheckOutlined />} style={{ background: endColor }} />}
+							avatar={end.actor ? <UserAvatar size={22} user={end.actor} /> : <UserAvatar size={22} fallbackIcon={<CheckOutlined />} style={{ background: endColor }} />}
 							name={end.actor?.fullName ?? t("approval.detail.system")}
 						>
 							<Text type="secondary" className="text-xs">
@@ -303,14 +309,14 @@ export function RoundTimeline({ round, totalRounds, definition, userNames, canRe
 	];
 
 	return (
-		<div className="flex flex-col gap-3">
+		<div className="flex flex-col gap-2">
 			<div className="flex items-center justify-between gap-2">
 				{totalRounds > 1
 					? <Tag color="blue" bordered={false} className="m-0 font-medium">{t("approval.detail.roundOf", { n: round.round, total: totalRounds })}</Tag>
 					: <Text type="secondary" className="text-xs">{t("approval.detail.round", { n: round.round })}</Text>}
 				<RequestStatusTag status={round.outcome} />
 			</div>
-			<Timeline items={items} />
+			<Timeline className="[&_.ant-timeline-item]:!pb-3 [&_.ant-timeline-item-last]:!pb-0" items={items} />
 		</div>
 	);
 }

@@ -51,5 +51,10 @@
 		"title": "Một bước của tờ trình đã được duyệt",
 		"message": "Bước {{step}} của tờ trình {{code}} {{title}} đã được duyệt.",
 		"message_withMessage": "Bước {{step}} của tờ trình {{code}} {{title}} đã được duyệt. Nội dung: “{{message}}”"
+	},
+	"APPROVAL_SHARED": {
+		"title": "Tờ trình được chia sẻ với bạn",
+		"message": "Tờ trình {{code}} {{title}} được chia sẻ với bạn.",
+		"message_withMessage": "Tờ trình {{code}} {{title}} được chia sẻ với bạn. Lời nhắn: “{{message}}”"
 	}
 }

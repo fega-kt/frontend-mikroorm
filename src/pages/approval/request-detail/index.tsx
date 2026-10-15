@@ -1,4 +1,4 @@
-import type { ApprovalTaskItem } from "#src/api/approval-request";
+import type { ApprovalShareItem, ApprovalTaskItem } from "#src/api/approval-request";
 import type { ApprovalActionType } from "#src/api/approval-task";
 import type { FileViewTarget } from "#src/components/file-viewer";
 import type { BadgeProps } from "antd";
@@ -33,10 +33,11 @@ import {
 	ReloadOutlined,
 	RollbackOutlined,
 	SendOutlined,
+	ShareAltOutlined,
 	StopOutlined,
 } from "@ant-design/icons";
 import { useRequest } from "ahooks";
-import { Alert, Badge, Button, Descriptions, Empty, Input, Modal, Popconfirm, Result, Space, Tabs, Tag, Typography } from "antd";
+import { Alert, Badge, Button, Descriptions, Empty, Input, Modal, Popconfirm, Result, Space, Tabs, Tag, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -54,6 +55,7 @@ import { HistoryTimeline } from "./components/history-timeline";
 import { RequestFileList } from "./components/request-file-list";
 import { RoundMeta } from "./components/round-meta";
 import { RoundTimeline } from "./components/round-timeline";
+import { ShareCount, ShareList, ShareModal } from "./components/share";
 import { StepDetailDrawer } from "./components/step-detail-drawer";
 
 const { Text, Title } = Typography;
@@ -106,6 +108,7 @@ export default function ApprovalRequestDetailPage() {
 	// Chỉ báo không tìm thấy khi chưa có dữ liệu nào; làm mới ngầm lỗi thì giữ bản đang hiện
 	const error = !!loadError && !detail;
 	const [busy, setBusy] = useState(false);
+	const [shareOpen, setShareOpen] = useState(false);
 	const [viewing, setViewing] = useState<FileViewTarget | null>(null);
 	const [downloadingId, setDownloadingId] = useState<string | null>(null);
 	const [reassignTask, setReassignTask] = useState<ApprovalTaskItem | null>(null);
@@ -199,6 +202,8 @@ export default function ApprovalRequestDetailPage() {
 		navigate(ApprovalPath.MyDraft, { replace: true });
 	};
 
+	const removeShare = (share: ApprovalShareItem) => detail && run(() => approvalRequestService.fetchRemoveShare(detail.id, share.id), "approval.messages.unshared");
+
 	const confirmReassign = async () => {
 		if (!reassignTask || !reassignTo)
 			return;
@@ -236,6 +241,7 @@ export default function ApprovalRequestDetailPage() {
 		return <RequestDetailSkeleton />;
 
 	const { permissions } = detail;
+	const flowLinkLabel = rounds.length > 1 ? t("approval.detail.viewAllRounds", { n: rounds.length }) : t("approval.detail.viewFullGraph");
 	const fileCount = detail.documents.length + detail.attachments.length;
 	// Nhắc sửa & gửi lại chỉ dành cho người gửi lại được; người khác xem lý do ở thẻ quy trình
 	const lastReturn = detail.status === ApprovalRequestStatus.Returned && permissions.canSubmit
@@ -266,6 +272,9 @@ export default function ApprovalRequestDetailPage() {
 						<Button icon={<ReloadOutlined />} onClick={load} disabled={busy} />
 						{canViewMailQueue && (
 							<Button icon={<MailOutlined />} onClick={() => navigate(`/activity-log/mail-queue?refId=${detail.id}`)}>{t("approval.actions.viewEmails")}</Button>
+						)}
+						{permissions.canShare && (
+							<Button icon={<ShareAltOutlined />} disabled={busy} onClick={() => setShareOpen(true)}>{t("approval.actions.share")}</Button>
 						)}
 						{permissions.canEdit && (
 							<Button icon={<EditOutlined />} onClick={() => navigate(approvalRequestPath.edit(detail.id))}>{t("approval.actions.edit")}</Button>
@@ -326,7 +335,7 @@ export default function ApprovalRequestDetailPage() {
 							label: tabLabel(<FileTextOutlined />, t("approval.detail.info")),
 							children: (
 								<div className="flex flex-col gap-4">
-									<div className={currentRound ? "grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(320px,1fr)]" : "grid grid-cols-1 gap-4"}>
+									<div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
 										<div className="flex min-w-0 flex-col gap-4">
 											<SectionCard icon={<FileTextOutlined />} title={t("approval.detail.info")}>
 												<Descriptions
@@ -360,32 +369,52 @@ export default function ApprovalRequestDetailPage() {
 											</SectionCard>
 										</div>
 
-										{/* Quy trình thu gọn chỉ của vòng hiện tại; các vòng trước xem ở tab sơ đồ */}
-										{currentRound && (
+										<div className="flex min-w-0 flex-col gap-4">
+											{/* Quy trình thu gọn chỉ của vòng hiện tại; các vòng trước xem ở tab sơ đồ */}
+											{currentRound && (
+												<SectionCard
+													className="@container"
+													icon={<NodeIndexOutlined />}
+													title={t("approval.detail.approvalFlow")}
+													extra={hasDefinition && (
+														// Thẻ hẹp thì chỉ còn mũi tên, chữ xem ở tooltip
+														<Tooltip title={flowLinkLabel}>
+															<Typography.Link className="whitespace-nowrap" onClick={() => changeTab(DetailTab.Progress)}>
+																<span className="hidden @[400px]:inline">{flowLinkLabel}</span>
+																<ArrowRightOutlined className="@[400px]:ml-1.5" />
+															</Typography.Link>
+														</Tooltip>
+													)}
+												>
+													<RoundTimeline
+														round={currentRound}
+														totalRounds={rounds.length}
+														definition={detail.definition}
+														userNames={userNames}
+														canReassign={permissions.canReassign}
+														onReassign={(task) => {
+															setReassignTo(undefined);
+															setReassignComment("");
+															setReassignTask(task);
+														}}
+													/>
+												</SectionCard>
+											)}
 											<SectionCard
-												icon={<NodeIndexOutlined />}
-												title={t("approval.detail.approvalFlow")}
-												extra={hasDefinition && (
-													<Typography.Link onClick={() => changeTab(DetailTab.Progress)}>
-														{rounds.length > 1 ? t("approval.detail.viewAllRounds", { n: rounds.length }) : t("approval.detail.viewFullGraph")}
-														<ArrowRightOutlined className="ml-1.5" />
-													</Typography.Link>
+												icon={<ShareAltOutlined />}
+												title={(
+													<span className="inline-flex items-center gap-2">
+														{t("approval.share.sharedWith")}
+														<ShareCount count={detail.shares?.length ?? 0} />
+													</span>
+												)}
+												extra={permissions.canShare && (
+													<Button type="link" size="small" icon={<ShareAltOutlined />} onClick={() => setShareOpen(true)}>{t("approval.actions.share")}</Button>
 												)}
 											>
-												<RoundTimeline
-													round={currentRound}
-													totalRounds={rounds.length}
-													definition={detail.definition}
-													userNames={userNames}
-													canReassign={permissions.canReassign}
-													onReassign={(task) => {
-														setReassignTo(undefined);
-														setReassignComment("");
-														setReassignTask(task);
-													}}
-												/>
+												<ShareList shares={detail.shares ?? []} canRemove={!!permissions.canShare} onRemove={removeShare} />
 											</SectionCard>
-										)}
+										</div>
 									</div>
 								</div>
 							),
@@ -487,6 +516,15 @@ export default function ApprovalRequestDetailPage() {
 
 			<FileViewer target={viewing} onClose={() => setViewing(null)} />
 			<ActionModal ref={actionModalRef} />
+			<ShareModal
+				requestId={detail.id}
+				open={shareOpen}
+				onClose={(changed) => {
+					setShareOpen(false);
+					if (changed)
+						load();
+				}}
+			/>
 			<Modal
 				open={!!reassignTask}
 				title={t("approval.actions.reassign")}
