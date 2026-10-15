@@ -33,6 +33,8 @@
 		"update": "更新信息",
 		"file_add": "添加文件",
 		"file_remove": "移除文件",
+		"share": "分享申请",
+		"unshare": "撤销分享",
 		"filter": {
 			"all": "全部",
 			"approval": "审批",
@@ -78,7 +80,8 @@
 		"bulkApprove": "批量通过 {{count}} 条",
 		"reassign": "重新指派审批人",
 		"back": "返回",
-		"viewEmails": "已发送邮件"
+		"viewEmails": "已发送邮件",
+		"share": "分享"
 	},
 	"messages": {
 		"submitted": "已提交申请",
@@ -89,6 +92,8 @@
 		"rejected": "已驳回",
 		"returned": "已退回",
 		"reassigned": "已重新指派审批人",
+		"shared": "已分享申请",
+		"unshared": "已撤销分享",
 		"bulkResult": "已通过 {{ok}}/{{total}} 条申请",
 		"bulkFailed": "{{count}} 条申请未能通过",
 		"confirmCancel": "确定撤销该申请？审批人将无需再处理。",
@@ -190,6 +195,25 @@
 		"forGroup": "代表 {{name}}",
 		"groupShared": "全组共同处理",
 		"assignedFrom": "由 {{name}} 分派"
+	},
+	"share": {
+		"title": "分享申请",
+		"principals": "分享给",
+		"principalsPlaceholder": "选择用户或用户组",
+		"message": "留言",
+		"messagePlaceholder": "附带留言（可选）",
+		"notify": "通知方式",
+		"sendEmail": "邮件",
+		"sendNotification": "站内通知",
+		"hint": "被分享的人只能查看申请，不能审批或编辑。",
+		"sharedWith": "已分享的人",
+		"empty": "尚未分享给任何人",
+		"sharedBy": "由 {{name}} 分享",
+		"confirmRemove": "撤销此分享？对方将无法再查看该申请。",
+		"sharedByLabel": "分享人",
+		"sharedAt": "分享时间",
+		"noMessage": "无留言",
+		"group": "用户组"
 	},
 	"delegation": {
 		"title": "审批委托",

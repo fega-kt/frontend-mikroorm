@@ -51,5 +51,10 @@
 		"title": "申请的某一步骤已审批通过",
 		"message": "申请 {{code}} {{title}} 的步骤 {{step}} 已审批通过。",
 		"message_withMessage": "申请 {{code}} {{title}} 的步骤 {{step}} 已审批通过。内容：“{{message}}”"
+	},
+	"APPROVAL_SHARED": {
+		"title": "有申请分享给你",
+		"message": "申请 {{code}} {{title}} 已分享给你。",
+		"message_withMessage": "申请 {{code}} {{title}} 已分享给你。留言：“{{message}}”"
 	}
 }

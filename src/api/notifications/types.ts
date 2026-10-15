@@ -22,6 +22,7 @@ export enum NotificationType {
 	APPROVAL_ESCALATED = "APPROVAL_ESCALATED",
 	APPROVAL_NOTIFY = "APPROVAL_NOTIFY",
 	APPROVAL_STEP_APPROVED = "APPROVAL_STEP_APPROVED",
+	APPROVAL_SHARED = "APPROVAL_SHARED",
 }
 
 export interface NotificationEntity extends EntityBase {

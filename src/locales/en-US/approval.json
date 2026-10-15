@@ -33,6 +33,8 @@
 		"update": "Updated information",
 		"file_add": "Added files",
 		"file_remove": "Removed files",
+		"share": "Shared request",
+		"unshare": "Revoked share",
 		"filter": {
 			"all": "All",
 			"approval": "Approval",
@@ -78,7 +80,8 @@
 		"bulkApprove": "Approve {{count}} requests",
 		"reassign": "Reassign approver",
 		"back": "Back",
-		"viewEmails": "Sent emails"
+		"viewEmails": "Sent emails",
+		"share": "Share"
 	},
 	"messages": {
 		"submitted": "Request submitted",
@@ -89,6 +92,8 @@
 		"rejected": "Request rejected",
 		"returned": "Request returned",
 		"reassigned": "Approver reassigned",
+		"shared": "Request shared",
+		"unshared": "Share revoked",
 		"bulkResult": "Approved {{ok}}/{{total}} requests",
 		"bulkFailed": "{{count}} requests could not be approved",
 		"confirmCancel": "Cancel this request? Approvers will no longer need to act on it.",
@@ -190,6 +195,25 @@
 		"forGroup": "on behalf of {{name}}",
 		"groupShared": "Whole group can act",
 		"assignedFrom": "assigned from {{name}}"
+	},
+	"share": {
+		"title": "Share request",
+		"principals": "Share with",
+		"principalsPlaceholder": "Select people or groups",
+		"message": "Message",
+		"messagePlaceholder": "Message to include (optional)",
+		"notify": "Notify via",
+		"sendEmail": "Email",
+		"sendNotification": "In-app notification",
+		"hint": "People you share with can view the request but cannot approve or edit it.",
+		"sharedWith": "Shared with",
+		"empty": "Not shared with anyone",
+		"sharedBy": "Shared by {{name}}",
+		"confirmRemove": "Revoke this share? They will no longer be able to view the request.",
+		"sharedByLabel": "Shared by",
+		"sharedAt": "Shared at",
+		"noMessage": "No message",
+		"group": "Group"
 	},
 	"delegation": {
 		"title": "Approval delegation",

@@ -16,6 +16,7 @@ import {
 	RollbackOutlined,
 	SendOutlined,
 	SettingOutlined,
+	ShareAltOutlined,
 	StepForwardOutlined,
 	StopOutlined,
 	SwapOutlined,
@@ -49,6 +50,8 @@ const ACTION_STYLE: Record<ApprovalHistoryAction, { icon: React.ReactNode, tone:
 	[ApprovalHistoryAction.Update]: { icon: <EditOutlined />, tone: "info" },
 	[ApprovalHistoryAction.FileAdd]: { icon: <FileAddOutlined />, tone: "info" },
 	[ApprovalHistoryAction.FileRemove]: { icon: <FileExcelOutlined />, tone: "warning" },
+	[ApprovalHistoryAction.Share]: { icon: <ShareAltOutlined />, tone: "info" },
+	[ApprovalHistoryAction.Unshare]: { icon: <ShareAltOutlined />, tone: "default" },
 };
 
 enum HistoryFilter {
@@ -117,6 +120,7 @@ export function HistoryTimeline({ histories, userNames, formSchema }: { historie
 		const to = typeof data.to === "string" ? userNames[data.to] : undefined;
 		const changes = Array.isArray(data.changes) ? (data.changes as HistoryFieldChange[]) : [];
 		const files = Array.isArray(data.files) ? (data.files as HistoryFileItem[]) : [];
+		const sharedWith = Array.isArray(data.principals) ? (data.principals as { id: string, name: string }[]) : [];
 		const actor = historyActor(item);
 		// Duyệt / từ chối / trả lại thay người khác theo ủy quyền
 		const onBehalfOf = typeof data.onBehalfOf === "string" ? userNames[data.onBehalfOf] : undefined;
@@ -140,6 +144,8 @@ export function HistoryTimeline({ histories, userNames, formSchema }: { historie
 						</Text>
 					</div>
 					{(from || to) && <Text className="text-xs">{[from, to].filter(Boolean).join(" → ")}</Text>}
+					{/* Dòng chia sẻ / thu hồi: data.principals = các principal nhận */}
+					{sharedWith.length > 0 && <Text className="text-xs">{sharedWith.map(item => item.name).join(", ")}</Text>}
 					{changes.length > 0 && (
 						<ul className="m-0 flex list-none flex-col gap-0.5 p-0 text-[13px]">
 							{changes.map((change) => {

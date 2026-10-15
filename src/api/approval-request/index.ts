@@ -4,6 +4,7 @@ import type {
 	ApprovalRequestListItem,
 	ApprovalRequestPayload,
 	ApprovalRequestSearchParams,
+	ApprovalSharePayload,
 	CreatableRequestType,
 	PreviewFlowResult,
 	RequestFileCategory,
@@ -68,6 +69,14 @@ export class ApprovalRequestService extends CrudServiceBase<ApprovalRequestListI
 
 	fetchCancel(id: string, comment?: string) {
 		return this.post<{ id: string }>(`${id}/cancel`, { json: { comment } as never, ignoreLoading: true });
+	}
+
+	fetchShare(id: string, data: ApprovalSharePayload) {
+		return this.post<{ id: string }>(`${id}/shares`, { json: data as never, ignoreLoading: true });
+	}
+
+	fetchRemoveShare(id: string, shareId: string) {
+		return this.delete<void>(`${id}/shares/${shareId}`, { ignoreLoading: true });
 	}
 }
 

@@ -51,5 +51,10 @@
 		"title": "A request step was approved",
 		"message": "Step {{step}} of request {{code}} {{title}} was approved.",
 		"message_withMessage": "Step {{step}} of request {{code}} {{title}} was approved. Message: “{{message}}”"
+	},
+	"APPROVAL_SHARED": {
+		"title": "A request was shared with you",
+		"message": "Request {{code}} {{title}} was shared with you.",
+		"message_withMessage": "Request {{code}} {{title}} was shared with you. Message: “{{message}}”"
 	}
 }

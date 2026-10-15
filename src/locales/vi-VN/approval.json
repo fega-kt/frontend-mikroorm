@@ -33,6 +33,8 @@
 		"update": "Cập nhật thông tin",
 		"file_add": "Thêm tệp",
 		"file_remove": "Gỡ tệp",
+		"share": "Chia sẻ tờ trình",
+		"unshare": "Thu hồi chia sẻ",
 		"filter": {
 			"all": "Tất cả",
 			"approval": "Phê duyệt",
@@ -78,7 +80,8 @@
 		"bulkApprove": "Duyệt {{count}} tờ trình",
 		"reassign": "Gán lại người duyệt",
 		"back": "Quay lại",
-		"viewEmails": "Mail đã gửi"
+		"viewEmails": "Mail đã gửi",
+		"share": "Chia sẻ"
 	},
 	"messages": {
 		"submitted": "Đã gửi tờ trình",
@@ -89,6 +92,8 @@
 		"rejected": "Đã từ chối tờ trình",
 		"returned": "Đã trả lại tờ trình",
 		"reassigned": "Đã gán lại người duyệt",
+		"shared": "Đã chia sẻ tờ trình",
+		"unshared": "Đã thu hồi chia sẻ",
 		"bulkResult": "Đã duyệt {{ok}}/{{total}} tờ trình",
 		"bulkFailed": "{{count}} tờ trình không duyệt được",
 		"confirmCancel": "Hủy tờ trình này? Người duyệt sẽ không cần xử lý nữa.",
@@ -190,6 +195,25 @@
 		"forGroup": "thay mặt {{name}}",
 		"groupShared": "Cả nhóm cùng xử lý",
 		"assignedFrom": "được chia từ {{name}}"
+	},
+	"share": {
+		"title": "Chia sẻ tờ trình",
+		"principals": "Chia sẻ cho",
+		"principalsPlaceholder": "Chọn người hoặc nhóm",
+		"message": "Lời nhắn",
+		"messagePlaceholder": "Lời nhắn gửi kèm (không bắt buộc)",
+		"notify": "Gửi qua",
+		"sendEmail": "Email",
+		"sendNotification": "Thông báo trong hệ thống",
+		"hint": "Người được chia sẻ chỉ xem được tờ trình, không duyệt hay sửa được.",
+		"sharedWith": "Người được chia sẻ",
+		"empty": "Chưa chia sẻ cho ai",
+		"sharedBy": "Chia sẻ bởi {{name}}",
+		"confirmRemove": "Thu hồi chia sẻ này? Người này sẽ không xem được tờ trình nữa.",
+		"sharedByLabel": "Người chia sẻ",
+		"sharedAt": "Thời gian chia sẻ",
+		"noMessage": "Không có lời nhắn",
+		"group": "Nhóm"
 	},
 	"delegation": {
 		"title": "Ủy quyền duyệt",

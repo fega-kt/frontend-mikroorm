@@ -47,6 +47,8 @@ export enum ApprovalHistoryAction {
 	Update = "update",
 	FileAdd = "file_add",
 	FileRemove = "file_remove",
+	Share = "share",
+	Unshare = "unshare",
 }
 
 export interface UserBrief {
@@ -142,6 +144,24 @@ export interface ApprovalTaskItem {
 	createdAt: string
 }
 
+/** Lượt chia sẻ tờ trình cho một người / nhóm (chỉ xem) */
+export interface ApprovalShareItem {
+	id: string
+	principal: PrincipalBrief
+	sharedBy: UserBrief
+	message?: string
+	createdAt: string
+}
+
+export interface ApprovalSharePayload {
+	/** Id các principal (người / nhóm) nhận */
+	principals: string[]
+	message?: string
+	/** Backend gửi mail / thông báo trong hệ thống cho người nhận (nhóm: tới các thành viên) */
+	sendEmail: boolean
+	sendNotification: boolean
+}
+
 /** data.changes của dòng "update": field là khóa kỹ thuật (title, priority, department, payload.<key>) — nhãn tra theo formSchema / ngôn ngữ người xem */
 export interface HistoryFieldChange {
 	field: string
@@ -190,7 +210,11 @@ export interface ApprovalRequestDetail {
 	definition: WorkflowDefinition | null
 	tasks: ApprovalTaskItem[]
 	histories: ApprovalHistoryItem[]
+	/** Những người / nhóm được chia sẻ; thiếu khi backend chưa hỗ trợ */
+	shares?: ApprovalShareItem[]
 	permissions: {
+		/** Người duyệt, người trình, người tạo được chia sẻ; thiếu = không chia sẻ được */
+		canShare?: boolean
 		canEdit: boolean
 		canSubmit: boolean
 		canDelete: boolean
