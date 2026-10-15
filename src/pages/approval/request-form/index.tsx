@@ -47,6 +47,16 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 } = {}) {
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
+	// Tiêu đề dính khi cuộn: mốc ngay trên tiêu đề ra khỏi vùng nhìn thấy → hiện viền dưới để tách khỏi nội dung
+	const [headerSentinel, setHeaderSentinel] = useState<HTMLDivElement | null>(null);
+	const [headerStuck, setHeaderStuck] = useState(false);
+	useEffect(() => {
+		if (!headerSentinel)
+			return;
+		const observer = new IntersectionObserver(([entry]) => setHeaderStuck(!entry.isIntersecting));
+		observer.observe(headerSentinel);
+		return () => observer.disconnect();
+	}, [headerSentinel]);
 	const navigate = useNavigate();
 	const params = useParams<{ id: string }>();
 	const id = idProp ?? params.id;
@@ -240,8 +250,16 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 				initialValues={{ priority: ApprovalPriority.Normal, payload: {}, documents: [], attachments: [] }}
 				className="mx-auto flex max-w-[1280px] flex-col gap-5"
 			>
-				{/* Tiêu đề trang + hành động */}
-				<div className="flex flex-wrap items-center justify-between gap-4">
+				{/* Mốc để biết tiêu đề đã dính lên trên chưa (hết nhìn thấy mốc = đang dính) */}
+				<div ref={setHeaderSentinel} className="-mb-5 h-0" />
+				{/* Tiêu đề trang + hành động — dính trên cùng khi cuộn; nền trùng nền trang để che nội dung cuộn qua */}
+				<div
+					className="sticky top-0 z-10 -mx-4 -mt-4 flex flex-wrap items-center justify-between gap-4 px-4 pb-3 pt-4"
+					style={{
+						background: token.colorBgLayout,
+						borderBottom: `1px solid ${headerStuck ? token.colorSplit : "transparent"}`,
+					}}
+				>
 					<div className="flex flex-col gap-1">
 						<Title level={3} className="!m-0">{t(existing ? "approval.form.editTitle" : "approval.form.createTitle")}</Title>
 						<div className="flex flex-wrap items-center gap-2 text-[13px]" style={{ color: token.colorTextSecondary }}>
