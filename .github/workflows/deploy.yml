@@ -32,6 +32,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Test cần cùng biến môi trường với bản build (vd: VITE_APP_NAMESPACE); .env không nằm trong git nên lấy từ Vault
+      - name: Fetch secrets from Vault
+        env:
+          VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+          VAULT_AUTH_METHOD: ${{ vars.VAULT_AUTH_METHOD }}
+        run: pnpm exec vault-start ${{ vars.VAULT_SECRET_PATH }} --write-env
+
       - name: Run tests
         run: pnpm test --run
 
