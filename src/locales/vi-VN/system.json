@@ -104,6 +104,10 @@
 			"outbox_retention_days": {
 				"label": "Số ngày giữ event outbox",
 				"hint": "Event đã đẩy lên RabbitMQ được tự động xoá sau số ngày này (event đang chờ / lỗi không bị xoá). Để trống hoặc 0 thì giữ vĩnh viễn"
+			},
+			"work_email_fallback_to_login_name": {
+				"label": "Gửi mail công việc qua email đăng nhập",
+				"hint": "Mail công việc (phê duyệt, nhắc duyệt, thông báo…) gửi tới email công việc. Bật: người chưa có email công việc sẽ nhận qua email đăng nhập. Tắt hoặc chưa cấu hình: bỏ qua người đó. Mail tài khoản (OTP, mật khẩu) luôn gửi tới email đăng nhập"
 			}
 		}
 	},
