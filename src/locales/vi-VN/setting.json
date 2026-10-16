@@ -75,6 +75,15 @@
 			"restoreConfirmTitle": "Khôi phục phiên bản {{version}}?",
 			"restoreConfirmContent": "Các trường đang soạn sẽ được thay bằng nội dung của phiên bản này. Chỉ khi bấm Lưu mới sinh phiên bản mới; phiên bản cũ không bị thay đổi và phiếu đã tạo vẫn giữ form của mình.",
 			"restored": "Đã nạp phiên bản {{version}} vào trình soạn. Bấm Lưu để áp dụng cho các phiếu tạo sau."
+		},
+		"codeDuplicate": "Mã biểu mẫu đã tồn tại",
+		"newForm": "Biểu mẫu mới",
+		"codeRules": {
+			"title": "Quy tắc đặt mã",
+			"chars": "Chỉ gồm chữ in hoa A–Z, số 0–9 và dấu gạch dưới (_)",
+			"normalize": "Tự viết hoa và bỏ khoảng trắng khi nhập",
+			"unique": "Không được trùng với biểu mẫu khác",
+			"immutable": "Không đổi được sau khi lưu"
 		}
 	}
 }

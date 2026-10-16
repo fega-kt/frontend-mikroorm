@@ -297,8 +297,44 @@
 			"date": "Ngày",
 			"dateRange": "Khoảng ngày",
 			"select": "Lựa chọn",
-			"switch": "Có / Không"
-		}
+			"switch": "Có / Không",
+			"user": "Người dùng",
+			"department": "Phòng ban",
+			"principal": "Người / Nhóm"
+		},
+		"builder": {
+			"search": "Tìm loại trường…",
+			"paletteHint": "Kéo loại trường thả vào form, hoặc bấm để thêm xuống cuối.",
+			"groups": {
+				"input": "Nhập liệu",
+				"choice": "Lựa chọn",
+				"date": "Ngày tháng",
+				"people": "Người & tổ chức"
+			},
+			"dropHere": "Kéo loại trường vào đây",
+			"selectHint": "Chọn một trường trên form để chỉnh thuộc tính",
+			"basic": "Cơ bản",
+			"layout": "Bố cục",
+			"validation": "Kiểm tra",
+			"width": "Độ rộng",
+			"widthHint": "{{span}}/12 cột. Kéo cạnh phải của trường để đổi nhanh.",
+			"full": "Đủ",
+			"multiple": "Cho chọn nhiều",
+			"duplicate": "Nhân đôi",
+			"dragToSort": "Kéo để sắp xếp",
+			"dragToResize": "Kéo để đổi độ rộng",
+			"keyHint": "Dùng trong điều kiện quy trình:",
+			"tabDesign": "Thiết kế",
+			"tabHistory": "Lịch sử phiên bản",
+			"minDate": "Ngày sớm nhất",
+			"maxDate": "Ngày muộn nhất",
+			"noLimit": "Không giới hạn",
+			"today": "Hôm nay",
+			"pickDate": "Chọn ngày",
+			"fieldCount": "{{count}} trường",
+			"tabInfo": "Thông tin"
+		},
+		"dateBoundInvalid": "Ngày sớm nhất không được sau ngày muộn nhất"
 	},
 	"yes": "Có",
 	"no": "Không",

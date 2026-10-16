@@ -75,6 +75,15 @@
 			"restoreConfirmTitle": "Restore version {{version}}?",
 			"restoreConfirmContent": "The fields being edited will be replaced with this version. A new version is only created when you click Save; old versions are never changed and existing requests keep their own form.",
 			"restored": "Version {{version}} loaded into the editor. Click Save to apply it to requests created afterwards."
+		},
+		"codeDuplicate": "This form code already exists",
+		"newForm": "New form",
+		"codeRules": {
+			"title": "Code rules",
+			"chars": "Only uppercase letters A–Z, digits 0–9 and underscore (_)",
+			"normalize": "Automatically uppercased; spaces are removed as you type",
+			"unique": "Must not duplicate another form",
+			"immutable": "Cannot be changed after saving"
 		}
 	}
 }

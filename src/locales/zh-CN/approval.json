@@ -297,8 +297,44 @@
 			"date": "日期",
 			"dateRange": "日期范围",
 			"select": "下拉选择",
-			"switch": "是 / 否"
-		}
+			"switch": "是 / 否",
+			"user": "用户",
+			"department": "部门",
+			"principal": "用户 / 用户组"
+		},
+		"builder": {
+			"search": "搜索字段类型…",
+			"paletteHint": "将字段类型拖入表单,或点击添加到末尾。",
+			"groups": {
+				"input": "输入",
+				"choice": "选择",
+				"date": "日期时间",
+				"people": "人员与组织"
+			},
+			"dropHere": "将字段类型拖到这里",
+			"selectHint": "在表单中选择一个字段以编辑属性",
+			"basic": "基础",
+			"layout": "布局",
+			"validation": "校验",
+			"width": "宽度",
+			"widthHint": "{{span}}/12 列。拖动字段右边缘可快速调整。",
+			"full": "整行",
+			"multiple": "允许多选",
+			"duplicate": "复制",
+			"dragToSort": "拖动排序",
+			"dragToResize": "拖动调整宽度",
+			"keyHint": "用于流程条件:",
+			"tabDesign": "设计",
+			"tabHistory": "版本历史",
+			"minDate": "最早日期",
+			"maxDate": "最晚日期",
+			"noLimit": "不限",
+			"today": "今天",
+			"pickDate": "选择日期",
+			"fieldCount": "{{count}} 个字段",
+			"tabInfo": "信息"
+		},
+		"dateBoundInvalid": "最早日期不能晚于最晚日期"
 	},
 	"yes": "是",
 	"no": "否",

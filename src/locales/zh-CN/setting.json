@@ -75,6 +75,15 @@
 			"restoreConfirmTitle": "恢复版本 {{version}}？",
 			"restoreConfirmContent": "正在编辑的字段将被此版本的内容替换。只有点击保存才会生成新版本；旧版本不会被修改，已创建的申请仍使用其原有表单。",
 			"restored": "已将版本 {{version}} 载入编辑器。点击保存后将应用于之后创建的申请。"
+		},
+		"codeDuplicate": "表单编码已存在",
+		"newForm": "新建表单",
+		"codeRules": {
+			"title": "编码规则",
+			"chars": "仅限大写字母 A–Z、数字 0–9 和下划线 (_)",
+			"normalize": "输入时自动转大写并去除空格",
+			"unique": "不能与其他表单重复",
+			"immutable": "保存后不可修改"
 		}
 	}
 }

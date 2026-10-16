@@ -70,7 +70,7 @@ export function VersionPreviewModal({ formId, version, canRestore, onClose, onRe
 				: data.formSchema.length
 					? (
 						// Form xem trước chỉ đọc: người xem thấy đúng các ô nhập mà phiếu tạo ở phiên bản này sẽ có
-						<Form layout="vertical" disabled className="grid grid-cols-1 gap-x-4 md:grid-cols-2 [&>.ant-form-item:has(textarea)]:md:col-span-2">
+						<Form layout="vertical" disabled className="@container grid grid-cols-12 gap-x-5">
 							<PayloadFormItems fields={data.formSchema} disabled />
 						</Form>
 					)

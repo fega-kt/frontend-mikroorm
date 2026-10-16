@@ -1,8 +1,8 @@
 import type { FormField } from "#src/api/setting/request-type/types";
 import { FormFieldType } from "#src/api/setting/request-type/types";
 
-/** Giống backend form-schema.ts: bắt đầu bằng chữ, chỉ gồm chữ, số, _ */
-export const FIELD_KEY_PATTERN = /^[a-z]\w*$/i;
+/** Giống backend form-schema.ts: bắt đầu bằng chữ, chỉ gồm chữ, số, _ và dài tối đa 64 ký tự */
+export const FIELD_KEY_PATTERN = /^[a-z]\w{0,63}$/i;
 
 /** Lỗi đầu tiên của formSchema (null nếu hợp lệ) — dùng chặn lưu loại đơn */
 export function validateFormSchema(fields: FormField[], t: (key: string) => string): string | null {
@@ -15,6 +15,8 @@ export function validateFormSchema(fields: FormField[], t: (key: string) => stri
 		seen.add(field.key);
 		if (!field.label?.trim())
 			return `${field.key}: ${t("approval.formSchema.label")}`;
+		if (field.minDate && field.maxDate && field.minDate !== "today" && field.maxDate !== "today" && field.minDate > field.maxDate)
+			return `${field.key}: ${t("approval.formSchema.dateBoundInvalid")}`;
 		if (field.type === FormFieldType.Select && !field.options?.length)
 			return `${field.key}: ${t("approval.formSchema.optionsRequired")}`;
 	}

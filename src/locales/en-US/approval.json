@@ -297,8 +297,44 @@
 			"date": "Date",
 			"dateRange": "Date range",
 			"select": "Select",
-			"switch": "Yes / No"
-		}
+			"switch": "Yes / No",
+			"user": "User",
+			"department": "Department",
+			"principal": "User / Group"
+		},
+		"builder": {
+			"search": "Search field types…",
+			"paletteHint": "Drag a field type onto the form, or click to append it.",
+			"groups": {
+				"input": "Input",
+				"choice": "Choice",
+				"date": "Date & time",
+				"people": "People & organization"
+			},
+			"dropHere": "Drop a field type here",
+			"selectHint": "Select a field on the form to edit its properties",
+			"basic": "Basics",
+			"layout": "Layout",
+			"validation": "Validation",
+			"width": "Width",
+			"widthHint": "{{span}}/12 columns. Drag the right edge of a field to resize quickly.",
+			"full": "Full",
+			"multiple": "Allow multiple",
+			"duplicate": "Duplicate",
+			"dragToSort": "Drag to reorder",
+			"dragToResize": "Drag to resize",
+			"keyHint": "Used in workflow conditions:",
+			"tabDesign": "Design",
+			"tabHistory": "Version history",
+			"minDate": "Earliest date",
+			"maxDate": "Latest date",
+			"noLimit": "No limit",
+			"today": "Today",
+			"pickDate": "Pick a date",
+			"fieldCount": "{{count}} fields",
+			"tabInfo": "Info"
+		},
+		"dateBoundInvalid": "Earliest date must not be after the latest date"
 	},
 	"yes": "Yes",
 	"no": "No",
