@@ -1,4 +1,4 @@
-import type { ApprovalRequestDetail, PreviewFlowResult } from "#src/api/approval-request";
+import type { ApprovalRequestDetail, CreatableRequestType, PreviewFlowResult } from "#src/api/approval-request";
 import type { AttachmentEntity } from "#src/api/attachment";
 import type { AttachmentConfig } from "#src/api/setting/request-type/types";
 import type { AttachmentUploadRef } from "#src/components/attachment-upload";
@@ -8,7 +8,7 @@ import { BasicContent } from "#src/components/basic-content";
 import { UserAvatar } from "#src/components/user-avatar";
 import { approvalRequestPath } from "#src/router/extra-info";
 import { useUserStore } from "#src/store/user";
-import { SaveOutlined, SendOutlined } from "@ant-design/icons";
+import { ApartmentOutlined, InfoCircleOutlined, SaveOutlined, SendOutlined } from "@ant-design/icons";
 import { useDebounceFn, useRequest } from "ahooks";
 import { Alert, Button, Descriptions, Form, Input, Radio, Result, Select, Tag, theme, Typography } from "antd";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -23,10 +23,17 @@ import { PRIORITIES, PRIORITY_META } from "../lib/status";
 import { FileBlock } from "./components/file-block";
 import { FlowPreview } from "./components/flow-preview";
 import { NumberedCard } from "./components/numbered-card";
+import { RequestHeaderMeta, ReturnedNotice } from "./components/request-status-info";
+import { LockedRequestType, RequestTypePicker } from "./components/request-type-field";
 
 const { Text, Title } = Typography;
 
+/** Khóa nhóm của loại tờ trình; loại không thuộc nhóm nào dùng chung một khóa */
+const NO_CATEGORY = "__none__";
+const categoryKeyOf = (type: CreatableRequestType) => type.category?.id ?? NO_CATEGORY;
+
 interface FormValues {
+	/** Chỉ để lọc loại tờ trình (không gửi lên): tờ trình suy ra nhóm từ loại */
 	category?: string
 	requestType?: string
 	priority: ApprovalPriority
@@ -103,9 +110,7 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 			return;
 		initializedFor.current = key;
 		if (detail) {
-			const type = types.find(item => item.id === detail.requestType.id);
 			form.setFieldsValue({
-				category: type?.category?.id,
 				requestType: detail.requestType.id,
 				priority: detail.priority,
 				department: detail.department.id,
@@ -117,25 +122,36 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 		}
 		else {
 			const preset = searchParams.get("type");
-			const type = types.find(item => item.id === preset || item.code === preset);
+			const presetType = types.find(item => item.id === preset || item.code === preset);
+			// Có loại chọn sẵn (link ?type=) thì lấy nhóm của nó; không thì chỉ có một nhóm mới tự chọn
+			const categories = new Set(types.map(categoryKeyOf));
+			const category = presetType ? categoryKeyOf(presetType) : categories.size === 1 ? [...categories][0] : undefined;
+			const inCategory = types.filter(item => categoryKeyOf(item) === category);
 			form.setFieldsValue({
-				category: type?.category?.id ?? types[0]?.category?.id,
-				requestType: type?.id,
+				category,
+				requestType: presetType?.id ?? (inCategory.length === 1 ? inCategory[0].id : undefined),
 				department: unitList.find(u => u.isOwn)?.id,
 			});
 		}
 	}, [id, form, searchParams, types, unitList, initialDetail, fetchedDetail]);
 
-	/** Nhóm tờ trình = danh mục của loại tờ trình */
-	const categories = useMemo(() => {
+	/** Nhóm tờ trình = danh mục của loại tờ trình (loại không thuộc nhóm nào gom vào "Khác") */
+	const categoryOptions = useMemo(() => {
 		const map = new Map<string, string>();
-		for (const item of types ?? []) {
-			if (item.category)
-				map.set(item.category.id, item.category.name);
-		}
+		for (const item of types ?? [])
+			map.set(categoryKeyOf(item), item.category?.name ?? t("approval.form.otherCategory"));
 		return [...map].map(([value, label]) => ({ value, label }));
-	}, [types]);
-	const typesInCategory = useMemo(() => (types ?? []).filter(item => !categoryId || item.category?.id === categoryId), [types, categoryId]);
+	}, [types, t]);
+	const typesInCategory = useMemo(() => (types ?? []).filter(item => categoryKeyOf(item) === categoryId), [types, categoryId]);
+
+	/** Đổi nhóm: bỏ loại đã chọn; nhóm chỉ có một loại thì tự chọn luôn */
+	const changeCategory = (value: string) => {
+		const inCategory = (types ?? []).filter(item => categoryKeyOf(item) === value);
+		form.setFieldsValue({ requestType: inCategory.length === 1 ? inCategory[0].id : undefined, payload: {} });
+	};
+
+	/** Loại tờ trình (bản trong danh sách tạo được) của phiếu đang sửa — để có tiền tố mã và nhóm; loại đã ngừng dùng thì không có */
+	const existingType = useMemo(() => (existing ? types?.find(item => item.id === existing.requestType.id) : undefined), [existing, types]);
 
 	const selectedType = useMemo(() => {
 		if (existing)
@@ -209,7 +225,7 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 					await approvalRequestService.fetchSubmit(requestId);
 			}
 			else {
-				requestId = (await approvalRequestService.fetchCreate({ ...body, id: draftId, requestType: selectedType!.id, submit })).id;
+				requestId = (await approvalRequestService.fetchCreate({ ...body, id: draftId, requestType: selectedType!.id, category: values.category!, submit })).id;
 			}
 			window.$message?.success(t(submit ? "approval.messages.submitted" : "approval.messages.saved"));
 			if (submit) {
@@ -265,10 +281,8 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 				>
 					<div className="flex flex-col gap-1">
 						<Title level={3} className="!m-0">{t(existing ? "approval.form.editTitle" : "approval.form.createTitle")}</Title>
-						<div className="flex flex-wrap items-center gap-2 text-[13px]" style={{ color: token.colorTextSecondary }}>
-							<Tag bordered={false} className="m-0">{t(`approval.status.${existing?.status ?? ApprovalRequestStatus.Draft}`)}</Tag>
-							<span>{existing?.code ?? t("approval.form.codeHint")}</span>
-						</div>
+						<RequestHeaderMeta request={existing} />
+
 					</div>
 					<div className="flex flex-wrap gap-2">
 						<Button disabled={false} onClick={() => (onExit ? onExit() : navigate(-1))}>{t("common.cancel")}</Button>
@@ -291,68 +305,96 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 					</div>
 				</div>
 
-				{lastReturn && (
-					<Alert
-						type="warning"
-						showIcon
-						message={t("approval.form.returnedNotice")}
-						description={lastReturn.comment && `${t("approval.form.lastComment")}: ${lastReturn.comment}`}
-					/>
-				)}
-				{!types.length && <Alert type="info" showIcon message={t("approval.messages.noRequestTypes")} />}
+				{!existing && !types.length && <Alert type="info" showIcon message={t("approval.messages.noRequestTypes")} />}
 
 				<div className="flex flex-wrap items-start gap-5">
 					{/* Cột trái: form */}
 					<div className="flex min-w-0 flex-col gap-5" style={{ flex: "999 1 560px" }}>
-						<NumberedCard index={1} title={t("approval.form.general")}>
+						<NumberedCard
+							index={1}
+							title={t("approval.form.general")}
+							extra={(
+								<span>
+									{t("approval.form.requiredHintPrefix")}
+									<span style={{ color: token.colorError }}> * </span>
+									{t("approval.form.requiredHintSuffix")}
+								</span>
+							)}
+						>
+							{/* Mã / ngày tạo / cập nhật nằm ở header trang; trong thẻ chỉ giữ việc cần làm (bị trả lại) */}
+							{lastReturn && <div className="mb-6"><ReturnedNotice item={lastReturn} /></div>}
 							<div className="grid grid-cols-1 gap-x-5 md:grid-cols-2">
-								<Form.Item name="category" label={t("approval.form.category")} rules={[{ required: true, message: t("form.required") }]}>
-									<Select
-										options={categories}
-										placeholder={t("common.pleaseSelect")}
-										disabled={!!existing || !editable}
-										onChange={() => form.setFieldValue("requestType", undefined)}
-									/>
-								</Form.Item>
+								{/* Nhóm + loại lên đầu: nội dung tờ trình và luồng duyệt đi theo loại; sửa tờ trình thì khóa (biểu mẫu đã gắn với tờ trình) */}
+								{existing
+									? (
+										<>
+											<Form.Item label={t("approval.form.category")}>
+												<Input disabled value={existing.category?.name ?? "—"} />
+											</Form.Item>
+											<Form.Item label={t("approval.fields.requestType")}>
+												<LockedRequestType
+													type={{ prefix: existingType?.prefix ?? "", code: existing.requestType.code, name: existing.requestType.name }}
+												/>
+											</Form.Item>
+										</>
+									)
+									: (
+										<>
+											<Form.Item name="category" label={t("approval.form.category")} rules={[{ required: true, message: t("form.required") }]}>
+												<Select options={categoryOptions} placeholder={t("common.pleaseSelect")} onChange={changeCategory} />
+											</Form.Item>
+											<Form.Item
+												name="requestType"
+												label={t("approval.fields.requestType")}
+												rules={[{ required: true, message: t("form.required") }]}
+											>
+												<RequestTypePicker
+													types={typesInCategory}
+													disabled={!categoryId}
+													placeholder={categoryId ? undefined : t("approval.form.pickCategoryFirst")}
+													onSelectType={() => form.setFieldValue("payload", {})}
+												/>
+											</Form.Item>
+										</>
+									)}
+
 								<Form.Item
-									name="requestType"
-									label={t("approval.fields.requestType")}
-									rules={[{ required: true, message: t("form.required") }]}
-									extra={t("approval.form.typeHint")}
+									name="title"
+									label={t("approval.fields.title")}
+									className="md:col-span-2"
+									rules={[{ required: true, whitespace: true, message: t("form.required") }]}
 								>
-									<Select
-										placeholder={t("common.pleaseSelect")}
-										disabled={!!existing || !editable}
-										options={typesInCategory.map(item => ({
-											value: item.id,
-											label: item.hasWorkflow ? item.name : `${item.name} (${t("approval.workflow.noPublished")})`,
-										}))}
-										onChange={() => form.setFieldValue("payload", {})}
-									/>
+									<Input maxLength={255} showCount placeholder={t("approval.form.titlePlaceholder")} />
 								</Form.Item>
 
 								<Form.Item
 									name="priority"
 									label={t("approval.form.priority")}
 									className="md:col-span-2"
-									extra={t("approval.form.priorityHint")}
+									tooltip={{ title: t("approval.form.priorityHint"), icon: <InfoCircleOutlined /> }}
+									// Chỉ nhắc hệ quả khi đang chọn Khẩn
+									extra={priority === ApprovalPriority.Urgent
+										? <span style={{ color: token.colorWarningText }}>{t("approval.form.priorityHint")}</span>
+										: undefined}
 								>
 									<Radio.Group className="!grid w-full grid-cols-2 gap-2 md:grid-cols-4">
 										{PRIORITIES.map((value) => {
 											const selected = priority === value;
+											const color = PRIORITY_META[value].dot;
 											return (
 												<Radio
 													key={value}
 													value={value}
-													className="!m-0 flex h-11 items-center rounded-lg px-3"
+													className="!m-0 flex h-8 items-center rounded-md px-3"
 													style={{
-														border: selected ? `2px solid ${token.colorPrimary}` : `1px solid ${token.colorBorder}`,
-														background: selected ? token.colorPrimaryBg : undefined,
+														// Ô đang chọn mang màu của mức ưu tiên
+														border: selected ? `2px solid ${color}` : `1px solid ${token.colorBorder}`,
+														background: selected ? `${color}14` : undefined,
 														fontWeight: selected ? 600 : undefined,
 													}}
 												>
 													<span className="inline-flex items-center gap-2">
-														<span className="h-2 w-2 rounded-full" style={{ background: PRIORITY_META[value].dot }} />
+														<span className="h-2 w-2 rounded-full" style={{ background: color }} />
 														{t(`approval.priority.${value}`)}
 													</span>
 												</Radio>
@@ -365,12 +407,22 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 									name="department"
 									label={t("approval.form.submitUnit")}
 									rules={[{ required: true, message: t("form.required") }]}
-									extra={t("approval.form.submitUnitHint")}
+									tooltip={{ title: t("approval.form.submitUnitHint"), icon: <InfoCircleOutlined /> }}
+									// Chỉ cảnh báo khi sửa tờ trình và vừa đổi đơn vị trình
+									extra={existing && department !== existing.department.id
+										? <span style={{ color: token.colorWarningText }}>{t("approval.form.submitUnitChanged")}</span>
+										: undefined}
 								>
 									<Select
+										prefix={<ApartmentOutlined style={{ color: token.colorTextSecondary }} />}
 										options={units.map(u => ({
 											value: u.id,
-											label: u.isOwn ? `${u.name} (${t("approval.form.ownUnit")})` : u.name,
+											label: (
+												<span className="flex items-center gap-2">
+													<span className="min-w-0 flex-1 truncate">{u.name}</span>
+													{u.isOwn && <Tag color="blue" bordered={false} className="m-0">{t("approval.form.ownUnitTag")}</Tag>}
+												</span>
+											),
 										}))}
 									/>
 								</Form.Item>
@@ -380,17 +432,9 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 										style={{ border: `1px solid ${token.colorBorderSecondary}`, background: token.colorFillQuaternary }}
 									>
 										<UserAvatar size={20} user={existing?.requester ?? currentUser} />
-										<span>{existing?.requester.fullName ?? currentUser.fullName}</span>
+										<span className="min-w-0 flex-1 truncate">{existing?.requester.fullName ?? currentUser.fullName}</span>
+										{(!existing || existing.requester.id === currentUser.id) && <Text type="secondary" className="text-xs">{t("approval.form.you")}</Text>}
 									</div>
-								</Form.Item>
-
-								<Form.Item
-									name="title"
-									label={t("approval.fields.title")}
-									className="md:col-span-2"
-									rules={[{ required: true, whitespace: true, message: t("form.required") }]}
-								>
-									<Input maxLength={255} placeholder={t("approval.form.titlePlaceholder")} />
 								</Form.Item>
 							</div>
 						</NumberedCard>
@@ -442,7 +486,7 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 								labelStyle={{ color: token.colorTextSecondary }}
 								contentStyle={{ justifyContent: "flex-end", textAlign: "right" }}
 								items={[
-									{ key: "c", label: t("approval.form.category"), children: categories.find(c => c.value === categoryId)?.label ?? "—" },
+									{ key: "c", label: t("approval.form.category"), children: (existing ? existing.category : types.find(item => item.id === requestTypeId)?.category)?.name ?? "—" },
 									{ key: "t", label: t("approval.fields.requestType"), children: selectedType?.name ?? "—" },
 									{
 										key: "p",

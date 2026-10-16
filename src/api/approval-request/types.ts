@@ -95,6 +95,8 @@ export interface CreatableRequestType {
 	formSchema: FormField[]
 	attachmentConfig: AttachmentConfig
 	hasWorkflow: boolean
+	/** Phiên bản hiện hành của loại (phiếu mới sẽ gắn với bản này) */
+	version: number
 }
 
 /** Đơn vị trình chọn được (phòng của người dùng + cấp trên) */
@@ -203,6 +205,8 @@ export interface ApprovalRequestDetail {
 	createdAt: string
 	updatedAt: string
 	requestType: { id: string, code: string, name: string, formId: string, formSchema: FormField[], attachmentConfig: AttachmentConfig }
+	/** Nhóm tờ trình đã chọn lúc tạo */
+	category: { id: string, name: string }
 	requester: UserBrief
 	department: { id: string, name: string }
 	documents: Pick<AttachmentEntity, "id" | "filename" | "url" | "visibility" | "size" | "mimetype">[]
@@ -237,6 +241,8 @@ export interface ApprovalRequestPayload {
 	/** Id sinh sẵn ở client: tệp upload trước khi tạo phiếu nằm đúng thư mục Attachments/{id}/... */
 	id?: string
 	requestType: string
+	/** Nhóm tờ trình đã chọn (bắt buộc) — loại tờ trình phải thuộc nhóm này */
+	category: string
 	title: string
 	payload: Record<string, unknown>
 	priority: ApprovalPriority

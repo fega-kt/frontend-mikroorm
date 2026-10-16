@@ -77,6 +77,8 @@ function matchesFilter(action: ApprovalHistoryAction, filter: HistoryFilter) {
 function describeChange(change: HistoryFieldChange, formSchema: FormField[], t: (key: string) => string) {
 	const { field, from, to } = change;
 	const text = (value: unknown) => (value == null || value === "" ? "—" : String(value));
+	/** Trường lưu dạng { id, name } (nhóm, đơn vị trình): hiện tên */
+	const briefName = (value: unknown) => (value && typeof value === "object" ? text((value as { name?: string }).name) : text(value));
 	if (field.startsWith("payload.")) {
 		const key = field.slice("payload.".length);
 		const def = formSchema.find(item => item.key === key);
@@ -90,10 +92,10 @@ function describeChange(change: HistoryFieldChange, formSchema: FormField[], t: 
 			return { label: t("approval.fields.title"), from: text(from), to: text(to) };
 		case "priority":
 			return { label: t("approval.form.priority"), from: t(`approval.priority.${from}`), to: t(`approval.priority.${to}`) };
-		case "department": {
-			const name = (value: unknown) => (value && typeof value === "object" ? text((value as { name?: string }).name) : text(value));
-			return { label: t("approval.form.submitUnit"), from: name(from), to: name(to) };
-		}
+		case "category":
+			return { label: t("approval.form.category"), from: briefName(from), to: briefName(to) };
+		case "department":
+			return { label: t("approval.form.submitUnit"), from: briefName(from), to: briefName(to) };
 		default:
 			return { label: field, from: text(from), to: text(to) };
 	}
