@@ -3,10 +3,14 @@ import type { PrincipalEntity } from "#src/api/system/principal/types";
 import type { UserEntity } from "#src/api/user/types";
 import type { FormProps } from "antd";
 import { FormFieldType } from "#src/api/setting/request-type/types";
+import { PrincipalType } from "#src/api/system/principal/types";
 import { DepartmentPicker } from "#src/components/department-picker";
 import { PeoplePicker } from "#src/components/people-picker";
 import { PrincipalPicker } from "#src/components/principal-picker";
-import { DatePicker, Descriptions, Form, Input, InputNumber, Select, Switch, theme, Typography } from "antd";
+import { UserAvatar } from "#src/components/user-avatar";
+import { useUserBriefs } from "#src/hooks/use-user-briefs";
+import { TeamOutlined } from "@ant-design/icons";
+import { DatePicker, Descriptions, Form, Input, InputNumber, Select, Switch, theme, Tooltip, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { DATE_FORMAT, disabledDateFor, fieldSpanClass, formatMoney, formatPayloadValue, parseMoney, PAYLOAD_FORM_LAYOUT, PAYLOAD_GRID_CLASS } from "../lib/payload";
 
@@ -20,24 +24,114 @@ interface FormFieldInputProps {
 const asArray = (value: unknown): FormReference[] => (Array.isArray(value) ? value : value ? [value as FormReference] : []);
 
 /**
- * Ô chọn người / nhóm: payload lưu { id, name } (không lưu cả entity) nên đổi qua lại với giá trị picker.
- * `value`/`onChange` do Form.Item truyền xuống.
+ * Ô chọn người / nhóm: payload lưu bản rút gọn ({ id, name }; người / nhóm thêm type + userId) chứ không lưu cả entity,
+ * nên đổi qua lại với giá trị picker. `value`/`onChange` do Form.Item truyền xuống.
  */
 function ReferencePicker({ field, disabled, value, onChange }: { field: FormField, disabled?: boolean, value?: FormReference | FormReference[], onChange?: (value: unknown) => void }) {
 	const multiple = !!field.multiple;
-	const emit = (picked: unknown) => {
-		const picks = (Array.isArray(picked) ? picked : picked ? [picked] : []) as (Partial<FormReference> & Partial<UserEntity>)[];
-		const list = picks.map(item => ({ id: item.id!, name: item.name ?? item.fullName ?? item.loginName ?? item.id! }));
-		onChange?.(multiple ? list : list[0]);
-	};
+	const emit = (list: FormReference[]) => onChange?.(multiple ? list : list[0]);
+	const picksOf = <T,>(picked: unknown) => (Array.isArray(picked) ? picked : picked ? [picked] : []) as T[];
 	if (field.type === FormFieldType.Department)
 		return <DepartmentPicker multiple={multiple} placeholder={field.placeholder} disabled={disabled} value={value as never} onChange={onChange as never} />;
 	if (field.type === FormFieldType.Principal) {
-		const principals = asArray(value) as PrincipalEntity[];
-		return <PrincipalPicker mode={multiple ? "multiple" : undefined} placeholder={field.placeholder} disabled={disabled} value={(multiple ? principals : principals[0]) as never} onChange={emit} allowClear />;
+		return (
+			<PrincipalReferencePicker
+				field={field}
+				disabled={disabled}
+				value={value}
+				onChange={picked => emit(picksOf<Partial<PrincipalEntity> & Partial<FormReference>>(picked).map(principalReference))}
+			/>
+		);
 	}
-	const users = asArray(value).map(item => ({ id: item.id, fullName: item.name }) as UserEntity);
-	return <PeoplePicker mode={multiple ? "multiple" : undefined} placeholder={field.placeholder} disabled={disabled} value={(multiple ? users : users[0]) as never} onChange={emit} allowClear />;
+	return (
+		<UserReferencePicker
+			field={field}
+			disabled={disabled}
+			value={value}
+			onChange={picked => emit(picksOf<Partial<FormReference> & Partial<UserEntity>>(picked).map(item => ({ id: item.id!, name: item.name ?? item.fullName ?? item.loginName ?? item.id! })))}
+		/>
+	);
+}
+
+/** Principal chọn từ picker (entity đủ) hoặc giá trị đã lưu → bản lưu trong payload */
+function principalReference(item: Partial<PrincipalEntity> & Partial<FormReference>): FormReference {
+	const type = item.type;
+	const userId = type === PrincipalType.User ? (item.user?.id ?? item.userId) : undefined;
+	return {
+		id: item.id!,
+		name: item.name ?? item.group?.name ?? item.user?.fullName ?? item.id!,
+		...(type ? { type } : {}),
+		...(userId ? { userId } : {}),
+	};
+}
+
+/** Id user cần tra để hiện avatar / email: trường người dùng = chính id; người / nhóm là người = userId */
+const userIdOf = (field: FormField, item: FormReference) => (field.type === FormFieldType.User ? item.id : item.type === PrincipalType.User ? item.userId : undefined);
+
+/** Ô chọn người: giá trị đã lưu chỉ có { id, name } — bổ sung avatar / email mới nhất để hiện giống lúc chọn */
+function UserReferencePicker({ field, disabled, value, onChange }: { field: FormField, disabled?: boolean, value?: FormReference | FormReference[], onChange: (value: unknown) => void }) {
+	const refs = asArray(value);
+	const briefs = useUserBriefs(refs.map(item => item.id));
+	const users = refs.map(item => ({ ...briefs.get(item.id), id: item.id, fullName: briefs.get(item.id)?.fullName ?? item.name }) as UserEntity);
+	const multiple = !!field.multiple;
+	return <PeoplePicker mode={multiple ? "multiple" : undefined} placeholder={field.placeholder} disabled={disabled} value={(multiple ? users : users[0]) as never} onChange={onChange} allowClear />;
+}
+
+/** Ô chọn người / nhóm: dựng lại principal từ giá trị đã lưu (loại + avatar mới nhất của người) để hiện đúng icon / ảnh */
+function PrincipalReferencePicker({ field, disabled, value, onChange }: { field: FormField, disabled?: boolean, value?: FormReference | FormReference[], onChange: (value: unknown) => void }) {
+	const refs = asArray(value);
+	const briefs = useUserBriefs(refs.map(item => userIdOf(field, item) ?? ""));
+	const principals = refs.map((item) => {
+		const user = item.userId ? briefs.get(item.userId) : undefined;
+		return {
+			id: item.id,
+			name: item.name,
+			type: item.type,
+			user: item.userId ? { ...user, id: item.userId } : undefined,
+		} as PrincipalEntity;
+	});
+	const multiple = !!field.multiple;
+	return <PrincipalPicker mode={multiple ? "multiple" : undefined} placeholder={field.placeholder} disabled={disabled} value={(multiple ? principals : principals[0]) as never} onChange={onChange} allowClear />;
+}
+
+/**
+ * Người / người-nhóm đã chọn (chỉ đọc): avatar + tên, hover xem email; nhóm hiện icon nhóm.
+ * Không tra được (đã xóa, payload cũ thiếu loại…) thì dùng tên đã lưu với avatar chữ cái đầu.
+ */
+function ReferenceList({ field, value }: { field: FormField, value: unknown }) {
+	const refs = asArray(value);
+	const briefs = useUserBriefs(refs.map(item => userIdOf(field, item) ?? ""));
+	return (
+		<span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 align-middle">
+			{refs.map((item) => {
+				const userId = userIdOf(field, item);
+				const user = userId ? briefs.get(userId) : undefined;
+				const group = item.type === PrincipalType.Group;
+				return (
+					<Tooltip key={item.id} title={user?.workEmail || user?.loginName}>
+						<span className="inline-flex items-center gap-1.5">
+							<UserAvatar
+								size={20}
+								variant={group ? "soft" : undefined}
+								user={user ?? { id: item.id, fullName: item.name }}
+								fallbackIcon={group ? <TeamOutlined className="text-[11px]" /> : undefined}
+								className="text-[10px]"
+							/>
+							<span>{user?.fullName ?? item.name}</span>
+						</span>
+					</Tooltip>
+				);
+			})}
+		</span>
+	);
+}
+
+/** Giá trị chỉ đọc của một trường: trường người dùng / người-nhóm hiện avatar, còn lại là chữ */
+function PayloadValue({ field, value }: { field: FormField, value: unknown }) {
+	const { t } = useTranslation();
+	if ((field.type === FormFieldType.User || field.type === FormFieldType.Principal) && asArray(value).length)
+		return <ReferenceList field={field} value={value} />;
+	return <>{formatPayloadValue(field, value, t)}</>;
 }
 
 /** Ô nhập cho một trường của form loại tờ trình */
@@ -131,7 +225,7 @@ export function PayloadView({ fields, payload, layout = PAYLOAD_FORM_LAYOUT }: {
 								background: token.colorFillQuaternary,
 							}}
 						>
-							{!empty && formatPayloadValue(field, value, t)}
+							{!empty && <PayloadValue field={field} value={value} />}
 						</div>
 					</Form.Item>
 				);
@@ -154,7 +248,7 @@ export function PayloadDescriptions({ fields, payload, column = 2 }: { fields: F
 				key: field.key,
 				label: field.label,
 				span: field.type === FormFieldType.Textarea ? column : 1,
-				children: <span className="whitespace-pre-wrap">{formatPayloadValue(field, payload[field.key], t)}</span>,
+				children: <span className="whitespace-pre-wrap"><PayloadValue field={field} value={payload[field.key]} /></span>,
 			}))}
 		/>
 	);

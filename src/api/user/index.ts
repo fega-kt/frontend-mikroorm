@@ -55,6 +55,11 @@ export class UserService extends CrudServiceBase<UserEntity> {
 		return this.patch<void>(`${id}/active`, { json: { isActive }, ignoreLoading: true });
 	}
 
+	/** Tên / email / avatar của nhiều user theo id (mọi người đã đăng nhập; user đã xóa không có trong kết quả) */
+	async fetchBriefs(ids: string[]) {
+		return this.post<Pick<UserEntity, "id" | "fullName" | "loginName" | "workEmail" | "avatar">[]>("briefs", { json: { ids } as never, ignoreLoading: true });
+	}
+
 	/** Lấy chi tiết user */
 	async fetchUserItem(id: string) {
 		return this.get<UserEntity>(id, { ignoreLoading: true });
