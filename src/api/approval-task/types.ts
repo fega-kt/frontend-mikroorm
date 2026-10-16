@@ -34,7 +34,7 @@ export interface InboxItem {
 		priority: ApprovalPriority
 		payload: Record<string, unknown>
 		submittedAt?: string
-		requestType: { id: string, name: string, formSchema: FormField[] }
+		requestType: { id: string, name: string, formId: string, formSchema: FormField[] }
 		requester: UserBrief
 		department: { id: string, name: string }
 	}

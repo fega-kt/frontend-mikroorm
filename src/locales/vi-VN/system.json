@@ -21,7 +21,8 @@
 			"approval_workflow": "Quy trình phê duyệt",
 			"approval_request": "Quản trị tờ trình phê duyệt",
 			"email_template": "Mẫu email",
-			"activity_log_queue": "Hàng đợi gửi mail"
+			"activity_log_queue": "Hàng đợi gửi mail",
+			"i18n": "Bản dịch"
 		},
 		"permission": {
 			"user": "Người dùng",
@@ -45,7 +46,8 @@
 			"reassign": "Gán lại người duyệt",
 			"manage": "Quản lý ủy quyền (tạo hộ, xem / sửa mọi ủy quyền)",
 			"email-template": "Mẫu email",
-			"retry": "Gửi lại"
+			"retry": "Gửi lại",
+			"i18n": "Bản dịch dữ liệu"
 		}
 	},
 	"appSetting": {
@@ -235,5 +237,25 @@
 			"failed": "Lỗi",
 			"skipped": "Bỏ qua"
 		}
+	},
+	"i18n": {
+		"title": "Bản dịch",
+		"pickForm": "Chọn biểu mẫu cần dịch",
+		"field": "Chuỗi",
+		"source": "Tiếng Việt (gốc)",
+		"fallbackHint": "Để trống = dùng tiếng Việt",
+		"missing": "Còn {{count}} ô chưa dịch",
+		"noStrings": "Biểu mẫu này chưa có chuỗi nào cần dịch",
+		"hint": "Mỗi chuỗi phải có đủ English và 中文, hoặc để trống cả hai (khi đó hiển thị tiếng Việt). Chuỗi tiếng Việt do biểu mẫu quyết định; ở đây chỉ nhập bản dịch cho các ngôn ngữ khác. Chuỗi chưa có bản dịch sẽ hiển thị bằng tiếng Việt. Đổi mã trường thì bản dịch của mã cũ không còn được dùng.",
+		"kind": {
+			"label": "Nhãn",
+			"placeholder": "Gợi ý nhập",
+			"option": "Lựa chọn"
+		},
+		"langs": {
+			"en": "English",
+			"zh": "中文"
+		},
+		"incomplete": "Còn {{count}} chuỗi mới nhập một ngôn ngữ: cần nhập đủ English và 中文 (hoặc xóa trắng cả hai) mới lưu được"
 	}
 }

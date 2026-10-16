@@ -20,7 +20,8 @@
 			"approval_workflow": "Approval workflows",
 			"approval_request": "Approval request administration",
 			"email_template": "Email templates",
-			"activity_log_queue": "Mail queue"
+			"activity_log_queue": "Mail queue",
+			"i18n": "Translations"
 		},
 		"permission": {
 			"user": "User",
@@ -44,7 +45,8 @@
 			"reassign": "Reassign approver",
 			"manage": "Manage delegations (create on behalf, view / edit all)",
 			"email-template": "Email templates",
-			"retry": "Resend"
+			"retry": "Resend",
+			"i18n": "Translations"
 		}
 	},
 	"appSetting": {
@@ -255,5 +257,25 @@
 			"failed": "Failed",
 			"skipped": "Skipped"
 		}
+	},
+	"i18n": {
+		"title": "Translations",
+		"pickForm": "Select a form to translate",
+		"field": "String",
+		"source": "Vietnamese (source)",
+		"fallbackHint": "Leave empty to use Vietnamese",
+		"missing": "{{count}} cells not translated",
+		"noStrings": "This form has no strings to translate",
+		"hint": "Each string needs both English and 中文, or leave both empty (Vietnamese is shown then). The Vietnamese text comes from the form; enter translations for other languages here. Strings without a translation are shown in Vietnamese. Renaming a field code orphans the translations of the old code.",
+		"kind": {
+			"label": "Label",
+			"placeholder": "Placeholder",
+			"option": "Option"
+		},
+		"langs": {
+			"en": "English",
+			"zh": "中文"
+		},
+		"incomplete": "{{count}} string(s) have only one language: fill in both English and 中文 (or clear both) to save"
 	}
 }

@@ -1,4 +1,5 @@
 import type { ApprovalActionType, InboxItem } from "#src/api/approval-task";
+import type { FormField } from "#src/api/setting/request-type/types";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import type { ActionModalRef } from "../components/action-modal";
 import { approvalRequestService } from "#src/api/approval-request";
@@ -19,6 +20,7 @@ import { useLocation, useNavigate } from "react-router";
 import { ActionModal } from "../components/action-modal";
 import { PayloadDescriptions } from "../components/form-fields";
 import { PriorityTag, RequestStatusTag, TaskStatusTag } from "../components/status-tag";
+import { useLocalizedFields } from "../lib/form-i18n";
 import { DATE_TIME_FORMAT } from "../lib/payload";
 
 dayjs.extend(relativeTime);
@@ -31,6 +33,8 @@ const TAB_TITLE: Record<Tab, string> = {
 	all: "common.menu.approvalReview",
 };
 
+const NO_FIELDS: FormField[] = [];
+
 export default function ApprovalInbox() {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
@@ -42,6 +46,7 @@ export default function ApprovalInbox() {
 	const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
 	const [rows, setRows] = useState<InboxItem[]>([]);
 	const [preview, setPreview] = useState<InboxItem | null>(null);
+	const previewFields = useLocalizedFields(preview?.request.requestType.formId, preview?.request.requestType.formSchema ?? NO_FIELDS);
 	const [acting, setActing] = useState(false);
 	const [typeOptions, setTypeOptions] = useState<Record<string, { text: string }>>({});
 
@@ -296,7 +301,7 @@ export default function ApprovalInbox() {
 							</Typography.Text>
 							<Typography.Text strong>{preview.nodeName ?? preview.nodeId}</Typography.Text>
 						</div>
-						<PayloadDescriptions fields={preview.request.requestType.formSchema} payload={preview.request.payload} column={1} />
+						<PayloadDescriptions fields={previewFields} payload={preview.request.payload} column={1} />
 					</div>
 				)}
 			</Drawer>
