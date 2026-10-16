@@ -3,9 +3,10 @@ import type { FormField } from "#src/api/setting/request-type/types";
 import { approvalWorkflowService } from "#src/api/approval-workflow";
 import { ApprovalWorkflowVersionStatus } from "#src/api/approval-workflow/types";
 import { ApprovalFlowGraph } from "#src/components/approval-flow-graph";
+import { FormModal } from "#src/components/form-modal";
 import { HistoryOutlined } from "@ant-design/icons";
 import { useRequest } from "ahooks";
-import { Button, Descriptions, Modal, Skeleton } from "antd";
+import { Button, Descriptions, Skeleton } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
@@ -51,11 +52,10 @@ export function VersionPreviewModal({ workflowId, version, fields, userNames, ca
 	const isDraft = version?.status === ApprovalWorkflowVersionStatus.Draft;
 
 	return (
-		<Modal
+		<FormModal
 			open={!!version}
 			onCancel={onClose}
 			width={960}
-			destroyOnHidden
 			title={version
 				? t("workflowDesigner.versions.preview", {
 					version: version.version,
@@ -87,6 +87,6 @@ export function VersionPreviewModal({ workflowId, version, fields, userNames, ca
 			{loading || !data?.definition
 				? <Skeleton active paragraph={{ rows: 8 }} />
 				: <ApprovalFlowGraph definition={data.definition} height="60vh" fields={fields} userNames={userNames} />}
-		</Modal>
+		</FormModal>
 	);
 }

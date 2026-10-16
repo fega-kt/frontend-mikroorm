@@ -3,8 +3,9 @@ import type { InputRef } from "antd";
 import type { TextAreaRef } from "antd/es/input/TextArea";
 import type { HtmlEmailEditorApi } from "./html-email-editor";
 import { emailTemplateService } from "#src/api/email-template";
+import { FormModal } from "#src/components/form-modal";
 import { CodeOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
-import { Alert, Button, Form, Input, Modal, Segmented, Spin, Tag, theme, Tooltip, Typography } from "antd";
+import { Alert, Form, Input, Segmented, Spin, Tag, theme, Tooltip, Typography } from "antd";
 import { useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { HtmlEmailEditor } from "./html-email-editor";
@@ -180,26 +181,22 @@ export function Detail({ ref }: { ref: React.Ref<DetailRef> }) {
 	};
 
 	return (
-		<Modal
+		<FormModal
 			open={open}
 			width={1180}
-			style={{ top: 24 }}
 			title={(
 				<div className="flex flex-wrap items-center gap-2">
 					<span>{t(template ? "approval.emailTemplate.edit" : "approval.emailTemplate.add")}</span>
 					{template && <Tag color="blue" className="m-0">{t(`approval.emailTemplate.category.${template.category}`)}</Tag>}
 				</div>
 			)}
+			saving={saving}
+			onSave={onSave}
 			onCancel={() => close()}
-			destroyOnHidden
-			footer={[
-				<Button key="cancel" onClick={() => close()}>{t("common.cancel")}</Button>,
-				<Button key="save" type="primary" loading={saving} onClick={onSave}>{t("common.save")}</Button>,
-			]}
 		>
 			<Spin spinning={loading}>
-				<div className="flex flex-wrap items-start gap-5">
-					<div className="flex min-w-0 flex-col" style={{ flex: "999 1 560px" }}>
+				<div className="flex flex-col items-start gap-5 lg:flex-row">
+					<div className="flex w-full min-w-0 flex-1 flex-col">
 						<Form<FormValues> form={form} layout="vertical">
 							<div className="grid grid-cols-1 gap-x-4 md:grid-cols-3">
 								<Form.Item name="name" label={t("approval.emailTemplate.name")} rules={[{ required: true, whitespace: true }]}>
@@ -317,23 +314,22 @@ export function Detail({ ref }: { ref: React.Ref<DetailRef> }) {
 						)}
 					</div>
 
-					<aside className="sticky top-0 flex min-w-0 flex-col gap-2" style={{ flex: "1 1 260px", maxWidth: 320 }}>
+					<aside className="flex w-full min-w-0 flex-col gap-2 lg:sticky lg:top-0 lg:w-[280px] lg:shrink-0">
 						<span className="font-semibold">{t("approval.emailTemplate.variables")}</span>
 						<Text type="secondary" className="text-xs">{t("approval.emailTemplate.variablesHint")}</Text>
-						<div className="flex max-h-[560px] flex-col gap-1 overflow-y-auto">
+						<div className="flex flex-col gap-1">
 							{variables.map(v => (
-								<Tooltip key={v.key} title={`${t("approval.emailTemplate.sample")}: ${v.sample}`} placement="left">
+								<Tooltip key={v.key} title={`${t(`approval.emailTemplate.vars.${v.key}`)} — ${t("approval.emailTemplate.sample")}: ${v.sample}`} placement="left">
 									<button
 										type="button"
 										disabled={view === "preview"}
 										// Giữ focus ở ô đang soạn để chèn đúng vị trí con trỏ
 										onMouseDown={e => e.preventDefault()}
 										onClick={() => insertVariable(v.key)}
-										className="flex cursor-pointer flex-col items-start rounded-md px-2.5 py-1.5 text-left disabled:cursor-not-allowed disabled:opacity-50"
+										className="flex cursor-pointer items-center rounded-md px-2.5 py-1 text-left disabled:cursor-not-allowed disabled:opacity-50"
 										style={{ border: `1px solid ${token.colorBorderSecondary}`, background: token.colorBgContainer }}
 									>
 										<code className="text-xs" style={{ color: token.colorPrimary }}>{`{{${v.key}}}`}</code>
-										<span className="text-xs" style={{ color: token.colorTextSecondary }}>{t(`approval.emailTemplate.vars.${v.key}`)}</span>
 									</button>
 								</Tooltip>
 							))}
@@ -342,6 +338,6 @@ export function Detail({ ref }: { ref: React.Ref<DetailRef> }) {
 					</aside>
 				</div>
 			</Spin>
-		</Modal>
+		</FormModal>
 	);
 }
