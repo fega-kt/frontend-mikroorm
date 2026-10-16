@@ -9,12 +9,12 @@ import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
 import { Header } from "#src/pages/setting/request-type/components/header";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { ProForm, ProFormText, ProFormTextArea } from "@ant-design/pro-components";
-import { Button, Form, Spin } from "antd";
+import { Button, Form, Segmented, Spin } from "antd";
 import * as React from "react";
 import { useImperativeHandle, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { validateFormSchema } from "../form-schema";
-import { FormDocTab } from "./form-doc-tab";
+import { FormBuilder } from "./builder";
 import { VersionList } from "./version-list";
 import { VersionPreviewModal } from "./version-preview-modal";
 
@@ -39,6 +39,7 @@ export function Detail({ ref }: DetailProps) {
 	const [formSchema, setFormSchema] = useState<FormField[]>([]);
 	const [previewVersion, setPreviewVersion] = useState<FormVersionBrief | null>(null);
 	const [versionsToken, setVersionsToken] = useState(0);
+	const [tab, setTab] = useState<"design" | "history">("design");
 
 	const watchedName = Form.useWatch("name", form);
 
@@ -48,6 +49,7 @@ export function Detail({ ref }: DetailProps) {
 			setEditingId(id ?? null);
 			setFormSchema([]);
 			setPreviewVersion(null);
+			setTab("design");
 			setVersionsToken(token => token + 1);
 			modalRef.current?.open();
 			if (id) {
@@ -125,50 +127,67 @@ export function Detail({ ref }: DetailProps) {
 				/>
 			)}
 		>
-			<div className="relative min-h-0 flex-1 overflow-y-auto p-6">
+			<div className="relative flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-6">
 				{loading && (
 					<div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60">
 						<Spin size="large" />
 					</div>
 				)}
-				<div className="flex flex-col gap-4">
-					<SectionCard icon={<InfoCircleOutlined />} title={t("setting.form.basicInfo")}>
-						<ProForm form={form} layout="vertical" submitter={false} onFinish={onFinish}>
-							<div className="grid grid-cols-2 gap-x-4">
-								<ProFormText
-									name="code"
-									label={t("setting.form.code")}
-									placeholder={t("common.pleaseInput")}
-									// Mã chỉ đặt lúc tạo: đổi mã sau đó làm lệch các nơi đang tham chiếu
-									disabled={!!editingId}
-									// Bỏ mọi khoảng trắng ngay khi gõ / dán, và viết hoa
-									normalize={v => v?.replace(/\s/g, "").toUpperCase()}
-									rules={[
-										{ required: true },
-										{ min: 2 },
-										{ max: 50 },
-										{ pattern: /^[A-Z0-9_]+$/, message: t("setting.form.codePattern") },
-									]}
-								/>
-								<ProFormText
-									name="name"
-									label={t("setting.form.name")}
-									placeholder={t("common.pleaseInput")}
-									rules={[{ required: true }, { max: 255 }]}
-								/>
-							</div>
+				<SectionCard icon={<InfoCircleOutlined />} title={t("setting.form.basicInfo")}>
+					<ProForm form={form} layout="vertical" submitter={false} onFinish={onFinish}>
+						<div className="grid grid-cols-1 gap-x-4 md:grid-cols-3">
+							<ProFormText
+								name="code"
+								label={t("setting.form.code")}
+								placeholder={t("common.pleaseInput")}
+								// Mã chỉ đặt lúc tạo: đổi mã sau đó làm lệch các nơi đang tham chiếu
+								disabled={!!editingId}
+								// Bỏ mọi khoảng trắng ngay khi gõ / dán, và viết hoa
+								normalize={v => v?.replace(/\s/g, "").toUpperCase()}
+								rules={[
+									{ required: true },
+									{ min: 2 },
+									{ max: 50 },
+									{ pattern: /^[A-Z0-9_]+$/, message: t("setting.form.codePattern") },
+								]}
+							/>
+							<ProFormText
+								name="name"
+								label={t("setting.form.name")}
+								placeholder={t("common.pleaseInput")}
+								rules={[{ required: true }, { max: 255 }]}
+							/>
 							<ProFormTextArea
 								name="description"
 								label={t("setting.form.description")}
 								placeholder={t("common.pleaseInput")}
-								fieldProps={{ rows: 3 }}
+								fieldProps={{ autoSize: { minRows: 1, maxRows: 3 } }}
 								rules={[{ max: 500 }]}
 							/>
-						</ProForm>
-					</SectionCard>
-					{editingId && <VersionList formId={editingId} refreshToken={versionsToken} onPreview={setPreviewVersion} />}
-					<FormDocTab value={formSchema} onChange={setFormSchema} />
+						</div>
+					</ProForm>
+				</SectionCard>
+
+				{editingId && (
+					<Segmented
+						className="self-start"
+						value={tab}
+						onChange={setTab}
+						options={[
+							{ value: "design", label: t("approval.formSchema.builder.tabDesign") },
+							{ value: "history", label: t("approval.formSchema.builder.tabHistory") },
+						]}
+					/>
+				)}
+				{/* Thiết kế luôn được giữ trong cây (chỉ ẩn khi xem lịch sử) để không mất vị trí cuộn */}
+				<div className={tab === "design" ? "flex min-h-[520px] flex-1 flex-col" : "hidden"}>
+					<FormBuilder value={formSchema} onChange={setFormSchema} />
 				</div>
+				{editingId && tab === "history" && (
+					<div className="min-h-0 flex-1 overflow-y-auto">
+						<VersionList formId={editingId} refreshToken={versionsToken} onPreview={setPreviewVersion} />
+					</div>
+				)}
 				{editingId && (
 					<VersionPreviewModal
 						formId={editingId}

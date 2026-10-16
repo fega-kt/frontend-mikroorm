@@ -1,4 +1,4 @@
-import type { FormField } from "#src/api/setting/request-type/types";
+import type { FormField, FormReference } from "#src/api/setting/request-type/types";
 import type { FormProps } from "antd";
 import type { Dayjs } from "dayjs";
 import { FormFieldType } from "#src/api/setting/request-type/types";
@@ -7,7 +7,30 @@ import dayjs from "dayjs";
 /** Bố cục form tờ trình — dùng chung cho form soạn và màn xem nội dung để hai bên luôn giống nhau */
 export const PAYLOAD_FORM_LAYOUT: FormProps["layout"] = "vertical";
 /** Lưới các trường nội dung tờ trình: 2 cột, ô nhiều dòng chiếm cả hàng (tự thêm col-span ở chỗ dùng) */
-export const PAYLOAD_GRID_CLASS = "grid grid-cols-1 gap-x-5 md:grid-cols-2";
+export const PAYLOAD_GRID_CLASS = "grid grid-cols-1 gap-x-5 md:grid-cols-12";
+
+const SPAN_CLASS: Record<number, string> = {
+	1: "md:col-span-1",
+	2: "md:col-span-2",
+	3: "md:col-span-3",
+	4: "md:col-span-4",
+	5: "md:col-span-5",
+	6: "md:col-span-6",
+	7: "md:col-span-7",
+	8: "md:col-span-8",
+	9: "md:col-span-9",
+	10: "md:col-span-10",
+	11: "md:col-span-11",
+	12: "md:col-span-12",
+};
+
+/** Độ rộng (1–12) của trường: mặc định nửa hàng, đoạn văn cả hàng */
+export function fieldSpan(field: FormField) {
+	return field.span ?? (field.type === FormFieldType.Textarea ? 12 : 6);
+}
+
+/** Class col-span theo lưới 12 cột (từ md trở lên; màn nhỏ xếp dọc) */
+export const fieldSpanClass = (field: FormField) => SPAN_CLASS[fieldSpan(field)] ?? "md:col-span-6";
 
 export const DATE_FORMAT = "DD/MM/YYYY";
 export const DATE_TIME_FORMAT = "DD/MM/YYYY HH:mm";
@@ -66,6 +89,10 @@ export function formatPayloadValue(field: FormField, value: unknown, t: (key: st
 			return field.options?.find(o => o.value === value)?.label ?? String(value);
 		case FormFieldType.Switch:
 			return value ? t("approval.yes") : t("approval.no");
+		case FormFieldType.User:
+		case FormFieldType.Department:
+		case FormFieldType.Principal:
+			return (Array.isArray(value) ? value : [value]).map(v => (v as FormReference)?.name ?? "").filter(Boolean).join(", ") || "—";
 		default:
 			return String(value);
 	}

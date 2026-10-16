@@ -400,7 +400,7 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 							{!selectedType && <Text type="secondary">{t("approval.flow.chooseType")}</Text>}
 							{selectedType && !fields.length && <Text type="secondary">{t("approval.form.noFields")}</Text>}
 							{fields.length > 0 && (
-								<div className={`${PAYLOAD_GRID_CLASS} [&>.ant-form-item:has(textarea)]:md:col-span-2`}>
+								<div className={`${PAYLOAD_GRID_CLASS}`}>
 									<PayloadFormItems fields={fields} />
 								</div>
 							)}
