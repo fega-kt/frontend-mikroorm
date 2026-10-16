@@ -1,10 +1,11 @@
 import type { FormVersionBrief } from "#src/api/setting/form";
 import type { FormField } from "#src/api/setting/request-type";
 import { formService } from "#src/api/setting/form";
+import { FormModal } from "#src/components/form-modal";
 import { PayloadFormItems } from "#src/pages/approval/components/form-fields";
 import { HistoryOutlined } from "@ant-design/icons";
 import { useRequest } from "ahooks";
-import { Button, Descriptions, Empty, Form, Modal, Skeleton, Tag } from "antd";
+import { Button, Descriptions, Empty, Form, Skeleton, Tag } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
@@ -40,11 +41,10 @@ export function VersionPreviewModal({ formId, version, canRestore, onClose, onRe
 	};
 
 	return (
-		<Modal
+		<FormModal
 			open={!!version}
 			onCancel={onClose}
 			width={720}
-			destroyOnHidden
 			title={version ? t("setting.form.versions.preview", { version: version.version }) : ""}
 			footer={[
 				<Button key="close" onClick={onClose}>{t("setting.form.versions.close")}</Button>,
@@ -75,6 +75,6 @@ export function VersionPreviewModal({ formId, version, canRestore, onClose, onRe
 						</Form>
 					)
 					: <Empty description={t("setting.form.versions.noFields")} />}
-		</Modal>
+		</FormModal>
 	);
 }
