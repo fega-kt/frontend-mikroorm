@@ -19,6 +19,18 @@ export enum FormFieldType {
 	DateRange = "dateRange",
 	Select = "select",
 	Switch = "switch",
+	/** Chọn người dùng / phòng ban / người-nhóm: giá trị { id, name } (mảng khi multiple) */
+	User = "user",
+	Department = "department",
+	Principal = "principal",
+}
+
+/** Loại trường chọn thực thể (payload lưu { id, name }) */
+export const REFERENCE_FIELD_TYPES: ReadonlySet<FormFieldType> = new Set([FormFieldType.User, FormFieldType.Department, FormFieldType.Principal]);
+
+export interface FormReference {
+	id: string
+	name: string
 }
 
 export interface FormField {
@@ -31,6 +43,13 @@ export interface FormField {
 	min?: number
 	max?: number
 	placeholder?: string
+	/** Ngày sớm nhất / muộn nhất (date, dateRange): "YYYY-MM-DD" hoặc "today" */
+	minDate?: string
+	maxDate?: string
+	/** Cho chọn nhiều (chỉ với user / department / principal) */
+	multiple?: boolean
+	/** Độ rộng trên lưới 12 cột; bỏ trống = nửa hàng (đoạn văn: cả hàng) */
+	span?: number
 }
 
 /** Nhóm loại tệp — đồng bộ với backend attachment-config.ts */
