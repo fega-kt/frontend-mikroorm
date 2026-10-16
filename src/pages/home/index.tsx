@@ -33,7 +33,7 @@ export default function Home() {
 	const [results, setResults] = useState<Record<string, ApprovalResult>>({});
 	const petRef = useRef<BannerPetRef>(null);
 	const actionModalRef = useRef<ActionModalRef>(null);
-	const { pending, myRequests, delegation, reload } = useApprovalDashboard();
+	const { stats, pending, myRequests, delegation, reload } = useApprovalDashboard();
 
 	const openPending = pending.filter(item => !results[item.id]);
 	const overdueCount = openPending.filter(item => (item.dueAt ? dayjs(item.dueAt).isBefore(dayjs()) : dayjs().diff(item.createdAt, "hour") >= WAIT_WARNING_HOURS)).length;
@@ -78,11 +78,11 @@ export default function Home() {
 					overdueCount={overdueCount}
 					myInProgressCount={myInProgressCount}
 					returnedCount={returnedCount}
-					approvedThisMonth={MOCK_STATS.approvedThisMonth}
-					approvedLastMonth={MOCK_STATS.approvedLastMonth}
-					approvalRate={MOCK_STATS.approvalRate}
-					rejectedThisMonth={MOCK_STATS.rejectedThisMonth}
-					returnedThisMonth={MOCK_STATS.returnedThisMonth}
+					approvedThisMonth={stats.approvedThisMonth}
+					approvedLastMonth={stats.approvedLastMonth}
+					approvalRate={stats.approvalRate}
+					rejectedThisMonth={stats.rejectedThisMonth}
+					returnedThisMonth={stats.returnedThisMonth}
 				/>
 
 				{/* Lưới 2:1 — mỗi hàng 2 ô cao bằng nhau */}

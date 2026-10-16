@@ -19,7 +19,19 @@ export function guessRequestTypeCode(...hints: (string | undefined)[]): RequestT
 	return TYPE_RULES.find(([pattern]) => pattern.test(text))?.[1] ?? "other";
 }
 
+/** Số liệu tháng cho hai thẻ KPI (lấy từ API thống kê của người duyệt) */
+export interface ApprovalMonthStats {
+	approvedThisMonth: number
+	approvedLastMonth: number
+	approvalRate: number
+	rejectedThisMonth: number
+	returnedThisMonth: number
+}
+
+const EMPTY_STATS: ApprovalMonthStats = { approvedThisMonth: 0, approvedLastMonth: 0, approvalRate: 0, rejectedThisMonth: 0, returnedThisMonth: 0 };
+
 export interface ApprovalDashboardData {
+	stats: ApprovalMonthStats
 	pending: (PendingApproval & { dueAt?: string })[]
 	myRequests: MyRequest[]
 	delegation: { outgoing?: Delegation, incoming?: Delegation }
@@ -33,17 +45,29 @@ export function useApprovalDashboard(): ApprovalDashboardData {
 	const [pending, setPending] = useState<ApprovalDashboardData["pending"]>([]);
 	const [myRequests, setMyRequests] = useState<MyRequest[]>([]);
 	const [delegation, setDelegation] = useState<ApprovalDashboardData["delegation"]>({});
+	const [stats, setStats] = useState<ApprovalMonthStats>(EMPTY_STATS);
 	const [loading, setLoading] = useState(true);
 
 	const reload = useCallback(async () => {
 		setLoading(true);
 		try {
-			const [inbox, mine, outgoing, incoming] = await Promise.all([
+			const [inbox, mine, outgoing, incoming, approved, rate] = await Promise.all([
 				approvalTaskService.fetchInbox({ tab: "pending", limit: 10 }),
 				approvalRequestService.fetchMine({ limit: 20 }),
 				approvalDelegationService.fetchList({ tab: "mine", activeOnly: true, limit: 5 }),
 				approvalDelegationService.fetchList({ tab: "toMe", activeOnly: true, limit: 5 }),
+				// Thống kê lỗi thì chỉ hai thẻ KPI về 0, không làm hỏng cả dashboard
+				approvalTaskService.fetchApprovedStats().catch(() => undefined),
+				approvalTaskService.fetchApprovalRateStats().catch(() => undefined),
 			]);
+
+			setStats({
+				approvedThisMonth: approved?.thisMonth ?? 0,
+				approvedLastMonth: approved?.lastMonth ?? 0,
+				approvalRate: rate?.rate ?? 0,
+				rejectedThisMonth: rate?.rejected ?? 0,
+				returnedThisMonth: rate?.returned ?? 0,
+			});
 
 			const seen = new Set<string>();
 			setPending(inbox.data.filter(item => !seen.has(item.request.id) && seen.add(item.request.id)).map(item => ({
@@ -104,5 +128,5 @@ export function useApprovalDashboard(): ApprovalDashboardData {
 		reload();
 	}, [reload]);
 
-	return { pending, myRequests, delegation, loading, reload };
+	return { stats, pending, myRequests, delegation, loading, reload };
 }

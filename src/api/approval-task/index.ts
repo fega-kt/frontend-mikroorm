@@ -1,4 +1,4 @@
-import type { BulkApproveResult, InboxItem, InboxSearchParams } from "./types";
+import type { ApprovalRateStats, ApprovedStats, BulkApproveResult, InboxItem, InboxSearchParams } from "./types";
 import { ApiService, CrudServiceBase } from "../service-base";
 
 export * from "./types";
@@ -16,6 +16,14 @@ export class ApprovalTaskService extends CrudServiceBase<InboxItem> {
 
 	fetchPendingCount() {
 		return this.get<{ total: number }>("inbox/count", { ignoreLoading: true });
+	}
+
+	fetchApprovedStats() {
+		return this.get<ApprovedStats>("stats/approved", { ignoreLoading: true });
+	}
+
+	fetchApprovalRateStats() {
+		return this.get<ApprovalRateStats>("stats/approval-rate", { ignoreLoading: true });
 	}
 
 	fetchAct(requestId: string, action: ApprovalActionType, comment?: string) {
