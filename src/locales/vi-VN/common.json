@@ -61,7 +61,8 @@
 		"approvalReviewAll": "Toàn bộ",
 		"emailTemplate": "Mẫu email",
 		"activityLogList": "Nhật ký hoạt động",
-		"mailQueue": "Hàng đợi gửi mail"
+		"mailQueue": "Hàng đợi gửi mail",
+		"i18n": "Đa ngôn ngữ"
 	},
 	"appLoading": "Đang tải tài nguyên...",
 	"back": "Quay lại",

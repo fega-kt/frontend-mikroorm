@@ -33,6 +33,7 @@ import {
 	TagsOutlined,
 	TeamOutlined,
 	ToolOutlined,
+	TranslationOutlined,
 	UserOutlined,
 } from "@ant-design/icons";
 import { EmbeddedIcon, ExternalIcon, OutsidePageIcon, ProfileCardIcon } from "./local-icons";
@@ -43,6 +44,7 @@ import { RiAccountCircleLine, RiReactjsLine, RiUserSettingsLine } from "./ri";
  */
 export const menuIcons: Record<string, any> = {
 	MailOutlined,
+	TranslationOutlined,
 	CheckCircleOutlined,
 	ClockCircleOutlined,
 	AuditOutlined,

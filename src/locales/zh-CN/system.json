@@ -21,7 +21,8 @@
 			"approval_workflow": "审批流程",
 			"approval_request": "审批申请管理",
 			"email_template": "邮件模板",
-			"activity_log_queue": "邮件发送队列"
+			"activity_log_queue": "邮件发送队列",
+			"i18n": "多语言"
 		},
 		"permission": {
 			"user": "用户",
@@ -45,7 +46,8 @@
 			"reassign": "重新指派审批人",
 			"manage": "管理委托（代为创建，查看 / 编辑全部）",
 			"email-template": "邮件模板",
-			"retry": "重新发送"
+			"retry": "重新发送",
+			"i18n": "多语言"
 		}
 	},
 	"appSetting": {
@@ -255,6 +257,38 @@
 			"completed": "已发送",
 			"failed": "失败",
 			"skipped": "已跳过"
+		}
+	},
+	"i18n": {
+		"pickForm": "选择要翻译的表单",
+		"langs": {
+			"vi": "越南语",
+			"en": "英语",
+			"zh": "中文"
+		},
+		"app": {
+			"key": "键",
+			"search": "按键或内容搜索",
+			"added": "已添加",
+			"total": "{{count}} 条",
+			"addSelected": "添加所选 ({{count}})",
+			"addSuccess": "已添加 {{count}} 条",
+			"editTitle": "编辑翻译",
+			"orphanHint": "此键已不在 JSON 文件中 — 可以删除",
+			"defaultValue": "默认值:{{value}}",
+			"variableHint": "请保留默认文本中的变量:{{variables}}",
+			"confirmRemove": "删除所选的 {{count}} 条文本?界面将重新使用默认文本(JSON 文件),表单将显示越南语原文。",
+			"removeDone": "已删除 {{count}} 条",
+			"onlyNotAdded": "仅显示未添加的 i18n",
+			"stringList": "i18n 文本列表",
+			"sourceApp": "界面 (JSON)",
+			"sourceForm": "表单",
+			"formSourceHint": "以越南语显示时覆盖表单配置中的原文",
+			"type": "类型",
+			"oldVersionHint": "此键仅存在于表单的旧版本中 — 按该版本创建的申请仍在使用",
+			"required": "请输入{{lang}}",
+			"inputPlaceholder": "输入{{lang}}",
+			"missingLanguage": "缺少语言"
 		}
 	}
 }

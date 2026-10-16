@@ -17,6 +17,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router";
 import { PayloadFormItems } from "../components/form-fields";
 import { RequestFormSkeleton } from "../components/page-skeleton";
 import { checkFileBlock } from "../lib/files";
+import { useLocalizedFields } from "../lib/form-i18n";
 import { formValuesToPayload, PAYLOAD_FORM_LAYOUT, PAYLOAD_GRID_CLASS, payloadToFormValues } from "../lib/payload";
 import { PRIORITIES, PRIORITY_META } from "../lib/status";
 import { FileBlock } from "./components/file-block";
@@ -142,6 +143,8 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 		return types?.find(item => item.id === requestTypeId);
 	}, [existing, types, requestTypeId]);
 	const fields = selectedType?.formSchema ?? [];
+	// Chỉ để hiển thị: mã trường (payload) không đổi theo ngôn ngữ
+	const displayFields = useLocalizedFields(selectedType?.formId, fields);
 	const fileConfig: AttachmentConfig = selectedType?.attachmentConfig ?? DEFAULT_ATTACHMENT_CONFIG;
 	const editable = !existing || [ApprovalRequestStatus.Draft, ApprovalRequestStatus.Returned].includes(existing.status);
 	const lastReturn = existing?.status === ApprovalRequestStatus.Returned
@@ -401,7 +404,7 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 							{selectedType && !fields.length && <Text type="secondary">{t("approval.form.noFields")}</Text>}
 							{fields.length > 0 && (
 								<div className={`${PAYLOAD_GRID_CLASS}`}>
-									<PayloadFormItems fields={fields} />
+									<PayloadFormItems fields={displayFields} />
 								</div>
 							)}
 						</NumberedCard>
