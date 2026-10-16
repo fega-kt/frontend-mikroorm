@@ -91,6 +91,7 @@ export interface CreatableRequestType {
 	prefix: string
 	description?: string
 	category: { id: string, name: string } | null
+	formId: string
 	formSchema: FormField[]
 	attachmentConfig: AttachmentConfig
 	hasWorkflow: boolean
@@ -201,7 +202,7 @@ export interface ApprovalRequestDetail {
 	closedAt?: string
 	createdAt: string
 	updatedAt: string
-	requestType: { id: string, code: string, name: string, formSchema: FormField[], attachmentConfig: AttachmentConfig }
+	requestType: { id: string, code: string, name: string, formId: string, formSchema: FormField[], attachmentConfig: AttachmentConfig }
 	requester: UserBrief
 	department: { id: string, name: string }
 	documents: Pick<AttachmentEntity, "id" | "filename" | "url" | "visibility" | "size" | "mimetype">[]

@@ -62,6 +62,10 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.MenuEmailTemplate,
 		PermissionType.UpdateEmailTemplate,
 	],
+	I18N: [
+		PermissionType.MenuI18n,
+		PermissionType.UpdateI18n,
+	],
 	APPROVAL_REQUEST: [
 		PermissionType.MenuAllApprovalRequest,
 		PermissionType.ReassignApprovalTask,

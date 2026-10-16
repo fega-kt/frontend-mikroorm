@@ -20,7 +20,8 @@
 			"approval_workflow": "Approval workflows",
 			"approval_request": "Approval request administration",
 			"email_template": "Email templates",
-			"activity_log_queue": "Mail queue"
+			"activity_log_queue": "Mail queue",
+			"i18n": "Localization"
 		},
 		"permission": {
 			"user": "User",
@@ -44,7 +45,8 @@
 			"reassign": "Reassign approver",
 			"manage": "Manage delegations (create on behalf, view / edit all)",
 			"email-template": "Email templates",
-			"retry": "Resend"
+			"retry": "Resend",
+			"i18n": "Localization"
 		}
 	},
 	"appSetting": {
@@ -254,6 +256,38 @@
 			"completed": "Sent",
 			"failed": "Failed",
 			"skipped": "Skipped"
+		}
+	},
+	"i18n": {
+		"pickForm": "Select a form to translate",
+		"langs": {
+			"vi": "Vietnamese",
+			"en": "English",
+			"zh": "Chinese"
+		},
+		"app": {
+			"key": "Key",
+			"search": "Search by key or text",
+			"added": "Added",
+			"total": "{{count}} strings",
+			"addSelected": "Add selected ({{count}})",
+			"addSuccess": "Added {{count}} string(s)",
+			"editTitle": "Edit translation",
+			"orphanHint": "This key is no longer in the JSON files — it can be removed",
+			"defaultValue": "Default: {{value}}",
+			"variableHint": "Keep the variables of the default string: {{variables}}",
+			"confirmRemove": "Delete {{count}} selected string(s)? The interface will use the default strings (JSON files) again, forms will show the original Vietnamese text.",
+			"removeDone": "Deleted {{count}} string(s)",
+			"onlyNotAdded": "Only show i18n not added yet",
+			"stringList": "i18n strings",
+			"sourceApp": "Interface (JSON)",
+			"sourceForm": "Forms",
+			"formSourceHint": "Overrides the original text in the form settings when shown in Vietnamese",
+			"type": "Type",
+			"oldVersionHint": "This key only exists in an old version of the form — requests created with that version still use it",
+			"required": "Please enter {{lang}}",
+			"inputPlaceholder": "Enter {{lang}}",
+			"missingLanguage": "Missing language"
 		}
 	}
 }

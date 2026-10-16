@@ -21,7 +21,8 @@
 			"approval_workflow": "Quy trình phê duyệt",
 			"approval_request": "Quản trị tờ trình phê duyệt",
 			"email_template": "Mẫu email",
-			"activity_log_queue": "Hàng đợi gửi mail"
+			"activity_log_queue": "Hàng đợi gửi mail",
+			"i18n": "Đa ngôn ngữ"
 		},
 		"permission": {
 			"user": "Người dùng",
@@ -45,7 +46,8 @@
 			"reassign": "Gán lại người duyệt",
 			"manage": "Quản lý ủy quyền (tạo hộ, xem / sửa mọi ủy quyền)",
 			"email-template": "Mẫu email",
-			"retry": "Gửi lại"
+			"retry": "Gửi lại",
+			"i18n": "Đa ngôn ngữ"
 		}
 	},
 	"appSetting": {
@@ -234,6 +236,38 @@
 			"completed": "Đã gửi",
 			"failed": "Lỗi",
 			"skipped": "Bỏ qua"
+		}
+	},
+	"i18n": {
+		"pickForm": "Chọn biểu mẫu cần dịch",
+		"langs": {
+			"vi": "Tiếng Việt",
+			"en": "Tiếng Anh",
+			"zh": "Tiếng Trung"
+		},
+		"app": {
+			"key": "Khóa",
+			"search": "Tìm theo khóa hoặc nội dung",
+			"added": "Đã thêm",
+			"total": "{{count}} chuỗi",
+			"addSelected": "Thêm đã chọn ({{count}})",
+			"addSuccess": "Đã thêm {{count}} chuỗi",
+			"editTitle": "Sửa bản dịch",
+			"orphanHint": "Key này không còn trong file JSON — có thể xóa",
+			"defaultValue": "Mặc định: {{value}}",
+			"variableHint": "Phải giữ đúng các biến của chuỗi mặc định: {{variables}}",
+			"confirmRemove": "Xóa {{count}} chuỗi đã chọn? Giao diện sẽ dùng lại chuỗi mặc định (file JSON), biểu mẫu dùng lại chuỗi gốc tiếng Việt.",
+			"removeDone": "Đã xóa {{count}} chuỗi",
+			"onlyNotAdded": "Chỉ hiển thị i18n chưa thêm",
+			"stringList": "Danh sách i18n",
+			"sourceApp": "Giao diện (JSON)",
+			"sourceForm": "Biểu mẫu",
+			"formSourceHint": "Đè lên chuỗi gốc trong cấu hình biểu mẫu khi hiển thị tiếng Việt",
+			"type": "Loại",
+			"oldVersionHint": "Key này chỉ còn ở phiên bản cũ của biểu mẫu — phiếu tạo theo phiên bản đó vẫn dùng",
+			"required": "Vui lòng nhập {{lang}}",
+			"inputPlaceholder": "Nhập {{lang}}",
+			"missingLanguage": "Thiếu ngôn ngữ"
 		}
 	}
 }

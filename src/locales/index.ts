@@ -7,6 +7,7 @@ import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
 
 import { getLanguage, LanguageType } from "./helper";
+import { OVERRIDE_NS } from "./overrides";
 
 export * from "./t";
 
@@ -16,21 +17,34 @@ export const ANT_DESIGN_LOCALE = {
 	[LanguageType.vi]: { ...viVN, Pagination: { ...viVN.Pagination, jump_to: "Đến trang", page: "" } },
 };
 
+/** `translation` là file JSON (mặc định, không bị sửa lúc chạy); `override` được nạp từ database sau khi đăng nhập */
 export const i18nResources = {
 	[LanguageType.zh]: {
 		translation: getLanguage(LanguageType.zh),
+		[OVERRIDE_NS]: {},
 	},
 	[LanguageType.en]: {
 		translation: getLanguage(LanguageType.en),
+		[OVERRIDE_NS]: {},
 	},
 	[LanguageType.vi]: {
 		translation: getLanguage(LanguageType.vi),
+		[OVERRIDE_NS]: {},
 	},
 };
 
 export const i18nInitOptions: InitOptions = {
 	lng: LanguageType.vi,
 	resources: i18nResources,
+	/**
+	 * Bản dịch từ database (`override`) được tra trước, thiếu thì dùng file JSON (`translation`) làm mặc định
+	 * @see ./overrides.ts
+	 */
+	ns: [OVERRIDE_NS, "translation"],
+	defaultNS: OVERRIDE_NS,
+	fallbackNS: "translation",
+	/** Render lại khi bản đè được nạp / thay thế */
+	react: { bindI18nStore: "added removed" },
 	saveMissing: import.meta.env.DEV,
 	/**
 	 * Suppress locize.com advertisement notice

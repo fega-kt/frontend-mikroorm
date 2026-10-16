@@ -59,7 +59,8 @@
 		"approvalReviewAll": "All",
 		"emailTemplate": "Email templates",
 		"activityLogList": "Activity log",
-		"mailQueue": "Mail queue"
+		"mailQueue": "Mail queue",
+		"i18n": "Localization"
 	},
 	"appLoading": "Loading Resources...",
 	"back": "Back",

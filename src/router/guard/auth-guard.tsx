@@ -1,6 +1,7 @@
 import { authProvider } from "#src/api/auth";
 import { fetchAsyncRoutes } from "#src/api/route";
 import { healthCheck } from "#src/api/system/health";
+import { loadAppTranslations } from "#src/hooks/use-app-translations";
 import { useCurrentRoute } from "#src/hooks/use-current-route";
 import Exception500 from "#src/pages/exception/500";
 import { hideLoading } from "#src/plugins/hide-loading";
@@ -105,6 +106,13 @@ export function AuthGuard({ children }: AuthGuardProps) {
 		const appSettingPromise = useAppSettingStore.getState().fetchSettings();
 
 		/**
+		 * Bản dịch giao diện từ database (ưu tiên hơn file JSON), cùng cách với app setting: tải cả ba ngôn ngữ một lần,
+		 * không persist, chờ xong mới render để không nháy chữ JSON; đổi ngôn ngữ dùng luôn bản đã nạp.
+		 * Lỗi thì dùng file JSON, không ảnh hưởng hasError. Trước khi đăng nhập chỉ có file JSON.
+		 */
+		const translationPromise = loadAppTranslations().catch(() => {});
+
+		/**
 		 * @zh 启用了后端路由，且路由从单独接口中获取，则发起请求
 		 * @en If backend routing is enabled and the route is obtained from a separate interface, then initiate a request
 		 */
@@ -112,7 +120,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
 			promises.push(fetchAsyncRoutes());
 		}
 
-		const [results] = await Promise.all([Promise.allSettled(promises), appSettingPromise]);
+		const [results] = await Promise.all([Promise.allSettled(promises), appSettingPromise, translationPromise]);
 		const [userInfoResult, routeResult] = results;
 		const routes = [];
 		const latestPermssions: string[] = [];

@@ -1,5 +1,6 @@
 import type { ApprovalShareItem, ApprovalTaskItem } from "#src/api/approval-request";
 import type { ApprovalActionType } from "#src/api/approval-task";
+import type { FormField } from "#src/api/setting/request-type/types";
 import type { FileViewTarget } from "#src/components/file-viewer";
 import type { BadgeProps } from "antd";
 import type { ReactNode } from "react";
@@ -36,6 +37,7 @@ import { PayloadView } from "../components/form-fields";
 import { RequestDetailSkeleton } from "../components/page-skeleton";
 import { PriorityTag, RequestStatusTag } from "../components/status-tag";
 import { fileListSummary } from "../lib/files";
+import { useLocalizedFields } from "../lib/form-i18n";
 import { DATE_TIME_FORMAT } from "../lib/payload";
 import { collectUserNames } from "../lib/progress";
 import { buildRounds } from "../lib/rounds";
@@ -80,6 +82,8 @@ const ROUND_BADGE: Record<ApprovalRequestStatus, BadgeProps["status"]> = {
 	[ApprovalRequestStatus.Cancelled]: "default",
 };
 
+const NO_FIELDS: FormField[] = [];
+
 export default function ApprovalRequestDetailPage() {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
@@ -91,6 +95,8 @@ export default function ApprovalRequestDetailPage() {
 		() => approvalRequestService.fetchDetail(id!),
 		{ ready: !!id, refreshDeps: [id], cacheKey: `approval-request-${id}`, staleTime: 5000 },
 	);
+	// Nhãn / lựa chọn của form theo ngôn ngữ đang dùng (chỉ để hiển thị)
+	const contentFields = useLocalizedFields(detail?.requestType.formId, detail?.requestType.formSchema ?? NO_FIELDS);
 	// Tờ trình nháp chưa có quy trình thì không có tab sơ đồ
 	const hasDefinition = !!detail?.definition;
 	const activeTab = Object.values(DetailTab).find(key => key === searchParams.get("tab") && (key !== DetailTab.Progress || hasDefinition)) ?? DetailTab.Info;
@@ -330,7 +336,7 @@ export default function ApprovalRequestDetailPage() {
 												/>
 											</SectionCard>
 											<SectionCard icon={<ProfileOutlined />} title={t("approval.detail.content")}>
-												<PayloadView fields={detail.requestType.formSchema} payload={detail.payload} />
+												<PayloadView fields={contentFields} payload={detail.payload} />
 											</SectionCard>
 										</div>
 
