@@ -8,7 +8,7 @@ import { AttachmentUpload } from "#src/components/attachment-upload";
 import { FileViewer } from "#src/components/file-viewer";
 import { STORAGE_PATH } from "#src/constants/storage-path";
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { Form, Typography } from "antd";
+import { Form, Tooltip, Typography } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { acceptFor, blockSummary } from "../../lib/files";
@@ -39,11 +39,13 @@ export function FileBlock({ index, name, requestId, config, disabled, uploadRef 
 						{config.required && <span className="ml-1 text-[#c62828]">*</span>}
 					</>
 				)}
+				// Chỉ hiện icon, quy định (bắt buộc / số tệp / định dạng / dung lượng) xem trong tooltip
 				extra={(
-					<span className="flex items-center gap-1.5">
-						<InfoCircleOutlined />
-						{blockSummary(config, t)}
-					</span>
+					<Tooltip title={blockSummary(config, t)} placement="topRight">
+						<button type="button" aria-label={blockSummary(config, t)} className="flex cursor-help items-center border-0 bg-transparent p-1 text-base text-inherit">
+							<InfoCircleOutlined />
+						</button>
+					</Tooltip>
 				)}
 			>
 				<Form.Item name={name} noStyle>
