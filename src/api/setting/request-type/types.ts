@@ -2,6 +2,7 @@ import type { EntityBase } from "#src/api/entity-base.js";
 import type { SearchParamsBase } from "#src/api/service-base.js";
 import type { CategoryEntity } from "#src/api/setting/category";
 import type { FormOption } from "#src/api/setting/form/types";
+import type { PrincipalType } from "#src/api/system/principal/types";
 
 export enum RequestTypeStatus {
 	Draft = "draft",
@@ -31,6 +32,10 @@ export const REFERENCE_FIELD_TYPES: ReadonlySet<FormFieldType> = new Set([FormFi
 export interface FormReference {
 	id: string
 	name: string
+	/** Chỉ trường Người / nhóm: principal là người hay nhóm (payload cũ không có) */
+	type?: PrincipalType
+	/** Chỉ trường Người / nhóm, principal là người: id user để tra avatar / email mới nhất */
+	userId?: string
 }
 
 export interface FormField {
