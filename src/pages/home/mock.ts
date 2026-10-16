@@ -3,7 +3,8 @@ import { ApprovalRequestStatus as RequestStatus } from "#src/api/approval-reques
 /**
  * Dữ liệu giả cho dashboard phê duyệt — chưa có API thống kê.
  * Đơn chờ duyệt / đơn của tôi / ủy quyền đã lấy từ API (use-approval-dashboard.ts).
- * TODO: thống kê tháng, thời gian duyệt trung bình và hoạt động gần đây — chưa có API.
+ * Số đã duyệt / tỷ lệ duyệt trong tháng đã lấy từ API (use-approval-dashboard.ts).
+ * TODO: thời gian duyệt trung bình và hoạt động gần đây — chưa có API.
  */
 
 import dayjs from "dayjs";
@@ -61,11 +62,6 @@ export interface ApprovalActivity {
 const ago = (value: number, unit: dayjs.ManipulateType) => dayjs().subtract(value, unit).toISOString();
 
 export const MOCK_STATS = {
-	approvedThisMonth: 42,
-	approvedLastMonth: 34,
-	approvalRate: 89,
-	rejectedThisMonth: 5,
-	returnedThisMonth: 3,
 	avgDaysPerStep: 1.6,
 	avgDaysDelta: -0.4,
 	avgByType: [

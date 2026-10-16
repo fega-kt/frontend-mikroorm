@@ -44,3 +44,17 @@ export interface BulkApproveResult {
 	results: { id: string, success: boolean, message?: string }[]
 	succeeded: number
 }
+
+/** Thẻ "Tôi đã duyệt tháng này" */
+export interface ApprovedStats {
+	thisMonth: number
+	lastMonth: number
+}
+
+/** Thẻ "Tỷ lệ duyệt": rate là % (0–100) của các tờ trình tôi đã xử lý tháng này */
+export interface ApprovalRateStats {
+	approved: number
+	rejected: number
+	returned: number
+	rate: number
+}
