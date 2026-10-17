@@ -1,6 +1,8 @@
 import type { WorkflowDefinition } from "#src/api/approval-workflow/types";
+import type { FormField } from "#src/api/setting/request-type/types";
 import type { ApprovalRound } from "../../lib/rounds";
 import { ApprovalHistoryAction } from "#src/api/approval-request/types";
+import { NodeType } from "#src/api/approval-workflow/types";
 import { useWorkflowApproverProfiles, useWorkflowUserNames } from "#src/components/approval-flow-graph/user-names";
 import { Drawer, Tag, Timeline, Typography } from "antd";
 import dayjs from "dayjs";
@@ -9,6 +11,7 @@ import { historyActor, historyLabel } from "../../lib/history";
 import { DATE_TIME_FORMAT } from "../../lib/payload";
 import { groupSteps } from "../../lib/rounds";
 import { nodeTitle } from "../../workflow-designer/canvas/labels";
+import { ConditionBranches } from "./condition-branches";
 import { useProgressVisual } from "./progress-visual";
 import { StepEntries } from "./round-timeline";
 import { StepConfig } from "./step-config";
@@ -24,18 +27,21 @@ interface StepDetailDrawerProps {
 	round: ApprovalRound
 	definition: WorkflowDefinition
 	userNames: Record<string, string>
+	/** formSchema của phiếu — để hiện nhãn trường trong điều kiện rẽ nhánh */
+	fields: FormField[]
 	onClose: () => void
 }
 
 /** Chi tiết một bước trong vòng: ai duyệt, kết quả, ghi chú / lý do trả lại, từ chối */
-export function StepDetailDrawer({ nodeId, round, definition, userNames, onClose }: StepDetailDrawerProps) {
+export function StepDetailDrawer({ nodeId, round, definition, userNames, fields, onClose }: StepDetailDrawerProps) {
 	const { t } = useTranslation();
 	const visual = useProgressVisual();
 	const names = useWorkflowUserNames(definition, userNames);
 	const profiles = useWorkflowApproverProfiles(definition);
 	const node = definition.nodes.find(item => item.id === nodeId);
 	const group = node && groupSteps(round).find(item => item.nodeId === node.id);
-	const status = node ? (round.nodeStatus[node.id] ?? "pending") : "pending";
+	// Node đã đi qua nhưng không có trạng thái (vd điều kiện) → coi như đã xong, giống sơ đồ
+	const status = node ? (round.nodeStatus[node.id] ?? (round.visitedNodeIds.includes(node.id) ? "done" : "pending")) : "pending";
 	const sideEvents = node ? round.histories.filter(item => item.nodeId === node.id && SIDE_EVENTS.includes(item.action)) : [];
 	const userName = (value: unknown) => (typeof value === "string" ? names[value] : undefined);
 
@@ -52,7 +58,13 @@ export function StepDetailDrawer({ nodeId, round, definition, userNames, onClose
 				</div>
 			)}
 		>
-			{node && (
+			{node?.type === NodeType.Condition && (
+				<div className="flex flex-col gap-2">
+					<Text strong>{t("workflowDesigner.inspector.branches")}</Text>
+					<ConditionBranches node={node} definition={definition} fields={fields} visitedNodeIds={round.visitedNodeIds} />
+				</div>
+			)}
+			{node && node.type !== NodeType.Condition && (
 				<div className="flex flex-col gap-5">
 					<div className="flex flex-col gap-2">
 						<Text strong>{t("approval.detail.stepProcessing", { n: round.round })}</Text>
