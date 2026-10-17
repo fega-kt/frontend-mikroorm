@@ -428,6 +428,7 @@ export default function ApprovalRequestDetailPage() {
 													nodeStatus={viewingRound.nodeStatus}
 													visitedNodeIds={viewingRound.visitedNodeIds}
 													userNames={userNames}
+													fields={contentFields}
 													height={560}
 													onNodeClick={setStepNodeId}
 												/>
@@ -436,6 +437,7 @@ export default function ApprovalRequestDetailPage() {
 													round={viewingRound}
 													definition={detail.definition}
 													userNames={userNames}
+													fields={contentFields}
 													onClose={() => setStepNodeId(null)}
 												/>
 											</div>

@@ -30,12 +30,12 @@ export interface ApprovalFlowGraphProps {
 	/** formSchema của loại đơn — để hiển thị nhãn trường trong điều kiện (tùy chọn) */
 	fields?: FormField[]
 	className?: string
-	/** Bấm vào bước duyệt / song song / thông báo (vd: xem chi tiết bước) */
+	/** Bấm vào bước duyệt / song song / thông báo / điều kiện (vd: xem chi tiết bước, các nhánh rẽ) */
 	onNodeClick?: (nodeId: string) => void
 }
 
-/** Loại node bấm được để xem chi tiết; điểm bắt đầu / kết thúc / rẽ nhánh không có gì để xem */
-const CLICKABLE_TYPES = new Set<string>([NodeType.Approval, NodeType.Parallel, NodeType.Notify]);
+/** Loại node bấm được để xem chi tiết; điểm bắt đầu / kết thúc không có gì để xem */
+const CLICKABLE_TYPES = new Set<string>([NodeType.Approval, NodeType.Parallel, NodeType.Notify, NodeType.Condition]);
 
 /** Lớp các cạnh nối hai node đã đi qua */
 function visitedEdgeIds(edges: FlowEdge[], visited: Set<string>): Set<string> {
@@ -123,6 +123,8 @@ function Graph({ definition, nodeStatus, visitedNodeIds, height = 420, userNames
 				<ReactFlow<FlowNode, FlowEdge>
 					nodes={nodes}
 					edges={edges}
+					// Ẩn chữ "React Flow" ở góc (thư viện MIT, cho phép ẩn)
+					proOptions={{ hideAttribution: true }}
 					nodeTypes={flowNodeTypes}
 					edgeTypes={flowEdgeTypes}
 					nodesDraggable={false}

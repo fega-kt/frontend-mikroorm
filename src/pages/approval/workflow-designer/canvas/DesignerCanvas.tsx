@@ -182,6 +182,8 @@ export function DesignerCanvas({ readOnly, fields }: DesignerCanvasProps) {
 				<ReactFlow<FlowNode, FlowEdge>
 					nodes={nodes}
 					edges={edges}
+					// Ẩn chữ "React Flow" ở góc (thư viện MIT, cho phép ẩn)
+					proOptions={{ hideAttribution: true }}
 					nodeTypes={flowNodeTypes}
 					edgeTypes={flowEdgeTypes}
 					onNodesChange={onNodesChange}
