@@ -8,8 +8,11 @@ import { Button, Tag, theme } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
-import { REQUEST_TYPE_COLOR, WAIT_DANGER_HOURS, WAIT_WARNING_HOURS } from "../constants";
+import { WAIT_DANGER_HOURS, WAIT_WARNING_HOURS } from "../constants";
+import { useOpenRequest } from "../use-open-request";
+import { CategoryTag } from "./category-tag";
 import { DashboardCard } from "./dashboard-card";
+import { RequestTitleLink } from "./request-link";
 import { RequestTypeIcon } from "./request-type-icon";
 
 export type ApprovalResult = "approved" | "rejected";
@@ -22,6 +25,7 @@ interface PendingApprovalsProps {
 
 export function PendingApprovals({ items, results, onAction }: PendingApprovalsProps) {
 	const { t } = useTranslation();
+	const openRequest = useOpenRequest();
 	const { token } = theme.useToken();
 	const openCount = items.filter(item => !results[item.id]).length;
 
@@ -57,19 +61,18 @@ export function PendingApprovals({ items, results, onAction }: PendingApprovalsP
 				return (
 					<div
 						key={item.id}
-						className="relative flex flex-wrap items-center gap-3.5 border-0 border-b border-solid border-colorBorderSecondary px-5 py-3.5 transition-colors"
+						className="relative flex cursor-pointer flex-wrap items-center gap-3.5 border-0 border-b border-solid border-colorBorderSecondary px-5 py-3.5 transition-colors"
+						onClick={openRequest(item.id)}
 						style={{ background: showUrgency ? urgency.bg : undefined }}
 					>
 						{showUrgency && urgency.bar && (
 							<span aria-hidden="true" className="absolute inset-y-2 left-0 w-[3px] rounded-r" style={{ background: urgency.bar }} />
 						)}
-						<RequestTypeIcon type={item.type} />
+						<RequestTypeIcon type={item.type} category={item.category} />
 						<div className="flex min-w-0 flex-[1_1_260px] flex-col gap-1">
 							<div className="flex min-w-0 items-center gap-2">
-								<Tag bordered={false} color={REQUEST_TYPE_COLOR[item.type]} className="m-0 shrink-0">
-									{t(`home.requestType.${item.type}`)}
-								</Tag>
-								<span className="truncate text-sm text-colorText">{item.title}</span>
+								<CategoryTag category={item.category} type={item.type} />
+								<RequestTitleLink id={item.id} title={item.title} />
 							</div>
 							<span className="flex items-center gap-1.5 text-xs text-colorTextTertiary">
 								<UserAvatar size={16} className="text-[9px]" user={{ id: item.requesterId, fullName: item.requesterName, avatar: item.requesterAvatar }} />

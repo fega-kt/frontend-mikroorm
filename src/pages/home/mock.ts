@@ -16,6 +16,8 @@ export type RequestTypeCode = "leave" | "advance" | "purchase" | "trip" | "payme
 export interface PendingApproval {
 	id: string
 	type: RequestTypeCode
+	/** Nhóm tờ trình (dữ liệu thật); dữ liệu mẫu không có */
+	category?: { id: string, name: string, icon?: string | null }
 	title: string
 	requesterId: string
 	requesterName: string
@@ -31,6 +33,8 @@ export interface ApprovalStep {
 export interface MyRequest {
 	id: string
 	type: RequestTypeCode
+	/** Nhóm tờ trình (dữ liệu thật); dữ liệu mẫu không có */
+	category?: { id: string, name: string, icon?: string | null }
 	title: string
 	submittedAt: string
 	status: RequestStatus

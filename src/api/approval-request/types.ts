@@ -82,6 +82,8 @@ export interface ApprovalRequestListItem {
 	requestType: { id: string, code: string, name: string }
 	requester: UserBrief
 	department: { id: string, name: string }
+	/** Nhóm tờ trình (icon = URL ảnh, có thể trống) */
+	category: { id: string, name: string, icon?: string | null }
 }
 
 export interface CreatableRequestType {
