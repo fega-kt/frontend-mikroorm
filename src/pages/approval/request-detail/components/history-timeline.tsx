@@ -37,6 +37,7 @@ const ACTION_STYLE: Record<ApprovalHistoryAction, { icon: React.ReactNode, tone:
 	[ApprovalHistoryAction.Resubmit]: { icon: <SendOutlined />, tone: "primary" },
 	[ApprovalHistoryAction.Approve]: { icon: <CheckCircleOutlined />, tone: "success" },
 	[ApprovalHistoryAction.AutoApprove]: { icon: <CheckCircleOutlined />, tone: "success" },
+	[ApprovalHistoryAction.AutoReject]: { icon: <CloseCircleOutlined />, tone: "error" },
 	[ApprovalHistoryAction.Reject]: { icon: <CloseCircleOutlined />, tone: "error" },
 	[ApprovalHistoryAction.Return]: { icon: <RollbackOutlined />, tone: "warning" },
 	[ApprovalHistoryAction.Cancel]: { icon: <StopOutlined />, tone: "default" },

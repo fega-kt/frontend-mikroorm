@@ -42,7 +42,8 @@
 			"files": "Tệp"
 		},
 		"regroup": "Chia lại trong nhóm",
-		"sameApprover": "Tự động duyệt (cùng người duyệt)"
+		"sameApprover": "Tự động duyệt (cùng người duyệt)",
+		"auto_reject": "Từ chối do quá hạn xử lý"
 	},
 	"fields": {
 		"code": "Mã tờ trình",

@@ -18,6 +18,8 @@ export enum OverdueAction {
 	Remind = "REMIND",
 	RemindThenEscalate = "REMIND_THEN_ESCALATE",
 	AutoApprove = "AUTO_APPROVE",
+	/** Quá hạn: nhắc trước, vẫn trễ thêm một chu kỳ thì hệ thống từ chối */
+	AutoReject = "AUTO_REJECT",
 }
 
 /** Người duyệt là nhóm — đồng bộ backend GroupMode */

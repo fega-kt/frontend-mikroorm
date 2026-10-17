@@ -114,7 +114,8 @@
 	"overdue": {
 		"REMIND": "Remind only",
 		"REMIND_THEN_ESCALATE": "Remind, then escalate",
-		"AUTO_APPROVE": "Auto-approve"
+		"AUTO_APPROVE": "Auto-approve",
+		"AUTO_REJECT": "Auto-reject"
 	},
 	"parallelMode": {
 		"ALL": "All",

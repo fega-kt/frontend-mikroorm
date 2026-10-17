@@ -53,7 +53,7 @@ function SlaFields() {
 				<Form.Item name="onOverdue" label={t("workflowDesigner.inspector.onOverdue")}>
 					<Select
 						popupMatchSelectWidth={false}
-						options={[OverdueAction.RemindThenEscalate, OverdueAction.Remind, OverdueAction.AutoApprove].map(v => ({
+						options={[OverdueAction.RemindThenEscalate, OverdueAction.Remind, OverdueAction.AutoApprove, OverdueAction.AutoReject].map(v => ({
 							value: v,
 							label: t(`workflowDesigner.overdue.${v}`),
 						}))}

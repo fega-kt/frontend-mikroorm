@@ -42,7 +42,8 @@
 			"files": "Files"
 		},
 		"regroup": "Reassigned within group",
-		"sameApprover": "Auto-approved (same approver)"
+		"sameApprover": "Auto-approved (same approver)",
+		"auto_reject": "Rejected after the deadline"
 	},
 	"fields": {
 		"code": "Code",
