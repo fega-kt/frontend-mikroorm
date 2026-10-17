@@ -37,6 +37,8 @@ export interface InboxItem {
 		requestType: { id: string, name: string, formId: string, formSchema: FormField[] }
 		requester: UserBrief
 		department: { id: string, name: string }
+		/** Nhóm tờ trình (icon = URL ảnh, có thể trống) */
+		category: { id: string, name: string, icon?: string | null }
 	}
 }
 

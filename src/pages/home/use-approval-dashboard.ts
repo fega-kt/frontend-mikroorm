@@ -73,6 +73,7 @@ export function useApprovalDashboard(): ApprovalDashboardData {
 			setPending(inbox.data.filter(item => !seen.has(item.request.id) && seen.add(item.request.id)).map(item => ({
 				id: item.request.id,
 				type: guessRequestTypeCode(item.request.requestType.name, item.request.code),
+				category: item.request.category,
 				title: item.request.title,
 				requesterId: item.request.requester.id,
 				requesterName: item.request.requester.fullName,
@@ -85,6 +86,7 @@ export function useApprovalDashboard(): ApprovalDashboardData {
 			setMyRequests(mine.data.map(item => ({
 				id: item.id,
 				type: guessRequestTypeCode(item.requestType.code, item.requestType.name),
+				category: item.category,
 				title: item.title,
 				submittedAt: item.submittedAt ?? item.createdAt,
 				status: item.status,
