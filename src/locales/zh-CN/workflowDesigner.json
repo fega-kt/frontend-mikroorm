@@ -114,7 +114,8 @@
 	"overdue": {
 		"REMIND": "仅提醒",
 		"REMIND_THEN_ESCALATE": "提醒后升级",
-		"AUTO_APPROVE": "自动通过"
+		"AUTO_APPROVE": "自动通过",
+		"AUTO_REJECT": "自动拒绝"
 	},
 	"parallelMode": {
 		"ALL": "全部",

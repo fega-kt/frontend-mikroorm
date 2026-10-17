@@ -114,7 +114,8 @@
 	"overdue": {
 		"REMIND": "Chỉ nhắc nhở",
 		"REMIND_THEN_ESCALATE": "Nhắc rồi chuyển cấp",
-		"AUTO_APPROVE": "Tự động duyệt"
+		"AUTO_APPROVE": "Tự động duyệt",
+		"AUTO_REJECT": "Tự động từ chối"
 	},
 	"parallelMode": {
 		"ALL": "Tất cả",

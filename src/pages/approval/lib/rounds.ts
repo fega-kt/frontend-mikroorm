@@ -8,6 +8,7 @@ import { computeNodeStatus } from "./progress";
 const END_OUTCOME: Partial<Record<ApprovalHistoryAction, ApprovalRequestStatus>> = {
 	[ApprovalHistoryAction.Return]: ApprovalRequestStatus.Returned,
 	[ApprovalHistoryAction.Reject]: ApprovalRequestStatus.Rejected,
+	[ApprovalHistoryAction.AutoReject]: ApprovalRequestStatus.Rejected,
 	[ApprovalHistoryAction.Cancel]: ApprovalRequestStatus.Cancelled,
 	[ApprovalHistoryAction.Complete]: ApprovalRequestStatus.Approved,
 };
