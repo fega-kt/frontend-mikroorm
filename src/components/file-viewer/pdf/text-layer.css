@@ -1,0 +1,58 @@
+/*
+ * Lớp chữ trong suốt phủ lên canvas để bôi đen / copy / tìm chữ.
+ * Rút gọn từ pdfjs-dist/web/pdf_viewer.css (chỉ phần .textLayer) để không kéo cả CSS của viewer mẫu.
+ * --total-scale-factor được gán theo zoom của từng trang.
+ */
+.pdf-text-layer {
+	--min-font-size: 1;
+	--text-scale-factor: calc(var(--total-scale-factor) * var(--min-font-size));
+	--min-font-size-inv: calc(1 / var(--min-font-size));
+	position: absolute;
+	inset: 0;
+	overflow: clip;
+	line-height: 1;
+	text-align: initial;
+	text-size-adjust: none;
+	forced-color-adjust: none;
+	transform-origin: 0 0;
+	z-index: 0;
+}
+
+.pdf-text-layer :is(span, br) {
+	position: absolute;
+	color: transparent;
+	white-space: pre;
+	cursor: text;
+	transform-origin: 0% 0%;
+}
+
+.pdf-text-layer > :not(.markedContent),
+.pdf-text-layer .markedContent span:not(.markedContent) {
+	--font-height: 0;
+	--scale-x: 1;
+	--rotate: 0deg;
+	z-index: 1;
+	font-size: calc(var(--text-scale-factor) * var(--font-height));
+	transform: rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv));
+}
+
+.pdf-text-layer .markedContent {
+	display: contents;
+}
+
+.pdf-text-layer span[role="img"] {
+	user-select: none;
+	cursor: default;
+}
+
+.pdf-text-layer ::selection {
+	background: rgb(22 119 255 / 0.3);
+}
+
+/* Đoạn chữ khớp từ khóa tìm kiếm */
+.pdf-text-layer .pdf-match {
+	margin: -1px;
+	padding: 1px;
+	border-radius: 2px;
+	background-color: rgb(250 173 20 / 0.45);
+}

@@ -187,5 +187,22 @@
 			"LOGIN_OTP_FAILED": "OTP login failed",
 			"LOGIN": "Logged in"
 		}
+	},
+	"fileViewer": {
+		"download": "Download",
+		"toggleThumbnails": "Show/hide page list",
+		"prevPage": "Previous page",
+		"nextPage": "Next page",
+		"pageInput": "Page number",
+		"zoomIn": "Zoom in",
+		"zoomOut": "Zoom out",
+		"fitWidth": "Fit width",
+		"fitPage": "Fit page",
+		"rotate": "Rotate page",
+		"search": "Search in document",
+		"notFound": "No results for \"{{term}}\"",
+		"pageIndicator": "Page {{page}} / {{total}}",
+		"loaded": "Loaded {{loaded}} / {{total}}",
+		"loadError": "Could not open this PDF. You can download it to view."
 	}
 }

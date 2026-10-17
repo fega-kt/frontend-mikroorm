@@ -191,5 +191,22 @@
 			"LOGIN_OTP_FAILED": "Đăng nhập OTP thất bại",
 			"LOGIN": "Đăng nhập"
 		}
+	},
+	"fileViewer": {
+		"download": "Tải xuống",
+		"toggleThumbnails": "Ẩn/hiện danh sách trang",
+		"prevPage": "Trang trước",
+		"nextPage": "Trang sau",
+		"pageInput": "Số trang",
+		"zoomIn": "Phóng to",
+		"zoomOut": "Thu nhỏ",
+		"fitWidth": "Vừa chiều ngang",
+		"fitPage": "Vừa trang",
+		"rotate": "Xoay trang",
+		"search": "Tìm trong tài liệu",
+		"notFound": "Không tìm thấy \"{{term}}\"",
+		"pageIndicator": "Trang {{page}} / {{total}}",
+		"loaded": "Đã tải {{loaded}} / {{total}}",
+		"loadError": "Không mở được tệp PDF. Bạn có thể tải tệp về để xem."
 	}
 }
