@@ -4,6 +4,8 @@ import { ApiService, CrudServiceBase } from "../service-base";
 export enum FileViewKind {
 	/** OnlyOffice Document Server */
 	Office = "office",
+	/** pdf.js ở client, tải theo từng đoạn (Range) */
+	Pdf = "pdf",
 	Image = "image",
 	Video = "video",
 	Audio = "audio",
@@ -36,7 +38,7 @@ export interface FileViewDescriptor {
 	mimetype: string
 	size: number
 	kind: FileViewKind
-	/** kind = image | video | audio: đường dẫn stream (cộng với base URL của backend xử lý ngữ cảnh) */
+	/** kind = pdf | image | video | audio: đường dẫn stream (cộng với base URL của backend xử lý ngữ cảnh) */
 	streamPath?: string
 	/** kind = office: địa chỉ Document Server để tải api.js */
 	documentServerUrl?: string
@@ -98,7 +100,7 @@ export const fileViewService = {
 		catch {}
 	},
 
-	/** URL đầy đủ để thẻ img/video/audio phát tệp từ đường dẫn stream backend trả về */
+	/** URL đầy đủ để trình xem PDF, thẻ img/video/audio đọc tệp từ đường dẫn stream backend trả về */
 	buildStreamUrl(contextType: FileContextType, streamPath: string) {
 		return `${BASE_URL[CONTEXT_SERVICE[contextType]].replace(/\/+$/, "")}${streamPath}`;
 	},
