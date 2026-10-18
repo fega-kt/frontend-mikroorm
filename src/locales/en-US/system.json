@@ -21,7 +21,8 @@
 			"approval_request": "Approval request administration",
 			"email_template": "Email templates",
 			"activity_log_queue": "Mail queue",
-			"i18n": "Localization"
+			"i18n": "Localization",
+			"signing_certificate": "Digital signature"
 		},
 		"permission": {
 			"user": "User",
@@ -43,11 +44,11 @@
 			"publish": "Publish",
 			"approval-request-all": "All requests",
 			"reassign": "Reassign approver",
-			"manage": "Manage delegations (create on behalf, view / edit all)",
+			"manage": "Manage delegations",
 			"email-template": "Email templates",
 			"retry": "Resend",
 			"i18n": "Localization",
-			"signing-certificate": "Manage signing certificates (approve, revoke)"
+			"signing-certificate": "Manage signing certificates"
 		}
 	},
 	"appSetting": {

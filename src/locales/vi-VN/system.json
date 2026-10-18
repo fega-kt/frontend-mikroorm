@@ -22,7 +22,8 @@
 			"approval_request": "Quản trị tờ trình phê duyệt",
 			"email_template": "Mẫu email",
 			"activity_log_queue": "Hàng đợi gửi mail",
-			"i18n": "Đa ngôn ngữ"
+			"i18n": "Đa ngôn ngữ",
+			"signing_certificate": "Chữ ký số"
 		},
 		"permission": {
 			"user": "Người dùng",
@@ -44,11 +45,11 @@
 			"publish": "Xuất bản",
 			"approval-request-all": "Tất cả tờ trình",
 			"reassign": "Gán lại người duyệt",
-			"manage": "Quản lý ủy quyền (tạo hộ, xem / sửa mọi ủy quyền)",
+			"manage": "Quản lý ủy quyền",
 			"email-template": "Mẫu email",
 			"retry": "Gửi lại",
 			"i18n": "Đa ngôn ngữ",
-			"signing-certificate": "Quản lý chứng thư ký số (duyệt cấp, thu hồi)"
+			"signing-certificate": "Quản lý chứng thư ký số"
 		}
 	},
 	"appSetting": {
