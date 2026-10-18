@@ -12,6 +12,17 @@ export enum ApproverType {
 	SpecificUser = "SPECIFIC_USER",
 	/** Người dùng hoặc nhóm (principal). Nhóm: mọi thành viên nhận task, một người duyệt là đủ */
 	Principal = "PRINCIPAL",
+	/** Lãnh đạo của một phòng cụ thể (vd trưởng / phó phòng Kế toán), không phụ thuộc phòng của tờ trình */
+	DepartmentLeader = "DEPARTMENT_LEADER",
+}
+
+/** Vai trò lãnh đạo khi chọn người duyệt theo phòng cụ thể */
+export enum LeaderRole {
+	Head = "HEAD",
+	/** Phó phòng; phòng không có phó → trưởng phòng */
+	Deputy = "DEPUTY",
+	/** Trưởng và phó cùng nhận việc, một người duyệt là đủ */
+	HeadOrDeputy = "HEAD_OR_DEPUTY",
 }
 
 export enum OverdueAction {
@@ -53,12 +64,26 @@ interface DeptHeadApprover { type: ApproverType.DeptHead }
 interface DeptDeputyApprover { type: ApproverType.DeptDeputy }
 interface SpecificUserApprover { type: ApproverType.SpecificUser, userId: string }
 interface PrincipalApprover { type: ApproverType.Principal, principalId: string }
+export interface DepartmentLeaderApprover {
+	type: ApproverType.DepartmentLeader
+	departmentId: string
+	/** Tên phòng lúc chọn: chỉ để hiển thị khi không tra được tên hiện tại (người xem không có quyền xem phòng ban) */
+	departmentName?: string
+	role: LeaderRole
+	/** Phòng không có ai phù hợp → tìm ở phòng cấp cha; mặc định không */
+	climbIfEmpty: boolean
+}
 
-export type Approver = DeptHeadApprover | DeptDeputyApprover | SpecificUserApprover | PrincipalApprover;
+export type Approver = DeptHeadApprover | DeptDeputyApprover | SpecificUserApprover | PrincipalApprover | DepartmentLeaderApprover;
 
 export interface StepOptions {
 	allowDelegation: boolean
 	skipIfRequester: boolean
+	/**
+	 * Quy tắc cũ (bước lưu trước khi có cờ, backend coi là true): trưởng / phó phòng theo phòng của tờ trình tự bỏ người trình
+	 * và leo lên cấp trên. Bước tạo mới ghi false: người trình chỉ bị bỏ qua khi bật skipIfRequester. Không hiện trên form.
+	 */
+	autoExcludeRequester?: boolean
 	/** Không tìm được người duyệt thì bỏ qua bước (song song: bỏ suất trống) thay vì báo lỗi */
 	skipIfNoApprover: boolean
 	requireRejectReason: boolean
@@ -151,7 +176,9 @@ export interface WorkflowDefinition {
 
 export const DEFAULT_STEP_OPTIONS: StepOptions = {
 	allowDelegation: true,
-	skipIfRequester: false,
+	// Bước mới: mặc định không để người tạo tự duyệt tờ trình của mình
+	skipIfRequester: true,
+	autoExcludeRequester: false,
 	skipIfNoApprover: false,
 	requireRejectReason: true,
 	allowReturn: true,

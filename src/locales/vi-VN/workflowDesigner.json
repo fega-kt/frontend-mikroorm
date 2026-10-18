@@ -109,7 +109,8 @@
 		"DEPT_HEAD": "Trưởng phòng",
 		"DEPT_DEPUTY": "Phó phòng",
 		"SPECIFIC_USER": "Người cụ thể (cũ)",
-		"PRINCIPAL": "Người cụ thể / nhóm"
+		"PRINCIPAL": "Người cụ thể / nhóm",
+		"DEPARTMENT_LEADER": "Lãnh đạo phòng cụ thể"
 	},
 	"overdue": {
 		"REMIND": "Chỉ nhắc nhở",
@@ -211,7 +212,10 @@
 		"defaultTemplate": "Mặc định — {{name}}",
 		"messageHint": "Hiện trong thông báo và chèn vào email qua biến {{message}}",
 		"groupMode": "Khi người duyệt là nhóm",
-		"groupModeHint": "Cả nhóm cùng xử lý: thành viên nào cũng duyệt được, ai duyệt trước thì xong. Chia cho một người: hệ thống chọn ngẫu nhiên một thành viên; người đó rời nhóm hoặc bị khóa thì chia lại. Nhóm không còn ai thì bỏ qua."
+		"groupModeHint": "Cả nhóm cùng xử lý: thành viên nào cũng duyệt được, ai duyệt trước thì xong. Chia cho một người: hệ thống chọn ngẫu nhiên một thành viên; người đó rời nhóm hoặc bị khóa thì chia lại. Nhóm không còn ai thì bỏ qua.",
+		"selectDepartment": "Chọn phòng ban",
+		"climbIfEmpty": "Phòng trống thì chuyển lên phòng cấp trên",
+		"climbIfEmptyHint": "Phòng chưa có trưởng / phó (hoặc đã khóa): bật thì lấy lãnh đạo phòng cấp trên; tắt thì coi như không tìm thấy người duyệt. \"Trưởng hoặc phó\": cả hai cùng nhận việc, một người duyệt là đủ."
 	},
 	"condition": {
 		"field": "Trường",
@@ -297,5 +301,10 @@
 	"groupMode": {
 		"shared": "Cả nhóm cùng xử lý",
 		"assign": "Chia cho một người"
+	},
+	"leaderRole": {
+		"HEAD": "Trưởng phòng",
+		"DEPUTY": "Phó phòng",
+		"HEAD_OR_DEPUTY": "Trưởng hoặc phó"
 	}
 }

@@ -1,20 +1,25 @@
 import type { Approver, WorkflowDefinition } from "#src/api/approval-workflow/types";
+import type { DepartmentTreeNode } from "#src/api/system/dept/types";
 import { ApproverType, NodeType } from "#src/api/approval-workflow/types";
+import { departmentService } from "#src/api/system/dept";
 import { principalService } from "#src/api/system/principal";
 import { PrincipalType } from "#src/api/system/principal/types";
 import { userService } from "#src/api/user";
 import { useRequest } from "ahooks";
 import { useEffect, useMemo, useState } from "react";
 
-/** id người dùng (SPECIFIC_USER) và id principal (PRINCIPAL) xuất hiện trong định nghĩa quy trình */
+/** id người dùng (SPECIFIC_USER), id principal (PRINCIPAL) và id phòng ban (DEPARTMENT_LEADER) xuất hiện trong định nghĩa quy trình */
 export function collectApproverRefs(definition: WorkflowDefinition | null | undefined) {
 	const userIds = new Set<string>();
 	const principalIds = new Set<string>();
+	const departmentIds = new Set<string>();
 	const add = (a: Approver | null | undefined) => {
 		if (a?.type === ApproverType.SpecificUser && a.userId)
 			userIds.add(a.userId);
 		if (a?.type === ApproverType.Principal && a.principalId)
 			principalIds.add(a.principalId);
+		if (a?.type === ApproverType.DepartmentLeader && a.departmentId)
+			departmentIds.add(a.departmentId);
 	};
 	for (const node of definition?.nodes ?? []) {
 		if (node.type === NodeType.Approval)
@@ -24,7 +29,7 @@ export function collectApproverRefs(definition: WorkflowDefinition | null | unde
 		else if (node.type === NodeType.Notify)
 			node.recipients.forEach(add);
 	}
-	return { userIds: [...userIds], principalIds: [...principalIds] };
+	return { userIds: [...userIds], principalIds: [...principalIds], departmentIds: [...departmentIds] };
 }
 
 /** Thông tin hiển thị của người duyệt cấu hình trong quy trình (người dùng hoặc principal) */
@@ -37,14 +42,20 @@ export interface ApproverProfile {
 	avatar?: string
 }
 
-/** Tải thông tin các id người dùng / principal của định nghĩa, trừ id trong `skip` (bỏ qua id không tải được) */
+/**
+ * Tải thông tin các id người dùng / principal / phòng ban của định nghĩa, trừ id trong `skip` (bỏ qua id không tải được).
+ * Phòng ban chỉ có tên (dùng cho nhãn "Trưởng phòng · Kế toán"); không có quyền xem phòng ban thì nhãn dùng tên lưu lúc chọn.
+ */
 export async function resolveApproverProfiles(definition: WorkflowDefinition | null | undefined, skip: Record<string, unknown> = {}) {
-	const { userIds, principalIds } = collectApproverRefs(definition);
+	const { userIds, principalIds, departmentIds } = collectApproverRefs(definition);
 	const missingUsers = userIds.filter(id => !skip[id]);
 	const missingPrincipals = principalIds.filter(id => !skip[id]);
-	const [users, principals] = await Promise.all([
+	const missingDepartments = departmentIds.filter(id => !skip[id]);
+	const [users, principals, departments] = await Promise.all([
 		Promise.allSettled(missingUsers.map(id => userService.fetchUserItem(id))),
 		Promise.allSettled(missingPrincipals.map(id => principalService.fetchPrincipalItem(id))),
+		// Cây phòng ban đang hoạt động: mọi người đăng nhập đều xem được (chi tiết phòng ban thì cần quyền riêng)
+		missingDepartments.length ? departmentService.fetchActiveDeptTreeList().catch(() => []) : Promise.resolve([]),
 	]);
 	const profiles: Record<string, ApproverProfile> = {};
 	users.forEach((r, i) => {
@@ -65,6 +76,15 @@ export async function resolveApproverProfiles(definition: WorkflowDefinition | n
 			};
 		}
 	});
+	const wanted = new Set(missingDepartments);
+	const visit = (nodes: DepartmentTreeNode[]) => {
+		for (const node of nodes) {
+			if (wanted.has(node.id))
+				profiles[node.id] = { name: node.name, isGroup: true };
+			visit(node.children ?? []);
+		}
+	};
+	visit(departments ?? []);
 	return profiles;
 }
 
@@ -77,8 +97,8 @@ export async function resolveApproverNames(definition: WorkflowDefinition | null
 /** Hook: thông tin (tên, avatar, người / nhóm) của mọi người duyệt trong định nghĩa — cache theo tập id để nhiều chỗ dùng chung một lần tải */
 export function useWorkflowApproverProfiles(definition: WorkflowDefinition | null | undefined) {
 	const key = useMemo(() => {
-		const { userIds, principalIds } = collectApproverRefs(definition);
-		return [...userIds, ...principalIds].sort().join(",");
+		const { userIds, principalIds, departmentIds } = collectApproverRefs(definition);
+		return [...userIds, ...principalIds, ...departmentIds].sort().join(",");
 	}, [definition]);
 	const { data } = useRequest(() => resolveApproverProfiles(definition), {
 		ready: !!key,
@@ -93,8 +113,8 @@ export function useWorkflowApproverProfiles(definition: WorkflowDefinition | nul
 export function useWorkflowUserNames(definition: WorkflowDefinition | null | undefined, known?: Record<string, string>) {
 	const [names, setNames] = useState<Record<string, string>>({});
 	const missingKey = useMemo(() => {
-		const { userIds, principalIds } = collectApproverRefs(definition);
-		return [...userIds, ...principalIds].filter(id => !known?.[id]).sort().join(",");
+		const { userIds, principalIds, departmentIds } = collectApproverRefs(definition);
+		return [...userIds, ...principalIds, ...departmentIds].filter(id => !known?.[id]).sort().join(",");
 	}, [definition, known]);
 	useEffect(() => {
 		if (!missingKey)

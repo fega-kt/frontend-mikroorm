@@ -15,6 +15,11 @@ export function approverLabel(approver: Approver | null | undefined, t: TFunctio
 			? (userNames[approver.userId] ?? t("workflowDesigner.approverType.SPECIFIC_USER"))
 			: t("workflowDesigner.summary.noApprover");
 	}
+	if (approver.type === ApproverType.DepartmentLeader) {
+		// Tên phòng hiện tại (tra theo id) → tên lúc chọn → nhãn chung
+		const department = userNames[approver.departmentId] ?? approver.departmentName ?? t("workflowDesigner.approverType.DEPARTMENT_LEADER");
+		return `${t(`workflowDesigner.leaderRole.${approver.role}`)} · ${department}`;
+	}
 	if (approver.type === ApproverType.Principal) {
 		return approver.principalId
 			? (userNames[approver.principalId] ?? t("workflowDesigner.approverType.PRINCIPAL"))
