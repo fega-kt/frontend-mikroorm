@@ -1,16 +1,16 @@
 import type { MySigningCertificate } from "#src/api/signing-certificate";
 import { signingCertificateService, SigningCertificateStatus } from "#src/api/signing-certificate";
+import { PIN_PATTERN, PinInput } from "#src/components/pin-input";
 import { SignaturePad } from "#src/components/signature-pad";
-import { LockOutlined, SafetyCertificateOutlined } from "@ant-design/icons";
+import { SafetyCertificateOutlined } from "@ant-design/icons";
 import { useRequest } from "ahooks";
-import { Alert, Button, Descriptions, Divider, Form, Input, Popconfirm, Spin, Tag, theme, Typography } from "antd";
+import { Alert, Button, Descriptions, Divider, Form, Popconfirm, Spin, Tag, theme, Typography } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const { Text, Paragraph } = Typography;
 
-const PIN_PATTERN = /^\d{6,12}$/;
 const DATE_FORMAT = "DD/MM/YYYY";
 
 const STATUS_COLOR: Record<SigningCertificateStatus, string> = {
@@ -19,11 +19,6 @@ const STATUS_COLOR: Record<SigningCertificateStatus, string> = {
 	[SigningCertificateStatus.Rejected]: "error",
 	[SigningCertificateStatus.Revoked]: "default",
 };
-
-/** Ô nhập PIN: chỉ số, ẩn ký tự */
-function PinInput(props: React.ComponentProps<typeof Input.Password>) {
-	return <Input.Password inputMode="numeric" autoComplete="new-password" maxLength={12} prefix={<LockOutlined />} {...props} />;
-}
 
 /** Trạng thái chứng thư hiển thị (đang dùng nhưng hết hạn → "hết hạn") */
 function StatusTag({ certificate }: { certificate: MySigningCertificate }) {

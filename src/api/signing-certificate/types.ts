@@ -59,6 +59,8 @@ export interface SigningDocument {
 
 export interface SigningPreparation {
 	certificate: { id: string, notAfter: string | null, hasSignatureImage: boolean } | null
+	/** Chữ trong khung chữ ký (đúng như bản ký; thời gian là lúc chuẩn bị, khi ký sẽ là thời điểm ký) */
+	signatureLines: string[]
 	documents: SigningDocument[]
 }
 

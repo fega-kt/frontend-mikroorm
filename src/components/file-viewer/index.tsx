@@ -163,10 +163,12 @@ interface PdfFileViewProps {
 	target: FileViewTarget
 	/** Lớp phủ trên từng trang (vd khung chữ ký kéo thả) */
 	renderPageOverlay?: (info: PdfPageOverlayInfo) => React.ReactNode
+	/** Nhảy tới trang (vd trang có khung chữ ký) */
+	focusPage?: { page: number }
 }
 
 /** Xem một PDF trong ngữ cảnh khác (không phải cửa sổ xem tệp), vd hộp "Ký và duyệt" chọn vị trí chữ ký */
-export function PdfFileView({ target, renderPageOverlay }: PdfFileViewProps) {
+export function PdfFileView({ target, renderPageOverlay, focusPage }: PdfFileViewProps) {
 	const { t } = useTranslation();
 	const [descriptor, setDescriptor] = useState<FileViewDescriptor>();
 	const [error, setError] = useState(false);
@@ -199,6 +201,7 @@ export function PdfFileView({ target, renderPageOverlay }: PdfFileViewProps) {
 				refreshUrl={refreshStreamUrl}
 				onDownload={download}
 				renderPageOverlay={renderPageOverlay}
+				focusPage={focusPage}
 			/>
 		</Suspense>
 	);

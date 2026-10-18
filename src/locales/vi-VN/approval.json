@@ -564,10 +564,11 @@
 		"placementHint": "Kéo khung chữ ký để đổi vị trí, hoặc nhấp vào một chỗ trống trên trang bất kỳ để đặt khung ở đó.",
 		"resetPlacement": "Về vị trí tự động",
 		"legalHint": "Chữ ký số nội bộ dùng chứng thư của bạn (hiệu lực đến {{date}}). Văn bản đã ký không sửa được mà không làm mất hiệu lực chữ ký.",
-		"signedBy": "Ký bởi: {{name}}",
-		"signedAtPreview": "Thời gian: lúc ký",
 		"invalidPin": "Sai PIN, còn {{count}} lần thử",
-		"pinLocked": "Nhập sai PIN quá nhiều lần, thử lại sau 15 phút"
+		"pinLocked": "Nhập sai PIN quá nhiều lần, thử lại sau 15 phút",
+		"confirmTitle": "Xác nhận ký số",
+		"confirmDescription": "Bạn sắp ký {{count}} văn bản:",
+		"confirm": "Ký"
 	},
 	"signatures": {
 		"title": "Chữ ký số",

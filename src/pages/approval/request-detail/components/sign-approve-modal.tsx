@@ -1,11 +1,12 @@
 import type { SignaturePlacement, SigningDocument, SigningPreparation } from "#src/api/signing-certificate";
 import type { PdfPageOverlayInfo } from "#src/components/file-viewer/pdf/pdf-view";
+import type { PinInputRef } from "#src/components/pin-input";
 import { approvalTaskService } from "#src/api/approval-task";
 import { FileContextType } from "#src/api/file-view";
 import { signingCertificateService } from "#src/api/signing-certificate";
 import { PdfFileView } from "#src/components/file-viewer";
-import { useUserStore } from "#src/store/user";
-import { AimOutlined, CheckCircleFilled, FilePdfOutlined, LockOutlined, SafetyCertificateOutlined } from "@ant-design/icons";
+import { PIN_PATTERN, PinInput } from "#src/components/pin-input";
+import { AimOutlined, CheckCircleFilled, FilePdfOutlined, SafetyCertificateOutlined } from "@ant-design/icons";
 import { Alert, Button, Input, Modal, Spin, Tag, theme, Typography } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
@@ -14,7 +15,6 @@ import { useNavigate } from "react-router";
 
 const { Text } = Typography;
 
-const PIN_PATTERN = /^\d{6,12}$/;
 /** Trang chữ ký số của tôi (tab trong hồ sơ cá nhân) */
 const SIGNATURE_PROFILE_PATH = "/personal-center/my-profile?tab=signature";
 
@@ -98,7 +98,7 @@ function SignatureBox({ placement, info, signatureImage, lines, onMove }: Signat
 
 /**
  * "Ký và duyệt" ở bước bắt buộc ký số: chọn vị trí chữ ký trên từng văn bản (kéo thả; không chọn thì tự xếp
- * ở chân trang cuối), nhập PIN rồi ký + duyệt trong một lần. Mở hộp này backend đã chuyển Word/Excel sang PDF.
+ * ở chân trang cuối), bấm ký thì hộp xác nhận hỏi PIN rồi ký + duyệt trong một lần. Mở hộp này backend đã chuyển Word/Excel sang PDF.
  */
 type SignApproveBodyProps = Omit<SignApproveModalProps, "open"> & {
 	/** Đang ký: chặn đóng hộp giữa chừng */
@@ -110,16 +110,19 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
 	const navigate = useNavigate();
-	const fullName = useUserStore(state => state.fullName);
 	const [prep, setPrep] = useState<SigningPreparation>();
 	const [signatureImage, setSignatureImage] = useState<string | null>(null);
 	const [failed, setFailed] = useState(false);
 	const [selectedId, setSelectedId] = useState<string>();
 	const [placements, setPlacements] = useState<Record<string, SignaturePlacement>>({});
+	/** Trang cần cuộn tới trong khung xem (trang có khung chữ ký của văn bản đang chọn) */
+	const [focus, setFocus] = useState<{ page: number }>();
+	const [confirmOpen, setConfirmOpen] = useState(false);
 	const [pin, setPin] = useState("");
 	const [pinError, setPinError] = useState<string>();
 	const [comment, setComment] = useState("");
 	const [submitting, setSubmitting] = useState(false);
+	const pinRef = useRef<PinInputRef>(null);
 
 	useEffect(() => {
 		let cancelled = false;
@@ -132,6 +135,8 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 				const signable = result.documents.filter(doc => doc.signable && doc.auto);
 				setPlacements(Object.fromEntries(signable.map(doc => [doc.id, doc.auto!])));
 				setSelectedId(signable[0]?.id);
+				if (signable[0]?.auto)
+					setFocus({ page: signable[0].auto.page });
 				// Văn bản Word/Excel vừa được chuyển sang PDF → chi tiết tờ trình cũng đổi
 				onChanged();
 			})
@@ -145,28 +150,47 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 
 	const signable = prep?.documents.filter(doc => doc.signable) ?? [];
 	const selected = signable.find(doc => doc.id === selectedId);
-	const previewLines = [t("approval.sign.signedBy", { name: fullName }), t("approval.sign.signedAtPreview")];
+	const previewLines = prep?.signatureLines ?? [];
 
-	const submit = async () => {
-		if (!PIN_PATTERN.test(pin)) {
+	/** Chọn văn bản: cuộn tới trang đang đặt khung chữ ký của văn bản đó */
+	const selectDocument = (doc: SigningDocument) => {
+		setSelectedId(doc.id);
+		setFocus({ page: placements[doc.id]?.page ?? 1 });
+	};
+
+	/** Bấm "Ký và duyệt": hỏi PIN trong hộp xác nhận, PIN chỉ nhập lúc ký */
+	const openConfirm = () => {
+		setPin("");
+		setPinError(undefined);
+		setConfirmOpen(true);
+	};
+
+	const submit = async (value = pin) => {
+		if (!PIN_PATTERN.test(value)) {
 			setPinError(t("personal-center.signature.pinInvalid"));
 			return;
 		}
 		setSubmitting(true);
 		onSubmitting(true);
 		try {
-			await approvalTaskService.fetchSignApprove(requestId, { pin, comment: comment.trim() || undefined, placements });
+			await approvalTaskService.fetchSignApprove(requestId, { pin: value, comment: comment.trim() || undefined, placements });
 			window.$message?.success(t("approval.messages.signedApproved"));
+			setConfirmOpen(false);
 			onClose();
 			onChanged();
 		}
 		catch (error) {
-			// Lỗi đã được interceptor hiển thị; sai PIN thì báo thêm số lần còn lại ngay dưới ô PIN
+			// Lỗi đã được interceptor hiển thị; sai PIN thì giữ hộp xác nhận, xóa ô PIN và báo số lần còn lại
 			const body = await (error as { response?: Response }).response?.clone().json().catch(() => undefined) as { code?: string, remainingAttempts?: number } | undefined;
-			if (body?.code === "INVALID_PIN")
+			if (body?.code === "INVALID_PIN") {
+				setPin("");
 				setPinError(t("approval.sign.invalidPin", { count: body.remainingAttempts ?? 0 }));
-			else if (body?.code === "PIN_LOCKED")
+				pinRef.current?.focus();
+			}
+			else if (body?.code === "PIN_LOCKED") {
+				setPin("");
 				setPinError(t("approval.sign.pinLocked"));
+			}
 		}
 		finally {
 			setSubmitting(false);
@@ -252,7 +276,7 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 							key={doc.id}
 							type="button"
 							disabled={!doc.signable}
-							onClick={() => setSelectedId(doc.id)}
+							onClick={() => selectDocument(doc)}
 							className="flex w-full cursor-pointer items-center gap-2 rounded-md px-2.5 py-2 text-left disabled:cursor-not-allowed"
 							style={{
 								border: `1px solid ${active ? token.colorPrimary : token.colorBorderSecondary}`,
@@ -277,7 +301,12 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 						size="small"
 						icon={<AimOutlined />}
 						className="self-start"
-						onClick={() => selected.auto && setPlacements(prev => ({ ...prev, [selected.id]: selected.auto! }))}
+						onClick={() => {
+							if (!selected.auto)
+								return;
+							setPlacements(prev => ({ ...prev, [selected.id]: selected.auto! }));
+							setFocus({ page: selected.auto.page });
+						}}
 					>
 						{t("approval.sign.resetPlacement")}
 					</Button>
@@ -295,33 +324,60 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 				/>
 			</div>
 
-			<div className="flex flex-col gap-1.5">
-				<Text strong>{t("personal-center.signature.pin")}</Text>
-				<Input.Password
-					value={pin}
-					onChange={(event) => {
-						setPin(event.target.value.replace(/\D/g, ""));
-						setPinError(undefined);
-					}}
-					onPressEnter={() => canSubmit && submit()}
-					inputMode="numeric"
-					autoComplete="off"
-					maxLength={12}
-					prefix={<LockOutlined />}
-					status={pinError ? "error" : undefined}
-					disabled={!prep.certificate}
-				/>
-				{pinError && <Text type="danger" className="text-xs">{pinError}</Text>}
-			</div>
-
 			<div className="flex-1" />
-			<Text type="secondary" className="text-xs">
-				{t("approval.sign.legalHint", { date: prep.certificate?.notAfter ? dayjs(prep.certificate.notAfter).format("DD/MM/YYYY") : "—" })}
-			</Text>
-			<Button type="primary" size="large" block loading={submitting} disabled={!canSubmit} onClick={submit}>
+			<Button type="primary" size="large" block disabled={!canSubmit} onClick={openConfirm}>
 				{t("approval.actions.signApprove")}
 			</Button>
 		</div>
+	);
+
+	const confirmModal = prep && (
+		<Modal
+			open={confirmOpen}
+			title={t("approval.sign.confirmTitle")}
+			onCancel={submitting ? undefined : () => setConfirmOpen(false)}
+			closable={!submitting}
+			maskClosable={false}
+			afterOpenChange={visible => visible && pinRef.current?.focus()}
+			width={420}
+			footer={[
+				<Button key="cancel" disabled={submitting} onClick={() => setConfirmOpen(false)}>{t("common.cancel")}</Button>,
+				<Button key="sign" type="primary" loading={submitting} disabled={!PIN_PATTERN.test(pin)} onClick={() => submit()}>{t("approval.sign.confirm")}</Button>,
+			]}
+		>
+			<div className="flex flex-col gap-3">
+				<div className="flex flex-col gap-1.5">
+					<Text type="secondary" className="text-[13px]">{t("approval.sign.confirmDescription", { count: signable.length })}</Text>
+					{signable.map(doc => (
+						<div key={doc.id} className="flex items-center gap-2 text-[13px]">
+							<FilePdfOutlined style={{ color: token.colorError }} />
+							<span className="min-w-0 flex-1 truncate">{doc.filename}</span>
+							<Tag className="m-0" bordered={false}>{t("approval.sign.page", { page: placements[doc.id]?.page ?? "—" })}</Tag>
+						</div>
+					))}
+				</div>
+				<div className="flex flex-col gap-1.5">
+					<Text strong>{t("personal-center.signature.pin")}</Text>
+					<PinInput
+						ref={pinRef}
+						value={pin}
+						onChange={(value) => {
+							setPin(value);
+							setPinError(undefined);
+							// Nhập đủ 6 số là ký luôn
+							if (PIN_PATTERN.test(value) && !submitting)
+								void submit(value);
+						}}
+						status={pinError ? "error" : undefined}
+						disabled={submitting}
+					/>
+					{pinError && <Text type="danger" className="text-xs">{pinError}</Text>}
+				</div>
+				<Text type="secondary" className="text-xs">
+					{t("approval.sign.legalHint", { date: prep.certificate?.notAfter ? dayjs(prep.certificate.notAfter).format("DD/MM/YYYY") : "—" })}
+				</Text>
+			</div>
+		</Modal>
 	);
 
 	if (failed) {
@@ -342,6 +398,7 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 	return (
 		<div className="flex h-full flex-col md:flex-row">
 			{sidebar}
+			{confirmModal}
 			<div className="min-h-0 min-w-0 flex-1 max-md:hidden">
 				{selected
 					? (
@@ -349,6 +406,7 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 							key={selected.fileId ?? selected.id}
 							target={{ contextType: FileContextType.ApprovalRequest, fileId: selected.fileId ?? selected.id, filename: selected.filename }}
 							renderPageOverlay={renderOverlay(selected)}
+							focusPage={focus}
 						/>
 					)
 					: <div className="flex h-full items-center justify-center" style={{ color: token.colorTextTertiary }}>{t("approval.sign.noDocument")}</div>}

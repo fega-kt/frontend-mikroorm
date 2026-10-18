@@ -63,13 +63,15 @@ interface PdfViewProps {
 	onDownload: () => Promise<void> | void
 	/** Lớp phủ trên từng trang (nằm trên lớp chữ). Có lớp phủ thì tắt xoay trang để tọa độ khớp với PDF */
 	renderPageOverlay?: (info: PdfPageOverlayInfo) => React.ReactNode
+	/** Nhảy tới trang này khi mở và mỗi lần đổi đối tượng (tạo đối tượng mới để nhảy lại cùng một trang) */
+	focusPage?: { page: number }
 }
 
 /**
  * Xem PDF bằng pdf.js: chỉ tải các đoạn byte của trang đang xem (Range) và chỉ vẽ trang gần vùng nhìn,
  * nên tệp lớn cũng hiện trang đầu gần như ngay. Có ảnh thu nhỏ, zoom, xoay, nhảy trang, tìm chữ.
  */
-export function PdfView({ streamUrl, size, refreshUrl, onDownload, renderPageOverlay }: PdfViewProps) {
+export function PdfView({ streamUrl, size, refreshUrl, onDownload, renderPageOverlay, focusPage }: PdfViewProps) {
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
 	const { message } = App.useApp();
@@ -189,6 +191,17 @@ export function PdfView({ streamUrl, size, refreshUrl, onDownload, renderPageOve
 		setCurrentPage(target);
 		setPageInput(String(target));
 	}, [doc, scroller]);
+
+	// Mỗi yêu cầu nhảy trang chỉ áp dụng một lần, ngay khi tài liệu đã mở; trang hiện tại do onScroll cập nhật
+	const appliedFocus = useRef<{ page: number }>(undefined);
+	useEffect(() => {
+		if (!focusPage || appliedFocus.current === focusPage || !doc || !scroller)
+			return;
+		appliedFocus.current = focusPage;
+		const el = pageRefs.current[Math.min(doc.numPages, Math.max(1, focusPage.page)) - 1];
+		if (el)
+			scroller.scrollTo({ top: el.offsetTop - PAD });
+	}, [focusPage, doc, scroller]);
 
 	const onScroll = () => {
 		if (!scroller || !doc)
