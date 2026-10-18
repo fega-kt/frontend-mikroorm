@@ -24,6 +24,7 @@ import {
 	NodeIndexOutlined,
 	ProfileOutlined,
 	ProjectOutlined,
+	SafetyCertificateOutlined,
 	SafetyOutlined,
 	SettingOutlined,
 	SisternodeOutlined,
@@ -45,6 +46,7 @@ import { RiAccountCircleLine, RiReactjsLine, RiUserSettingsLine } from "./ri";
 export const menuIcons: Record<string, any> = {
 	MailOutlined,
 	TranslationOutlined,
+	SafetyCertificateOutlined,
 	CheckCircleOutlined,
 	ClockCircleOutlined,
 	AuditOutlined,

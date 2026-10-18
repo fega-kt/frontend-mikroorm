@@ -46,7 +46,8 @@
 			"manage": "Manage delegations (create on behalf, view / edit all)",
 			"email-template": "Email templates",
 			"retry": "Resend",
-			"i18n": "Localization"
+			"i18n": "Localization",
+			"signing-certificate": "Manage signing certificates (approve, revoke)"
 		}
 	},
 	"appSetting": {
@@ -301,5 +302,27 @@
 			"inputPlaceholder": "Enter {{lang}}",
 			"missingLanguage": "Missing language"
 		}
+	},
+	"signingCertificate": {
+		"user": "User",
+		"department": "Department",
+		"status": "Status",
+		"registeredAt": "Registered on",
+		"validity": "Validity",
+		"reviewedBy": "Reviewed by",
+		"note": "Note",
+		"all": "All",
+		"search": "Search by name or account",
+		"approve": "Approve",
+		"approveConfirm": "Issue a signing certificate to {{name}}?",
+		"approved": "Certificate issued",
+		"reject": "Reject",
+		"rejectTitle": "Reject {{name}}'s registration",
+		"rejected": "Rejected",
+		"revoke": "Revoke",
+		"revokeTitle": "Revoke {{name}}'s certificate",
+		"revokeHint": "The user will no longer be able to sign. Existing signatures can still be verified and will show \"certificate revoked\".",
+		"revoked": "Revoked",
+		"notePlaceholder": "Reason (visible to the user)"
 	}
 }

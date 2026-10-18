@@ -47,7 +47,8 @@
 			"manage": "Quản lý ủy quyền (tạo hộ, xem / sửa mọi ủy quyền)",
 			"email-template": "Mẫu email",
 			"retry": "Gửi lại",
-			"i18n": "Đa ngôn ngữ"
+			"i18n": "Đa ngôn ngữ",
+			"signing-certificate": "Quản lý chứng thư ký số (duyệt cấp, thu hồi)"
 		}
 	},
 	"appSetting": {
@@ -281,5 +282,27 @@
 			"inputPlaceholder": "Nhập {{lang}}",
 			"missingLanguage": "Thiếu ngôn ngữ"
 		}
+	},
+	"signingCertificate": {
+		"user": "Người dùng",
+		"department": "Phòng ban",
+		"status": "Trạng thái",
+		"registeredAt": "Ngày đăng ký",
+		"validity": "Hiệu lực",
+		"reviewedBy": "Người duyệt",
+		"note": "Ghi chú",
+		"all": "Tất cả",
+		"search": "Tìm theo tên, tài khoản",
+		"approve": "Duyệt cấp",
+		"approveConfirm": "Cấp chứng thư ký số cho {{name}}?",
+		"approved": "Đã cấp chứng thư",
+		"reject": "Từ chối",
+		"rejectTitle": "Từ chối đăng ký của {{name}}",
+		"rejected": "Đã từ chối",
+		"revoke": "Thu hồi",
+		"revokeTitle": "Thu hồi chứng thư của {{name}}",
+		"revokeHint": "Người dùng sẽ không ký được nữa. Chữ ký đã ký trước đó vẫn kiểm tra được và hiện \"chứng thư đã thu hồi\".",
+		"revoked": "Đã thu hồi",
+		"notePlaceholder": "Lý do (người dùng sẽ thấy)"
 	}
 }

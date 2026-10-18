@@ -70,6 +70,7 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.MenuAllApprovalRequest,
 		PermissionType.ReassignApprovalTask,
 		PermissionType.ManageApprovalDelegation,
+		PermissionType.ManageSigningCertificate,
 	],
 	APP_SETTING: [
 		PermissionType.MenuAppSetting,

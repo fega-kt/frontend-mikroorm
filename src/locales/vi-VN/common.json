@@ -62,7 +62,8 @@
 		"emailTemplate": "Mẫu email",
 		"activityLogList": "Nhật ký hoạt động",
 		"mailQueue": "Hàng đợi gửi mail",
-		"i18n": "Đa ngôn ngữ"
+		"i18n": "Đa ngôn ngữ",
+		"signingCertificate": "Chứng thư ký số"
 	},
 	"appLoading": "Đang tải tài nguyên...",
 	"back": "Quay lại",
