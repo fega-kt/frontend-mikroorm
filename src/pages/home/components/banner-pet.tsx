@@ -1,5 +1,6 @@
 import type { CSSProperties, Ref } from "react";
 
+import { OVERRIDE_NS } from "#src/locales/overrides";
 import { theme } from "antd";
 import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -160,7 +161,7 @@ const pick = <T,>(list: T[]) => list[Math.floor(Math.random() * list.length)];
 /** Chú mèo sống dưới chân banner — đi dạo, đâm tường, ngủ gật, ăn mừng khi duyệt, bị chọc nhiều thì cáu / bỏ chạy */
 export function BannerPet({ ref }: { ref?: Ref<BannerPetRef> }) {
 	const classes = useStyles();
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const { token } = theme.useToken();
 	const trackRef = useRef<HTMLDivElement>(null);
 	const moverRef = useRef<HTMLDivElement>(null);
@@ -236,9 +237,18 @@ export function BannerPet({ ref }: { ref?: Ref<BannerPetRef> }) {
 	const tears = () => emit(2, { texts: ["💧"], colors: [token.blue5], spread: 10, rise: [-26, -16] });
 	const hearts = () => emit(3, { texts: ["♥"], colors: [token.magenta5, token.red5], spread: 20, rise: [36, 50] });
 	const confetti = () => emit(18, { texts: ["■", "●", "▲", "★"], colors: [token.colorPrimary, token.gold5, token.magenta5, token.cyan5, token.green5, token.purple5], spread: 70, rise: [30, 70] });
+	/**
+	 * Một câu ngẫu nhiên của danh sách: các câu trong file JSON, cộng câu thêm ở Cấu hình i18n (database) nối tiếp chỉ số
+	 * (`key.10`, `key.11`…). Đọc từng câu theo chỉ số nên câu đã sửa trong database được dùng thay câu trong JSON.
+	 */
 	const cheers = (key: string) => {
-		const list = t(key, { returnObjects: true });
-		return Array.isArray(list) ? pick(list as string[]) : String(list);
+		const list = t(key, { ns: "translation", returnObjects: true });
+		if (!Array.isArray(list))
+			return String(list);
+		let count = list.length;
+		while (i18n.exists(`${key}.${count}`, { ns: OVERRIDE_NS }))
+			count++;
+		return t(`${key}.${Math.floor(Math.random() * count)}`);
 	};
 
 	// Vòng đời: di chuyển + tự chuyển trạng thái theo thời gian
