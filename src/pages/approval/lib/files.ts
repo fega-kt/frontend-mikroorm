@@ -2,6 +2,9 @@ import type { FileBlockConfig, FileKind } from "#src/api/setting/request-type/ty
 import { FILE_KIND_EXTENSIONS } from "#src/api/setting/request-type/types";
 import { formatBytes } from "#src/utils/format-bytes";
 
+/** Đuôi tệp viết thường, không có dấu chấm ("" nếu không có đuôi) */
+export const extOf = (filename: string) => (filename.includes(".") ? filename.split(".").pop()!.toLowerCase() : "");
+
 /** Chuỗi accept cho <input type="file"> từ các nhóm loại tệp */
 export function acceptFor(kinds: FileKind[]) {
 	return kinds.flatMap(kind => FILE_KIND_EXTENSIONS[kind]).map(ext => `.${ext}`).join(",");
@@ -24,8 +27,6 @@ export function fileListSummary(files: { size: number }[], t: (key: string, opti
 	const total = files.reduce((sum, file) => sum + file.size, 0);
 	return `${t("approval.files.count", { count: files.length })} · ${formatBytes(total)}`;
 }
-
-const extOf = (filename: string) => filename.split(".").pop()?.toLowerCase() ?? "";
 
 /**
  * Kiểm tra trước khi gửi (bản FE của backend validateFileBlock) — trả về mã lỗi đầu tiên hoặc null.

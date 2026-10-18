@@ -8,6 +8,7 @@ import type {
 	ApprovalSharePayload,
 	CreatableRequestType,
 	PreviewFlowResult,
+	RequestArchiveKind,
 	RequestFileCategory,
 	SubmitUnit,
 } from "./types";
@@ -63,6 +64,15 @@ export class ApprovalRequestService extends CrudServiceBase<ApprovalRequestListI
 
 	fetchSubmit(id: string) {
 		return this.post<{ id: string }>(`${id}/submit`, { ignoreLoading: true });
+	}
+
+	/**
+	 * "Tải về toàn bộ": backend kiểm quyền và chốt danh sách tệp, trả link zip dùng một lần;
+	 * mở link là trình duyệt tải như một tệp thường (có tiến trình, không giữ cả zip trong bộ nhớ).
+	 */
+	async downloadArchive(id: string, kind: RequestArchiveKind) {
+		const { downloadPath } = await this.post<{ downloadPath: string }>(`${id}/files/archive`, { json: { kind } as never, ignoreLoading: true });
+		window.location.assign(`${import.meta.env.VITE_API_APP_BASE_URL.replace(/\/+$/, "")}${downloadPath}`);
 	}
 
 	/** Xin link upload thẳng lên R2 cho tệp của tờ trình (id có thể chưa tồn tại — phiếu đang soạn ở client) */
