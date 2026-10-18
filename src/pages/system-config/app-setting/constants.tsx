@@ -18,6 +18,11 @@ export function getSettingLabel(t: TFunction<"translation", undefined>, key: str
 	return t(`system.appSetting.keys.${key}.label`, { defaultValue: key });
 }
 
+/** Nhãn một lựa chọn của key kiểu `select`, chưa có bản dịch thì hiện chính giá trị. */
+export function getSelectOptionLabel(t: TFunction<"translation", undefined>, key: string, value: string) {
+	return t(`system.appSetting.keys.${key}.options.${value}`, { defaultValue: value });
+}
+
 /** Chuẩn hóa value lưu trong DB (có thể là JSON string) về mảng string. */
 export function toStringArray(value: AppSettingValue | null | undefined): string[] {
 	if (Array.isArray(value))
@@ -69,6 +74,8 @@ function renderValue(t: TFunction<"translation", undefined>, record: AppSettingR
 			return record.value === true || record.value === "true"
 				? <Tag color="success">{t("system.appSetting.on")}</Tag>
 				: <Tag>{t("system.appSetting.off")}</Tag>;
+		case "select":
+			return <Tag className="m-0">{getSelectOptionLabel(t, record.key, String(record.value))}</Tag>;
 		case "number":
 			return <Text>{String(record.value)}</Text>;
 		case "date":

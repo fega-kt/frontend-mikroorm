@@ -6,7 +6,7 @@ import { Drawer, Typography } from "antd";
 import dayjs from "dayjs";
 import { useImperativeHandle, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getSettingLabel } from "../constants";
+import { getSelectOptionLabel, getSettingLabel } from "../constants";
 
 const { Text } = Typography;
 
@@ -45,6 +45,8 @@ export function History({ ref }: HistoryProps) {
 			return value === true || value === "true" ? t("system.appSetting.on") : t("system.appSetting.off");
 		if (record.type === "date")
 			return dayjs(String(value)).format("DD/MM/YYYY");
+		if (record.type === "select" && value !== null && value !== undefined)
+			return getSelectOptionLabel(t, record.key, String(value));
 		return undefined;
 	};
 
