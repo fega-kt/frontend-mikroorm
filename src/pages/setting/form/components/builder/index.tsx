@@ -8,7 +8,7 @@ import { arrayMove, rectSortingStrategy, SortableContext, sortableKeyboardCoordi
 import { Empty, theme, Typography } from "antd";
 import { createElement, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FIELD_KEY_PATTERN } from "../../form-schema";
+import { defaultTableColumns, keyPatternIssue, tableFieldInvalid } from "../../form-schema";
 import { CanvasField } from "./canvas-field";
 import { FIELD_TYPES } from "./field-types";
 import { Palette, PALETTE_ID_PREFIX } from "./palette";
@@ -73,13 +73,15 @@ export function FormBuilder({ value, onChange }: FormBuilderProps) {
 
 	const keyCounts = useMemo(() => value.reduce<Record<string, number>>((acc, f) => ({ ...acc, [f.key]: (acc[f.key] ?? 0) + 1 }), {}), [value]);
 	const keyError = (field: FormField) => {
-		if (!FIELD_KEY_PATTERN.test(field.key))
-			return t("approval.formSchema.keyPattern");
+		const issue = keyPatternIssue(field.key);
+		if (issue)
+			return t(`approval.formSchema.keyIssue.${issue}`);
 		if (keyCounts[field.key] > 1)
 			return t("approval.formSchema.keyDuplicate");
 		return undefined;
 	};
-	const isInvalid = (field: FormField) => !!keyError(field) || !field.label.trim() || (field.type === FormFieldType.Select && !field.options?.length);
+	const configInvalid = (field: FormField) => (field.type === FormFieldType.Select && !field.options?.length) || (field.type === FormFieldType.Table && tableFieldInvalid(field));
+	const isInvalid = (field: FormField) => !!keyError(field) || !field.label.trim() || configInvalid(field);
 
 	const update = (index: number, patch: Partial<FormField>) => onChange(value.map((f, i) => (i === index ? { ...f, ...patch } : f)));
 
@@ -91,8 +93,9 @@ export function FormBuilder({ value, onChange }: FormBuilderProps) {
 			label: t(`approval.formSchema.types.${type}`),
 			type,
 			required: false,
-			span: type === FormFieldType.Textarea ? 12 : 6,
+			span: type === FormFieldType.Textarea || type === FormFieldType.Table ? 12 : 6,
 			options: type === FormFieldType.Select ? [] : undefined,
+			columns: type === FormFieldType.Table ? defaultTableColumns(t) : undefined,
 		};
 		const uid = nextUid();
 		const ids = [...uids.current];
@@ -208,7 +211,7 @@ export function FormBuilder({ value, onChange }: FormBuilderProps) {
 
 				<aside className={`${panelClass} p-4`} style={panelStyle}>
 					{selected
-						? <PropertiesPanel key={selectedUid} field={selected} keyError={keyError(selected)} onChange={patch => update(selectedIndex, patch)} />
+						? <PropertiesPanel key={selectedUid} field={selected} keyError={keyError(selected)} otherKeys={value.filter((_, i) => i !== selectedIndex).map(f => f.key)} onChange={patch => update(selectedIndex, patch)} />
 						: <Text type="secondary" className="block py-8 text-center text-[13px]">{t("approval.formSchema.builder.selectHint")}</Text>}
 				</aside>
 			</div>

@@ -318,7 +318,9 @@
 			"switch": "Có / Không",
 			"user": "Người dùng",
 			"department": "Phòng ban",
-			"principal": "Người / Nhóm"
+			"principal": "Người / Nhóm",
+			"table": "Bảng",
+			"formula": "Công thức"
 		},
 		"builder": {
 			"search": "Tìm loại trường…",
@@ -327,7 +329,8 @@
 				"input": "Nhập liệu",
 				"choice": "Lựa chọn",
 				"date": "Ngày tháng",
-				"people": "Người & tổ chức"
+				"people": "Người & tổ chức",
+				"rows": "Nhiều dòng"
 			},
 			"dropHere": "Kéo loại trường vào đây",
 			"selectHint": "Chọn một trường trên form để chỉnh thuộc tính",
@@ -352,7 +355,56 @@
 			"fieldCount": "{{count}} trường",
 			"tabInfo": "Thông tin"
 		},
-		"dateBoundInvalid": "Ngày sớm nhất không được sau ngày muộn nhất"
+		"dateBoundInvalid": "Ngày sớm nhất không được sau ngày muộn nhất",
+		"table": {
+			"columns": "Cột của bảng",
+			"columnCount": "{{count}} / {{max}} cột",
+			"addColumn": "Thêm cột",
+			"defaultColumn": "Nội dung",
+			"columnLabel": "Nhãn cột",
+			"columnKey": "Mã cột",
+			"columnType": "Kiểu",
+			"rows": "Số dòng",
+			"minRows": "Tối thiểu",
+			"maxRows": "Tối đa",
+			"rowsHint": "Để trống: bắt buộc thì ít nhất 1 dòng, tối đa {{max}} dòng",
+			"addRow": "Thêm dòng",
+			"rowCount": "{{count}} dòng",
+			"rowCountMax": "{{count}} / {{max}} dòng",
+			"empty": "Chưa có dòng nào",
+			"rowsUnit": "dòng",
+			"copyRow": "Nhân bản dòng",
+			"deleteRow": "Xóa dòng",
+			"moveUp": "Lên trên",
+			"moveDown": "Xuống dưới",
+			"deleteColumn": "Xóa cột",
+			"noColumns": "Bảng cần ít nhất một cột",
+			"columnInvalid": "Cột chưa hợp lệ: cần nhãn, mã cột không trùng, cột lựa chọn cần có lựa chọn",
+			"errors": {
+				"required": "Cần ít nhất một dòng",
+				"minRows": "Cần ít nhất {{count}} dòng",
+				"maxRows": "Tối đa {{count}} dòng",
+				"cell": "Dòng {{row}}: \"{{column}}\" bắt buộc nhập",
+				"duplicate": "Dòng {{row}}: \"{{column}}\" bị trùng với dòng {{first}}"
+			},
+			"rowsInvalid": "Số dòng tối thiểu không được lớn hơn tối đa",
+			"showTotal": "Hiện tổng ở cuối bảng",
+			"total": "Tổng cộng",
+			"formula": "Công thức",
+			"formulaColumn": "Với cột",
+			"formulaConstant": "Với số cố định",
+			"formulaNoOperand": "Cần ít nhất một cột Số / Số tiền để làm công thức",
+			"unique": "Không được trùng giá trị",
+			"keyDuplicate": "Mã cột đã có trong bảng"
+		},
+		"keySuggest": "Dùng",
+		"keyIssue": {
+			"empty": "Chưa nhập mã",
+			"unicode": "Mã không được có chữ có dấu (tiếng Việt / Unicode)",
+			"special": "Mã không được có khoảng trắng hoặc ký tự đặc biệt, chỉ dùng chữ, số và _",
+			"startDigit": "Mã phải bắt đầu bằng chữ cái",
+			"tooLong": "Mã tối đa 64 ký tự"
+		}
 	},
 	"yes": "Có",
 	"no": "Không",

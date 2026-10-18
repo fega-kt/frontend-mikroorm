@@ -318,7 +318,9 @@
 			"switch": "是 / 否",
 			"user": "用户",
 			"department": "部门",
-			"principal": "用户 / 用户组"
+			"principal": "用户 / 用户组",
+			"table": "表格",
+			"formula": "公式"
 		},
 		"builder": {
 			"search": "搜索字段类型…",
@@ -327,7 +329,8 @@
 				"input": "输入",
 				"choice": "选择",
 				"date": "日期时间",
-				"people": "人员与组织"
+				"people": "人员与组织",
+				"rows": "多行"
 			},
 			"dropHere": "将字段类型拖到这里",
 			"selectHint": "在表单中选择一个字段以编辑属性",
@@ -352,7 +355,56 @@
 			"fieldCount": "{{count}} 个字段",
 			"tabInfo": "信息"
 		},
-		"dateBoundInvalid": "最早日期不能晚于最晚日期"
+		"dateBoundInvalid": "最早日期不能晚于最晚日期",
+		"table": {
+			"columns": "表格列",
+			"columnCount": "{{count}} / {{max}} 列",
+			"addColumn": "添加列",
+			"defaultColumn": "内容",
+			"columnLabel": "列名",
+			"columnKey": "列编码",
+			"columnType": "类型",
+			"rows": "行数",
+			"minRows": "最少",
+			"maxRows": "最多",
+			"rowsHint": "留空：必填时至少 1 行，最多 {{max}} 行",
+			"addRow": "添加行",
+			"rowCount": "{{count}} 行",
+			"rowCountMax": "{{count}} / {{max}} 行",
+			"empty": "暂无数据行",
+			"rowsUnit": "行",
+			"copyRow": "复制行",
+			"deleteRow": "删除行",
+			"moveUp": "上移",
+			"moveDown": "下移",
+			"deleteColumn": "删除列",
+			"noColumns": "表格至少需要一列",
+			"columnInvalid": "列无效：需要列名、不重复的列编码，选择列需要选项",
+			"errors": {
+				"required": "至少需要一行",
+				"minRows": "至少需要 {{count}} 行",
+				"maxRows": "最多 {{count}} 行",
+				"cell": "第 {{row}} 行：“{{column}}”为必填项",
+				"duplicate": "第 {{row}} 行：“{{column}}”与第 {{first}} 行重复"
+			},
+			"rowsInvalid": "最少行数不能大于最多行数",
+			"showTotal": "在表格底部显示合计",
+			"total": "合计",
+			"formula": "公式",
+			"formulaColumn": "与列",
+			"formulaConstant": "与固定数值",
+			"formulaNoOperand": "需要至少一个数字 / 金额列才能设置公式",
+			"unique": "值不能重复",
+			"keyDuplicate": "该列编码已在表格中使用"
+		},
+		"keySuggest": "使用",
+		"keyIssue": {
+			"empty": "请输入编码",
+			"unicode": "编码不能包含带声调 / Unicode 字符",
+			"special": "编码不能包含空格或特殊字符，只能使用字母、数字和 _",
+			"startDigit": "编码必须以字母开头",
+			"tooLong": "编码最多 64 个字符"
+		}
 	},
 	"yes": "是",
 	"no": "否",

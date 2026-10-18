@@ -13,6 +13,8 @@ import { TeamOutlined } from "@ant-design/icons";
 import { DatePicker, Descriptions, Form, Input, InputNumber, Select, Switch, theme, Tooltip, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { DATE_FORMAT, disabledDateFor, fieldSpanClass, formatMoney, formatPayloadValue, parseMoney, PAYLOAD_FORM_LAYOUT, PAYLOAD_GRID_CLASS } from "../lib/payload";
+import { tableRowsError } from "../lib/table-field";
+import { TableFieldInput, TableFieldView } from "./table-field";
 
 interface FormFieldInputProps {
 	field: FormField
@@ -160,13 +162,15 @@ export function FormFieldInput({ field, disabled, ...control }: FormFieldInputPr
 		case FormFieldType.DateRange:
 			return <DatePicker.RangePicker className="w-full" format={DATE_FORMAT} disabledDate={disabledDateFor(field)} disabled={disabled} {...control} />;
 		case FormFieldType.Select:
-			return <Select options={field.options} placeholder={field.placeholder} disabled={disabled} allowClear={!field.required} {...control} />;
+			return <Select className="w-full" options={field.options} placeholder={field.placeholder} disabled={disabled} allowClear={!field.required} {...control} />;
 		case FormFieldType.Switch:
 			return <Switch checkedChildren={t("approval.yes")} unCheckedChildren={t("approval.no")} disabled={disabled} {...control} />;
 		case FormFieldType.User:
 		case FormFieldType.Department:
 		case FormFieldType.Principal:
 			return <ReferencePicker field={field} disabled={disabled} {...control} />;
+		case FormFieldType.Table:
+			return <TableFieldInput field={field} disabled={disabled} {...control} />;
 		case FormFieldType.Text:
 		default:
 			return <Input maxLength={field.max ?? 500} placeholder={field.placeholder} disabled={disabled} {...control} />;
@@ -176,6 +180,18 @@ export function FormFieldInput({ field, disabled, ...control }: FormFieldInputPr
 /** Các Form.Item sinh từ formSchema, giá trị nằm dưới `payload.<key>` */
 export function PayloadFormItems({ fields, disabled }: { fields: FormField[], disabled?: boolean }) {
 	const { t } = useTranslation();
+	/** Bảng: kiểm số dòng và ô bắt buộc của từng dòng (báo lỗi đầu tiên) */
+	const tableRule = (field: FormField) => ({
+		validator: (_: unknown, value: unknown) => {
+			const error = tableRowsError(field, value);
+			return error ? Promise.reject(new Error(t(`approval.formSchema.table.errors.${error.code}`, { ...error }))) : Promise.resolve();
+		},
+	});
+	const rulesOf = (field: FormField) => {
+		if (field.type === FormFieldType.Table)
+			return [tableRule(field)];
+		return field.required && field.type !== FormFieldType.Switch ? [{ required: true, message: t("form.required") }] : undefined;
+	};
 	return (
 		<>
 			{fields.map(field => (
@@ -185,7 +201,8 @@ export function PayloadFormItems({ fields, disabled }: { fields: FormField[], di
 					name={["payload", field.key]}
 					label={field.label}
 					valuePropName={field.type === FormFieldType.Switch ? "checked" : "value"}
-					rules={field.required && field.type !== FormFieldType.Switch ? [{ required: true, message: t("form.required") }] : undefined}
+					required={field.type === FormFieldType.Table ? !!field.required : undefined}
+					rules={rulesOf(field)}
 				>
 					<FormFieldInput field={field} disabled={disabled} />
 				</Form.Item>
@@ -215,6 +232,14 @@ export function PayloadView({ fields, payload, layout = PAYLOAD_FORM_LAYOUT }: {
 				const value = payload[field.key];
 				// Trường không nhập: để ô trống như trên form (không hiện "—")
 				const empty = value == null || value === "" || (Array.isArray(value) && !value.length);
+				// Bảng tự có khung viền nên không bọc thêm ô giả
+				if (field.type === FormFieldType.Table) {
+					return (
+						<Form.Item key={field.key} label={field.label} className={fieldSpanClass(field)}>
+							<TableFieldView field={field} value={value} />
+						</Form.Item>
+					);
+				}
 				return (
 					<Form.Item key={field.key} label={field.label} className={fieldSpanClass(field)}>
 						<div
@@ -247,8 +272,10 @@ export function PayloadDescriptions({ fields, payload, column = 2 }: { fields: F
 			items={fields.map(field => ({
 				key: field.key,
 				label: field.label,
-				span: field.type === FormFieldType.Textarea ? column : 1,
-				children: <span className="whitespace-pre-wrap"><PayloadValue field={field} value={payload[field.key]} /></span>,
+				span: field.type === FormFieldType.Textarea || field.type === FormFieldType.Table ? column : 1,
+				children: field.type === FormFieldType.Table
+					? <TableFieldView field={field} value={payload[field.key]} />
+					: <span className="whitespace-pre-wrap"><PayloadValue field={field} value={payload[field.key]} /></span>,
 			}))}
 		/>
 	);

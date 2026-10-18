@@ -318,7 +318,9 @@
 			"switch": "Yes / No",
 			"user": "User",
 			"department": "Department",
-			"principal": "User / Group"
+			"principal": "User / Group",
+			"table": "Table",
+			"formula": "Formula"
 		},
 		"builder": {
 			"search": "Search field types…",
@@ -327,7 +329,8 @@
 				"input": "Input",
 				"choice": "Choice",
 				"date": "Date & time",
-				"people": "People & organization"
+				"people": "People & organization",
+				"rows": "Multiple rows"
 			},
 			"dropHere": "Drop a field type here",
 			"selectHint": "Select a field on the form to edit its properties",
@@ -352,7 +355,56 @@
 			"fieldCount": "{{count}} fields",
 			"tabInfo": "Info"
 		},
-		"dateBoundInvalid": "Earliest date must not be after the latest date"
+		"dateBoundInvalid": "Earliest date must not be after the latest date",
+		"table": {
+			"columns": "Table columns",
+			"columnCount": "{{count}} / {{max}} columns",
+			"addColumn": "Add column",
+			"defaultColumn": "Item",
+			"columnLabel": "Column label",
+			"columnKey": "Column key",
+			"columnType": "Type",
+			"rows": "Rows",
+			"minRows": "Minimum",
+			"maxRows": "Maximum",
+			"rowsHint": "Leave empty: at least 1 row when required, up to {{max}} rows",
+			"addRow": "Add row",
+			"rowCount": "{{count}} rows",
+			"rowCountMax": "{{count}} / {{max}} rows",
+			"empty": "No rows yet",
+			"rowsUnit": "rows",
+			"copyRow": "Duplicate row",
+			"deleteRow": "Delete row",
+			"moveUp": "Move up",
+			"moveDown": "Move down",
+			"deleteColumn": "Delete column",
+			"noColumns": "A table needs at least one column",
+			"columnInvalid": "Invalid column: needs a label, a unique key, and options for choice columns",
+			"errors": {
+				"required": "At least one row is required",
+				"minRows": "At least {{count}} rows are required",
+				"maxRows": "At most {{count}} rows",
+				"cell": "Row {{row}}: \"{{column}}\" is required",
+				"duplicate": "Row {{row}}: \"{{column}}\" duplicates row {{first}}"
+			},
+			"rowsInvalid": "Minimum rows must not exceed maximum rows",
+			"showTotal": "Show total at the bottom",
+			"total": "Total",
+			"formula": "Formula",
+			"formulaColumn": "With a column",
+			"formulaConstant": "With a number",
+			"formulaNoOperand": "Add a Number / Money column to build a formula",
+			"unique": "Values must be unique",
+			"keyDuplicate": "This column key is already used in the table"
+		},
+		"keySuggest": "Use",
+		"keyIssue": {
+			"empty": "Enter a key",
+			"unicode": "The key cannot contain accented / Unicode letters",
+			"special": "The key cannot contain spaces or special characters; use letters, digits and _",
+			"startDigit": "The key must start with a letter",
+			"tooLong": "The key can be at most 64 characters"
+		}
 	},
 	"yes": "Yes",
 	"no": "No",
