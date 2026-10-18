@@ -11,7 +11,7 @@ export interface AppSettingSearchParams extends SearchParamsBase {
 export type AppSettingValue = string | number | boolean | Record<string, unknown> | unknown[];
 
 /** Must stay in sync with `AppSettingValueType` in backend `app-setting.meta.ts`. */
-export type AppSettingValueType = "string" | "number" | "boolean" | "date" | "emails" | "string_array" | "json";
+export type AppSettingValueType = "string" | "number" | "boolean" | "date" | "emails" | "string_array" | "json" | "select";
 
 /**
  * Ràng buộc của value, khai báo ở backend `APP_SETTING_META`.
@@ -30,6 +30,8 @@ export interface AppSettingRule {
 	/** emails, string_array */
 	minItems?: number
 	maxItems?: number
+	/** select: các giá trị được chọn; nhãn lấy theo i18n `system.appSetting.keys.<key>.options.<value>` */
+	options?: string[]
 }
 
 /** Key có thể thêm mới (chưa có giá trị), kèm type/rule để dựng input */

@@ -107,6 +107,14 @@
 			"work_email_fallback_to_login_name": {
 				"label": "Send work emails to the login email",
 				"hint": "Work emails (approvals, reminders, notifications…) go to the work email. On: users without a work email receive them at their login email. Off or not set: those users are skipped. Account emails (OTP, password) always go to the login email"
+			},
+			"pdf_viewer": {
+				"label": "PDF viewer",
+				"hint": "Built-in viewer (default): loads only the pages being read, so files open fast. OnlyOffice: loads the whole file first; use it when the built-in viewer renders a file incorrectly. Without OnlyOffice configured the built-in viewer is always used",
+				"options": {
+					"pdfjs": "Built-in viewer (pdf.js)",
+					"onlyoffice": "OnlyOffice"
+				}
 			}
 		}
 	},

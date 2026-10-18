@@ -7,7 +7,7 @@ import { DatePicker, Form, Input, InputNumber, Select, Spin, Switch, Typography 
 import dayjs from "dayjs";
 import { useImperativeHandle, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { DATE_FORMAT, getSettingLabel, toStringArray } from "../constants";
+import { DATE_FORMAT, getSelectOptionLabel, getSettingLabel, toStringArray } from "../constants";
 
 const { Text } = Typography;
 
@@ -188,6 +188,13 @@ export function Detail({ ref }: DetailProps) {
 				);
 			case "boolean":
 				return <Switch />;
+			case "select":
+				return (
+					<Select
+						placeholder={t("common.pleaseSelect")}
+						options={(rule.options ?? []).map(value => ({ value, label: getSelectOptionLabel(t, record?.key ?? "", value) }))}
+					/>
+				);
 			case "date":
 				return (
 					<DatePicker
@@ -225,6 +232,10 @@ export function Detail({ ref }: DetailProps) {
 		switch (type) {
 			case "boolean":
 				return Promise.resolve();
+			case "select":
+				return typeof value === "string" && (rule.options ?? []).includes(value)
+					? Promise.resolve()
+					: Promise.reject(new Error(t("system.appSetting.valueRequired")));
 			case "emails":
 			case "string_array": {
 				const items = Array.isArray(value) ? value as string[] : [];

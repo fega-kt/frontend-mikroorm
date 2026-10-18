@@ -108,6 +108,14 @@
 			"work_email_fallback_to_login_name": {
 				"label": "Gửi mail công việc qua email đăng nhập",
 				"hint": "Mail công việc (phê duyệt, nhắc duyệt, thông báo…) gửi tới email công việc. Bật: người chưa có email công việc sẽ nhận qua email đăng nhập. Tắt hoặc chưa cấu hình: bỏ qua người đó. Mail tài khoản (OTP, mật khẩu) luôn gửi tới email đăng nhập"
+			},
+			"pdf_viewer": {
+				"label": "Trình xem PDF",
+				"hint": "Trình xem tích hợp (mặc định): chỉ tải trang đang xem nên mở nhanh. OnlyOffice: phải tải cả tệp mới hiển thị, dùng khi trình xem tích hợp hiển thị sai. Chưa cấu hình OnlyOffice thì luôn dùng trình xem tích hợp",
+				"options": {
+					"pdfjs": "Trình xem tích hợp (pdf.js)",
+					"onlyoffice": "OnlyOffice"
+				}
 			}
 		}
 	},
