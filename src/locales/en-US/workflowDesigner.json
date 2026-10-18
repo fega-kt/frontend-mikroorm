@@ -109,7 +109,8 @@
 		"DEPT_HEAD": "Department head",
 		"DEPT_DEPUTY": "Deputy head",
 		"SPECIFIC_USER": "Specific user (legacy)",
-		"PRINCIPAL": "Specific user / group"
+		"PRINCIPAL": "Specific user / group",
+		"DEPARTMENT_LEADER": "Leader of a department"
 	},
 	"overdue": {
 		"REMIND": "Remind only",
@@ -213,7 +214,10 @@
 		"defaultTemplate": "Default — {{name}}",
 		"messageHint": "Shown in the notification and inserted into the email as {{message}}",
 		"groupMode": "When the approver is a group",
-		"groupModeHint": "Whole group: any member can approve, first one wins. Assign one: a random member is picked; if they leave the group or are deactivated, the task is reassigned. An empty group is skipped."
+		"groupModeHint": "Whole group: any member can approve, first one wins. Assign one: a random member is picked; if they leave the group or are deactivated, the task is reassigned. An empty group is skipped.",
+		"selectDepartment": "Select a department",
+		"climbIfEmpty": "Move up to the parent department when empty",
+		"climbIfEmptyHint": "When the department has no head / deputy (or they are locked): on uses the parent department's leader; off counts as no approver found. \"Head or deputy\": both receive the task and one approval is enough."
 	},
 	"condition": {
 		"field": "Field",
@@ -299,5 +303,10 @@
 	"groupMode": {
 		"shared": "Whole group",
 		"assign": "Assign one member"
+	},
+	"leaderRole": {
+		"HEAD": "Head",
+		"DEPUTY": "Deputy",
+		"HEAD_OR_DEPUTY": "Head or deputy"
 	}
 }

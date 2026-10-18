@@ -33,6 +33,8 @@ function approverKey(a: Approver) {
 		return `${a.type}:${a.userId}`;
 	if (a.type === ApproverType.Principal)
 		return `${a.type}:${a.principalId}`;
+	if (a.type === ApproverType.DepartmentLeader)
+		return `${a.type}:${a.departmentId}:${a.role}`;
 	return a.type;
 }
 

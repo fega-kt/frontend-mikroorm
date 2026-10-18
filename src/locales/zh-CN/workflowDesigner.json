@@ -109,7 +109,8 @@
 		"DEPT_HEAD": "部门负责人",
 		"DEPT_DEPUTY": "部门副职",
 		"SPECIFIC_USER": "指定人员（旧）",
-		"PRINCIPAL": "指定人员 / 群组"
+		"PRINCIPAL": "指定人员 / 群组",
+		"DEPARTMENT_LEADER": "指定部门负责人"
 	},
 	"overdue": {
 		"REMIND": "仅提醒",
@@ -211,7 +212,10 @@
 		"defaultTemplate": "默认 — {{name}}",
 		"messageHint": "显示在通知中，并通过 {{message}} 变量插入邮件",
 		"groupMode": "审批人为小组时",
-		"groupModeHint": "全组共同处理：任一成员均可审批，先审先完成。分派给一人：随机选择一名成员；该成员离开小组或被停用时重新分派。小组无成员则跳过。"
+		"groupModeHint": "全组共同处理：任一成员均可审批，先审先完成。分派给一人：随机选择一名成员；该成员离开小组或被停用时重新分派。小组无成员则跳过。",
+		"selectDepartment": "选择部门",
+		"climbIfEmpty": "部门为空时转到上级部门",
+		"climbIfEmptyHint": "部门没有负责人 / 副职（或已锁定）时：开启则使用上级部门负责人；关闭则视为找不到审批人。“负责人或副职”：两人同时收到任务，一人审批即可。"
 	},
 	"condition": {
 		"field": "字段",
@@ -297,5 +301,10 @@
 	"groupMode": {
 		"shared": "全组共同处理",
 		"assign": "分派给一人"
+	},
+	"leaderRole": {
+		"HEAD": "部门负责人",
+		"DEPUTY": "部门副职",
+		"HEAD_OR_DEPUTY": "负责人或副职"
 	}
 }

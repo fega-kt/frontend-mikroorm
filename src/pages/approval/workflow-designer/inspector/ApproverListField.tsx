@@ -3,6 +3,7 @@ import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Form, Select } from "antd";
 import { useTranslation } from "react-i18next";
 import { useApproverTypeOptions } from "./approver-form";
+import { DepartmentLeaderFields } from "./DepartmentLeaderFields";
 import { PrincipalSelect } from "./PrincipalSelect";
 import { UserPicker } from "./UserPicker";
 
@@ -40,6 +41,8 @@ export function ApproverListField({ name, addText, disabled }: ApproverListField
 											</div>
 										);
 									}
+									if (type === ApproverType.DepartmentLeader)
+										return <DepartmentLeaderFields prefix={[field.name]} disabled={disabled} compact />;
 									if (type === ApproverType.SpecificUser) {
 										return (
 											<div className="min-w-0 flex-1">

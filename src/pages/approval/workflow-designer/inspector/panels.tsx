@@ -18,6 +18,7 @@ import { approverLabel } from "../canvas/labels";
 import { useDesigner } from "../store/designer.store";
 import { fromApproverForm, fromApproverFormItem, toApproverForm, useApproverTypeOptions } from "./approver-form";
 import { ApproverListField } from "./ApproverListField";
+import { DepartmentLeaderFields } from "./DepartmentLeaderFields";
 import { PrincipalMultiSelect } from "./PrincipalMultiSelect";
 import { PrincipalSelect } from "./PrincipalSelect";
 import { StepNotifications } from "./StepNotifications";
@@ -92,7 +93,8 @@ function slaValues(node: ApprovalNode | ParallelNode) {
 	return {
 		slaHours: node.slaHours,
 		onOverdue: node.onOverdue,
-		options: { ...DEFAULT_STEP_OPTIONS, ...node.options },
+		// Bước cũ chưa có cờ giữ quy tắc cũ (tự bỏ người trình); chỉ bước tạo mới mang false từ DEFAULT_STEP_OPTIONS
+		options: { ...DEFAULT_STEP_OPTIONS, autoExcludeRequester: true, ...node.options },
 	};
 }
 
@@ -132,17 +134,27 @@ export function ApprovalPanel({ node, disabled }: PanelProps<ApprovalNode>) {
 					approverType: initialApprover.type,
 					userId: initialApprover.userId,
 					principalId: initialApprover.principalId,
+					department: initialApprover.department,
+					role: initialApprover.role,
+					climbIfEmpty: initialApprover.climbIfEmpty,
 					...slaValues(node),
 				}}
 				onValuesChange={(_, all: SlaFormValues & ApproverFormItem & { name?: string, approverType?: ApproverType }) => {
 					updateNode(node.id, (n) => {
-						const approver = fromApproverFormItem({ type: all.approverType, userId: all.userId, principalId: all.principalId });
+						const approver = fromApproverFormItem({
+							type: all.approverType,
+							userId: all.userId,
+							principalId: all.principalId,
+							department: all.department,
+							role: all.role,
+							climbIfEmpty: all.climbIfEmpty,
+						});
 						return { ...applySla(n as ApprovalNode, all), name: trimName(all.name), approver } as ApprovalNode;
 					});
 				}}
 			>
 				<NameField />
-				<Form.Item name="approverType" label={t("workflowDesigner.inspector.approver")} className={approverType === ApproverType.SpecificUser || approverType === ApproverType.Principal ? "mb-2" : undefined}>
+				<Form.Item name="approverType" label={t("workflowDesigner.inspector.approver")} className={approverType === ApproverType.SpecificUser || approverType === ApproverType.Principal || approverType === ApproverType.DepartmentLeader ? "mb-2" : undefined}>
 					<Radio.Group>
 						<Space direction="vertical" size={6}>
 							{typeOptions.map(o => <Radio key={o.value} value={o.value}>{o.label}</Radio>)}
@@ -159,6 +171,7 @@ export function ApprovalPanel({ node, disabled }: PanelProps<ApprovalNode>) {
 						<UserPicker disabled={disabled} placeholder={t("workflowDesigner.inspector.selectUser")} />
 					</Form.Item>
 				)}
+				{approverType === ApproverType.DepartmentLeader && <DepartmentLeaderFields disabled={disabled} />}
 				<SlaFields />
 			</Form>
 			<StepNotifications node={node} disabled={disabled} />
