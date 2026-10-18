@@ -201,13 +201,12 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 				documents: fileConfig.documents.enabled ? (await documentsRef.current?.sync()) ?? values.documents ?? [] : [],
 				attachments: fileConfig.attachments.enabled ? (await attachmentsRef.current?.sync()) ?? values.attachments ?? [] : [],
 			};
-			if (submit) {
-				for (const block of ["documents", "attachments"] as const) {
-					const error = checkFileBlock(fileConfig[block], files[block]);
-					if (error) {
-						window.$message?.error(`${t(`approval.files.${block}`)}: ${t(`approval.files.errors.${error.code}`, error)}`);
-						return;
-					}
+			// Tệp bắt buộc / giới hạn số tệp kiểm cả khi lưu nháp, giống các trường bắt buộc của form (backend kiểm lại khi gửi)
+			for (const block of ["documents", "attachments"] as const) {
+				const error = checkFileBlock(fileConfig[block], files[block]);
+				if (error) {
+					window.$message?.error(`${t(`approval.files.${block}`)}: ${t(`approval.files.errors.${error.code}`, error)}`);
+					return;
 				}
 			}
 			const body = {
