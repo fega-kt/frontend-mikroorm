@@ -60,7 +60,8 @@
 		"emailTemplate": "Email templates",
 		"activityLogList": "Activity log",
 		"mailQueue": "Mail queue",
-		"i18n": "Localization"
+		"i18n": "Localization",
+		"signingCertificate": "Signing certificates"
 	},
 	"appLoading": "Loading Resources...",
 	"back": "Back",

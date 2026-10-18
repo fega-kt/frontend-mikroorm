@@ -13,7 +13,7 @@ import { approverLabel } from "../../workflow-designer/canvas/labels";
 const { Text } = Typography;
 
 const EVENTS: StepEvent[] = ["approved", "rejected", "returned"];
-const OPTION_KEYS = ["allowReturn", "requireRejectReason", "allowDelegation", "skipIfRequester", "skipIfNoApprover", "emailGroup"] as const;
+const OPTION_KEYS = ["allowReturn", "requireRejectReason", "allowDelegation", "skipIfRequester", "skipIfNoApprover", "emailGroup", "requireSignature"] as const;
 
 /** Cấu hình của bước theo phiên bản quy trình tờ trình đang chạy (chỉ đọc) — nhãn dùng chung với màn thiết kế quy trình */
 export function StepConfig({ node, names, tasks = [] }: { node: WorkflowNode, names: Record<string, string>, /** Task của bước trong vòng đang xem — để hiện hạn xử lý cụ thể */ tasks?: ApprovalTaskItem[] }) {

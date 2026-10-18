@@ -51,6 +51,10 @@ export enum ApprovalHistoryAction {
 	FileRemove = "file_remove",
 	Share = "share",
 	Unshare = "unshare",
+	/** Chuyển văn bản sang PDF để ký — data.files: HistoryFileVersion[] */
+	FileConvert = "file_convert",
+	/** Ký số văn bản (ngay trước dòng duyệt) — data.files: HistoryFileVersion[], data.certificateSerial */
+	Sign = "sign",
 }
 
 export interface UserBrief {
@@ -183,6 +187,43 @@ export interface HistoryFileItem {
 	block: "documents" | "attachments"
 }
 
+/** data.files của dòng "sign" / "file_convert": bản trước → bản mới */
+export interface HistoryFileVersion {
+	from: { id: string, filename: string }
+	to: { id: string, filename: string }
+}
+
+type FileBrief = Pick<AttachmentEntity, "id" | "filename" | "url" | "visibility" | "size" | "mimetype">;
+
+/** Một lần ký văn bản theo task: file là bản sau khi task đó ký (lưu riêng, không bị ghi đè) */
+export interface RoundFileSignature {
+	id: string
+	taskId: string
+	nodeName?: string
+	signer: UserBrief
+	signedAt: string
+	status: "valid" | "rolled_back"
+	file: FileBrief
+}
+
+/** Một tệp trong bộ tệp của vòng duyệt: tệp gốc + bản hiện tại của vòng */
+export interface RoundFileItem {
+	/** Tệp người trình tải lên */
+	original: FileBrief
+	/** Bản hiện tại (PDF chuyển đổi / bản ký mới nhất); null khi vẫn là tệp gốc */
+	current: FileBrief | null
+	signatureCount: number
+	/** Các lần ký theo thứ tự, mỗi lần một bản riêng (lần cuối = bản chung) */
+	signatures?: RoundFileSignature[]
+}
+
+/** Bộ tệp đã đưa đi duyệt ở một vòng (chụp lúc gửi / gửi lại) */
+export interface RequestRoundFiles {
+	round: number
+	documents: RoundFileItem[]
+	attachments: RoundFileItem[]
+}
+
 export interface ApprovalHistoryItem {
 	id: string
 	action: ApprovalHistoryAction
@@ -215,6 +256,8 @@ export interface ApprovalRequestDetail {
 	department: { id: string, name: string }
 	documents: Pick<AttachmentEntity, "id" | "filename" | "url" | "visibility" | "size" | "mimetype">[]
 	attachments: Pick<AttachmentEntity, "id" | "filename" | "url" | "visibility" | "size" | "mimetype">[]
+	/** Bộ tệp từng vòng duyệt, mới nhất trước; rỗng với tờ trình gửi trước khi lưu theo vòng */
+	rounds?: RequestRoundFiles[]
 	workflow: { id: string, name: string, versionId: string, version: number } | null
 	definition: WorkflowDefinition | null
 	tasks: ApprovalTaskItem[]
@@ -232,6 +275,8 @@ export interface ApprovalRequestDetail {
 		canReject: boolean
 		canReturn: boolean
 		requireRejectReason: boolean
+		/** Bước hiện tại bắt buộc ký số: nút duyệt thành "Ký và duyệt" */
+		requireSignature?: boolean
 		canReassign: boolean
 		myTaskId: string | null
 		isParallel: boolean

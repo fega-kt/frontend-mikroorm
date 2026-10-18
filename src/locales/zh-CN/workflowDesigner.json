@@ -182,7 +182,8 @@
 			"skipIfNoApprover": "找不到审批人时跳过",
 			"requireRejectReason": "驳回时必须填写原因",
 			"allowReturn": "允许退回补充",
-			"emailGroup": "向全组发送邮件（共同处理的小组；默认仅应用内通知）"
+			"emailGroup": "向全组发送邮件（共同处理的小组；默认仅应用内通知）",
+			"requireSignature": "要求对申请文件进行数字签名（签名并审批）"
 		},
 		"mode": "审批方式",
 		"approvers": "审批人",

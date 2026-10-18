@@ -1,4 +1,5 @@
 import type { FileContextType, FileViewDescriptor } from "#src/api/file-view";
+import type { PdfPageOverlayInfo } from "./pdf/pdf-view";
 import { FileViewKind, fileViewService } from "#src/api/file-view";
 import { formatBytes } from "#src/utils/format-bytes";
 import { DownloadOutlined } from "@ant-design/icons";
@@ -156,6 +157,51 @@ function FileViewBody({ target, onLoaded, onDownload }: FileViewBodyProps) {
 		);
 	}
 	return <ViewFallback description={t("approval.files.viewUnsupported")} onDownload={onDownload} />;
+}
+
+interface PdfFileViewProps {
+	target: FileViewTarget
+	/** Lớp phủ trên từng trang (vd khung chữ ký kéo thả) */
+	renderPageOverlay?: (info: PdfPageOverlayInfo) => React.ReactNode
+}
+
+/** Xem một PDF trong ngữ cảnh khác (không phải cửa sổ xem tệp), vd hộp "Ký và duyệt" chọn vị trí chữ ký */
+export function PdfFileView({ target, renderPageOverlay }: PdfFileViewProps) {
+	const { t } = useTranslation();
+	const [descriptor, setDescriptor] = useState<FileViewDescriptor>();
+	const [error, setError] = useState(false);
+
+	useEffect(() => {
+		let cancelled = false;
+		fileViewService.fetchView(target.contextType, target.fileId)
+			.then(result => !cancelled && setDescriptor(result))
+			.catch(() => !cancelled && setError(true));
+		return () => {
+			cancelled = true;
+		};
+	}, [target.contextType, target.fileId]);
+
+	const download = () => fileViewService.download(target.contextType, target.fileId);
+	const refreshStreamUrl = async () => {
+		const next = await fileViewService.fetchView(target.contextType, target.fileId);
+		return fileViewService.buildStreamUrl(target.contextType, next.streamPath!);
+	};
+
+	if (error || (descriptor && (descriptor.kind !== FileViewKind.Pdf || !descriptor.streamPath)))
+		return <ViewFallback description={t("approval.files.viewError")} onDownload={download} />;
+	if (!descriptor)
+		return <div className="flex h-full items-center justify-center"><Spin /></div>;
+	return (
+		<Suspense fallback={<div className="flex h-full items-center justify-center"><Spin /></div>}>
+			<PdfView
+				streamUrl={fileViewService.buildStreamUrl(target.contextType, descriptor.streamPath!)}
+				size={descriptor.size}
+				refreshUrl={refreshStreamUrl}
+				onDownload={download}
+				renderPageOverlay={renderPageOverlay}
+			/>
+		</Suspense>
+	);
 }
 
 /** Huy hiệu đuôi tệp ở header: màu theo nhóm (PDF đỏ, Word xanh dương, Excel xanh lá, PowerPoint cam) */

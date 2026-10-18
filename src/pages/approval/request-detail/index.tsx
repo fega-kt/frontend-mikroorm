@@ -5,6 +5,7 @@ import type { FileViewTarget } from "#src/components/file-viewer";
 import type { BadgeProps } from "antd";
 import type { ReactNode } from "react";
 import type { ActionModalRef } from "../components/action-modal";
+import type { RequestFile } from "./components/request-file-list";
 import { ApprovalHistoryAction, approvalRequestService, ApprovalRequestStatus } from "#src/api/approval-request";
 import { approvalTaskService } from "#src/api/approval-task";
 import { FileContextType, fileViewService } from "#src/api/file-view";
@@ -36,18 +37,19 @@ import { ActionModal } from "../components/action-modal";
 import { PayloadView } from "../components/form-fields";
 import { RequestDetailSkeleton } from "../components/page-skeleton";
 import { PriorityTag, RequestStatusTag } from "../components/status-tag";
-import { fileListSummary } from "../lib/files";
 import { useLocalizedFields } from "../lib/form-i18n";
 import { DATE_TIME_FORMAT } from "../lib/payload";
 import { collectUserNames } from "../lib/progress";
 import { buildRounds } from "../lib/rounds";
 import ApprovalRequestForm from "../request-form";
+import { DocumentSignatures } from "./components/document-signatures";
 import { HistoryTimeline } from "./components/history-timeline";
 import { RequestActions } from "./components/request-actions";
-import { RequestFileList } from "./components/request-file-list";
+import { RoundFiles } from "./components/round-files";
 import { RoundMeta } from "./components/round-meta";
 import { RoundTimeline } from "./components/round-timeline";
 import { ShareCount, ShareList, ShareModal } from "./components/share";
+import { SignApproveModal } from "./components/sign-approve-modal";
 import { StepDetailDrawer } from "./components/step-detail-drawer";
 
 const { Text, Title } = Typography;
@@ -105,6 +107,8 @@ export default function ApprovalRequestDetailPage() {
 	const [busy, setBusy] = useState(false);
 	const [shareOpen, setShareOpen] = useState(false);
 	const [viewing, setViewing] = useState<FileViewTarget | null>(null);
+	const [signing, setSigning] = useState(false);
+	const [signaturesOf, setSignaturesOf] = useState<RequestFile | null>(null);
 	const [downloadingId, setDownloadingId] = useState<string | null>(null);
 	const [reassignTask, setReassignTask] = useState<ApprovalTaskItem | null>(null);
 	const [reassignTo, setReassignTo] = useState<string>();
@@ -170,6 +174,11 @@ export default function ApprovalRequestDetailPage() {
 	const act = async (action: ApprovalActionType) => {
 		if (!detail)
 			return;
+		// Bước bắt buộc ký số: ghi chú + PIN nhập trong hộp "Ký và duyệt"
+		if (action === "approve" && detail.permissions.requireSignature) {
+			setSigning(true);
+			return;
+		}
 		const requireComment = action === "return" || (action === "reject" && detail.permissions.requireRejectReason);
 		const input = await actionModalRef.current?.open(action, { requireComment });
 		if (!input)
@@ -450,28 +459,13 @@ export default function ApprovalRequestDetailPage() {
 							key: DetailTab.Files,
 							label: tabLabel(<PaperClipOutlined />, t("approval.detail.files"), fileCount),
 							children: (
-								<div className="flex flex-col gap-4">
-									{(["documents", "attachments"] as const).map(block => (
-										<SectionCard
-											key={block}
-											icon={<PaperClipOutlined />}
-											title={t(`approval.files.${block}`)}
-											extra={detail[block].length > 0 && <Text type="secondary" className="text-[13px]">{fileListSummary(detail[block], t)}</Text>}
-											bodyClassName={detail[block].length ? "px-2 py-2" : undefined}
-										>
-											{detail[block].length
-												? (
-													<RequestFileList
-														files={detail[block]}
-														downloadingId={downloadingId}
-														onView={file => setViewing({ contextType: FileContextType.ApprovalRequest, fileId: file.id, filename: file.filename })}
-														onDownload={downloadFile}
-													/>
-												)
-												: <Text type="secondary">{t("common.noData")}</Text>}
-										</SectionCard>
-									))}
-								</div>
+								<RoundFiles
+									detail={detail}
+									downloadingId={downloadingId}
+									onView={file => setViewing({ contextType: FileContextType.ApprovalRequest, fileId: file.id, filename: file.filename })}
+									onDownload={downloadFile}
+									onSignatures={setSignaturesOf}
+								/>
 							),
 						},
 						{
@@ -489,6 +483,8 @@ export default function ApprovalRequestDetailPage() {
 
 			<FileViewer target={viewing} onClose={() => setViewing(null)} />
 			<ActionModal ref={actionModalRef} />
+			<SignApproveModal requestId={detail.id} open={signing} onClose={() => setSigning(false)} onChanged={load} />
+			<DocumentSignatures requestId={detail.id} file={signaturesOf} onClose={() => setSignaturesOf(null)} />
 			<ShareModal
 				requestId={detail.id}
 				open={shareOpen}

@@ -106,6 +106,9 @@ export enum PermissionType {
 	/** tạo ủy quyền hộ người khác (vd: HR cho giám đốc), xem / sửa / xóa mọi ủy quyền */
 	ManageApprovalDelegation = "permission:approval-delegation:manage",
 
+	/** duyệt / từ chối cấp chứng thư ký số, thu hồi chứng thư */
+	ManageSigningCertificate = "permission:menu:signing-certificate",
+
 	/** ===== APP SETTING ===== */
 
 	MenuAppSetting = "permission:menu:app-setting",

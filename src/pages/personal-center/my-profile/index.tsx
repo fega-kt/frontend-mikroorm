@@ -11,6 +11,8 @@ import {
 import { Card, Col, Form, Row, Space, Typography } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router";
+import { DigitalSignature } from "./components/digital-signature";
 
 const { Title, Text } = Typography;
 
@@ -24,6 +26,12 @@ interface ProfileFormValues {
 	avatar?: string | File
 }
 
+/** Tab của trang hồ sơ — giữ trên URL (?tab=signature) để mở thẳng từ hộp "Ký và duyệt" */
+enum ProfileTab {
+	Info = "info",
+	Signature = "signature",
+}
+
 const DIRTY_FIELDS = ["fullName", "workEmail", "phoneNumber", "description"] as const;
 
 export default function Profile() {
@@ -32,6 +40,8 @@ export default function Profile() {
 	const [form] = Form.useForm<ProfileFormValues>();
 	const [isDirty, setIsDirty] = useState(false);
 	const [hasErrors, setHasErrors] = useState(false);
+	const [searchParams, setSearchParams] = useSearchParams();
+	const tab = searchParams.get("tab") === ProfileTab.Signature ? ProfileTab.Signature : ProfileTab.Info;
 
 	const checkDirty = () => {
 		const dirty = DIRTY_FIELDS.some(key => (form.getFieldValue(key) ?? "") !== ((currentUser)[key] ?? ""));
@@ -70,8 +80,16 @@ export default function Profile() {
 				)}
 				variant="borderless"
 				className="w-full max-w-4xl shadow-md rounded-2xl overflow-hidden"
+				tabList={[
+					{ key: ProfileTab.Info, label: t("personal-center.tabInfo") },
+					{ key: ProfileTab.Signature, label: t("personal-center.signature.tab") },
+				]}
+				activeTabKey={tab}
+				onTabChange={key => setSearchParams(key === ProfileTab.Info ? {} : { tab: key }, { replace: true })}
 			>
+				{tab === ProfileTab.Signature && <DigitalSignature />}
 				<ProForm
+					className={tab === ProfileTab.Signature ? "hidden" : undefined}
 					form={form}
 					layout="vertical"
 					onFinish={handleFinish}

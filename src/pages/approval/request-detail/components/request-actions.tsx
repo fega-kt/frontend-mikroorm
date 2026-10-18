@@ -14,6 +14,7 @@ import {
 	MailOutlined,
 	ReloadOutlined,
 	RollbackOutlined,
+	SafetyCertificateOutlined,
 	SendOutlined,
 	ShareAltOutlined,
 	StopOutlined,
@@ -94,7 +95,10 @@ export function RequestActions({ detail, busy, onReload, onAct, onSubmit, onCanc
 				<Button danger icon={<CloseOutlined />} disabled={busy} onClick={() => onAct("reject")}>{t("approval.actions.reject")}</Button>
 			)}
 			{permissions.canApprove && (
-				<Button type="primary" icon={<CheckOutlined />} loading={busy} onClick={() => onAct("approve")}>{t("approval.actions.approve")}</Button>
+				// Bước bắt buộc ký số: duyệt = ký và duyệt (mở hộp chọn vị trí chữ ký + nhập PIN)
+				<Button type="primary" icon={permissions.requireSignature ? <SafetyCertificateOutlined /> : <CheckOutlined />} loading={busy} onClick={() => onAct("approve")}>
+					{t(permissions.requireSignature ? "approval.actions.signApprove" : "approval.actions.approve")}
+				</Button>
 			)}
 			{moreItems.length > 0 && (
 				<Dropdown menu={{ items: moreItems }} trigger={["click"]} placement="bottomRight" disabled={busy}>
