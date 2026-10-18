@@ -564,10 +564,11 @@
 		"placementHint": "Drag the signature box to move it, or click an empty spot on any page to place it there.",
 		"resetPlacement": "Reset to automatic position",
 		"legalHint": "The internal digital signature uses your certificate (valid until {{date}}). Signed documents cannot be changed without invalidating the signature.",
-		"signedBy": "Signed by: {{name}}",
-		"signedAtPreview": "Time: at signing",
 		"invalidPin": "Wrong PIN, {{count}} attempts left",
-		"pinLocked": "Too many wrong PIN attempts, try again in 15 minutes"
+		"pinLocked": "Too many wrong PIN attempts, try again in 15 minutes",
+		"confirmTitle": "Confirm digital signature",
+		"confirmDescription": "You are about to sign {{count}} document(s):",
+		"confirm": "Sign"
 	},
 	"signatures": {
 		"title": "Digital signatures",

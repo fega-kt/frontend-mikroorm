@@ -564,10 +564,11 @@
 		"placementHint": "拖动签名框可调整位置，或点击任意页面的空白处将签名框放到该处。",
 		"resetPlacement": "恢复自动位置",
 		"legalHint": "内部数字签名使用您的证书（有效期至 {{date}}）。已签名文件一经修改，签名即失效。",
-		"signedBy": "签名人：{{name}}",
-		"signedAtPreview": "时间：签名时",
 		"invalidPin": "PIN 错误，还剩 {{count}} 次",
-		"pinLocked": "PIN 错误次数过多，请 15 分钟后再试"
+		"pinLocked": "PIN 错误次数过多，请 15 分钟后再试",
+		"confirmTitle": "确认数字签名",
+		"confirmDescription": "您将签署 {{count}} 份文档：",
+		"confirm": "签署"
 	},
 	"signatures": {
 		"title": "数字签名",
