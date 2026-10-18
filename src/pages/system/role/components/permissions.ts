@@ -70,6 +70,9 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.MenuAllApprovalRequest,
 		PermissionType.ReassignApprovalTask,
 		PermissionType.ManageApprovalDelegation,
+	],
+	// Chứng thư ký số thuộc core (dùng chung cho mọi nghiệp vụ ký), không riêng tờ trình
+	SIGNING_CERTIFICATE: [
 		PermissionType.ManageSigningCertificate,
 	],
 	APP_SETTING: [
