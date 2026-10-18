@@ -10,11 +10,12 @@ import {
 	FieldNumberOutlined,
 	FontSizeOutlined,
 	ScheduleOutlined,
+	TableOutlined,
 	TeamOutlined,
 	UserOutlined,
 } from "@ant-design/icons";
 
-export type PaletteGroup = "input" | "choice" | "date" | "people";
+export type PaletteGroup = "input" | "choice" | "date" | "people" | "rows";
 
 export interface FieldTypeMeta {
 	type: FormFieldType
@@ -35,9 +36,10 @@ export const FIELD_TYPES: FieldTypeMeta[] = [
 	{ type: FormFieldType.User, group: "people", icon: UserOutlined },
 	{ type: FormFieldType.Department, group: "people", icon: ApartmentOutlined },
 	{ type: FormFieldType.Principal, group: "people", icon: TeamOutlined },
+	{ type: FormFieldType.Table, group: "rows", icon: TableOutlined },
 ];
 
-export const PALETTE_GROUPS: PaletteGroup[] = ["input", "choice", "date", "people"];
+export const PALETTE_GROUPS: PaletteGroup[] = ["input", "choice", "date", "people", "rows"];
 
 export const fieldTypeIcon = (type: FormFieldType) => FIELD_TYPES.find(item => item.type === type)?.icon;
 

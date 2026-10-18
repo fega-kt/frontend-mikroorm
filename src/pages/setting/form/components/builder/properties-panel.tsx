@@ -1,18 +1,22 @@
 import type { FormField } from "#src/api/setting/request-type/types";
-import { FormFieldType } from "#src/api/setting/request-type/types";
+import { FormFieldType, TABLE_MAX_ROWS } from "#src/api/setting/request-type/types";
 import { DATE_FORMAT, fieldSpan } from "#src/pages/approval/lib/payload";
 import { DatePicker, Input, InputNumber, Segmented, Select, Switch, Typography } from "antd";
 import dayjs from "dayjs";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { optionsToText, textToOptions } from "../../form-schema";
+import { defaultTableColumns, optionsToText, suggestFieldKey, textToOptions } from "../../form-schema";
 import { FIELD_TYPES, SPAN_PRESETS, WITH_DATE_BOUNDS, WITH_MULTIPLE, WITH_RANGE } from "./field-types";
+import { KeyError } from "./key-error";
+import { TableColumnsEditor } from "./table-columns-editor";
 
 const { Text } = Typography;
 
 interface PropertiesPanelProps {
 	field: FormField
 	keyError?: string
+	/** Mã của các trường khác — để gợi ý mã không trùng */
+	otherKeys?: string[]
 	onChange: (patch: Partial<FormField>) => void
 }
 
@@ -69,7 +73,7 @@ function DateBoundInput({ label, value, onChange }: { label: string, value?: str
 }
 
 /** Thuộc tính của trường đang chọn (render lại từ đầu khi đổi trường nhờ `key` ở chỗ dùng) */
-export function PropertiesPanel({ field, keyError, onChange }: PropertiesPanelProps) {
+export function PropertiesPanel({ field, keyError, otherKeys, onChange }: PropertiesPanelProps) {
 	const { t } = useTranslation();
 	const typeOptions = useMemo(() => FIELD_TYPES.map(item => ({ value: item.type, label: t(`approval.formSchema.types.${item.type}`) })), [t]);
 	const span = fieldSpan(field);
@@ -89,7 +93,7 @@ export function PropertiesPanel({ field, keyError, onChange }: PropertiesPanelPr
 						onChange={e => onChange({ key: e.target.value.trim() })}
 					/>
 					{keyError
-						? <Text type="danger" className="text-xs">{keyError}</Text>
+						? <KeyError message={keyError} suggestion={suggestFieldKey(field.key, otherKeys)} onApply={key => onChange({ key })} />
 						: (
 							<Text type="secondary" className="text-xs">
 								{t("approval.formSchema.builder.keyHint")}
@@ -106,6 +110,11 @@ export function PropertiesPanel({ field, keyError, onChange }: PropertiesPanelPr
 						onChange={type => onChange({
 							type,
 							options: type === FormFieldType.Select ? field.options ?? [] : undefined,
+							// Bảng: giữ cột đã có / tạo cột mặc định; kiểu khác thì bỏ cấu hình bảng
+							columns: type === FormFieldType.Table ? (field.columns?.length ? field.columns : defaultTableColumns(t)) : undefined,
+							minRows: type === FormFieldType.Table ? field.minRows : undefined,
+							maxRows: type === FormFieldType.Table ? field.maxRows : undefined,
+							span: type === FormFieldType.Table ? 12 : field.span,
 							multiple: WITH_MULTIPLE.has(type) ? field.multiple : undefined,
 							// Bỏ các giới hạn không còn hợp với kiểu mới (vd: min/max số khi đổi sang ngày)
 							min: WITH_RANGE.has(type) ? field.min : undefined,
@@ -115,7 +124,7 @@ export function PropertiesPanel({ field, keyError, onChange }: PropertiesPanelPr
 						})}
 					/>
 				</Row>
-				{field.type !== FormFieldType.Switch && (
+				{field.type !== FormFieldType.Switch && field.type !== FormFieldType.Table && (
 					<Row label={t("approval.formSchema.placeholder")}>
 						<Input value={field.placeholder} onChange={e => onChange({ placeholder: e.target.value || undefined })} />
 					</Row>
@@ -131,6 +140,29 @@ export function PropertiesPanel({ field, keyError, onChange }: PropertiesPanelPr
 					</Row>
 				)}
 			</Section>
+
+			{field.type === FormFieldType.Table && (
+				<>
+					<Section title={t("approval.formSchema.table.columns")}>
+						<TableColumnsEditor columns={field.columns ?? []} onChange={columns => onChange({ columns })} />
+					</Section>
+					<Section title={t("approval.formSchema.table.rows")}>
+						<div className="grid grid-cols-2 gap-2.5">
+							<Row label={t("approval.formSchema.table.minRows")}>
+								<InputNumber className="w-full" min={0} max={TABLE_MAX_ROWS} precision={0} value={field.minRows} onChange={minRows => onChange({ minRows: minRows ?? undefined })} />
+							</Row>
+							<Row label={t("approval.formSchema.table.maxRows")}>
+								<InputNumber className="w-full" min={1} max={TABLE_MAX_ROWS} precision={0} value={field.maxRows} onChange={maxRows => onChange({ maxRows: maxRows ?? undefined })} />
+							</Row>
+						</div>
+						<Text type={field.minRows !== undefined && field.maxRows !== undefined && field.minRows > field.maxRows ? "danger" : "secondary"} className="text-xs">
+							{field.minRows !== undefined && field.maxRows !== undefined && field.minRows > field.maxRows
+								? t("approval.formSchema.table.rowsInvalid")
+								: t("approval.formSchema.table.rowsHint", { max: TABLE_MAX_ROWS })}
+						</Text>
+					</Section>
+				</>
+			)}
 
 			<Section title={t("approval.formSchema.builder.layout")}>
 				<Row label={t("approval.formSchema.builder.width")}>

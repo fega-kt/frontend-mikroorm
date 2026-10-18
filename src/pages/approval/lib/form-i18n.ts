@@ -12,6 +12,9 @@ export type FormI18nKind = "label" | "placeholder" | "option";
 
 export const fieldI18nKey = (fieldKey: string, part: "label" | "placeholder") => `field.${fieldKey}.${part}`;
 export const optionI18nKey = (fieldKey: string, value: string) => `field.${fieldKey}.option.${value}`;
+/** Cột của trường bảng: nhãn và nhãn lựa chọn nằm dưới trường bảng — đồng bộ backend form-i18n.ts */
+export const columnI18nKey = (fieldKey: string, columnKey: string) => `field.${fieldKey}.column.${columnKey}.label`;
+export const columnOptionI18nKey = (fieldKey: string, columnKey: string, value: string) => `field.${fieldKey}.column.${columnKey}.option.${value}`;
 
 /** Một chuỗi có thể dịch của biểu mẫu (chuỗi gốc là tiếng Việt do admin nhập trong formSchema) */
 export interface FormI18nString {
@@ -23,7 +26,7 @@ export interface FormI18nString {
 	source: string
 }
 
-/** Liệt kê mọi chuỗi cần dịch trong formSchema: nhãn, gợi ý nhập, nhãn từng lựa chọn */
+/** Liệt kê mọi chuỗi cần dịch trong formSchema: nhãn, gợi ý nhập, nhãn từng lựa chọn, nhãn cột của bảng */
 export function collectFormStrings(fields: FormField[]): FormI18nString[] {
 	const result: FormI18nString[] = [];
 	for (const field of fields) {
@@ -38,6 +41,14 @@ export function collectFormStrings(fields: FormField[]): FormI18nString[] {
 			for (const option of field.options ?? [])
 				result.push({ ...base, key: optionI18nKey(field.key, option.value), kind: "option", source: option.label });
 		}
+		for (const column of field.type === FormFieldType.Table ? field.columns ?? [] : []) {
+			// Ngữ cảnh cho người dịch: "Danh sách thiết bị › Đơn giá"
+			const columnBase = { fieldKey: field.key, fieldLabel: `${field.label} › ${column.label}` };
+			if (column.label)
+				result.push({ ...columnBase, key: columnI18nKey(field.key, column.key), kind: "label", source: column.label });
+			for (const option of column.options ?? [])
+				result.push({ ...columnBase, key: columnOptionI18nKey(field.key, column.key, option.value), kind: "option", source: option.label });
+		}
 	}
 	return result;
 }
@@ -51,6 +62,11 @@ export function localizeFields(fields: FormField[], dictionary: TranslationDicti
 		label: dictionary[fieldI18nKey(field.key, "label")] || field.label,
 		placeholder: dictionary[fieldI18nKey(field.key, "placeholder")] || field.placeholder,
 		options: field.options?.map(option => ({ ...option, label: dictionary[optionI18nKey(field.key, option.value)] || option.label })),
+		columns: field.columns?.map(column => ({
+			...column,
+			label: dictionary[columnI18nKey(field.key, column.key)] || column.label,
+			options: column.options?.map(option => ({ ...option, label: dictionary[columnOptionI18nKey(field.key, column.key, option.value)] || option.label })),
+		})),
 	}));
 }
 

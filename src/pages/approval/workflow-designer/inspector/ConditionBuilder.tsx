@@ -26,8 +26,10 @@ interface ConditionBuilderProps {
 type Mode = "builder" | "json";
 
 /** Trình tạo điều kiện: các hàng [trường] [toán tử] [giá trị] nối bằng AND/OR → json-logic; có chế độ JSON thô */
-export function ConditionBuilder({ value, onChange, fields, disabled }: ConditionBuilderProps) {
+export function ConditionBuilder({ value, onChange, fields: allFields, disabled }: ConditionBuilderProps) {
 	const { t } = useTranslation();
+	// Trường bảng chưa dùng được trong điều kiện (tổng cột / số dòng sẽ hỗ trợ sau)
+	const fields = allFields.filter(f => f.type !== FormFieldType.Table);
 	const { token } = theme.useToken();
 	const [initial] = useState(() => logicToRows(value));
 	const [mode, setMode] = useState<Mode>(initial && fields.length ? "builder" : "json");

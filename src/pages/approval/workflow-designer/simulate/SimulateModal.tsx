@@ -3,6 +3,8 @@ import type { FormField } from "#src/api/setting/request-type/types";
 import type { Dayjs } from "dayjs";
 import { approvalWorkflowService } from "#src/api/approval-workflow";
 import { FormFieldType } from "#src/api/setting/request-type/types";
+import { TableFieldInput } from "#src/pages/approval/components/table-field";
+import { cleanTableRows } from "#src/pages/approval/lib/table-field";
 import { PlayCircleOutlined } from "@ant-design/icons";
 import { useRequest } from "ahooks";
 import { Alert, Button, DatePicker, Divider, Drawer, Empty, Form, Input, InputNumber, Select, Switch, Tag, Timeline, Typography } from "antd";
@@ -30,14 +32,19 @@ function toPayload(fields: FormField[], values: Record<string, unknown>): Record
 			payload[f.key] = (v as Dayjs).format("YYYY-MM-DD");
 		else if (f.type === FormFieldType.DateRange)
 			payload[f.key] = (v as [Dayjs, Dayjs]).map(d => d.format("YYYY-MM-DD"));
+		else if (f.type === FormFieldType.Table)
+			payload[f.key] = cleanTableRows(f, v);
 		else
 			payload[f.key] = v;
 	}
 	return payload;
 }
 
-function FieldInput({ field }: { field: FormField }) {
+/** `control`: value / onChange do Form.Item truyền xuống (ô bảng cần để nhận dòng) */
+function FieldInput({ field, ...control }: { field: FormField, [control: string]: unknown }) {
 	switch (field.type) {
+		case FormFieldType.Table:
+			return <TableFieldInput field={field} {...control} />;
 		case FormFieldType.Textarea:
 			return <Input.TextArea autoSize={{ minRows: 2, maxRows: 5 }} placeholder={field.placeholder} />;
 		case FormFieldType.Number:

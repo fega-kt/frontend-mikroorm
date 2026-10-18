@@ -24,7 +24,57 @@ export enum FormFieldType {
 	User = "user",
 	Department = "department",
 	Principal = "principal",
+	/** Bảng nhiều dòng: giá trị là mảng các dòng { <mã cột>: giá trị } */
+	Table = "table",
+	/** Chỉ dùng làm cột của bảng: giá trị tính từ các cột số khác của dòng (server tự tính lại) */
+	Formula = "formula",
 }
+
+/** Phép tính của cột công thức — đồng bộ backend */
+export enum FormulaOperator {
+	Add = "+",
+	Subtract = "-",
+	Multiply = "*",
+	Divide = "/",
+}
+
+/** Công thức của cột: <cột left> <op> <cột right | số cố định> */
+export interface TableFormula {
+	left: string
+	op: FormulaOperator
+	right: string | number
+}
+
+/** Kiểu dùng được làm cột của bảng — đồng bộ TABLE_COLUMN_TYPES ở backend */
+export const TABLE_COLUMN_TYPES = [FormFieldType.Text, FormFieldType.Number, FormFieldType.Money, FormFieldType.Date, FormFieldType.Select, FormFieldType.Formula] as const;
+export type TableColumnType = typeof TABLE_COLUMN_TYPES[number];
+
+/** Số cột tối đa / số dòng tối đa mặc định của bảng — đồng bộ backend */
+export const TABLE_MAX_COLUMNS = 10;
+export const TABLE_MAX_ROWS = 200;
+
+/** Một cột của trường bảng */
+export interface TableColumn {
+	key: string
+	label: string
+	type: TableColumnType
+	required?: boolean
+	options?: { label: string, value: string }[]
+	min?: number
+	max?: number
+	placeholder?: string
+	/** Cột số / số tiền / công thức: hiện tổng ở dòng cuối bảng */
+	showTotal?: boolean
+	/** Giá trị trong cột không được lặp lại giữa các dòng (ô trống không tính; văn bản không phân biệt hoa thường) */
+	unique?: boolean
+	/** Cột công thức */
+	formula?: TableFormula
+	/** Cột công thức: hiển thị kết quả dạng số hay số tiền (mặc định số tiền) */
+	resultType?: FormFieldType.Number | FormFieldType.Money
+}
+
+/** Một dòng của trường bảng */
+export type TableRow = Record<string, unknown>;
 
 /** Loại trường chọn thực thể (payload lưu { id, name }) */
 export const REFERENCE_FIELD_TYPES: ReadonlySet<FormFieldType> = new Set([FormFieldType.User, FormFieldType.Department, FormFieldType.Principal]);
@@ -55,6 +105,11 @@ export interface FormField {
 	multiple?: boolean
 	/** Độ rộng trên lưới 12 cột; bỏ trống = nửa hàng (đoạn văn: cả hàng) */
 	span?: number
+	/** Bảng: các cột theo thứ tự hiển thị */
+	columns?: TableColumn[]
+	/** Bảng: số dòng tối thiểu / tối đa (bỏ trống: bắt buộc thì ≥ 1, tối đa TABLE_MAX_ROWS) */
+	minRows?: number
+	maxRows?: number
 }
 
 /** Nhóm loại tệp — đồng bộ với backend attachment-config.ts */

@@ -3,6 +3,7 @@ import type { FormProps } from "antd";
 import type { Dayjs } from "dayjs";
 import { FormFieldType } from "#src/api/setting/request-type/types";
 import dayjs from "dayjs";
+import { cleanTableRows } from "./table-field";
 
 /** Bố cục form tờ trình — dùng chung cho form soạn và màn xem nội dung để hai bên luôn giống nhau */
 export const PAYLOAD_FORM_LAYOUT: FormProps["layout"] = "vertical";
@@ -24,9 +25,9 @@ const SPAN_CLASS: Record<number, string> = {
 	12: "col-span-12 @xl:col-span-12",
 };
 
-/** Độ rộng (1–12) của trường: mặc định nửa hàng, đoạn văn cả hàng */
+/** Độ rộng (1–12) của trường: mặc định nửa hàng, đoạn văn và bảng cả hàng */
 export function fieldSpan(field: FormField) {
-	return field.span ?? (field.type === FormFieldType.Textarea ? 12 : 6);
+	return field.span ?? (field.type === FormFieldType.Textarea || field.type === FormFieldType.Table ? 12 : 6);
 }
 
 /** Class col-span theo lưới 12 cột (khung đủ rộng thì chia cột; hẹp thì cả hàng) */
@@ -82,6 +83,9 @@ export function formValuesToPayload(fields: FormField[], values: Record<string, 
 			payload[field.key] = (value as Dayjs).format(API_DATE);
 		else if (field.type === FormFieldType.DateRange)
 			payload[field.key] = (value as Dayjs[]).map(d => d.format(API_DATE));
+		// Bảng: bỏ ô trống và dòng không nhập gì (ngày trong dòng đã là YYYY-MM-DD)
+		else if (field.type === FormFieldType.Table)
+			payload[field.key] = cleanTableRows(field, value);
 		else
 			payload[field.key] = value;
 	}
@@ -107,6 +111,9 @@ export function formatPayloadValue(field: FormField, value: unknown, t: (key: st
 		case FormFieldType.Department:
 		case FormFieldType.Principal:
 			return (Array.isArray(value) ? value : [value]).map(v => (v as FormReference)?.name ?? "").filter(Boolean).join(", ") || "—";
+		// Dòng tóm tắt (lịch sử, mô tả ngắn): số dòng; bảng đầy đủ dùng TableFieldView
+		case FormFieldType.Table:
+			return Array.isArray(value) ? `${value.length} ${t("approval.formSchema.table.rowsUnit")}` : "—";
 		default:
 			return String(value);
 	}
