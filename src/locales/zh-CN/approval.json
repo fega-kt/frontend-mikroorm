@@ -449,15 +449,18 @@
 			"FILE_TYPE": "不支持的文件类型（{{filename}}）",
 			"FILE_SIZE": "{{filename}} 超过 {{max}} MB"
 		},
-		"draft": "草稿",
 		"round": "第 {{round}} 轮",
-		"currentRound": "第 {{round}} 轮（当前）",
-		"signedTitle": "签名副本 · 第 {{round}} 轮",
-		"signedHint": "原始文件保持不变（见上方）",
-		"signatureCount": "{{count}} 个签名",
-		"convertedOnly": "已转换为 PDF，尚未签名",
-		"viewVersion": "查看此版本",
-		"rolledBack": "已回滚"
+		"originalColumn": "原始文件",
+		"signedColumn": "签署版本",
+		"converting": "正在转换为 PDF…",
+		"convertFailed": "无法转换为 PDF",
+		"noSignedVersion": "暂无签署版本",
+		"downloadAll": "全部下载",
+		"downloadSigned": "签署版本（PDF）",
+		"downloadSignedHint": "每份文档的最新版本",
+		"downloadOriginal": "原始文件",
+		"downloadOriginalHint": "与申请人上传的文件一致",
+		"signingStatus": "查看签名状态"
 	},
 	"flow": {
 		"title": "预计审批流程",
@@ -581,6 +584,11 @@
 			"revoked": "证书已吊销",
 			"untrusted": "非本系统签发",
 			"tampered": "文件已被修改"
-		}
+		},
+		"statusTitle": "签名状态",
+		"signer": "签名人",
+		"step": "审批步骤",
+		"status": "状态",
+		"signedAt": "签名时间"
 	}
 }

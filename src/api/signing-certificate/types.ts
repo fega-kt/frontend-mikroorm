@@ -64,20 +64,18 @@ export interface SigningPreparation {
 	documents: SigningDocument[]
 }
 
+/** Tình trạng một chữ ký: hợp lệ / chứng thư đã thu hồi (sau khi ký) / không do hệ thống cấp / văn bản đã bị sửa */
+export type PdfSignatureStatus = "valid" | "revoked" | "untrusted" | "tampered";
+
+/** Một chữ ký trên văn bản PDF (backend đã kiểm chữ ký thật trong tệp) */
 export interface PdfSignatureInfo {
-	fieldName: string
-	revision: number
-	coversWholeDocument: boolean
-	integrityValid: boolean
-	certificateTrusted: boolean
+	id: string
 	signerName: string | null
-	signerUserId: string | null
-	certificateSerial: string | null
+	/** Tên bước duyệt lúc ký */
+	step: string | null
 	signedAt: string | null
-	reason: string | null
-	location: string | null
-	placement: SignaturePlacement | null
-	error: string | null
-	revoked: boolean
+	status: PdfSignatureStatus
 	revokedAt: string | null
+	/** Lý do kiểm không đạt (chỉ khi untrusted / tampered) */
+	error: string | null
 }

@@ -1,24 +1,10 @@
 import type { AttachmentEntity } from "#src/api/attachment";
 import type { GlobalToken } from "antd";
 import { FILE_KIND_EXTENSIONS, FileKind } from "#src/api/setting/request-type/types";
-import { formatBytes } from "#src/utils/format-bytes";
-import { DownloadOutlined, EyeOutlined, SafetyCertificateOutlined } from "@ant-design/icons";
-import { Button, theme, Tooltip, Typography } from "antd";
-import { useTranslation } from "react-i18next";
+import { theme } from "antd";
+import { extOf } from "../../lib/files";
 
 export type RequestFile = Pick<AttachmentEntity, "id" | "filename" | "size">;
-
-interface RequestFileListProps {
-	files: RequestFile[]
-	onView: (file: RequestFile) => void
-	onDownload: (file: RequestFile) => void
-	/** Id tệp đang lấy link tải (hiện loading trên nút tải) */
-	downloadingId?: string | null
-	/** Xem chữ ký số (chỉ hiện với PDF) */
-	onSignatures?: (file: RequestFile) => void
-}
-
-const extOf = (filename: string) => (filename.includes(".") ? filename.split(".").pop()!.toLowerCase() : "");
 
 /** Màu ô loại tệp theo nhóm (PDF đỏ, Word xanh dương, Excel xanh lá…) — lấy từ bảng màu của theme để đúng cả sáng/tối */
 function kindTone(ext: string, token: GlobalToken) {
@@ -34,49 +20,22 @@ function kindTone(ext: string, token: GlobalToken) {
 	}
 }
 
-/** Danh sách tệp ở chế độ xem: ô loại tệp, tên (bấm để xem), dung lượng, nút Xem và Tải */
-export function RequestFileList({ files, onView, onDownload, downloadingId, onSignatures }: RequestFileListProps) {
-	const { t } = useTranslation();
+const BADGE_SIZE = {
+	default: "size-10 rounded-lg text-[11px]",
+	middle: "size-8 rounded-md text-[10px]",
+	small: "size-[22px] rounded text-[8px]",
+};
+
+/** Ô loại tệp (PDF, DOCX…) tô màu theo nhóm */
+export function FileBadge({ filename, size = "default" }: { filename: string, size?: keyof typeof BADGE_SIZE }) {
 	const { token } = theme.useToken();
+	const ext = extOf(filename);
 	return (
-		<ul className="m-0 flex list-none flex-col p-0">
-			{files.map((file) => {
-				const ext = extOf(file.filename);
-				return (
-					<li key={file.id} className="flex items-center gap-3.5 rounded-lg px-3 py-2.5 transition-colors hover:bg-colorFillTertiary">
-						<span
-							className="flex size-10 flex-none items-center justify-center rounded-lg text-[11px] font-bold tracking-wide"
-							style={kindTone(ext, token)}
-						>
-							{ext.toUpperCase().slice(0, 4) || "FILE"}
-						</span>
-						<div className="flex min-w-0 flex-1 flex-col gap-0.5">
-							<Typography.Link ellipsis className="font-medium" onClick={() => onView(file)}>
-								{file.filename}
-							</Typography.Link>
-							<Typography.Text type="secondary" className="text-xs">
-								{[ext.toUpperCase(), formatBytes(file.size)].filter(Boolean).join(" · ")}
-							</Typography.Text>
-						</div>
-						<Button icon={<EyeOutlined />} onClick={() => onView(file)}>
-							{t("approval.files.view")}
-						</Button>
-						{onSignatures && ext === "pdf" && (
-							<Tooltip title={t("approval.signatures.title")}>
-								<Button icon={<SafetyCertificateOutlined />} aria-label={t("approval.signatures.title")} onClick={() => onSignatures(file)} />
-							</Tooltip>
-						)}
-						<Tooltip title={t("approval.files.download")}>
-							<Button
-								icon={<DownloadOutlined />}
-								aria-label={t("approval.files.download")}
-								loading={downloadingId === file.id}
-								onClick={() => onDownload(file)}
-							/>
-						</Tooltip>
-					</li>
-				);
-			})}
-		</ul>
+		<span
+			className={`flex flex-none items-center justify-center font-bold tracking-wide ${BADGE_SIZE[size]}`}
+			style={kindTone(ext, token)}
+		>
+			{ext.toUpperCase().slice(0, 4) || "FILE"}
+		</span>
 	);
 }

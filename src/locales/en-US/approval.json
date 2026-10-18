@@ -449,15 +449,18 @@
 			"FILE_TYPE": "file type not accepted ({{filename}})",
 			"FILE_SIZE": "{{filename}} exceeds {{max}} MB"
 		},
-		"draft": "Draft",
 		"round": "Round {{round}}",
-		"currentRound": "Round {{round}} (current)",
-		"signedTitle": "Signed copies · round {{round}}",
-		"signedHint": "Original documents stay unchanged above",
-		"signatureCount": "{{count}} signature(s)",
-		"convertedOnly": "Converted to PDF, not signed yet",
-		"viewVersion": "View this version",
-		"rolledBack": "Rolled back"
+		"originalColumn": "Original file",
+		"signedColumn": "Signed version",
+		"converting": "Converting to PDF…",
+		"convertFailed": "Could not convert to PDF",
+		"noSignedVersion": "No signed version yet",
+		"downloadAll": "Download all",
+		"downloadSigned": "Signed versions (PDF)",
+		"downloadSignedHint": "Latest version of each document",
+		"downloadOriginal": "Original files",
+		"downloadOriginalHint": "Exactly as uploaded by the requester",
+		"signingStatus": "Signing status"
 	},
 	"flow": {
 		"title": "Expected approval flow",
@@ -581,6 +584,11 @@
 			"revoked": "Certificate revoked",
 			"untrusted": "Not issued by this system",
 			"tampered": "Document was modified"
-		}
+		},
+		"statusTitle": "Signing status",
+		"signer": "Signer",
+		"step": "Step",
+		"status": "Status",
+		"signedAt": "Signed at"
 	}
 }

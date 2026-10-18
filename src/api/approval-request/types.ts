@@ -212,10 +212,15 @@ export interface RoundFileItem {
 	original: FileBrief
 	/** Bản hiện tại (PDF chuyển đổi / bản ký mới nhất); null khi vẫn là tệp gốc */
 	current: FileBrief | null
+	/** Chuyển sang PDF để ký; null = không cần chuyển (PDF sẵn, tài liệu đính kèm) */
+	convertStatus?: "pending" | "done" | "failed" | null
 	signatureCount: number
 	/** Các lần ký theo thứ tự, mỗi lần một bản riêng (lần cuối = bản chung) */
 	signatures?: RoundFileSignature[]
 }
+
+/** "Tải về toàn bộ": bản ký số (bản cuối của văn bản) hoặc tệp gốc (văn bản + tài liệu đính kèm) */
+export type RequestArchiveKind = "signed" | "original";
 
 /** Bộ tệp đã đưa đi duyệt ở một vòng (chụp lúc gửi / gửi lại) */
 export interface RequestRoundFiles {

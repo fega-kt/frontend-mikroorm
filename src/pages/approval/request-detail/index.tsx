@@ -5,7 +5,6 @@ import type { FileViewTarget } from "#src/components/file-viewer";
 import type { BadgeProps } from "antd";
 import type { ReactNode } from "react";
 import type { ActionModalRef } from "../components/action-modal";
-import type { RequestFile } from "./components/request-file-list";
 import { ApprovalHistoryAction, approvalRequestService, ApprovalRequestStatus } from "#src/api/approval-request";
 import { approvalTaskService } from "#src/api/approval-task";
 import { FileContextType, fileViewService } from "#src/api/file-view";
@@ -42,7 +41,6 @@ import { DATE_TIME_FORMAT } from "../lib/payload";
 import { collectUserNames } from "../lib/progress";
 import { buildRounds } from "../lib/rounds";
 import ApprovalRequestForm from "../request-form";
-import { DocumentSignatures } from "./components/document-signatures";
 import { HistoryTimeline } from "./components/history-timeline";
 import { RequestActions } from "./components/request-actions";
 import { RoundFiles } from "./components/round-files";
@@ -108,7 +106,6 @@ export default function ApprovalRequestDetailPage() {
 	const [shareOpen, setShareOpen] = useState(false);
 	const [viewing, setViewing] = useState<FileViewTarget | null>(null);
 	const [signing, setSigning] = useState(false);
-	const [signaturesOf, setSignaturesOf] = useState<RequestFile | null>(null);
 	const [downloadingId, setDownloadingId] = useState<string | null>(null);
 	const [reassignTask, setReassignTask] = useState<ApprovalTaskItem | null>(null);
 	const [reassignTo, setReassignTo] = useState<string>();
@@ -464,7 +461,6 @@ export default function ApprovalRequestDetailPage() {
 									downloadingId={downloadingId}
 									onView={file => setViewing({ contextType: FileContextType.ApprovalRequest, fileId: file.id, filename: file.filename })}
 									onDownload={downloadFile}
-									onSignatures={setSignaturesOf}
 								/>
 							),
 						},
@@ -484,7 +480,6 @@ export default function ApprovalRequestDetailPage() {
 			<FileViewer target={viewing} onClose={() => setViewing(null)} />
 			<ActionModal ref={actionModalRef} />
 			<SignApproveModal requestId={detail.id} open={signing} onClose={() => setSigning(false)} onChanged={load} />
-			<DocumentSignatures requestId={detail.id} file={signaturesOf} onClose={() => setSignaturesOf(null)} />
 			<ShareModal
 				requestId={detail.id}
 				open={shareOpen}
