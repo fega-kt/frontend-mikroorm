@@ -45,6 +45,14 @@ const A4: PageSize = { width: 595, height: 842 };
 
 type ZoomMode = "width" | "page" | number;
 
+/** Thông tin để vẽ lớp phủ lên một trang (vd khung chữ ký kéo thả): px CSS = point PDF × scale */
+export interface PdfPageOverlayInfo {
+	pageNumber: number
+	scale: number
+	/** Kích thước trang theo point PDF */
+	size: PageSize
+}
+
 interface PdfViewProps {
 	/** URL stream có token ngắn hạn (đã hỗ trợ Range) */
 	streamUrl: string
@@ -53,13 +61,15 @@ interface PdfViewProps {
 	/** Token stream hết hạn khi xem lâu: xin URL mới */
 	refreshUrl: () => Promise<string>
 	onDownload: () => Promise<void> | void
+	/** Lớp phủ trên từng trang (nằm trên lớp chữ). Có lớp phủ thì tắt xoay trang để tọa độ khớp với PDF */
+	renderPageOverlay?: (info: PdfPageOverlayInfo) => React.ReactNode
 }
 
 /**
  * Xem PDF bằng pdf.js: chỉ tải các đoạn byte của trang đang xem (Range) và chỉ vẽ trang gần vùng nhìn,
  * nên tệp lớn cũng hiện trang đầu gần như ngay. Có ảnh thu nhỏ, zoom, xoay, nhảy trang, tìm chữ.
  */
-export function PdfView({ streamUrl, size, refreshUrl, onDownload }: PdfViewProps) {
+export function PdfView({ streamUrl, size, refreshUrl, onDownload, renderPageOverlay }: PdfViewProps) {
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
 	const { message } = App.useApp();
@@ -317,6 +327,7 @@ export function PdfView({ streamUrl, size, refreshUrl, onDownload }: PdfViewProp
 						ref={(el) => {
 							pageRefs.current[index] = el;
 						}}
+						className="relative"
 						style={{ boxShadow: token.boxShadowTertiary }}
 					>
 						<PdfPage
@@ -330,6 +341,11 @@ export function PdfView({ streamUrl, size, refreshUrl, onDownload }: PdfViewProp
 							highlight={highlight}
 							onSize={onPageSize}
 						/>
+						{renderPageOverlay && (
+							<div className="absolute inset-0 z-10">
+								{renderPageOverlay({ pageNumber, scale, size: sizeOf(pageNumber) })}
+							</div>
+						)}
 					</div>
 				);
 			})}
@@ -350,7 +366,7 @@ export function PdfView({ streamUrl, size, refreshUrl, onDownload }: PdfViewProp
 					</div>
 					{zoomControls}
 					<div className="flex items-center justify-end gap-2">
-						{iconButton(t("common.fileViewer.rotate"), <RotateRightOutlined />, () => setRotation(value => (value + 90) % 360))}
+						{!renderPageOverlay && iconButton(t("common.fileViewer.rotate"), <RotateRightOutlined />, () => setRotation(value => (value + 90) % 360))}
 						<Input
 							className="max-w-60"
 							allowClear
@@ -403,7 +419,7 @@ export function PdfView({ streamUrl, size, refreshUrl, onDownload }: PdfViewProp
 				<div className="flex shrink-0 items-center justify-between px-2 py-2" style={{ borderTop: `1px solid ${token.colorBorderSecondary}` }}>
 					{zoomSelect}
 					{pager}
-					{iconButton(t("common.fileViewer.rotate"), <RotateRightOutlined />, () => setRotation(value => (value + 90) % 360))}
+					{!renderPageOverlay && iconButton(t("common.fileViewer.rotate"), <RotateRightOutlined />, () => setRotation(value => (value + 90) % 360))}
 				</div>
 			)}
 		</div>

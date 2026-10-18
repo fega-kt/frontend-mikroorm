@@ -1,4 +1,5 @@
 import type { PresignedUpload } from "#src/api/attachment";
+import type { PdfSignatureInfo } from "#src/api/signing-certificate/types";
 import type {
 	ApprovalRequestDetail,
 	ApprovalRequestListItem,
@@ -41,6 +42,11 @@ export class ApprovalRequestService extends CrudServiceBase<ApprovalRequestListI
 
 	fetchDetail(id: string) {
 		return this.get<ApprovalRequestDetail>(id, { ignoreLoading: true });
+	}
+
+	/** Chữ ký số trên một văn bản PDF của tờ trình */
+	fetchSignatures(id: string, fileId: string) {
+		return this.get<PdfSignatureInfo[]>(`${id}/files/${fileId}/signatures`, { ignoreLoading: true, timeout: 60_000 });
 	}
 
 	fetchCreate(data: ApprovalRequestPayload) {

@@ -2,7 +2,7 @@ import type { AttachmentEntity } from "#src/api/attachment";
 import type { GlobalToken } from "antd";
 import { FILE_KIND_EXTENSIONS, FileKind } from "#src/api/setting/request-type/types";
 import { formatBytes } from "#src/utils/format-bytes";
-import { DownloadOutlined, EyeOutlined } from "@ant-design/icons";
+import { DownloadOutlined, EyeOutlined, SafetyCertificateOutlined } from "@ant-design/icons";
 import { Button, theme, Tooltip, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 
@@ -14,6 +14,8 @@ interface RequestFileListProps {
 	onDownload: (file: RequestFile) => void
 	/** Id tệp đang lấy link tải (hiện loading trên nút tải) */
 	downloadingId?: string | null
+	/** Xem chữ ký số (chỉ hiện với PDF) */
+	onSignatures?: (file: RequestFile) => void
 }
 
 const extOf = (filename: string) => (filename.includes(".") ? filename.split(".").pop()!.toLowerCase() : "");
@@ -33,7 +35,7 @@ function kindTone(ext: string, token: GlobalToken) {
 }
 
 /** Danh sách tệp ở chế độ xem: ô loại tệp, tên (bấm để xem), dung lượng, nút Xem và Tải */
-export function RequestFileList({ files, onView, onDownload, downloadingId }: RequestFileListProps) {
+export function RequestFileList({ files, onView, onDownload, downloadingId, onSignatures }: RequestFileListProps) {
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
 	return (
@@ -59,6 +61,11 @@ export function RequestFileList({ files, onView, onDownload, downloadingId }: Re
 						<Button icon={<EyeOutlined />} onClick={() => onView(file)}>
 							{t("approval.files.view")}
 						</Button>
+						{onSignatures && ext === "pdf" && (
+							<Tooltip title={t("approval.signatures.title")}>
+								<Button icon={<SafetyCertificateOutlined />} aria-label={t("approval.signatures.title")} onClick={() => onSignatures(file)} />
+							</Tooltip>
+						)}
 						<Tooltip title={t("approval.files.download")}>
 							<Button
 								icon={<DownloadOutlined />}

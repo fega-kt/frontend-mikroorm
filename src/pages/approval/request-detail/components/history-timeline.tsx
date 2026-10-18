@@ -1,4 +1,4 @@
-import type { ApprovalHistoryItem, HistoryFieldChange, HistoryFileItem } from "#src/api/approval-request";
+import type { ApprovalHistoryItem, HistoryFieldChange, HistoryFileItem, HistoryFileVersion } from "#src/api/approval-request";
 import type { FormField } from "#src/api/setting/request-type/types";
 import { ApprovalHistoryAction } from "#src/api/approval-request/types";
 import { UserAvatar } from "#src/components/user-avatar";
@@ -10,7 +10,9 @@ import {
 	EditOutlined,
 	FileAddOutlined,
 	FileExcelOutlined,
+	FilePdfOutlined,
 	FlagOutlined,
+	FormOutlined,
 	PlusCircleOutlined,
 	RiseOutlined,
 	RollbackOutlined,
@@ -53,6 +55,8 @@ const ACTION_STYLE: Record<ApprovalHistoryAction, { icon: React.ReactNode, tone:
 	[ApprovalHistoryAction.FileRemove]: { icon: <FileExcelOutlined />, tone: "warning" },
 	[ApprovalHistoryAction.Share]: { icon: <ShareAltOutlined />, tone: "info" },
 	[ApprovalHistoryAction.Unshare]: { icon: <ShareAltOutlined />, tone: "default" },
+	[ApprovalHistoryAction.FileConvert]: { icon: <FilePdfOutlined />, tone: "info" },
+	[ApprovalHistoryAction.Sign]: { icon: <FormOutlined />, tone: "success" },
 };
 
 enum HistoryFilter {
@@ -63,7 +67,9 @@ enum HistoryFilter {
 }
 
 const EDIT_ACTIONS = [ApprovalHistoryAction.Create, ApprovalHistoryAction.Update];
-const FILE_ACTIONS = [ApprovalHistoryAction.FileAdd, ApprovalHistoryAction.FileRemove];
+const FILE_ACTIONS = [ApprovalHistoryAction.FileAdd, ApprovalHistoryAction.FileRemove, ApprovalHistoryAction.FileConvert];
+/** Dòng có data.files dạng bản trước → bản mới */
+const VERSION_ACTIONS = [ApprovalHistoryAction.FileConvert, ApprovalHistoryAction.Sign];
 
 function matchesFilter(action: ApprovalHistoryAction, filter: HistoryFilter) {
 	switch (filter) {
@@ -122,7 +128,9 @@ export function HistoryTimeline({ histories, userNames, formSchema }: { historie
 		const from = typeof data.from === "string" ? userNames[data.from] : undefined;
 		const to = typeof data.to === "string" ? userNames[data.to] : undefined;
 		const changes = Array.isArray(data.changes) ? (data.changes as HistoryFieldChange[]) : [];
-		const files = Array.isArray(data.files) ? (data.files as HistoryFileItem[]) : [];
+		const isVersion = VERSION_ACTIONS.includes(item.action);
+		const files = Array.isArray(data.files) && !isVersion ? (data.files as HistoryFileItem[]) : [];
+		const versions = Array.isArray(data.files) && isVersion ? (data.files as HistoryFileVersion[]) : [];
 		const sharedWith = Array.isArray(data.principals) ? (data.principals as { id: string, name: string }[]) : [];
 		const actor = historyActor(item);
 		// Duyệt / từ chối / trả lại thay người khác theo ủy quyền
@@ -175,6 +183,25 @@ export function HistoryTimeline({ histories, userNames, formSchema }: { historie
 								<li key={file.id}>
 									<Text delete={item.action === ApprovalHistoryAction.FileRemove}>{file.filename}</Text>
 									<Text type="secondary">{` · ${t(`approval.files.${file.block}`)}`}</Text>
+								</li>
+							))}
+						</ul>
+					)}
+					{versions.length > 0 && typeof data.round === "number" && (
+						<Text type="secondary" className="text-xs">{t("approval.files.round", { round: data.round })}</Text>
+					)}
+					{versions.length > 0 && (
+						<ul className="m-0 flex list-none flex-col gap-0.5 p-0 text-[13px]">
+							{versions.map(version => (
+								<li key={version.to.id}>
+									{/* Ký: tên tệp giữ nguyên nên chỉ hiện một tên; chuyển đổi: tên gốc → tên PDF */}
+									{version.from.filename !== version.to.filename && (
+										<>
+											<Text type="secondary">{version.from.filename}</Text>
+											<Text type="secondary">{" → "}</Text>
+										</>
+									)}
+									<Text>{version.to.filename}</Text>
 								</li>
 							))}
 						</ul>

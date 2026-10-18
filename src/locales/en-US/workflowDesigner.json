@@ -184,7 +184,8 @@
 			"skipIfNoApprover": "Skip if no approver is found",
 			"requireRejectReason": "Require a reason when rejecting",
 			"allowReturn": "Allow returning for more information",
-			"emailGroup": "Email the whole group (shared groups; in-app only by default)"
+			"emailGroup": "Email the whole group (shared groups; in-app only by default)",
+			"requireSignature": "Require a digital signature on request documents (Sign & approve)"
 		},
 		"mode": "Approval mode",
 		"approvers": "Approvers",

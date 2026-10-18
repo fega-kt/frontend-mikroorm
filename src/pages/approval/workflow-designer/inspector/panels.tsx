@@ -29,7 +29,7 @@ interface PanelProps<T extends WorkflowNode> {
 	disabled: boolean
 }
 
-const OPTION_KEYS: (keyof StepOptions)[] = ["allowDelegation", "skipIfRequester", "skipIfNoApprover", "requireRejectReason", "allowReturn", "emailGroup"];
+const OPTION_KEYS: (keyof StepOptions)[] = ["allowDelegation", "skipIfRequester", "skipIfNoApprover", "requireRejectReason", "allowReturn", "emailGroup", "requireSignature"];
 
 /** Tên bước — dùng chung */
 function NameField() {

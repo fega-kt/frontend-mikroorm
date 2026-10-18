@@ -182,7 +182,8 @@
 			"skipIfNoApprover": "Bỏ qua nếu không tìm thấy người duyệt",
 			"requireRejectReason": "Bắt buộc ghi lý do khi từ chối",
 			"allowReturn": "Cho phép trả lại để bổ sung",
-			"emailGroup": "Gửi email cho cả nhóm (nhóm cùng xử lý; mặc định chỉ thông báo trong ứng dụng)"
+			"emailGroup": "Gửi email cho cả nhóm (nhóm cùng xử lý; mặc định chỉ thông báo trong ứng dụng)",
+			"requireSignature": "Bắt buộc ký số văn bản tờ trình (Ký và duyệt)"
 		},
 		"mode": "Cách duyệt",
 		"approvers": "Người duyệt",

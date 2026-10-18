@@ -43,7 +43,9 @@
 		},
 		"regroup": "组内重新分派",
 		"sameApprover": "自动审批（同一审批人）",
-		"auto_reject": "超时自动拒绝"
+		"auto_reject": "超时自动拒绝",
+		"file_convert": "已将文件转换为 PDF 以便签名",
+		"sign": "已对文件数字签名"
 	},
 	"fields": {
 		"code": "编号",
@@ -82,7 +84,8 @@
 		"reassign": "重新指派审批人",
 		"back": "返回",
 		"viewEmails": "已发送邮件",
-		"share": "分享"
+		"share": "分享",
+		"signApprove": "签名并审批"
 	},
 	"messages": {
 		"submitted": "已提交申请",
@@ -106,7 +109,8 @@
 		"returnReasonRequired": "请填写需要补充的内容",
 		"overdue": "已超时",
 		"dueIn": "剩余 {{time}}",
-		"notFound": "未找到申请或无权查看"
+		"notFound": "未找到申请或无权查看",
+		"signedApproved": "已签名并审批"
 	},
 	"form": {
 		"chooseType": "选择申请类型",
@@ -444,7 +448,16 @@
 			"MAX_FILES": "最多 {{max}} 个文件",
 			"FILE_TYPE": "不支持的文件类型（{{filename}}）",
 			"FILE_SIZE": "{{filename}} 超过 {{max}} MB"
-		}
+		},
+		"draft": "草稿",
+		"round": "第 {{round}} 轮",
+		"currentRound": "第 {{round}} 轮（当前）",
+		"signedTitle": "签名副本 · 第 {{round}} 轮",
+		"signedHint": "原始文件保持不变（见上方）",
+		"signatureCount": "{{count}} 个签名",
+		"convertedOnly": "已转换为 PDF，尚未签名",
+		"viewVersion": "查看此版本",
+		"rolledBack": "已回滚"
 	},
 	"flow": {
 		"title": "预计审批流程",
@@ -536,5 +549,37 @@
 		"bodyRequired": "请输入正文",
 		"requiredHint": "此模板必须保留 {{list}}，否则邮件无法使用。",
 		"missingRequired": "模板必须包含 {{list}}"
+	},
+	"sign": {
+		"title": "签名并审批",
+		"preparing": "正在准备文件（必要时将 Word/Excel 转换为 PDF）…",
+		"prepareFailed": "无法准备待签名文件",
+		"noCertificate": "您还没有数字签名",
+		"noCertificateHint": "请先注册数字签名并等待管理员审批。",
+		"register": "注册",
+		"noDocument": "没有可签名的 PDF 文件",
+		"documents": "待签名文件",
+		"page": "第 {{page}} 页",
+		"notSignable": "无法签名",
+		"placementHint": "拖动签名框可调整位置，或点击任意页面的空白处将签名框放到该处。",
+		"resetPlacement": "恢复自动位置",
+		"legalHint": "内部数字签名使用您的证书（有效期至 {{date}}）。已签名文件一经修改，签名即失效。",
+		"signedBy": "签名人：{{name}}",
+		"signedAtPreview": "时间：签名时",
+		"invalidPin": "PIN 错误，还剩 {{count}} 次",
+		"pinLocked": "PIN 错误次数过多，请 15 分钟后再试"
+	},
+	"signatures": {
+		"title": "数字签名",
+		"loadError": "无法读取文件的签名",
+		"none": "该文件没有数字签名",
+		"unknownSigner": "未知签名人",
+		"revokedAt": "证书已于 {{date}} 吊销（签名之后）",
+		"state": {
+			"valid": "有效",
+			"revoked": "证书已吊销",
+			"untrusted": "非本系统签发",
+			"tampered": "文件已被修改"
+		}
 	}
 }

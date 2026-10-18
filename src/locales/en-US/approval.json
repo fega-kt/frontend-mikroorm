@@ -43,7 +43,9 @@
 		},
 		"regroup": "Reassigned within group",
 		"sameApprover": "Auto-approved (same approver)",
-		"auto_reject": "Rejected after the deadline"
+		"auto_reject": "Rejected after the deadline",
+		"file_convert": "Converted documents to PDF for signing",
+		"sign": "Digitally signed documents"
 	},
 	"fields": {
 		"code": "Code",
@@ -82,7 +84,8 @@
 		"reassign": "Reassign approver",
 		"back": "Back",
 		"viewEmails": "Sent emails",
-		"share": "Share"
+		"share": "Share",
+		"signApprove": "Sign & approve"
 	},
 	"messages": {
 		"submitted": "Request submitted",
@@ -106,7 +109,8 @@
 		"returnReasonRequired": "Please describe what needs to be changed",
 		"overdue": "Overdue",
 		"dueIn": "{{time}} left",
-		"notFound": "Request not found or you cannot view it"
+		"notFound": "Request not found or you cannot view it",
+		"signedApproved": "Signed and approved"
 	},
 	"form": {
 		"chooseType": "Choose a request type",
@@ -444,7 +448,16 @@
 			"MAX_FILES": "up to {{max}} files",
 			"FILE_TYPE": "file type not accepted ({{filename}})",
 			"FILE_SIZE": "{{filename}} exceeds {{max}} MB"
-		}
+		},
+		"draft": "Draft",
+		"round": "Round {{round}}",
+		"currentRound": "Round {{round}} (current)",
+		"signedTitle": "Signed copies · round {{round}}",
+		"signedHint": "Original documents stay unchanged above",
+		"signatureCount": "{{count}} signature(s)",
+		"convertedOnly": "Converted to PDF, not signed yet",
+		"viewVersion": "View this version",
+		"rolledBack": "Rolled back"
 	},
 	"flow": {
 		"title": "Expected approval flow",
@@ -536,5 +549,37 @@
 		"bodyRequired": "Please enter the content",
 		"requiredHint": "This template must keep {{list}} — without it the email is useless.",
 		"missingRequired": "The template must contain {{list}}"
+	},
+	"sign": {
+		"title": "Sign & approve",
+		"preparing": "Preparing documents (converting Word/Excel to PDF if needed)…",
+		"prepareFailed": "Could not prepare the documents for signing",
+		"noCertificate": "You don't have a digital signature yet",
+		"noCertificateHint": "Register a digital signature and wait for an administrator to approve it.",
+		"register": "Register",
+		"noDocument": "There is no PDF document to sign",
+		"documents": "Documents to sign",
+		"page": "Page {{page}}",
+		"notSignable": "Cannot be signed",
+		"placementHint": "Drag the signature box to move it, or click an empty spot on any page to place it there.",
+		"resetPlacement": "Reset to automatic position",
+		"legalHint": "The internal digital signature uses your certificate (valid until {{date}}). Signed documents cannot be changed without invalidating the signature.",
+		"signedBy": "Signed by: {{name}}",
+		"signedAtPreview": "Time: at signing",
+		"invalidPin": "Wrong PIN, {{count}} attempts left",
+		"pinLocked": "Too many wrong PIN attempts, try again in 15 minutes"
+	},
+	"signatures": {
+		"title": "Digital signatures",
+		"loadError": "Could not read the document's signatures",
+		"none": "This document has no digital signature",
+		"unknownSigner": "Unknown signer",
+		"revokedAt": "Certificate revoked at {{date}} (after signing)",
+		"state": {
+			"valid": "Valid",
+			"revoked": "Certificate revoked",
+			"untrusted": "Not issued by this system",
+			"tampered": "Document was modified"
+		}
 	}
 }

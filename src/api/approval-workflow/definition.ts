@@ -92,6 +92,8 @@ export interface StepOptions {
 	groupMode: GroupMode
 	/** Nhóm "cùng xử lý": gửi email cho cả nhóm khi task tới (mặc định chỉ thông báo trong ứng dụng) */
 	emailGroup: boolean
+	/** Bắt buộc ký số "Văn bản tờ trình": chỉ duyệt bằng "Ký và duyệt"; không tự duyệt khi quá hạn, không duyệt hàng loạt */
+	requireSignature?: boolean
 }
 
 interface NodeBase {
@@ -184,6 +186,7 @@ export const DEFAULT_STEP_OPTIONS: StepOptions = {
 	allowReturn: true,
 	groupMode: GroupMode.Shared,
 	emailGroup: false,
+	requireSignature: false,
 };
 
 /** Bước thông báo có gửi cho người trình không (tương thích định nghĩa cũ chưa có cờ) — đồng bộ backend */

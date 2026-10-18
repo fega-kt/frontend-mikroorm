@@ -43,7 +43,9 @@
 		},
 		"regroup": "Chia lại trong nhóm",
 		"sameApprover": "Tự động duyệt (cùng người duyệt)",
-		"auto_reject": "Từ chối do quá hạn xử lý"
+		"auto_reject": "Từ chối do quá hạn xử lý",
+		"file_convert": "Chuyển văn bản sang PDF để ký",
+		"sign": "Ký số văn bản"
 	},
 	"fields": {
 		"code": "Mã tờ trình",
@@ -82,7 +84,8 @@
 		"reassign": "Gán lại người duyệt",
 		"back": "Quay lại",
 		"viewEmails": "Mail đã gửi",
-		"share": "Chia sẻ"
+		"share": "Chia sẻ",
+		"signApprove": "Ký và duyệt"
 	},
 	"messages": {
 		"submitted": "Đã gửi tờ trình",
@@ -106,7 +109,8 @@
 		"returnReasonRequired": "Vui lòng nhập nội dung cần bổ sung",
 		"overdue": "Quá hạn",
 		"dueIn": "Còn {{time}}",
-		"notFound": "Không tìm thấy tờ trình hoặc bạn không có quyền xem"
+		"notFound": "Không tìm thấy tờ trình hoặc bạn không có quyền xem",
+		"signedApproved": "Đã ký số và duyệt"
 	},
 	"form": {
 		"chooseType": "Chọn loại tờ trình",
@@ -444,7 +448,16 @@
 			"MAX_FILES": "tối đa {{max}} tệp",
 			"FILE_TYPE": "loại tệp không được nhận ({{filename}})",
 			"FILE_SIZE": "tệp {{filename}} vượt quá {{max}} MB"
-		}
+		},
+		"draft": "Đang soạn",
+		"round": "Vòng {{round}}",
+		"currentRound": "Vòng {{round}} (hiện tại)",
+		"signedTitle": "Bản ký số · vòng {{round}}",
+		"signedHint": "Văn bản gốc giữ nguyên ở trên",
+		"signatureCount": "{{count}} chữ ký",
+		"convertedOnly": "Đã chuyển sang PDF, chưa ký",
+		"viewVersion": "Xem bản này",
+		"rolledBack": "Đã hoàn tác"
 	},
 	"flow": {
 		"title": "Luồng phê duyệt dự kiến",
@@ -536,5 +549,37 @@
 		"bodyRequired": "Vui lòng nhập nội dung",
 		"requiredHint": "Mẫu này phải giữ {{list}} — thiếu thì email gửi đi không dùng được.",
 		"missingRequired": "Mẫu phải còn {{list}}"
+	},
+	"sign": {
+		"title": "Ký và duyệt",
+		"preparing": "Đang chuẩn bị văn bản (chuyển Word/Excel sang PDF nếu cần)…",
+		"prepareFailed": "Không chuẩn bị được văn bản để ký",
+		"noCertificate": "Bạn chưa có chữ ký số",
+		"noCertificateHint": "Đăng ký chữ ký số và chờ quản trị duyệt để ký văn bản.",
+		"register": "Đăng ký",
+		"noDocument": "Không có văn bản PDF nào để ký",
+		"documents": "Văn bản ký",
+		"page": "Trang {{page}}",
+		"notSignable": "Không ký được",
+		"placementHint": "Kéo khung chữ ký để đổi vị trí, hoặc nhấp vào một chỗ trống trên trang bất kỳ để đặt khung ở đó.",
+		"resetPlacement": "Về vị trí tự động",
+		"legalHint": "Chữ ký số nội bộ dùng chứng thư của bạn (hiệu lực đến {{date}}). Văn bản đã ký không sửa được mà không làm mất hiệu lực chữ ký.",
+		"signedBy": "Ký bởi: {{name}}",
+		"signedAtPreview": "Thời gian: lúc ký",
+		"invalidPin": "Sai PIN, còn {{count}} lần thử",
+		"pinLocked": "Nhập sai PIN quá nhiều lần, thử lại sau 15 phút"
+	},
+	"signatures": {
+		"title": "Chữ ký số",
+		"loadError": "Không đọc được chữ ký của văn bản",
+		"none": "Văn bản chưa có chữ ký số",
+		"unknownSigner": "Không rõ người ký",
+		"revokedAt": "Chứng thư bị thu hồi lúc {{date}} (sau khi ký)",
+		"state": {
+			"valid": "Hợp lệ",
+			"revoked": "Chứng thư đã thu hồi",
+			"untrusted": "Không do hệ thống cấp",
+			"tampered": "Văn bản đã bị sửa"
+		}
 	}
 }
