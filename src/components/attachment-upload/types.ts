@@ -25,6 +25,8 @@ export interface AttachmentUploadProps {
 	onViewFile?: (file: AttachmentEntity) => void
 	/** Bấm tải một tệp đã upload: có thì hiện nút tải (nút quay trong lúc promise chưa xong) */
 	onDownloadFile?: (file: AttachmentEntity) => Promise<void>
+	/** Tải bản PDF của tệp Word / Excel / PowerPoint: có thì các tệp đó có thêm nút PDF cạnh nút tải tệp gốc */
+	onDownloadPdfFile?: (file: AttachmentEntity) => Promise<void>
 	/** Xin link upload thẳng lên R2 (file private): có thì upload bằng link ký thay vì qua backend */
 	presign?: (file: File) => Promise<PresignedUpload>
 	multiple?: boolean
