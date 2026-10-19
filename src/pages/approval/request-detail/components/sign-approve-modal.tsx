@@ -6,12 +6,14 @@ import { FileContextType } from "#src/api/file-view";
 import { signingCertificateService } from "#src/api/signing-certificate";
 import { PdfFileView } from "#src/components/file-viewer";
 import { PIN_PATTERN, PinInput } from "#src/components/pin-input";
-import { AimOutlined, CheckCircleFilled, FilePdfOutlined, SafetyCertificateOutlined } from "@ant-design/icons";
+import { AimOutlined, CheckCircleFilled, DragOutlined, FilePdfOutlined, SafetyCertificateOutlined } from "@ant-design/icons";
 import { Alert, Button, Input, Modal, Spin, Tag, theme, Typography } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
+import { SignatureAppearance } from "./signature-appearance";
+import { SIGNATURE_HEIGHT, SIGNATURE_MAX_SCALE, SIGNATURE_MIN_SCALE, SIGNATURE_WIDTH } from "./signature-size";
 
 const { Text } = Typography;
 
@@ -34,64 +36,95 @@ interface SignatureBoxProps {
 	onMove: (placement: SignaturePlacement) => void
 }
 
-/** Khung chữ ký kéo thả được trên một trang (tọa độ PDF gốc dưới-trái ↔ px CSS gốc trên-trái) */
+const SIGNATURE_RATIO = SIGNATURE_WIDTH / SIGNATURE_HEIGHT;
+
+/**
+ * Khung chữ ký trên một trang (tọa độ PDF gốc dưới-trái ↔ px CSS gốc trên-trái): kéo khung để đổi vị trí, kéo tay nắm góc
+ * dưới phải để phóng to / thu nhỏ (giữ tỉ lệ, góc trên trái đứng yên, trong khoảng min–max và trong trang).
+ * Bên trong là khung đúng như bản ký; viền xanh bao ngoài và tay nắm chỉ để thao tác, không có trong bản ký.
+ */
 function SignatureBox({ placement, info, signatureImage, lines, onMove }: SignatureBoxProps) {
+	const { t } = useTranslation();
 	const { token } = theme.useToken();
 	const { scale, size } = info;
-	const drag = useRef<{ x: number, y: number, start: SignaturePlacement }>(undefined);
+	const drag = useRef<{ x: number, y: number, start: SignaturePlacement, mode: "move" | "resize" }>(undefined);
+	const [mode, setMode] = useState<"move" | "resize">();
 
-	const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+	const startDrag = (dragMode: "move" | "resize") => (event: React.PointerEvent<HTMLElement>) => {
 		event.stopPropagation();
 		event.currentTarget.setPointerCapture(event.pointerId);
-		drag.current = { x: event.clientX, y: event.clientY, start: placement };
+		drag.current = { x: event.clientX, y: event.clientY, start: placement, mode: dragMode };
+		setMode(dragMode);
 	};
-	const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+	const onPointerMove = (event: React.PointerEvent<HTMLElement>) => {
 		if (!drag.current)
 			return;
 		const { start } = drag.current;
 		const dx = (event.clientX - drag.current.x) / scale;
 		const dy = (event.clientY - drag.current.y) / scale;
-		onMove({
-			...start,
-			x: Math.min(Math.max(0, start.x + dx), size.width - start.width),
-			// Trục y của PDF hướng lên: kéo xuống (dy > 0) là giảm y
-			y: Math.min(Math.max(0, start.y - dy), size.height - start.height),
-		});
+		if (drag.current.mode === "move") {
+			onMove({
+				...start,
+				x: Math.min(Math.max(0, start.x + dx), size.width - start.width),
+				// Trục y của PDF hướng lên: kéo xuống (dy > 0) là giảm y
+				y: Math.min(Math.max(0, start.y - dy), size.height - start.height),
+			});
+			return;
+		}
+		// Giữ tỉ lệ: lấy trung bình độ rộng suy ra từ kéo ngang và kéo dọc; góc trên trái (x, y + height) đứng yên
+		const wanted = ((start.width + dx) + (start.height + dy) * SIGNATURE_RATIO) / 2;
+		const insidePage = Math.min(size.width - start.x, (start.y + start.height) * SIGNATURE_RATIO);
+		const width = Math.min(Math.max(wanted, SIGNATURE_WIDTH * SIGNATURE_MIN_SCALE), SIGNATURE_WIDTH * SIGNATURE_MAX_SCALE, insidePage);
+		const height = width / SIGNATURE_RATIO;
+		onMove({ ...start, width, height, y: start.y + start.height - height });
 	};
 	const onPointerUp = () => {
 		drag.current = undefined;
+		setMode(undefined);
 	};
+	const active = !!mode;
 
-	const fontSize = Math.max(6, 8 * scale);
 	return (
 		<div
 			role="button"
 			aria-label="signature"
-			className="absolute flex cursor-move touch-none select-none items-stretch overflow-hidden"
+			className="absolute cursor-move touch-none select-none"
 			style={{
 				left: placement.x * scale,
 				top: (size.height - placement.y - placement.height) * scale,
 				width: placement.width * scale,
 				height: placement.height * scale,
-				border: `1.5px solid ${token.colorPrimary}`,
-				background: `color-mix(in srgb, ${token.colorPrimaryBg} 85%, transparent)`,
-				borderRadius: 2,
-				boxShadow: token.boxShadowSecondary,
+				borderRadius: 2 * scale,
+				outline: `${active ? "2px solid" : "1.5px dashed"} ${token.colorPrimary}`,
+				outlineOffset: 3,
+				boxShadow: active ? `0 6px 18px color-mix(in srgb, ${token.colorPrimary} 30%, transparent)` : "none",
 			}}
 			onClick={event => event.stopPropagation()}
-			onPointerDown={onPointerDown}
+			onPointerDown={startDrag("move")}
 			onPointerMove={onPointerMove}
 			onPointerUp={onPointerUp}
 			onPointerCancel={onPointerUp}
 		>
-			{signatureImage && (
-				<div className="flex w-1/2 shrink-0 items-center justify-center p-0.5">
-					<img src={signatureImage} alt="" draggable={false} className="max-h-full max-w-full object-contain" />
-				</div>
+			<SignatureAppearance width={placement.width} height={placement.height} scale={scale} lines={lines} signatureImage={signatureImage} />
+			{mode === "move" && (
+				<span
+					className="pointer-events-none absolute flex size-6 items-center justify-center rounded-full text-white"
+					style={{ right: -12, top: -12, background: token.colorPrimary, boxShadow: token.boxShadowSecondary }}
+				>
+					<DragOutlined />
+				</span>
 			)}
-			<div className="flex min-w-0 flex-1 flex-col justify-center px-1 leading-tight" style={{ fontSize, color: "#1f1f1f" }}>
-				{lines.map(line => <span key={line} className="truncate">{line}</span>)}
-			</div>
+			{/* Tay nắm phóng to / thu nhỏ: vùng bấm 20px, ô vuông hiện ra 10px */}
+			<span
+				aria-label={t("approval.sign.resize")}
+				title={t("approval.sign.resize")}
+				className="absolute flex size-5 cursor-nwse-resize touch-none items-center justify-center"
+				style={{ right: -13, bottom: -13 }}
+				// Di chuyển / thả nổi bọt lên khung (đã có handler)
+				onPointerDown={startDrag("resize")}
+			>
+				<span className="block size-2.5 rounded-sm" style={{ background: token.colorBgContainer, border: `1.5px solid ${token.colorPrimary}` }} />
+			</span>
 		</div>
 	);
 }
@@ -117,6 +150,8 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 	const [placements, setPlacements] = useState<Record<string, SignaturePlacement>>({});
 	/** Trang cần cuộn tới trong khung xem (trang có khung chữ ký của văn bản đang chọn) */
 	const [focus, setFocus] = useState<{ page: number }>();
+	/** Tệp PDF đã mở xong trong khung xem (đổi văn bản thì phải chờ tệp mới mở xong) */
+	const [loadedFileId, setLoadedFileId] = useState<string>();
 	const [confirmOpen, setConfirmOpen] = useState(false);
 	const [pin, setPin] = useState("");
 	const [pinError, setPinError] = useState<string>();
@@ -131,6 +166,7 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 				if (cancelled)
 					return;
 				setPrep(result);
+				// Ảnh đã được service ký số cắt sát nét, đúng như ảnh sẽ đóng vào khung khi ký
 				setSignatureImage(mine?.signatureImage ?? null);
 				const signable = result.documents.filter(doc => doc.signable && doc.auto);
 				setPlacements(Object.fromEntries(signable.map(doc => [doc.id, doc.auto!])));
@@ -250,7 +286,10 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 	};
 
 	const noCertificate = prep && !prep.certificate;
-	const canSubmit = !!prep?.certificate && signable.length > 0 && !submitting;
+	const selectedFileId = selected && (selected.fileId ?? selected.id);
+	// Chờ văn bản đang xem mở xong: người ký phải thấy văn bản và vị trí khung chữ ký trước khi ký
+	const viewerReady = !!selectedFileId && loadedFileId === selectedFileId;
+	const canSubmit = !!prep?.certificate && signable.length > 0 && viewerReady && !submitting;
 
 	const sidebar = prep && (
 		<div className="flex h-full w-full flex-col gap-4 overflow-y-auto p-4 md:w-[340px] md:shrink-0" style={{ borderRight: `1px solid ${token.colorBorderSecondary}` }}>
@@ -325,7 +364,7 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 			</div>
 
 			<div className="flex-1" />
-			<Button type="primary" size="large" block disabled={!canSubmit} onClick={openConfirm}>
+			<Button type="primary" size="large" block disabled={!canSubmit} loading={!!selected && !viewerReady} onClick={openConfirm}>
 				{t("approval.actions.signApprove")}
 			</Button>
 		</div>
@@ -403,10 +442,11 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 				{selected
 					? (
 						<PdfFileView
-							key={selected.fileId ?? selected.id}
-							target={{ contextType: FileContextType.ApprovalRequest, fileId: selected.fileId ?? selected.id, filename: selected.filename }}
+							key={selectedFileId}
+							target={{ contextType: FileContextType.ApprovalRequest, fileId: selectedFileId!, filename: selected.filename }}
 							renderPageOverlay={renderOverlay(selected)}
 							focusPage={focus}
+							onLoad={() => setLoadedFileId(selectedFileId)}
 						/>
 					)
 					: <div className="flex h-full items-center justify-center" style={{ color: token.colorTextTertiary }}>{t("approval.sign.noDocument")}</div>}
