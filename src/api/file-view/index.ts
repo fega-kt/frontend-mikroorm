@@ -52,6 +52,9 @@ export interface FileDownloadLink {
 	expiresAt: string
 }
 
+/** Thời gian chờ chuyển sang PDF: bằng giới hạn phía backend gọi Document Converter (120 giây) cộng thời gian tải lên R2 */
+const PDF_CONVERT_TIMEOUT_MS = 150_000;
+
 class FileViewApi extends CrudServiceBase<never> {
 	constructor(service: ApiService) {
 		super({ endpoint: "file-view", service });
@@ -69,6 +72,16 @@ class FileViewApi extends CrudServiceBase<never> {
 	fetchDownloadUrl(fileId: string) {
 		return this.get<FileDownloadLink>(`${fileId}/download`, { ignoreLoading: true, retry: 0 });
 	}
+
+	/** Lần đầu backend phải chuyển Word / Excel / PowerPoint sang PDF (tệp lớn mất vài chục giây) nên chờ lâu hơn mặc định */
+	fetchPdfDownloadUrl(fileId: string) {
+		return this.get<FileDownloadLink>(`${fileId}/download-pdf`, { ignoreLoading: true, retry: 0, timeout: PDF_CONVERT_TIMEOUT_MS });
+	}
+}
+
+/** Tệp chuyển được sang PDF để tải (Word / Excel / PowerPoint) — cùng danh sách với backend */
+export function isConvertibleToPdf(filename: string) {
+	return ["doc", "docx", "xls", "xlsx", "ppt", "pptx"].includes(filename.split(".").pop()?.toLowerCase() ?? "");
 }
 
 const clients: Record<ApiService, FileViewApi> = {
@@ -95,6 +108,15 @@ export const fileViewService = {
 		try {
 			const { url } = await this.fetchDownloadUrl(contextType, fileId);
 			// Link ký trả Content-Disposition: attachment nên trình duyệt chỉ tải tệp, không rời trang
+			window.location.assign(url);
+		}
+		catch {}
+	},
+
+	/** Tải bản PDF của tệp (Word / Excel / PowerPoint được chuyển sang PDF; tệp PDF thì như download) */
+	async downloadPdf(contextType: FileContextType, fileId: string) {
+		try {
+			const { url } = await clients[CONTEXT_SERVICE[contextType]].fetchPdfDownloadUrl(fileId);
 			window.location.assign(url);
 		}
 		catch {}

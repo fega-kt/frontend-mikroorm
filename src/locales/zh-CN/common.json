@@ -144,6 +144,7 @@
 		"maxCount": "最多",
 		"statusDone": "已上传",
 		"download": "下载",
+		"downloadPdf": "下载 PDF 版本",
 		"statusPendingSync": "等待同步",
 		"statusPending": "等待中",
 		"statusUploading": "上传中",

@@ -56,6 +56,7 @@ export function FileBlock({ index, name, requestId, config, disabled, uploadRef 
 						presign={file => approvalRequestService.fetchPresignFileUpload(requestId, name, file)}
 						onViewFile={file => setViewing({ contextType: FileContextType.ApprovalRequest, fileId: file.id, filename: file.filename })}
 						onDownloadFile={file => fileViewService.download(FileContextType.ApprovalRequest, file.id)}
+						onDownloadPdfFile={file => fileViewService.downloadPdf(FileContextType.ApprovalRequest, file.id)}
 						accept={acceptFor(config.fileTypes)}
 						maxCount={config.maxFiles}
 						maxSize={config.maxSizeMb * 1024 * 1024}

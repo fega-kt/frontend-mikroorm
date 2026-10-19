@@ -152,6 +152,7 @@
 		"maxCount": "tối đa",
 		"statusDone": "Đã upload",
 		"download": "Tải xuống",
+		"downloadPdf": "Tải bản PDF",
 		"statusPendingSync": "Chờ sync",
 		"statusPending": "Đang chờ",
 		"statusUploading": "Đang upload",

@@ -148,6 +148,7 @@
 		"maxCount": "up to",
 		"statusDone": "Uploaded",
 		"download": "Download",
+		"downloadPdf": "Download as PDF",
 		"statusPendingSync": "Pending Sync",
 		"statusPending": "Pending",
 		"statusUploading": "Uploading",

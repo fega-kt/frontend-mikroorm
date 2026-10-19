@@ -1,9 +1,10 @@
 import type { AttachmentEntity, AttachmentUploadProps, AttachmentUploadRef, PendingItem, PendingStatus } from "./types";
 
 import { attachmentService, AttachmentVisibility } from "#src/api/attachment";
+import { isConvertibleToPdf } from "#src/api/file-view";
 import { isPrivateStoragePath } from "#src/constants/storage-path";
 import { formatBytes } from "#src/utils/format-bytes";
-import { DeleteOutlined, DownloadOutlined, EyeOutlined, LoadingOutlined, PaperClipOutlined, UploadOutlined } from "@ant-design/icons";
+import { DeleteOutlined, DownloadOutlined, EyeOutlined, FilePdfOutlined, LoadingOutlined, PaperClipOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, message, Progress, Tag, Upload } from "antd";
 import * as React from "react";
 import { useCallback, useImperativeHandle, useRef, useState } from "react";
@@ -33,6 +34,7 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 		presign,
 		onViewFile,
 		onDownloadFile,
+		onDownloadPdfFile,
 		multiple = true,
 		accept = ".pdf,.docx,.xlsx,.pptx,.png,.jpg,.zip,.mp3,.mp4,.txt",
 		maxCount,
@@ -237,6 +239,8 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 					previewUrl={att.visibility === AttachmentVisibility.Private ? undefined : att.url}
 					onPreview={att.visibility === AttachmentVisibility.Private && onViewFile ? () => onViewFile(att) : undefined}
 					onDownload={onDownloadFile ? () => onDownloadFile(att) : undefined}
+					// Tệp PDF / ảnh / zip… tải bản PDF cũng là chính tệp đó: chỉ Word / Excel / PowerPoint mới có lựa chọn
+					onDownloadPdf={onDownloadPdfFile && isConvertibleToPdf(att.filename) ? () => onDownloadPdfFile(att) : undefined}
 					disabled={disabled}
 					onRemove={() => handleRemoveDone(att.id)}
 					t={t}
@@ -275,6 +279,8 @@ interface FileRowProps {
 	onPreview?: () => void
 	/** Tải tệp đã upload (nút quay trong lúc chờ) */
 	onDownload?: () => Promise<void>
+	/** Tải bản PDF: có thì hiện thêm nút PDF cạnh nút tải tệp gốc */
+	onDownloadPdf?: () => Promise<void>
 	error?: string
 	disabled?: boolean
 	onRemove?: () => void
@@ -282,12 +288,17 @@ interface FileRowProps {
 	t: any
 }
 
-function FileRow({ name, size, status, mode, progress, previewUrl, onPreview, onDownload, error, disabled, onRemove, onRetry, t }: FileRowProps) {
-	const [downloading, setDownloading] = useState(false);
-	const download = () => {
-		setDownloading(true);
-		onDownload?.().finally(() => setDownloading(false));
+function FileRow({ name, size, status, mode, progress, previewUrl, onPreview, onDownload, onDownloadPdf, error, disabled, onRemove, onRetry, t }: FileRowProps) {
+	/** Nút đang tải: tệp gốc hoặc bản PDF (bản PDF lần đầu phải chờ chuyển đổi) */
+	const [downloading, setDownloading] = useState<"original" | "pdf">();
+	const run = (kind: "original" | "pdf", action?: () => Promise<void>) => {
+		if (!action)
+			return;
+		setDownloading(kind);
+		action().finally(() => setDownloading(undefined));
 	};
+	const downloadLabel = t("common.attachment.download", "Tải xuống");
+	const downloadPdfLabel = t("common.attachment.downloadPdf", "Tải bản PDF");
 	return (
 		<div className="flex flex-col gap-1 px-3 py-2 rounded border border-dashed">
 			<div className="flex items-center gap-2">
@@ -319,10 +330,21 @@ function FileRow({ name, size, status, mode, progress, previewUrl, onPreview, on
 							type="text"
 							size="small"
 							icon={<DownloadOutlined />}
-							loading={downloading}
-							aria-label={t("common.attachment.download", "Tải xuống")}
-							title={t("common.attachment.download", "Tải xuống")}
-							onClick={download}
+							loading={downloading === "original"}
+							aria-label={downloadLabel}
+							title={downloadLabel}
+							onClick={() => run("original", onDownload)}
+						/>
+					)}
+					{onDownloadPdf && (
+						<Button
+							type="text"
+							size="small"
+							icon={<FilePdfOutlined className="!text-red-500" />}
+							loading={downloading === "pdf"}
+							aria-label={downloadPdfLabel}
+							title={downloadPdfLabel}
+							onClick={() => run("pdf", onDownloadPdf)}
 						/>
 					)}
 					{onRetry && (
