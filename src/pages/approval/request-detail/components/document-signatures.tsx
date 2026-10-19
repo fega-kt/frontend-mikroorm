@@ -61,7 +61,7 @@ function FileGroup({ requestId, file }: FileGroupProps) {
 						</div>
 					))}
 					{!loading && error && <Alert type="error" showIcon message={t("approval.signatures.loadError")} />}
-					{!loading && !error && !data?.length && <Text type="secondary" className="block py-2">{t("approval.signatures.none")}</Text>}
+					{!loading && !error && !data?.length && <Text type="secondary" className="block py-2 text-center">{t("approval.signatures.none")}</Text>}
 					{!loading && data?.map(signature => (
 						<div key={signature.id} className={`${GRID} items-start py-2`} style={{ borderBottom: `1px solid ${token.colorFillTertiary}` }}>
 							<Text>{signature.signerName ?? t("approval.signatures.unknownSigner")}</Text>
@@ -108,7 +108,7 @@ export function DocumentSignatures({ requestId, files, onClose }: DocumentSignat
 					</div>
 					{files?.length
 						? files.map(file => <FileGroup key={file.id} requestId={requestId} file={file} />)
-						: <Text type="secondary" className="block py-4">{t("approval.signatures.none")}</Text>}
+						: <Text type="secondary" className="block py-4 text-center">{t("approval.signatures.none")}</Text>}
 				</div>
 			</div>
 		</Modal>
