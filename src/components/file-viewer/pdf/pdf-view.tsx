@@ -65,13 +65,15 @@ interface PdfViewProps {
 	renderPageOverlay?: (info: PdfPageOverlayInfo) => React.ReactNode
 	/** Nhảy tới trang này khi mở và mỗi lần đổi đối tượng (tạo đối tượng mới để nhảy lại cùng một trang) */
 	focusPage?: { page: number }
+	/** Đã mở xong tài liệu (có số trang, vẽ được trang đầu) */
+	onLoad?: () => void
 }
 
 /**
  * Xem PDF bằng pdf.js: chỉ tải các đoạn byte của trang đang xem (Range) và chỉ vẽ trang gần vùng nhìn,
  * nên tệp lớn cũng hiện trang đầu gần như ngay. Có ảnh thu nhỏ, zoom, xoay, nhảy trang, tìm chữ.
  */
-export function PdfView({ streamUrl, size, refreshUrl, onDownload, renderPageOverlay, focusPage }: PdfViewProps) {
+export function PdfView({ streamUrl, size, refreshUrl, onDownload, renderPageOverlay, focusPage, onLoad }: PdfViewProps) {
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
 	const { message } = App.useApp();
@@ -134,6 +136,7 @@ export function PdfView({ streamUrl, size, refreshUrl, onDownload, renderPageOve
 				return;
 			setFirstSize({ width: first.width, height: first.height });
 			setDoc(pdf);
+			onLoad?.();
 		})().catch(() => !cancelled && setFailed(true));
 		return () => {
 			cancelled = true;
