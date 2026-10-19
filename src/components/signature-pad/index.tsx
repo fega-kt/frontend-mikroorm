@@ -3,10 +3,13 @@ import { App, Button, Segmented, theme, Upload } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-/** Kích thước ảnh chữ ký lưu lại (px): đủ nét khi đóng vào khung chữ ký ~170×72 point */
-const OUTPUT_WIDTH = 600;
-const OUTPUT_HEIGHT = 240;
-/** Ảnh tải lên lớn hơn thì từ chối (sau khi thu nhỏ vẫn giữ dưới giới hạn backend ~200KB) */
+/**
+ * Kích thước tối đa ảnh chữ ký gửi lên (px), để PNG nằm dưới giới hạn backend ~200KB.
+ * Không cắt viền ở đây: service ký số tự cắt sát nét khi đọc ảnh ra (xem trước và đóng vào khung ký)
+ */
+const MAX_OUTPUT_WIDTH = 600;
+const MAX_OUTPUT_HEIGHT = 240;
+/** Ảnh tải lên lớn hơn thì từ chối */
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 
 interface SignaturePadProps {
@@ -15,37 +18,14 @@ interface SignaturePadProps {
 	onChange?: (value: string | null) => void
 }
 
-/** Vẽ ảnh vào khung OUTPUT, giữ tỉ lệ, căn giữa, nền trong suốt → PNG data URL */
-function fitToOutput(source: CanvasImageSource, width: number, height: number) {
+/** Thu nhỏ ảnh (giữ tỉ lệ, không phóng to) cho vừa kích thước tối đa → PNG data URL */
+function fitWithin(source: CanvasImageSource, width: number, height: number) {
+	const ratio = Math.min(MAX_OUTPUT_WIDTH / width, MAX_OUTPUT_HEIGHT / height, 1);
 	const canvas = document.createElement("canvas");
-	canvas.width = OUTPUT_WIDTH;
-	canvas.height = OUTPUT_HEIGHT;
-	const ratio = Math.min(OUTPUT_WIDTH / width, OUTPUT_HEIGHT / height, 1);
-	const w = width * ratio;
-	const h = height * ratio;
-	canvas.getContext("2d")!.drawImage(source, (OUTPUT_WIDTH - w) / 2, (OUTPUT_HEIGHT - h) / 2, w, h);
+	canvas.width = Math.max(1, Math.round(width * ratio));
+	canvas.height = Math.max(1, Math.round(height * ratio));
+	canvas.getContext("2d")!.drawImage(source, 0, 0, canvas.width, canvas.height);
 	return canvas.toDataURL("image/png");
-}
-
-/** Vùng có nét vẽ trên canvas (bỏ phần trống xung quanh) */
-function inkBounds(canvas: HTMLCanvasElement) {
-	const { width, height } = canvas;
-	const pixels = canvas.getContext("2d")!.getImageData(0, 0, width, height).data;
-	let minX = width;
-	let minY = height;
-	let maxX = -1;
-	let maxY = -1;
-	for (let y = 0; y < height; y++) {
-		for (let x = 0; x < width; x++) {
-			if (pixels[(y * width + x) * 4 + 3] > 0) {
-				minX = Math.min(minX, x);
-				maxX = Math.max(maxX, x);
-				minY = Math.min(minY, y);
-				maxY = Math.max(maxY, y);
-			}
-		}
-	}
-	return maxX < 0 ? null : { x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1 };
 }
 
 /** Ảnh chữ ký tay: vẽ bằng chuột / bút cảm ứng hoặc tải ảnh lên (PNG nền trong suốt là đẹp nhất) */
@@ -99,20 +79,13 @@ export function SignaturePad({ value, onChange }: SignaturePadProps) {
 		dirty.current = true;
 	};
 
-	/** Nhấc bút: cắt sát nét vẽ rồi xuất ảnh */
+	/** Nhấc bút: xuất ảnh */
 	const onPointerUp = () => {
 		lastPoint.current = undefined;
 		const canvas = canvasRef.current;
 		if (!canvas || !dirty.current)
 			return;
-		const bounds = inkBounds(canvas);
-		if (!bounds)
-			return;
-		const cropped = document.createElement("canvas");
-		cropped.width = bounds.width;
-		cropped.height = bounds.height;
-		cropped.getContext("2d")!.drawImage(canvas, bounds.x, bounds.y, bounds.width, bounds.height, 0, 0, bounds.width, bounds.height);
-		onChange?.(fitToOutput(cropped, bounds.width, bounds.height));
+		onChange?.(fitWithin(canvas, canvas.width, canvas.height));
 	};
 
 	const clear = () => {
@@ -131,9 +104,9 @@ export function SignaturePad({ value, onChange }: SignaturePadProps) {
 		const url = URL.createObjectURL(file);
 		const image = new Image();
 		image.onload = () => {
-			onChange?.(fitToOutput(image, image.naturalWidth, image.naturalHeight));
-			setDrawing(false);
 			URL.revokeObjectURL(url);
+			onChange?.(fitWithin(image, image.naturalWidth, image.naturalHeight));
+			setDrawing(false);
 		};
 		image.src = url;
 		return false;
