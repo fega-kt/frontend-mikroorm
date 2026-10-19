@@ -4,7 +4,6 @@ import type { MenuProps } from "antd";
 import { ApprovalRequestStatus } from "#src/api/approval-request";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
-import { approvalRequestPath } from "#src/router/extra-info";
 import {
 	CheckOutlined,
 	CloseOutlined,
@@ -30,16 +29,17 @@ interface RequestActionsProps {
 	onReload: () => void
 	onAct: (action: ApprovalActionType) => void
 	onSubmit: () => void
+	onEdit: () => void
 	onCancel: () => void
 	onDelete: () => void
 	onShare: () => void
 }
 
 /**
- * Nút thao tác trên đầu trang chi tiết: chỉ để lộ làm mới, từ chối, duyệt;
+ * Nút thao tác trên đầu trang chi tiết: chỉ để lộ làm mới, sửa, từ chối, duyệt;
  * các thao tác còn lại gom vào menu "…" ở cuối (chỉ hiện mục người xem được phép làm).
  */
-export function RequestActions({ detail, busy, onReload, onAct, onSubmit, onCancel, onDelete, onShare }: RequestActionsProps) {
+export function RequestActions({ detail, busy, onReload, onAct, onSubmit, onEdit, onCancel, onDelete, onShare }: RequestActionsProps) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const canViewMailQueue = useAccess().canAccess(PermissionType.ViewActivityLogQueue);
@@ -51,12 +51,6 @@ export function RequestActions({ detail, busy, onReload, onAct, onSubmit, onCanc
 			icon: <SendOutlined />,
 			label: t(detail.status === ApprovalRequestStatus.Returned ? "approval.actions.resubmit" : "approval.actions.submit"),
 			onClick: onSubmit,
-		},
-		permissions.canEdit && {
-			key: "edit",
-			icon: <EditOutlined />,
-			label: t("approval.actions.edit"),
-			onClick: () => navigate(approvalRequestPath.edit(detail.id)),
 		},
 		permissions.canReturn && { key: "return", icon: <RollbackOutlined />, label: t("approval.actions.return"), onClick: () => onAct("return") },
 		permissions.canShare && { key: "share", icon: <ShareAltOutlined />, label: t("approval.actions.share"), onClick: onShare },
@@ -91,6 +85,7 @@ export function RequestActions({ detail, busy, onReload, onAct, onSubmit, onCanc
 	return (
 		<Space wrap>
 			<Button icon={<ReloadOutlined />} onClick={onReload} disabled={busy} />
+			{permissions.canEdit && <Button icon={<EditOutlined />} disabled={busy} onClick={onEdit}>{t("approval.actions.edit")}</Button>}
 			{permissions.canReject && (
 				<Button danger icon={<CloseOutlined />} disabled={busy} onClick={() => onAct("reject")}>{t("approval.actions.reject")}</Button>
 			)}

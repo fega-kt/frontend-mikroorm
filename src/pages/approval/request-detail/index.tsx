@@ -3,7 +3,6 @@ import type { ApprovalActionType } from "#src/api/approval-task";
 import type { FormField } from "#src/api/setting/request-type/types";
 import type { FileViewTarget } from "#src/components/file-viewer";
 import type { BadgeProps } from "antd";
-import type { ReactNode } from "react";
 import type { ActionModalRef } from "../components/action-modal";
 import { ApprovalHistoryAction, approvalRequestService, ApprovalRequestStatus } from "#src/api/approval-request";
 import { approvalTaskService } from "#src/api/approval-task";
@@ -36,6 +35,7 @@ import { ActionModal } from "../components/action-modal";
 import { PayloadView } from "../components/form-fields";
 import { RequestDetailSkeleton } from "../components/page-skeleton";
 import { PriorityTag, RequestStatusTag } from "../components/status-tag";
+import { tabLabel } from "../components/tab-label";
 import { useLocalizedFields } from "../lib/form-i18n";
 import { DATE_TIME_FORMAT } from "../lib/payload";
 import { collectUserNames } from "../lib/progress";
@@ -58,16 +58,6 @@ enum DetailTab {
 	Progress = "progress",
 	Files = "files",
 	History = "history",
-}
-
-function tabLabel(icon: ReactNode, text: string, count?: number) {
-	return (
-		<span className="inline-flex items-center gap-1.5">
-			{icon}
-			{text}
-			{!!count && <Tag bordered={false} className="m-0 rounded-full px-1.5 leading-4">{count}</Tag>}
-		</span>
-	);
 }
 
 const formatDate = (value?: string) => (value ? dayjs(value).format(DATE_TIME_FORMAT) : "—");
@@ -105,6 +95,10 @@ export default function ApprovalRequestDetailPage() {
 	const [busy, setBusy] = useState(false);
 	const [shareOpen, setShareOpen] = useState(false);
 	const [viewing, setViewing] = useState<FileViewTarget | null>(null);
+	// Sửa được thì mở thẳng chế độ sửa; bấm Hủy thì về chế độ xem (nút Sửa để vào lại). Gắn với id để sang tờ trình khác thì về mặc định
+	const [editPick, setEditPick] = useState<{ id?: string, edit?: boolean }>({});
+	const setEditMode = (edit: boolean) => setEditPick({ id, edit });
+	const editing = !!detail?.permissions.canEdit && (editPick.id === id && editPick.edit !== undefined ? editPick.edit : true);
 	const [signing, setSigning] = useState(false);
 	const [downloadingId, setDownloadingId] = useState<string | null>(null);
 	const [reassignTask, setReassignTask] = useState<ApprovalTaskItem | null>(null);
@@ -218,18 +212,14 @@ export default function ApprovalRequestDetailPage() {
 		setDownloadingId(null);
 	};
 
-	// Chế độ sửa nằm ngay trong trang chi tiết nên cùng 1 tab; thoát thì tải lại chi tiết
-	if (searchParams.get("mode") === "edit" && id) {
+	// Sửa và xem chung một link: nháp mở thẳng ở chế độ sửa, trạng thái khác xem trước rồi bấm "Sửa"; thoát thì tải lại chi tiết
+	if (editing && id && detail) {
 		return (
 			<ApprovalRequestForm
 				id={id}
 				initialDetail={detail}
 				onExit={() => {
-					setSearchParams((prev) => {
-						const next = new URLSearchParams(prev);
-						next.delete("mode");
-						return next;
-					}, { replace: true });
+					setEditMode(false);
 					load();
 				}}
 			/>
@@ -275,6 +265,7 @@ export default function ApprovalRequestDetailPage() {
 						onReload={load}
 						onAct={act}
 						onSubmit={submit}
+						onEdit={() => setEditMode(true)}
 						onCancel={cancel}
 						onDelete={remove}
 						onShare={() => setShareOpen(true)}

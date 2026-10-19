@@ -4,34 +4,25 @@ import { approvalRequestService, ApprovalRequestStatus } from "#src/api/approval
 import { BasicTable } from "#src/components/basic-table";
 import { PeoplePicker } from "#src/components/people-picker";
 import { approvalRequestPath } from "#src/router/extra-info";
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Popconfirm, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { DATE_TIME_FORMAT } from "../lib/payload";
+import { RequestScope, RequestTableMode, SCOPE_STATUSES } from "../lib/scope";
 import { PriorityTag, RequestStatusTag } from "./status-tag";
-
-/** Nhóm trạng thái của menu "Tờ trình của tôi" */
-export type RequestScope = "draft" | "pending" | "completed" | "all";
-
-const SCOPE_STATUSES: Record<RequestScope, ApprovalRequestStatus[] | undefined> = {
-	draft: [ApprovalRequestStatus.Draft, ApprovalRequestStatus.Returned],
-	pending: [ApprovalRequestStatus.Pending],
-	completed: [ApprovalRequestStatus.Approved, ApprovalRequestStatus.Rejected, ApprovalRequestStatus.Cancelled],
-	all: undefined,
-};
 
 interface RequestTableProps {
 	/** mine: tờ trình của tôi; all: tất cả tờ trình (quản trị) */
-	mode: "mine" | "all"
+	mode: RequestTableMode
 	title: string
 	/** Chỉ lấy các trạng thái của nhóm (mặc định: toàn bộ) */
 	scope?: RequestScope
 }
 
-export function RequestTable({ mode, title, scope = "all" }: RequestTableProps) {
+export function RequestTable({ mode, title, scope = RequestScope.All }: RequestTableProps) {
 	const scopeStatuses = SCOPE_STATUSES[scope];
 	const { t } = useTranslation();
 	const navigate = useNavigate();
@@ -45,8 +36,8 @@ export function RequestTable({ mode, title, scope = "all" }: RequestTableProps) 
 	}, []);
 
 	const view = (id: string) => navigate(approvalRequestPath.detail(id));
-	// Sửa/xóa chỉ có ở "tờ trình của tôi" và nhóm có đơn đang soạn / bị trả lại
-	const hasRowActions = mode === "mine" && (!scopeStatuses || scopeStatuses.includes(ApprovalRequestStatus.Draft));
+	// Xóa nháp chỉ có ở nhóm "Đang soạn"; "Toàn bộ" và các nhóm khác không có cột thao tác
+	const hasRowActions = mode === RequestTableMode.Mine && !!scopeStatuses?.includes(ApprovalRequestStatus.Draft);
 
 	const handleDelete = async (id: string) => {
 		await approvalRequestService.fetchDelete(id);
@@ -83,11 +74,12 @@ export function RequestTable({ mode, title, scope = "all" }: RequestTableProps) 
 			title: t("approval.fields.requestType"),
 			dataIndex: "requestTypeId",
 			width: 170,
+			ellipsis: true,
 			valueType: "select",
 			valueEnum: typeOptions,
 			render: (_, record) => record.requestType.name,
 		},
-		...(mode === "all"
+		...(mode === RequestTableMode.All
 			? [
 				{
 					title: t("approval.fields.requester"),
@@ -137,41 +129,32 @@ export function RequestTable({ mode, title, scope = "all" }: RequestTableProps) 
 			hideInSearch: true,
 			render: (_, record) => dayjs(record.updatedAt).format(DATE_TIME_FORMAT),
 		},
-		// Chỉ hiện cột thao tác ở nhóm có thể sửa/xóa (các nhóm còn lại xem chi tiết bằng cách bấm vào dòng)
+		// Chỉ hiện cột thao tác ở nhóm có nháp để xóa (mở chi tiết bằng cách bấm vào dòng)
 		...(hasRowActions
 			? [
 				{
 					title: t("common.action"),
 					valueType: "option",
 					key: "option",
-					width: 110,
+					width: 80,
 					fixed: "right",
 					render: (_: unknown, record: ApprovalRequestListItem) => {
-						const editable = [ApprovalRequestStatus.Draft, ApprovalRequestStatus.Returned].includes(record.status);
-						const deletable = record.status === ApprovalRequestStatus.Draft;
+						// Xem / sửa là một: bấm dòng để mở chi tiết (sửa được thì vào thẳng chế độ sửa) nên cột này chỉ còn xóa nháp
+						if (record.status !== ApprovalRequestStatus.Draft)
+							return null;
 						// Chặn nổi bọt (kể cả từ popup của Popconfirm) để không kích hoạt mở chi tiết của dòng
 						return (
 							<span className="inline-flex" onClick={e => e.stopPropagation()}>
-								<Tooltip title={t("approval.actions.view")}>
-									<Button type="text" size="small" icon={<EyeOutlined />} onClick={() => view(record.id)} />
-								</Tooltip>
-								{editable && (
-									<Tooltip title={t("approval.actions.edit")}>
-										<Button type="text" size="small" icon={<EditOutlined />} onClick={() => navigate(approvalRequestPath.edit(record.id))} />
+								<Popconfirm
+									title={t("approval.messages.confirmDelete")}
+									onConfirm={() => handleDelete(record.id)}
+									okText={t("common.confirm")}
+									cancelText={t("common.cancel")}
+								>
+									<Tooltip title={t("approval.actions.delete")}>
+										<Button type="text" size="small" danger icon={<DeleteOutlined />} />
 									</Tooltip>
-								)}
-								{deletable && (
-									<Popconfirm
-										title={t("approval.messages.confirmDelete")}
-										onConfirm={() => handleDelete(record.id)}
-										okText={t("common.confirm")}
-										cancelText={t("common.cancel")}
-									>
-										<Tooltip title={t("approval.actions.delete")}>
-											<Button type="text" size="small" danger icon={<DeleteOutlined />} />
-										</Tooltip>
-									</Popconfirm>
-								)}
+								</Popconfirm>
 							</span>
 						);
 					},
@@ -186,14 +169,15 @@ export function RequestTable({ mode, title, scope = "all" }: RequestTableProps) 
 			actionRef={actionRef}
 			rowKey="id"
 			request={async (params) => {
-				const { data, total } = mode === "mine"
+				const { data, total } = mode === RequestTableMode.Mine
 					? await approvalRequestService.fetchMine({ ...params, statuses: params.status ? undefined : scopeStatuses?.join(",") })
 					: await approvalRequestService.fetchAll(params);
 				return { data, total, success: true };
 			}}
 			onRow={record => ({ onClick: () => view(record.id), style: { cursor: "pointer" } })}
 			headerTitle={title}
-			toolBarRender={() => mode === "mine"
+			// Tạo mới chỉ ở màn "Đang soạn" (và trang chủ), các nhóm trạng thái khác chỉ để theo dõi
+			toolBarRender={() => mode === RequestTableMode.Mine && scope === RequestScope.Draft
 				? [
 					<Button key="create" type="primary" icon={<PlusCircleOutlined />} onClick={() => navigate(approvalRequestPath.create)}>
 						{t("approval.actions.create")}
