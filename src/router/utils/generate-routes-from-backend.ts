@@ -1,4 +1,5 @@
 import type { AppRouteRecordRaw } from "#src/router/types";
+import type { ComponentType, LazyExoticComponent } from "react";
 import { Iframe } from "#src/components/iframe";
 import ContainerLayout from "#src/layout/container-layout";
 import { lazy } from "react";
@@ -16,6 +17,8 @@ const pageModules = import.meta.glob([
 	// Exclude exception pages from lazy loading
 	"!/src/pages/exception/**/*.tsx",
 ]);
+
+const lazyPageCache = new Map<string, LazyExoticComponent<ComponentType>>();
 
 /**
  * @zh 根据路由获取组件路径
@@ -50,8 +53,16 @@ export async function generateRoutesFromBackend(backendRoutes: Array<AppRouteRec
 		const moduleIndex = pageModulePaths.findIndex(path => path === modulePath);
 
 		if (moduleIndex !== -1) {
-			const lazyComponent = pageModules[pageModulePaths[moduleIndex]];
-			route.Component = lazy(lazyComponent as any);
+			const modulePathKey = pageModulePaths[moduleIndex];
+			// Nhiều route dùng chung một trang (vd. my/draft, my/all) thì dùng chung 1 lazy; tạo lazy mới cho mỗi route
+			// khiến trang đã tải xong vẫn suspend lại và vùng nội dung bị trắng một nhịp
+			let LazyPage = lazyPageCache.get(modulePathKey);
+			if (!LazyPage) {
+				// glob chỉ biết trả về Promise<unknown>; mọi file trong pages đều export default là component
+				LazyPage = lazy(pageModules[modulePathKey] as () => Promise<{ default: ComponentType }>);
+				lazyPageCache.set(modulePathKey, LazyPage);
+			}
+			route.Component = LazyPage;
 		}
 		else {
 			console.warn(`[Frontend component not found]: ${componentPath}`);

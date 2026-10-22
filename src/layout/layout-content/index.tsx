@@ -12,9 +12,10 @@ import { cn } from "#src/utils/cn";
 
 import { theme } from "antd";
 import { KeepAlive, useKeepAliveRef } from "keepalive-for-react";
-import { useEffect, useMemo } from "react";
+import { Suspense, useEffect, useMemo } from "react";
 
 import { useLocation, useOutlet } from "react-router";
+import { PageLoading } from "./page-loading";
 
 export interface LayoutContentProps { }
 
@@ -133,7 +134,9 @@ export default function LayoutContent() {
 								activeCacheKey={cacheKey}
 								aliveRef={aliveRef}
 							>
-								{outlet}
+								<Suspense fallback={<PageLoading />}>
+									{outlet}
+								</Suspense>
 							</KeepAlive>
 						</div>
 						{enableFooter && !fixedFooter ? <LayoutFooter /> : null}
