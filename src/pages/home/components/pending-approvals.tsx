@@ -1,6 +1,6 @@
 import type { PendingApproval } from "../mock";
 
-import { UserAvatar } from "#src/components/user-avatar";
+import { PeoplePicker } from "#src/components/people-picker";
 import { ApprovalPath } from "#src/router/extra-info";
 
 import { ClockCircleOutlined } from "@ant-design/icons";
@@ -75,12 +75,8 @@ export function PendingApprovals({ items, results, onAction }: PendingApprovalsP
 								<RequestTitleLink id={item.id} title={item.title} />
 							</div>
 							<span className="flex items-center gap-1.5 text-xs text-colorTextTertiary">
-								<UserAvatar size={16} className="text-[9px]" user={{ id: item.requesterId, fullName: item.requesterName, avatar: item.requesterAvatar }} />
-								<span className="truncate">
-									{item.requesterName}
-									{" · "}
-									{t("home.pending.step", { step: item.stepName })}
-								</span>
+								<PeoplePicker readonly user={{ id: item.requesterId, fullName: item.requesterName, avatar: item.requesterAvatar }} size="small" avatarSize={16} showEmail={false} subtle className="!min-h-0" />
+								<span className="truncate">{`· ${t("home.pending.step", { step: item.stepName })}`}</span>
 							</span>
 						</div>
 						<span className="flex w-24 shrink-0 items-center gap-1 text-xs font-medium" style={{ color: urgency.color }}>

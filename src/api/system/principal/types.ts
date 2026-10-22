@@ -22,3 +22,31 @@ export interface PrincipalSearchParams extends SearchParamsBase {
 	name?: string
 	keyword?: string
 }
+
+export interface PersonCardUser {
+	id: string
+	fullName: string
+	loginName: string
+	avatar?: string
+	workEmail?: string
+	department: { id: string, name: string } | null
+}
+
+export interface PersonCardProfile extends PersonCardUser {
+	phoneNumber?: string
+	lastActiveAt?: string | null
+	isActive: boolean
+	/** Tối đa 3 nhóm (backend giới hạn), groupTotal là tổng */
+	groups: { id: string, name: string }[]
+	groupTotal: number
+}
+
+export interface PersonCard {
+	principalId?: string
+	type: PrincipalType
+	name: string
+	description?: string
+	user?: PersonCardProfile
+	members?: PersonCardUser[]
+	memberTotal?: number
+}

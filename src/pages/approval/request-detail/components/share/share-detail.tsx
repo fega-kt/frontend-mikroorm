@@ -1,5 +1,5 @@
 import type { ApprovalShareItem } from "#src/api/approval-request";
-import { UserAvatar } from "#src/components/user-avatar";
+import { PeoplePicker } from "#src/components/people-picker";
 import { Typography } from "antd";
 import dayjs from "dayjs";
 import { Fragment } from "react";
@@ -16,12 +16,7 @@ export function ShareDetail({ share }: { share: ApprovalShareItem }) {
 	const rows = [
 		{
 			label: t("approval.share.sharedByLabel"),
-			value: (
-				<span className="inline-flex items-center gap-1.5">
-					<UserAvatar size={18} user={share.sharedBy} className="text-[9px]" />
-					{share.sharedBy.fullName}
-				</span>
-			),
+			value: <PeoplePicker readonly user={share.sharedBy} size="small" showEmail={false} hoverCard={false} className="!min-h-0" />,
 		},
 		{ label: t("approval.share.sharedAt"), value: dayjs(share.createdAt).format(DETAIL_TIME_FORMAT) },
 		{

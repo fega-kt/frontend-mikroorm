@@ -206,5 +206,24 @@
 		"pageIndicator": "Page {{page}} / {{total}}",
 		"loaded": "Loaded {{loaded}} / {{total}}",
 		"loadError": "Could not open this PDF. You can download it to view."
+	},
+	"personCard": {
+		"members": "{{count}} members",
+		"memberList": "Members",
+		"noMembers": "This group has no members",
+		"loadFailed": "Could not load details",
+		"loadMoreFailed": "Could not load more",
+		"retry": "Retry",
+		"department": "Department",
+		"email": "Email",
+		"phone": "Phone",
+		"groups": "Groups",
+		"sendEmail": "Send email",
+		"call": "Call",
+		"activeRecently": "Active recently",
+		"activeAgo": "Active {{time}}",
+		"lastSeen": "Last seen {{time}}",
+		"locked": "Locked",
+		"lockedNote": "This account is inactive — new work cannot be assigned to this person."
 	}
 }

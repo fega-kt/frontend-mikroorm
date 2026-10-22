@@ -202,5 +202,24 @@
 		"pageIndicator": "第 {{page}} / {{total}} 页",
 		"loaded": "已加载 {{loaded}} / {{total}}",
 		"loadError": "无法打开此 PDF，可以下载后查看。"
+	},
+	"personCard": {
+		"members": "{{count}} 名成员",
+		"memberList": "成员",
+		"noMembers": "该群组暂无成员",
+		"loadFailed": "无法加载信息",
+		"loadMoreFailed": "无法加载更多",
+		"retry": "重试",
+		"department": "部门",
+		"email": "邮箱",
+		"phone": "电话",
+		"groups": "群组",
+		"sendEmail": "发送邮件",
+		"call": "拨打电话",
+		"activeRecently": "刚刚活跃",
+		"activeAgo": "{{time}}活跃",
+		"lastSeen": "最后活跃 {{time}}",
+		"locked": "已锁定",
+		"lockedNote": "该账号已停用，无法再给此人分配新工作。"
 	}
 }

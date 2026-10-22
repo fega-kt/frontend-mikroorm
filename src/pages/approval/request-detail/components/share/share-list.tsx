@@ -1,7 +1,6 @@
 import type { ApprovalShareItem } from "#src/api/approval-request";
-import { PrincipalType } from "#src/api/system/principal";
-import { UserAvatar } from "#src/components/user-avatar";
-import { CloseOutlined, MessageOutlined, TeamOutlined } from "@ant-design/icons";
+import { PrincipalPicker } from "#src/components/principal-picker";
+import { CloseOutlined, MessageOutlined } from "@ant-design/icons";
 import { Button, Popconfirm, Popover, Typography } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
@@ -27,28 +26,23 @@ export function ShareList({ shares, canRemove, onRemove }: ShareListProps) {
 	return (
 		<ul className="m-0 flex list-none flex-col gap-3 p-0">
 			{shares.map((share) => {
-				const { principal } = share;
-				const isGroup = principal.type === PrincipalType.Group;
 				return (
-					<li key={share.id} className="flex items-start gap-2.5">
-						<UserAvatar
-							size={28}
-							user={{ id: principal.id, fullName: principal.name, avatar: isGroup ? undefined : principal.user?.avatar }}
-							fallbackIcon={isGroup ? <TeamOutlined className="text-[14px]" /> : undefined}
+					<li key={share.id} className="flex items-start gap-2">
+						<PrincipalPicker
+							readonly
+							principal={share.principal}
+							avatarSize={28}
+							className="!min-h-0 min-w-0 flex-1"
+							description={(
+								<Popover content={<ShareDetail share={share} />} placement="topLeft" mouseEnterDelay={0.3}>
+									<span>
+										{[t("approval.share.sharedBy", { name: share.sharedBy.fullName }), dayjs(share.createdAt).format(DATE_TIME_FORMAT)].join(" · ")}
+										{/* Có lời nhắn: hiện biểu tượng, chi tiết xem ở popover khi rê chuột */}
+										{share.message && <MessageOutlined className="ml-1.5" />}
+									</span>
+								</Popover>
+							)}
 						/>
-						<Popover content={<ShareDetail share={share} />} placement="topLeft" mouseEnterDelay={0.3}>
-							<div className="flex min-w-0 flex-1 flex-col">
-								<Text strong ellipsis>
-									{principal.name}
-									{isGroup && <Text type="secondary" className="ml-1.5 font-normal">{`· ${t("approval.share.group")}`}</Text>}
-								</Text>
-								<Text type="secondary" className="text-xs" ellipsis>
-									{[t("approval.share.sharedBy", { name: share.sharedBy.fullName }), dayjs(share.createdAt).format(DATE_TIME_FORMAT)].join(" · ")}
-									{/* Có lời nhắn: hiện biểu tượng, chi tiết xem ở popover khi rê chuột */}
-									{share.message && <MessageOutlined className="ml-1.5" />}
-								</Text>
-							</div>
-						</Popover>
 						{canRemove && (
 							<Popconfirm
 								title={t("approval.share.confirmRemove")}

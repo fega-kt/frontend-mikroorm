@@ -8,8 +8,10 @@ import { ApprovalHistoryAction, ApprovalRequestStatus, ApprovalTaskStatus } from
 import { ApproverType, NodeType } from "#src/api/approval-workflow/types";
 import { PrincipalType } from "#src/api/system/principal";
 import { useWorkflowApproverProfiles, useWorkflowUserNames } from "#src/components/approval-flow-graph/user-names";
+import { PeoplePicker } from "#src/components/people-picker";
+import { PrincipalPicker } from "#src/components/principal-picker";
 import { UserAvatar } from "#src/components/user-avatar";
-import { CheckOutlined, ClockCircleOutlined, TeamOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
+import { CheckOutlined, ClockCircleOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
 import { Button, Tag, theme, Timeline, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
@@ -52,9 +54,23 @@ function Comment({ children }: { children: ReactNode }) {
 	);
 }
 
+/** Khoảng cách avatar → tên của picker readonly */
+const PERSON_GAP = 8;
+
+/** Không phải một người cụ thể (hệ thống, vai trò như Trưởng phòng): icon + nhãn, không hover */
+function PlaceholderPerson({ icon, label, size, background }: { icon: ReactNode, label: string, size: number, background?: string }) {
+	return (
+		<span className="inline-flex items-center" style={{ gap: PERSON_GAP }}>
+			<UserAvatar size={size} fallbackIcon={icon} style={background ? { background } : undefined} />
+			<Text strong className="text-[13px]">{label}</Text>
+		</span>
+	);
+}
+
 interface PersonRowProps {
-	avatar: ReactNode
-	name: string
+	/** PeoplePicker / PrincipalPicker readonly (avatar + tên) hoặc PlaceholderPerson */
+	person: ReactNode
+	avatarSize: number
 	/** Ghi chú nhỏ cạnh tên (vd: "thay Kim Thái") */
 	note?: ReactNode
 	/** Phía phải dòng tên: trạng thái, nút thao tác */
@@ -64,19 +80,16 @@ interface PersonRowProps {
 	compact?: boolean
 }
 
-/** Avatar + tên người xử lý, các dòng chi tiết thụt vào thẳng hàng với tên */
-function PersonRow({ avatar, name, note, extra, children, compact }: PersonRowProps) {
+/** Người xử lý, các dòng chi tiết thụt vào thẳng hàng với tên */
+function PersonRow({ person, avatarSize, note, extra, children, compact }: PersonRowProps) {
 	return (
-		<div className={compact ? "flex items-start gap-2" : "flex items-start gap-2.5"}>
-			{avatar}
-			<div className="flex min-w-0 flex-1 flex-col gap-0.5">
-				<div className={compact ? "flex min-h-[22px] flex-wrap items-center gap-x-2 gap-y-0.5" : "flex min-h-7 flex-wrap items-center gap-x-2 gap-y-1"}>
-					<Text strong className="text-[13px]">{name}</Text>
-					{note && <Text type="secondary" className="text-xs">{note}</Text>}
-					{extra && <span className="ml-auto flex items-center gap-1">{extra}</span>}
-				</div>
-				{children}
+		<div className="flex min-w-0 flex-col gap-0.5">
+			<div className={compact ? "flex min-h-[22px] flex-wrap items-center gap-x-2 gap-y-0.5" : "flex min-h-7 flex-wrap items-center gap-x-2 gap-y-1"}>
+				{person}
+				{note && <Text type="secondary" className="text-xs">{note}</Text>}
+				{extra && <span className="ml-auto flex items-center gap-1">{extra}</span>}
 			</div>
+			{children && <div className="flex flex-col gap-0.5" style={{ paddingLeft: avatarSize + PERSON_GAP }}>{children}</div>}
 		</div>
 	);
 }
@@ -123,10 +136,10 @@ export function StepEntries({ group, node, names, profiles = {}, canReassign, on
 			return (
 				<EntryCard key={task.id}>
 					<PersonRow
-						avatar={person
-							? <UserAvatar size={avatarSize} user={person} />
-							: <UserAvatar size={avatarSize} user={{ id: task.approver.id }} fallbackIcon={<TeamOutlined />} />}
-						name={person?.fullName ?? task.approver.name}
+						person={person
+							? <PeoplePicker readonly user={person} avatarSize={avatarSize} showEmail={false} className="!min-h-0" />
+							: <PrincipalPicker readonly principal={task.approver} avatarSize={avatarSize} className="!min-h-0" />}
+						avatarSize={avatarSize}
 						note={note}
 						extra={(
 							<>
@@ -150,10 +163,7 @@ export function StepEntries({ group, node, names, profiles = {}, canReassign, on
 							<span className="flex flex-wrap items-center gap-1.5 text-xs">
 								<Text type="secondary" className="text-xs">{t("approval.detail.canActOnBehalf")}</Text>
 								{task.delegates.map(user => (
-									<span key={user.id} className="inline-flex items-center gap-1">
-										<UserAvatar size={16} user={user} className="text-[9px]" />
-										<Text className="text-xs">{user.fullName}</Text>
-									</span>
+									<PeoplePicker key={user.id} readonly user={user} size="small" avatarSize={16} showEmail={false} className="!min-h-0" />
 								))}
 							</span>
 						)}
@@ -188,15 +198,24 @@ export function StepEntries({ group, node, names, profiles = {}, canReassign, on
 		// Người cụ thể (kể cả principal trỏ tới một người): avatar thật; nhóm dùng icon nhóm; vai trò (Trưởng phòng…) chưa rõ người nên dùng icon người
 		const refId = approver?.type === ApproverType.SpecificUser ? approver.userId : approver?.type === ApproverType.Principal ? approver.principalId : undefined;
 		const profile = refId ? profiles[refId] : undefined;
-		const avatar = refId && !profile?.isGroup
-			? <UserAvatar size={avatarSize} user={{ id: profile?.userId ?? refId, fullName: label, avatar: profile?.avatar }} />
-			: <UserAvatar size={avatarSize} user={{ id: refId ?? approver?.type }} fallbackIcon={profile?.isGroup ? <TeamOutlined /> : <UserOutlined />} />;
+		const person = !refId
+			? <PlaceholderPerson icon={<UserOutlined />} label={label} size={avatarSize} />
+			: approver?.type === ApproverType.SpecificUser
+				? <PeoplePicker readonly user={{ id: refId, fullName: label, avatar: profile?.avatar }} avatarSize={avatarSize} showEmail={false} className="!min-h-0" />
+				: (
+					<PrincipalPicker
+						readonly
+						principal={{ id: refId, name: label, type: profile?.isGroup ? PrincipalType.Group : PrincipalType.User, user: profile?.userId ? { id: profile.userId, avatar: profile.avatar } : null }}
+						avatarSize={avatarSize}
+						className="!min-h-0"
+					/>
+				);
 		return (
 			// eslint-disable-next-line react/no-array-index-key -- người duyệt của bước không có id riêng, thứ tự cố định
 			<EntryCard key={index}>
 				<PersonRow
-					avatar={avatar}
-					name={label}
+					person={person}
+					avatarSize={avatarSize}
 					extra={<Tag bordered={false} icon={<ClockCircleOutlined />} className="m-0">{t("approval.detail.notStarted")}</Tag>}
 				>
 					{(node as WaitNode).slaHours && <Text type="secondary" className="text-xs">{t("workflowDesigner.summary.sla", { hours: (node as WaitNode).slaHours })}</Text>}
@@ -252,7 +271,13 @@ export function RoundTimeline({ round, totalRounds, definition, userNames, canRe
 			color: token.colorPrimary,
 			children: (
 				<div className="pb-0">
-					<PersonRow compact avatar={<UserAvatar size={22} user={round.submittedBy} />} name={round.submittedBy?.fullName ?? "—"}>
+					<PersonRow
+						compact
+						avatarSize={22}
+						person={round.submittedBy
+							? <PeoplePicker readonly user={round.submittedBy} avatarSize={22} showEmail={false} className="!min-h-0" />
+							: <PlaceholderPerson icon={<UserOutlined />} label="—" size={22} />}
+					>
 						<Text type="secondary" className="text-xs">
 							<span style={{ color: token.colorPrimary }}>{t(round.round > 1 ? "approval.detail.resubmittedAt" : "approval.detail.submittedAt")}</span>
 							{round.submittedAt && ` ${formatTime(round.submittedAt)}`}
@@ -293,8 +318,10 @@ export function RoundTimeline({ round, totalRounds, definition, userNames, canRe
 						<PersonRow
 							compact
 							// Hoàn tất do hệ thống ghi nhận nên không có người thực hiện
-							avatar={end.actor ? <UserAvatar size={22} user={end.actor} /> : <UserAvatar size={22} fallbackIcon={<CheckOutlined />} style={{ background: endColor }} />}
-							name={end.actor?.fullName ?? t("approval.detail.system")}
+							avatarSize={22}
+							person={end.actor
+								? <PeoplePicker readonly user={end.actor} avatarSize={22} showEmail={false} className="!min-h-0" />
+								: <PlaceholderPerson icon={<CheckOutlined />} label={t("approval.detail.system")} size={22} background={endColor} />}
 						>
 							<Text type="secondary" className="text-xs">
 								<span style={{ color: endColor }}>{t(`approval.detail.roundEnd.${round.outcome}`)}</span>

@@ -1,6 +1,6 @@
 import type { ApprovalRound } from "../../lib/rounds";
 import { ApprovalRequestStatus } from "#src/api/approval-request/types";
-import { UserAvatar } from "#src/components/user-avatar";
+import { PeoplePicker } from "#src/components/people-picker";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import { theme, Typography } from "antd";
 import dayjs from "dayjs";
@@ -27,8 +27,9 @@ export function RoundMeta({ round }: { round: ApprovalRound }) {
 	return (
 		<div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1">
 			<div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[13px]">
-				<UserAvatar size={20} user={round.submittedBy} className="text-[10px]" />
-				<Text strong>{round.submittedBy?.fullName ?? "—"}</Text>
+				{round.submittedBy
+					? <PeoplePicker readonly user={round.submittedBy} showEmail={false} avatarSize={20} className="!min-h-0" />
+					: <Text strong>—</Text>}
 				<Text type="secondary">·</Text>
 				<Text type="secondary">
 					<span style={{ color: token.colorPrimary }}>{t(round.round > 1 ? "approval.detail.resubmittedAt" : "approval.detail.submittedAt")}</span>

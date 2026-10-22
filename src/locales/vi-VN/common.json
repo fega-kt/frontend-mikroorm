@@ -210,5 +210,24 @@
 		"pageIndicator": "Trang {{page}} / {{total}}",
 		"loaded": "Đã tải {{loaded}} / {{total}}",
 		"loadError": "Không mở được tệp PDF. Bạn có thể tải tệp về để xem."
+	},
+	"personCard": {
+		"members": "{{count}} thành viên",
+		"memberList": "Thành viên",
+		"noMembers": "Nhóm chưa có thành viên",
+		"loadFailed": "Không tải được thông tin",
+		"loadMoreFailed": "Không tải được thêm",
+		"retry": "Thử lại",
+		"department": "Phòng ban",
+		"email": "Email",
+		"phone": "Điện thoại",
+		"groups": "Nhóm",
+		"sendEmail": "Gửi email",
+		"call": "Gọi điện",
+		"activeRecently": "Vừa hoạt động",
+		"activeAgo": "Hoạt động {{time}}",
+		"lastSeen": "Lần cuối {{time}}",
+		"locked": "Đã khóa",
+		"lockedNote": "Tài khoản không còn hoạt động — không giao được việc mới cho người này."
 	}
 }
