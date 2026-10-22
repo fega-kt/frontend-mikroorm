@@ -20,11 +20,15 @@ export function RequestDetailSkeleton() {
 		<BasicContent>
 			<div className="flex flex-col gap-4">
 				<div className="flex flex-wrap items-start justify-between gap-3">
-					<div className="flex flex-col gap-2">
-						<Skeleton.Input active style={{ width: 280, height: 28 }} />
-						<Skeleton.Input active size="small" style={{ width: 200 }} />
+					<div className="flex items-start gap-2">
+						<Skeleton.Button active shape="circle" />
+						<div className="flex flex-col gap-2">
+							<Skeleton.Input active style={{ width: 280, height: 28 }} />
+							<Skeleton.Input active size="small" style={{ width: 200 }} />
+						</div>
 					</div>
 					<div className="flex gap-2">
+						<Skeleton.Button active shape="circle" />
 						<Skeleton.Button active />
 						<Skeleton.Button active />
 					</div>
@@ -32,12 +36,15 @@ export function RequestDetailSkeleton() {
 				<div className="flex gap-4">
 					{[0, 1, 2, 3].map(i => <Skeleton.Button key={i} active size="small" style={{ width: 96 }} />)}
 				</div>
-				<div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(320px,1fr)]">
+				<div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
 					<div className="flex flex-col gap-4">
 						<CardSkeleton rows={3} />
 						<CardSkeleton rows={4} />
 					</div>
-					<CardSkeleton rows={5} />
+					<div className="flex flex-col gap-4">
+						<CardSkeleton rows={5} />
+						<CardSkeleton rows={2} />
+					</div>
 				</div>
 			</div>
 		</BasicContent>

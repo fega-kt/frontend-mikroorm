@@ -1,6 +1,7 @@
 import { TanstackQuery } from "#src/components/tanstack-query";
 import { setupI18n } from "#src/locales";
 import { setupLoading } from "#src/plugins/loading";
+import { isPreloadingPages } from "#src/router/utils/generate-routes-from-backend";
 
 // import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
@@ -36,12 +37,21 @@ async function setupApp() {
 
 setupApp();
 
-sessionStorage.removeItem("chunk_reload");
+/**
+ * Sau khi deploy, chunk cũ bị xóa: tự tải lại 1 lần. Cờ chỉ xóa khi app đã chạy ổn một lúc —
+ * xóa ngay lúc khởi động thì chunk lỗi mãi (cache index.html cũ…) sẽ reload vô hạn.
+ */
+const CHUNK_RELOAD_KEY = "chunk_reload";
+setTimeout(() => sessionStorage.removeItem(CHUNK_RELOAD_KEY), 10_000);
 
 window.addEventListener("vite:preloadError", (event) => {
-	event.preventDefault();
-	if (!sessionStorage.getItem("chunk_reload")) {
-		sessionStorage.setItem("chunk_reload", "1");
+	// Tải sẵn chạy nền lỗi thì để lỗi trôi về chỗ tải sẵn (nó tự dừng), không reload giữa lúc người dùng đang thao tác
+	if (isPreloadingPages())
+		return;
+	// Đã reload một lần mà vẫn lỗi: để lỗi hiện ra (trang lỗi có nút tải lại) thay vì nuốt lỗi
+	if (!sessionStorage.getItem(CHUNK_RELOAD_KEY)) {
+		event.preventDefault();
+		sessionStorage.setItem(CHUNK_RELOAD_KEY, "1");
 		window.location.reload();
 	}
 });

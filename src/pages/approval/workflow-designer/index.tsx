@@ -7,12 +7,13 @@ import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import { ArrowLeftOutlined, CloudUploadOutlined, PlayCircleOutlined, SaveOutlined } from "@ant-design/icons";
 import { ReactFlowProvider } from "@xyflow/react";
 import { useRequest } from "ahooks";
-import { Badge, Button, Result, Space, Spin, Tag, theme, Tooltip, Typography } from "antd";
+import { Badge, Button, Result, Space, Tag, theme, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router";
 import { DesignerCanvas } from "./canvas/DesignerCanvas";
+import { DesignerSkeleton } from "./designer-skeleton";
 import { NodeInspector } from "./inspector/NodeInspector";
 import { emptyDefinition, toDefinition } from "./lib/to-definition";
 import { NodePalette } from "./palette/NodePalette";
@@ -185,13 +186,8 @@ function WorkflowDesigner() {
 		return toDefinition(s.nodes, s.edges);
 	}, [store]);
 
-	if (!detail && !loadError) {
-		return (
-			<BasicContent className="flex h-full items-center justify-center">
-				<Spin />
-			</BasicContent>
-		);
-	}
+	if (!detail && !loadError)
+		return <DesignerSkeleton />;
 
 	if (loadError || !detail) {
 		return (

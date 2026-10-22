@@ -82,6 +82,7 @@ src/api/<module>/
 src/pages/<module>/
   index.tsx            # List page (BasicTable + actionRef + detailRef)
   constants.tsx        # getConstantColumns(t) → ProColumns[]
+  loading.tsx          # export { ListSkeleton as default } from "#src/components/page-skeleton"
   components/
     detail.tsx         # ModalForm with useImperativeHandle exposing show(id?)
 ```
@@ -93,6 +94,7 @@ Extend `CrudServiceBase<T>` from `src/api/service-base.ts`. Pass `populate` for 
 ### Routing (`src/router/`)
 
 - Route modules live in `src/router/routes/modules/` and are **auto-imported** via `import.meta.glob` — adding a file there is enough to register routes.
+- Page chunks are preloaded on idle after login (production builds only). While a page chunk is still loading, the `loading.tsx` next to the page file is shown (eagerly bundled, so keep it tiny); without one the neutral `PageSkeleton` is used. List pages use `ListSkeleton` (`search` / `pagination` props when the table disables them); pages with their own layout draw a skeleton that mirrors it.
 - Route `handle` metadata drives sidebar menu generation automatically (`title`, `icon`, `order`, `permissions`, `hideInMenu`, `keepAlive`).
 - Icon strings in `handle.icon` must be registered in `src/icons/menu-icons.ts`.
 - Menu order constants are in `src/router/extra-info/order.ts`.

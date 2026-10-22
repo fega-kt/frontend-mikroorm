@@ -7,8 +7,8 @@ const ROW_COUNT = 10;
 const ROW_HEIGHT = 55;
 const TEXT_HEIGHT = 22;
 
-/** Khung chờ khi tải chunk của trang lazy: dựng lại bố cục trang danh sách (ô lọc + bảng) để chuyển sang trang thật không bị nhảy */
-export function PageLoading() {
+/** Khung chờ trang danh sách: ô lọc + bảng, khớp bố cục BasicTable để chuyển sang trang thật không bị nhảy */
+export function ListSkeleton({ search = true, pagination = true }: { search?: boolean, pagination?: boolean }) {
 	const { token } = theme.useToken();
 	const card = {
 		background: token.colorBgContainer,
@@ -22,14 +22,16 @@ export function PageLoading() {
 		<BasicContent className="h-full">
 			<div className="flex flex-col gap-4">
 				{/* Ô tìm kiếm: padding 24, input cao 32 */}
-				<div className="flex flex-wrap items-center gap-4 p-6" style={card}>
-					<Skeleton.Input active style={{ width: 240 }} />
-					<Skeleton.Input active style={{ width: 240 }} />
-					<div className="ml-auto flex gap-2">
-						<Skeleton.Button active style={{ width: 72 }} />
-						<Skeleton.Button active style={{ width: 88 }} />
+				{search && (
+					<div className="flex flex-wrap items-center gap-4 p-6" style={card}>
+						<Skeleton.Input active style={{ width: 240 }} />
+						<Skeleton.Input active style={{ width: 240 }} />
+						<div className="ml-auto flex gap-2">
+							<Skeleton.Button active style={{ width: 72 }} />
+							<Skeleton.Button active style={{ width: 88 }} />
+						</div>
 					</div>
-				</div>
+				)}
 
 				{/* Bảng: toolbar padding-block 16, cột bảng inset 24 hai bên như ProTable */}
 				<div className="px-6" style={card}>
@@ -67,9 +69,13 @@ export function PageLoading() {
 					</div>
 
 					{/* Phân trang: cách bảng 16, nút cao 32 */}
-					<div className="flex justify-end py-4">
-						<Skeleton.Button active style={{ width: 280 }} />
-					</div>
+					{pagination
+						? (
+							<div className="flex justify-end py-4">
+								<Skeleton.Button active style={{ width: 280 }} />
+							</div>
+						)
+						: <div className="h-6" />}
 				</div>
 			</div>
 		</BasicContent>

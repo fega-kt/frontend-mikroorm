@@ -1,5 +1,6 @@
 import { APP_SETTINGS } from "#src/api/system-config/app-setting/keys";
 import { GlobalSpin } from "#src/components/global-spin";
+import { PageSkeleton } from "#src/components/page-skeleton";
 import { Scrollbar } from "#src/components/scrollbar";
 import { useAppSetting } from "#src/hooks/use-app-setting";
 import { useLayoutContentStyle } from "#src/hooks/use-layout-style";
@@ -8,14 +9,13 @@ import LayoutFooter from "#src/layout/layout-footer";
 import { useAccessStore } from "#src/store/access";
 import { usePreferencesStore } from "#src/store/preferences";
 import { useTabsStore } from "#src/store/tabs";
-import { cn } from "#src/utils/cn";
 
+import { cn } from "#src/utils/cn";
 import { theme } from "antd";
 import { KeepAlive, useKeepAliveRef } from "keepalive-for-react";
-import { Suspense, useEffect, useMemo } from "react";
 
+import { Suspense, useEffect, useMemo } from "react";
 import { useLocation, useOutlet } from "react-router";
-import { PageLoading } from "./page-loading";
 
 export interface LayoutContentProps { }
 
@@ -134,7 +134,7 @@ export default function LayoutContent() {
 								activeCacheKey={cacheKey}
 								aliveRef={aliveRef}
 							>
-								<Suspense fallback={<PageLoading />}>
+								<Suspense fallback={<PageSkeleton />}>
 									{outlet}
 								</Suspense>
 							</KeepAlive>

@@ -1,8 +1,9 @@
 import type { AppRouteRecordRaw } from "#src/router/types";
 import type { ComponentType, LazyExoticComponent } from "react";
 import { Iframe } from "#src/components/iframe";
+import { PageSkeleton } from "#src/components/page-skeleton";
 import ContainerLayout from "#src/layout/container-layout";
-import { lazy } from "react";
+import { createElement, lazy, Suspense, useState } from "react";
 import { Outlet } from "react-router";
 import { addRouteIdByPath } from "./add-route-id-by-path";
 
@@ -16,9 +17,87 @@ const pageModules = import.meta.glob([
 	"/src/pages/**/*.tsx",
 	// Exclude exception pages from lazy loading
 	"!/src/pages/exception/**/*.tsx",
+	"!/src/pages/**/loading.tsx",
 ]);
 
-const lazyPageCache = new Map<string, LazyExoticComponent<ComponentType>>();
+/** Khung chờ riêng của trang: loading.tsx cạnh file trang (nhỏ, nạp sẵn để hiện được ngay khi trang đang tải) */
+const loadingModules = import.meta.glob<{ default: ComponentType }>("/src/pages/**/loading.tsx", { eager: true });
+
+function getPageLoading(key: string): ComponentType {
+	return loadingModules[key.replace(/[^/]+\.tsx$/, "loading.tsx")]?.default ?? PageSkeleton;
+}
+
+/** Trang đã tải xong chunk: render thẳng, không qua Suspense */
+const loadedPages = new Map<string, ComponentType>();
+const pageLoads = new Map<string, Promise<ComponentType>>();
+const pageComponents = new Map<string, ComponentType>();
+
+function loadPage(key: string) {
+	let promise = pageLoads.get(key);
+	if (!promise) {
+		// glob chỉ biết trả về Promise<unknown>; mọi file trong pages đều export default là component
+		promise = (pageModules[key] as () => Promise<{ default: ComponentType }>)().then((mod) => {
+			loadedPages.set(key, mod.default);
+			return mod.default;
+		});
+		promise.catch(() => pageLoads.delete(key));
+		pageLoads.set(key, promise);
+	}
+	return promise;
+}
+
+/**
+ * Một component cho mỗi file trang (nhiều route dùng chung một trang thì dùng chung, tránh suspend lại).
+ * Chunk đã tải sẵn thì render thẳng; chưa thì qua lazy, trong lúc chờ hiện loading.tsx của trang (không có thì khung trung tính).
+ */
+function getPageComponent(key: string) {
+	let Page = pageComponents.get(key);
+	if (!Page) {
+		const LazyPage: LazyExoticComponent<ComponentType> = lazy(() => loadPage(key).then(component => ({ default: component })));
+		const Loading = getPageLoading(key);
+		Page = (props: object) => {
+			// Chốt lúc mount: đổi type giữa chừng sẽ mount lại trang và mất state
+			const [Loaded] = useState(() => loadedPages.get(key));
+			return Loaded
+				? createElement(Loaded, props)
+				: createElement(Suspense, { fallback: createElement(Loading) }, createElement(LazyPage, props));
+		};
+		pageComponents.set(key, Page);
+	}
+	return Page;
+}
+
+let preloadInFlight = false;
+
+/** Đang tải sẵn chạy nền — handler vite:preloadError dựa vào đây để không reload trang vì lỗi của tải sẵn */
+export function isPreloadingPages() {
+	return preloadInFlight;
+}
+
+/**
+ * Tải sẵn chunk các trang lúc trình duyệt rảnh, lần lượt từng trang để không tranh băng thông với request đang chạy.
+ * Chỉ bật ở bản build: ở dev mỗi trang phải biên dịch, tải sẵn cả app làm máy nặng.
+ */
+function preloadPages(keys: string[]) {
+	if (!import.meta.env.PROD)
+		return;
+	const queue = [...new Set(keys)].filter(key => !loadedPages.has(key));
+	const idle = (callback: () => void) => ("requestIdleCallback" in window ? window.requestIdleCallback(callback) : setTimeout(callback, 200));
+	const next = () => {
+		const key = queue.shift();
+		if (!key)
+			return;
+		preloadInFlight = true;
+		loadPage(key)
+			.then(() => idle(next))
+			// Lỗi (thường do vừa deploy, chunk cũ không còn): dừng tải sẵn, trang sẽ tải khi người dùng mở
+			.catch(() => {})
+			.finally(() => {
+				preloadInFlight = false;
+			});
+	};
+	idle(next);
+}
 
 /**
  * @zh 根据路由获取组件路径
@@ -41,6 +120,7 @@ export async function generateRoutesFromBackend(backendRoutes: Array<AppRouteRec
 	const pageModulePaths = Object.keys(pageModules);
 	if (!backendRoutes?.length)
 		return [];
+	const usedPageKeys: string[] = [];
 
 	/**
 	 * @zh 动态加载并设置路由组件
@@ -54,15 +134,8 @@ export async function generateRoutesFromBackend(backendRoutes: Array<AppRouteRec
 
 		if (moduleIndex !== -1) {
 			const modulePathKey = pageModulePaths[moduleIndex];
-			// Nhiều route dùng chung một trang (vd. my/draft, my/all) thì dùng chung 1 lazy; tạo lazy mới cho mỗi route
-			// khiến trang đã tải xong vẫn suspend lại và vùng nội dung bị trắng một nhịp
-			let LazyPage = lazyPageCache.get(modulePathKey);
-			if (!LazyPage) {
-				// glob chỉ biết trả về Promise<unknown>; mọi file trong pages đều export default là component
-				LazyPage = lazy(pageModules[modulePathKey] as () => Promise<{ default: ComponentType }>);
-				lazyPageCache.set(modulePathKey, LazyPage);
-			}
-			route.Component = LazyPage;
+			usedPageKeys.push(modulePathKey);
+			route.Component = getPageComponent(modulePathKey);
 		}
 		else {
 			console.warn(`[Frontend component not found]: ${componentPath}`);
@@ -139,6 +212,7 @@ export async function generateRoutesFromBackend(backendRoutes: Array<AppRouteRec
 	const transformedRoutes = await Promise.all(
 		normalizedRoutes.map(route => transformRoute(route)),
 	);
+	preloadPages(usedPageKeys);
 
 	return addRouteIdByPath(transformedRoutes);
 }
