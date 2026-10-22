@@ -1,6 +1,6 @@
 import type { Delegation } from "../mock";
 
-import { UserAvatar } from "#src/components/user-avatar";
+import { PeoplePicker } from "#src/components/people-picker";
 
 import { theme } from "antd";
 import dayjs from "dayjs";
@@ -33,17 +33,12 @@ export function DelegationCard({ outgoing, incoming }: DelegationCardProps) {
 			<span className="text-xs font-semibold uppercase" style={{ color: highlight ? token.colorPrimary : token.colorTextSecondary }}>
 				{label}
 			</span>
-			<div className="flex items-center gap-2.5">
-				<UserAvatar size={28} user={{ id: item.userId, fullName: item.fullName, avatar: item.avatar }} />
-				<div className="flex min-w-0 flex-col">
-					<span className="text-sm text-colorText">{item.fullName}</span>
-					<span className="text-xs text-colorTextSecondary">
-						{item.scope}
-						{" · "}
-						{formatRange(item)}
-					</span>
-				</div>
-			</div>
+			<PeoplePicker
+				readonly
+				user={{ id: item.userId, fullName: item.fullName, avatar: item.avatar }}
+				avatarSize={28}
+				description={`${item.scope} · ${formatRange(item)}`}
+			/>
 		</div>
 	);
 

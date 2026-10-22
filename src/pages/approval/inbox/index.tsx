@@ -8,7 +8,7 @@ import { approvalTaskService } from "#src/api/approval-task";
 import { PrincipalType } from "#src/api/system/principal";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
-import { UserAvatar } from "#src/components/user-avatar";
+import { PeoplePicker } from "#src/components/people-picker";
 import { approvalRequestPath } from "#src/router/extra-info";
 import { CheckOutlined, CloseOutlined, EyeOutlined, RollbackOutlined } from "@ant-design/icons";
 import { Button, Drawer, Space, Tag, Tooltip, Typography } from "antd";
@@ -160,13 +160,7 @@ export default function ApprovalInbox() {
 			width: 200,
 			hideInSearch: true,
 			render: (_, item) => (
-				<Space size={6}>
-					<UserAvatar size={22} user={item.request.requester} />
-					<div className="flex flex-col leading-tight">
-						<span>{item.request.requester.fullName}</span>
-						<Typography.Text type="secondary" className="text-xs">{item.request.department.name}</Typography.Text>
-					</div>
-				</Space>
+				<PeoplePicker readonly user={item.request.requester} showEmail={false} description={item.request.department.name} className="!min-h-0" />
 			),
 		},
 		{

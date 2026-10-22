@@ -12,7 +12,6 @@ import { BasicContent } from "#src/components/basic-content";
 import { FileViewer } from "#src/components/file-viewer";
 import { PeoplePicker } from "#src/components/people-picker";
 import { SectionCard } from "#src/components/section-card";
-import { UserAvatar } from "#src/components/user-avatar";
 import { ApprovalPath } from "#src/router/extra-info";
 import {
 	ArrowLeftOutlined,
@@ -279,15 +278,16 @@ export default function ApprovalRequestDetailPage() {
 						showIcon
 						message={t("approval.form.returnedNotice")}
 						description={(
-							<div className="flex items-start gap-2.5">
-								<UserAvatar size={28} user={lastReturn.actor} />
-								<div className="flex min-w-0 flex-col">
-									<Text className="text-[13px]">
-										<Text strong>{lastReturn.actor?.fullName ?? t("approval.detail.system")}</Text>
-										<Text type="secondary">{` · ${t("approval.detail.roundEnd.returned")} ${formatDate(lastReturn.createdAt)}`}</Text>
-									</Text>
-									{lastReturn.comment && <Text className="whitespace-pre-wrap">{lastReturn.comment}</Text>}
-								</div>
+							<div className="flex flex-col gap-1">
+								{lastReturn.actor
+									? <PeoplePicker readonly user={lastReturn.actor} avatarSize={28} showEmail={false} description={`${t("approval.detail.roundEnd.returned")} ${formatDate(lastReturn.createdAt)}`} className="!min-h-0" />
+									: (
+										<Text className="text-[13px]">
+											<Text strong>{t("approval.detail.system")}</Text>
+											<Text type="secondary">{` · ${t("approval.detail.roundEnd.returned")} ${formatDate(lastReturn.createdAt)}`}</Text>
+										</Text>
+									)}
+								{lastReturn.comment && <Text className="whitespace-pre-wrap" style={lastReturn.actor ? { paddingLeft: 36 } : undefined}>{lastReturn.comment}</Text>}
 							</div>
 						)}
 					/>

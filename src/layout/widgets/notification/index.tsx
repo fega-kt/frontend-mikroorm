@@ -2,6 +2,7 @@ import type { ButtonProps } from "antd";
 import type { NotificationItem } from "./types";
 
 import { BasicButton } from "#src/components/basic-button";
+import { PeoplePicker } from "#src/components/people-picker";
 import { UserAvatar } from "#src/components/user-avatar";
 import { RiMailCheckLine } from "#src/icons";
 import { cn } from "#src/utils/cn";
@@ -193,13 +194,14 @@ export const NotificationPopup: React.FC<Props> = ({ dot, count, notifications, 
 							<List.Item className={clsx(classes.item, !item.isRead && classes.unread, "relative justify-start gap-5 cursor-pointer")} onClick={() => handleClick(item)}>
 								{/* Mốc cuộn: noti cuối lọt vào vùng nhìn thấy → tự tải trang sau */}
 								{hasMore && index === notifications!.length - 1 && <span ref={loadMoreSentinelRef} className="absolute bottom-0 left-0 h-px w-px" />}
-								{item.avatar || item.actorName
-									? (
-										<UserAvatar size={40} user={{ id: item.actorId, fullName: item.actorName, avatar: item.avatar }} />
-									)
-									: (
-										<Avatar size={40} icon={item.icon} className="shrink-0" style={{ backgroundColor: item.iconColor }} />
-									)}
+								{item.actorId
+									// Cả dòng là nút mở thông báo nên không bật hover
+									? <PeoplePicker readonly user={{ id: item.actorId, fullName: item.actorName, avatar: item.avatar }} avatarOnly avatarSize={40} hoverCard={false} />
+									: item.avatar || item.actorName
+										? <UserAvatar size={40} user={{ fullName: item.actorName, avatar: item.avatar }} />
+										: (
+											<Avatar size={40} icon={item.icon} className="shrink-0" style={{ backgroundColor: item.iconColor }} />
+										)}
 								<div className="flex flex-col gap-1 leading-none">
 									<p className={item.isRead ? "font-normal text-colorTextSecondary" : "font-semibold text-colorText"}>{item.title}</p>
 									<p className="my-1 text-xs text-muted-foreground line-clamp-2">{item.message}</p>

@@ -1,50 +1,34 @@
 import type { PrincipalEntity } from "#src/api/system/principal";
+import type { PeoplePrincipal, PersonDisplayProps } from "#src/components/people-picker/person-display";
 import type { FormItemProps, SelectProps } from "antd";
 import { principalService, PrincipalType } from "#src/api/system/principal";
+import { PersonHoverCard } from "#src/components/people-picker/person-card";
+import { PersonDisplay } from "#src/components/people-picker/person-display";
 import { UserAvatar } from "#src/components/user-avatar";
 import { cn } from "#src/utils/cn";
 import { TeamOutlined } from "@ant-design/icons";
 import { ProFormItem } from "@ant-design/pro-components";
 import { useDebounceFn } from "ahooks";
-import { Select, Space, Spin, Tag, theme, Typography } from "antd";
+import { Select, Spin, Tag, theme } from "antd";
 import * as React from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-const { Text } = Typography;
+/** Principal đủ để hiển thị: entity đầy đủ hoặc bản rút gọn từ các API khác (PrincipalBrief…) */
+export interface PrincipalLike {
+	id: string
+	name: string
+	type?: PrincipalType
+	user?: { id?: string, fullName?: string, avatar?: string | null } | null
+	group?: { name?: string } | null
+}
 
-/** PrincipalDisplay: Show principal info consistently (avatar/icon + name + subtext) */
-export function PrincipalDisplay({
-	principal,
-	showAvatar = true,
-	size = "middle",
-}: {
-	principal: PrincipalEntity
-	showAvatar?: boolean
-	size?: "small" | "middle"
-}) {
-	const iconSize = size === "small" ? 18 : 22;
-	const nameSize = size === "small" ? "text-[12px]" : "text-[13px]";
+function toPeoplePrincipal(p: PrincipalLike): PeoplePrincipal {
+	return { id: p.id, name: p.name || p.group?.name || p.user?.fullName || p.id, type: p.type, user: p.user };
+}
 
-	const isUser = principal.type === PrincipalType.User;
-	const user = principal.user;
-
-	return (
-		<Space size={size} className="p-0">
-			{showAvatar && (
-				<UserAvatar
-					size={iconSize}
-					variant="soft"
-					user={{ id: principal.id, fullName: principal.name, avatar: isUser ? user?.avatar : undefined }}
-					fallbackIcon={!isUser ? <TeamOutlined className="text-[12px]" /> : undefined}
-					className={size === "small" ? "text-[10px]" : "text-[11px]"}
-				/>
-			)}
-			<div className="flex flex-col overflow-hidden leading-none">
-				<Text strong className={cn(nameSize)} ellipsis>{principal.name}</Text>
-			</div>
-		</Space>
-	);
+function PrincipalDisplay({ principal, ...rest }: { principal: PrincipalLike } & Omit<PersonDisplayProps, "user" | "principal">) {
+	return <PersonDisplay principal={toPeoplePrincipal(principal)} {...rest} />;
 }
 
 export interface PrincipalOption {
@@ -59,7 +43,17 @@ export interface PrincipalPickerProps extends Omit<SelectProps<string | string[]
 	mode?: "multiple" | "tags"
 	onOpenChange?: (open: boolean) => void
 	readonly?: boolean
-	principal?: PrincipalEntity
+	principal?: PrincipalLike
+	/** Readonly: dòng phụ tùy ý dưới tên */
+	description?: React.ReactNode
+	/** Readonly: kích thước avatar (mặc định theo size) */
+	avatarSize?: number
+	/** Readonly: chỉ hiện avatar (vẫn hover được) */
+	avatarOnly?: boolean
+	/** Readonly: tên chữ thường màu phụ */
+	subtle?: boolean
+	/** Readonly: hover hiện thẻ thông tin (mặc định bật) */
+	hoverCard?: boolean
 	ref?: React.Ref<React.ComponentRef<typeof Select>>
 	value?: string | string[] | PrincipalEntity | PrincipalEntity[]
 	onChange?: (value: PrincipalEntity | PrincipalEntity[] | string | string[], options?: PrincipalOption | PrincipalOption[]) => void
@@ -85,6 +79,11 @@ export function PrincipalPicker(props: PrincipalPickerProps) {
 		onSearch,
 		readonly,
 		principal: readonlyPrincipal,
+		description,
+		avatarSize,
+		avatarOnly,
+		subtle,
+		hoverCard = true,
 		ref,
 		className,
 		...restProps
@@ -141,7 +140,7 @@ export function PrincipalPicker(props: PrincipalPickerProps) {
 		(dataSource || []).forEach(p => map.set(p.id, p));
 		apiOptions.forEach(p => map.set(p.id, p));
 		if (readonlyPrincipal) {
-			map.set(readonlyPrincipal.id, readonlyPrincipal);
+			map.set(readonlyPrincipal.id, readonlyPrincipal as PrincipalEntity);
 		}
 
 		// Extract from value
@@ -184,7 +183,7 @@ export function PrincipalPicker(props: PrincipalPickerProps) {
 	}, [finalPrincipals]);
 
 	const optionRender = (option: { data: PrincipalOption }) => {
-		return <PrincipalDisplay principal={option.data.principal} showAvatar={showAvatar} />;
+		return <PrincipalDisplay principal={option.data.principal} showAvatar={showAvatar} hoverCard={false} />;
 	};
 
 	const labelRender = (labelProps: { label: React.ReactNode, value: string | number }) => {
@@ -213,19 +212,23 @@ export function PrincipalPicker(props: PrincipalPickerProps) {
 					"mr-1 inline-flex items-center rounded pl-1 pr-1.5 h-6 text-[12px] font-medium border border-solid gap-1.5 transition-all hover:opacity-85",
 				)}
 			>
-				{p && showAvatar && (
-					<UserAvatar
-						size={16}
-						variant="soft"
-						user={{ id: p.id, fullName: p.name, avatar: p.type === PrincipalType.User ? p.user?.avatar : undefined }}
-						fallbackIcon={p.type === PrincipalType.Group ? <TeamOutlined className="text-[10px]" /> : undefined}
-						className="border-none"
-						style={{ fontSize: "9px" }}
-					/>
-				)}
-				<span className="max-w-[100px] truncate text-inherit">
-					{label || (p && (p.name || p.group?.name)) || value}
-				</span>
+				<PersonHoverCard target={{ kind: "principal", id: value }}>
+					<span className="inline-flex items-center gap-1.5">
+						{p && showAvatar && (
+							<UserAvatar
+								size={16}
+								variant="soft"
+								user={{ id: p.id, fullName: p.name, avatar: p.type === PrincipalType.User ? p.user?.avatar : undefined }}
+								fallbackIcon={p.type === PrincipalType.Group ? <TeamOutlined className="text-[10px]" /> : undefined}
+								className="border-none"
+								style={{ fontSize: "9px" }}
+							/>
+						)}
+						<span className="max-w-[100px] truncate text-inherit">
+							{label || (p && (p.name || p.group?.name)) || value}
+						</span>
+					</span>
+				</PersonHoverCard>
 			</Tag>
 		);
 	};
@@ -251,9 +254,17 @@ export function PrincipalPicker(props: PrincipalPickerProps) {
 	};
 
 	if (readonly) {
+		const displayPrincipals = readonlyPrincipal
+			? [readonlyPrincipal]
+			: (Array.isArray(normalizedValue) ? normalizedValue : normalizedValue ? [normalizedValue] : [])
+				.map(id => finalPrincipals.find(p => p.id === id))
+				.filter((p): p is PrincipalEntity => !!p);
+		const items = displayPrincipals.map(p => <PrincipalDisplay key={p.id} principal={p} showAvatar={showAvatar} description={description} avatarSize={avatarSize} avatarOnly={avatarOnly} subtle={subtle} hoverCard={hoverCard} size={props.size === "small" ? "small" : "middle"} />);
+		if (avatarOnly)
+			return <span className={cn("inline-flex shrink-0 items-center gap-1", className)}>{items}</span>;
 		return (
-			<div className={cn("flex min-h-[32px] items-center", className)}>
-				{readonlyPrincipal ? <PrincipalDisplay principal={readonlyPrincipal} showAvatar={showAvatar} /> : <div className="text-[12px] opacity-45">{t("common.noData")}</div>}
+			<div className={cn("flex min-h-[32px] flex-wrap items-center gap-x-3 gap-y-1", className)}>
+				{displayPrincipals.length ? items : <div className="text-[12px] opacity-45">{t("common.noData")}</div>}
 			</div>
 		);
 	}

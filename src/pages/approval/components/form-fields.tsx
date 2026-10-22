@@ -7,10 +7,8 @@ import { PrincipalType } from "#src/api/system/principal/types";
 import { DepartmentPicker } from "#src/components/department-picker";
 import { PeoplePicker } from "#src/components/people-picker";
 import { PrincipalPicker } from "#src/components/principal-picker";
-import { UserAvatar } from "#src/components/user-avatar";
 import { useUserBriefs } from "#src/hooks/use-user-briefs";
-import { TeamOutlined } from "@ant-design/icons";
-import { DatePicker, Descriptions, Form, Input, InputNumber, Select, Switch, theme, Tooltip, Typography } from "antd";
+import { DatePicker, Descriptions, Form, Input, InputNumber, Select, Switch, theme, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { DATE_FORMAT, disabledDateFor, fieldSpanClass, formatMoney, formatPayloadValue, parseMoney, PAYLOAD_FORM_LAYOUT, PAYLOAD_GRID_CLASS } from "../lib/payload";
 import { tableRowsError } from "../lib/table-field";
@@ -97,7 +95,7 @@ function PrincipalReferencePicker({ field, disabled, value, onChange }: { field:
 }
 
 /**
- * Người / người-nhóm đã chọn (chỉ đọc): avatar + tên, hover xem email; nhóm hiện icon nhóm.
+ * Người / người-nhóm đã chọn (chỉ đọc): avatar + tên, hover xem thẻ thông tin (nhóm: thành viên); nhóm hiện icon nhóm.
  * Không tra được (đã xóa, payload cũ thiếu loại…) thì dùng tên đã lưu với avatar chữ cái đầu.
  */
 function ReferenceList({ field, value }: { field: FormField, value: unknown }) {
@@ -108,21 +106,17 @@ function ReferenceList({ field, value }: { field: FormField, value: unknown }) {
 			{refs.map((item) => {
 				const userId = userIdOf(field, item);
 				const user = userId ? briefs.get(userId) : undefined;
-				const group = item.type === PrincipalType.Group;
-				return (
-					<Tooltip key={item.id} title={user?.workEmail || user?.loginName}>
-						<span className="inline-flex items-center gap-1.5">
-							<UserAvatar
-								size={20}
-								variant={group ? "soft" : undefined}
-								user={user ?? { id: item.id, fullName: item.name }}
-								fallbackIcon={group ? <TeamOutlined className="text-[11px]" /> : undefined}
-								className="text-[10px]"
-							/>
-							<span>{user?.fullName ?? item.name}</span>
-						</span>
-					</Tooltip>
-				);
+				return field.type === FormFieldType.User
+					? <PeoplePicker key={item.id} readonly user={user ?? { id: item.id, fullName: item.name }} showEmail={false} avatarSize={20} className="!min-h-0" />
+					: (
+						<PrincipalPicker
+							key={item.id}
+							readonly
+							principal={{ id: item.id, name: user?.fullName ?? item.name, type: item.type, user: userId ? { id: userId, avatar: user?.avatar } : undefined }}
+							avatarSize={20}
+							className="!min-h-0"
+						/>
+					);
 			})}
 		</span>
 	);

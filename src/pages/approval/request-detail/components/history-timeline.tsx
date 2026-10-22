@@ -1,6 +1,7 @@
 import type { ApprovalHistoryItem, HistoryFieldChange, HistoryFileItem, HistoryFileVersion } from "#src/api/approval-request";
 import type { FormField } from "#src/api/setting/request-type/types";
 import { ApprovalHistoryAction } from "#src/api/approval-request/types";
+import { PeoplePicker } from "#src/components/people-picker";
 import { UserAvatar } from "#src/components/user-avatar";
 import {
 	BellOutlined,
@@ -148,10 +149,15 @@ export function HistoryTimeline({ histories, userNames, formSchema }: { historie
 					<div className="flex min-w-0 items-center gap-1.5">
 						{/* Dòng do hệ thống ghi (nhắc duyệt, tự động duyệt…) không có người thực hiện */}
 						{actor
-							? <UserAvatar size={20} user={actor} className="text-[10px]" />
-							: <UserAvatar size={20} fallbackIcon={<SettingOutlined />} className="text-[11px]" style={{ background: token.colorTextQuaternary }} />}
+							? <PeoplePicker readonly user={actor} size="small" avatarSize={20} showEmail={false} subtle className="!min-h-0" />
+							: (
+								<>
+									<UserAvatar size={20} fallbackIcon={<SettingOutlined />} className="text-[11px]" style={{ background: token.colorTextQuaternary }} />
+									<Text type="secondary" className="text-xs">{t("approval.detail.system")}</Text>
+								</>
+							)}
 						<Text type="secondary" className="text-xs" ellipsis>
-							{[actor?.fullName ?? t("approval.detail.system"), onBehalfOf && t("approval.detail.delegatedFrom", { name: onBehalfOf }), item.nodeName, dayjs(item.createdAt).format(DATE_TIME_FORMAT)].filter(Boolean).join(" · ")}
+							{`· ${[onBehalfOf && t("approval.detail.delegatedFrom", { name: onBehalfOf }), item.nodeName, dayjs(item.createdAt).format(DATE_TIME_FORMAT)].filter(Boolean).join(" · ")}`}
 						</Text>
 					</div>
 					{(from || to) && <Text className="text-xs">{[from, to].filter(Boolean).join(" → ")}</Text>}

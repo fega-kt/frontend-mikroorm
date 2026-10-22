@@ -1,46 +1,22 @@
 import type { UserEntity } from "#src/api/user/types";
 import type { FormItemProps, SelectProps } from "antd";
+import type { PeopleUser } from "./person-display";
 import { userService } from "#src/api/user";
 import { UserAvatar } from "#src/components/user-avatar";
 import { cn } from "#src/utils/cn";
 import { ProFormItem } from "@ant-design/pro-components";
 import { useDebounceFn } from "ahooks";
-import { Select, Space, Spin, Tag, theme, Typography } from "antd";
+import { Select, Spin, Tag, theme, Typography } from "antd";
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { PersonHoverCard } from "./person-card";
+import { PersonDisplay } from "./person-display";
+
+// Hiển thị người chỉ đi qua PeoplePicker / PrincipalPicker (readonly) — không export PersonDisplay, PersonHoverCard
+export type { PeopleUser } from "./person-display";
 
 const { Text } = Typography;
-
-/** Thông tin tối thiểu để hiển thị 1 user (UserEntity đầy đủ hoặc bản rút gọn từ các API khác) */
-export type PeopleUser = Pick<UserEntity, "id"> & Partial<Pick<UserEntity, "fullName" | "loginName" | "workEmail" | "avatar">>;
-
-/** UserDisplay: Static component to show user info consistently (avatar + name + subtext) */
-function UserDisplay({ user, showAvatar = true, showEmail = true, size = "middle" }: { user: PeopleUser, showAvatar?: boolean, showEmail?: boolean, size?: "small" | "middle" }) {
-	const avatarSize = size === "small" ? 18 : 22;
-	const nameSize = size === "small" ? "text-[12px]" : "text-[13px]";
-	const subSize = size === "small" ? "text-[9px]" : "text-[10px]";
-
-	return (
-		<Space size={size} className="p-0">
-			{showAvatar && (
-				<UserAvatar
-					size={avatarSize}
-					user={user}
-					className={size === "small" ? "text-[10px]" : "text-[11px]"}
-				/>
-			)}
-			<div className="flex flex-col overflow-hidden leading-none">
-				<Text strong className={cn(nameSize, "-mb-0.5")} ellipsis>{user.fullName || user.loginName}</Text>
-				{showEmail && (
-					<Text type="secondary" className={subSize} ellipsis>
-						{user.workEmail || user.loginName}
-					</Text>
-				)}
-			</div>
-		</Space>
-	);
-}
 
 /** Define the shape of our Select components options */
 export interface PeopleOption {
@@ -79,6 +55,16 @@ export interface PeoplePickerProps extends Omit<SelectProps<string | string[], P
 
 	/** show email in readonly */
 	showEmail?: boolean
+	/** Readonly: dòng phụ tùy ý dưới tên, thay cho email */
+	description?: React.ReactNode
+	/** Readonly: kích thước avatar (mặc định theo size) */
+	avatarSize?: number
+	/** Readonly: chỉ hiện avatar (vẫn hover được) */
+	avatarOnly?: boolean
+	/** Readonly: tên chữ thường màu phụ */
+	subtle?: boolean
+	/** Readonly: hover hiện thẻ thông tin (mặc định bật) */
+	hoverCard?: boolean
 }
 
 /** Props for Select's tagRender */
@@ -107,6 +93,11 @@ export function PeoplePicker(props: PeoplePickerProps) {
 		readonly,
 		user: readonlyUser,
 		showEmail = true,
+		description,
+		avatarSize,
+		avatarOnly,
+		subtle,
+		hoverCard = true,
 		ref,
 		...restProps
 	} = props;
@@ -219,7 +210,7 @@ export function PeoplePicker(props: PeoplePickerProps) {
 		const u = option.data.user;
 		// Fallback for names in case of poor backend data
 		const safeUser = { ...u, fullName: u.fullName || u.loginName || u.id };
-		return <UserDisplay user={safeUser} showAvatar={showAvatar} />;
+		return <PersonDisplay user={safeUser} showAvatar={showAvatar} showEmail hoverCard={false} />;
 	};
 
 	const tagRender = (tagProps: CustomTagProps) => {
@@ -239,12 +230,16 @@ export function PeoplePicker(props: PeoplePickerProps) {
 					"mr-1 inline-flex items-center rounded pl-0.5 pr-1.5 h-6 text-[12px] font-medium border border-solid gap-1.5 transition-all hover:opacity-85",
 				)}
 			>
-				{user && showAvatar && (
-					<UserAvatar size={16} user={user} className="border-none" style={{ fontSize: "9px" }} />
-				)}
-				<span className="max-w-[100px] truncate text-inherit">
-					{label || value || "..."}
-				</span>
+				<PersonHoverCard target={{ kind: "user", id: value }}>
+					<span className="inline-flex items-center gap-1.5">
+						{user && showAvatar && (
+							<UserAvatar size={16} user={user} className="border-none" style={{ fontSize: "9px" }} />
+						)}
+						<span className="max-w-[100px] truncate text-inherit">
+							{label || value || "..."}
+						</span>
+					</span>
+				</PersonHoverCard>
 			</Tag>
 		);
 	};
@@ -257,7 +252,7 @@ export function PeoplePicker(props: PeoplePickerProps) {
 			return props.label || props.value;
 		}
 		const safeUser = { ...u, fullName: u.fullName || u.loginName || u.id };
-		return <UserDisplay user={safeUser} showAvatar={showAvatar} showEmail={false} size="small" />;
+		return <PersonDisplay user={safeUser} showAvatar={showAvatar} size="small" />;
 	};
 
 	const filterOption = (input: string, option?: PeopleOption) => {
@@ -274,10 +269,16 @@ export function PeoplePicker(props: PeoplePickerProps) {
 	};
 
 	if (readonly) {
-		const displayUser = readonlyUser || (Array.isArray(props.value) ? (props.value[0] as UserEntity) : (props.value as UserEntity));
+		const displayUsers: PeopleUser[] = readonlyUser
+			? [readonlyUser]
+			: (Array.isArray(normalizedValue) ? normalizedValue : normalizedValue ? [normalizedValue] : [])
+				.map(id => finalUsers.find(u => u.id === id) ?? { id });
+		const items = displayUsers.map(u => <PersonDisplay key={u.id} user={u} showAvatar={showAvatar} showEmail={showEmail} description={description} avatarSize={avatarSize} avatarOnly={avatarOnly} subtle={subtle} hoverCard={hoverCard} size={props.size === "small" ? "small" : "middle"} />);
+		if (avatarOnly)
+			return <span className={cn("inline-flex shrink-0 items-center gap-1", className)}>{items}</span>;
 		return (
-			<div className={cn("flex min-h-[32px] items-center", className)}>
-				{displayUser ? <UserDisplay user={displayUser} showAvatar={showAvatar} showEmail={showEmail} size={props.size === "small" ? "small" : "middle"} /> : <div className="text-[12px] opacity-45">{t("common.noData")}</div>}
+			<div className={cn("flex min-h-[32px] flex-wrap items-center gap-x-3 gap-y-1", className)}>
+				{displayUsers.length ? items : <div className="text-[12px] opacity-45">{t("common.noData")}</div>}
 			</div>
 		);
 	}

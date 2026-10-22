@@ -5,7 +5,7 @@ import type { AttachmentUploadRef } from "#src/components/attachment-upload";
 import { ApprovalHistoryAction, ApprovalPriority, approvalRequestService, ApprovalRequestStatus } from "#src/api/approval-request";
 import { DEFAULT_ATTACHMENT_CONFIG } from "#src/api/setting/request-type/types";
 import { BasicContent } from "#src/components/basic-content";
-import { UserAvatar } from "#src/components/user-avatar";
+import { PeoplePicker } from "#src/components/people-picker";
 import { approvalRequestPath } from "#src/router/extra-info";
 import { useUserStore } from "#src/store/user";
 import { ApartmentOutlined, FileTextOutlined, HistoryOutlined, InfoCircleOutlined, SaveOutlined, SendOutlined } from "@ant-design/icons";
@@ -442,8 +442,7 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 														className="flex h-8 items-center gap-2 rounded-md px-3"
 														style={{ border: `1px solid ${token.colorBorderSecondary}`, background: token.colorFillQuaternary }}
 													>
-														<UserAvatar size={20} user={existing?.requester ?? currentUser} />
-														<span className="min-w-0 flex-1 truncate">{existing?.requester.fullName ?? currentUser.fullName}</span>
+														<PeoplePicker readonly user={existing?.requester ?? currentUser} avatarSize={20} showEmail={false} className="!min-h-0 min-w-0 flex-1" />
 														{(!existing || existing.requester.id === currentUser.id) && <Text type="secondary" className="text-xs">{t("approval.form.you")}</Text>}
 													</div>
 												</Form.Item>

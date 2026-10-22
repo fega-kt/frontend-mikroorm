@@ -1,4 +1,4 @@
-import type { PrincipalEntity, PrincipalSearchParams } from "./types";
+import type { PersonCard, PersonCardUser, PrincipalEntity, PrincipalSearchParams } from "./types";
 import { ApiService, CrudServiceBase } from "../../service-base";
 
 export * from "./types";
@@ -25,6 +25,18 @@ export class PrincipalService extends CrudServiceBase<PrincipalEntity> {
 
 	async fetchDeletePrincipal(id: string) {
 		return this.delete<void>(id, { ignoreLoading: true });
+	}
+
+	async fetchCard(id: string) {
+		return this.get<PersonCard>(`${id}/card`, { ignoreLoading: true });
+	}
+
+	async fetchGroupMembers(id: string, page: number) {
+		return this.get<{ data: PersonCardUser[], total: number }>(`${id}/members`, { searchParams: { page }, ignoreLoading: true });
+	}
+
+	async fetchUserCard(userId: string) {
+		return this.get<PersonCard>(`card/user/${userId}`, { ignoreLoading: true });
 	}
 
 	async fetchPrincipalItem(id: string) {
