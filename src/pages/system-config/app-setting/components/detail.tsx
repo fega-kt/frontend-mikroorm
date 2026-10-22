@@ -67,6 +67,8 @@ function toFormValue(record: AppSettingRow): FormValue {
 /** Đổi giá trị trong form về dạng backend lưu. */
 function toPayloadValue(record: AppSettingRow, value: FormValue): AppSettingValue {
 	switch (record.type) {
+		case "boolean":
+			return value === true;
 		case "date":
 			return (value as Dayjs).format(DATE_FORMAT);
 		case "json":
@@ -145,7 +147,8 @@ export function Detail({ ref }: DetailProps) {
 		if (!option)
 			return;
 		setRecord({ ...option, value: null });
-		form.setFieldsValue({ value: undefined });
+		// Công tắc chưa bấm lần nào thì vẫn là undefined → gửi lên thiếu value; khởi tạo false cho khớp với trạng thái tắt đang hiện
+		form.setFieldsValue({ value: option.type === "boolean" ? false : undefined });
 	};
 
 	const onFinish = async (values: FormValues) => {
