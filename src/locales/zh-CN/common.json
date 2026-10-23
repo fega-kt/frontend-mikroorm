@@ -188,6 +188,7 @@
 	},
 	"fileViewer": {
 		"download": "下载",
+		"opening": "正在打开文件…",
 		"toggleThumbnails": "显示/隐藏页面列表",
 		"prevPage": "上一页",
 		"nextPage": "下一页",

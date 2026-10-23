@@ -426,7 +426,8 @@
 	"files": {
 		"viewError": "Không mở được tệp để xem. Vui lòng thử lại sau.",
 		"viewUnsupported": "Loại tệp này không hỗ trợ xem trong hệ thống",
-		"viewTooLarge": "Tệp quá lớn, không hỗ trợ xem trước (tối đa {{max}}). Vui lòng tải xuống để xem.",
+		"viewTooLargeTitle": "Tệp quá lớn để xem trước",
+		"viewTooLarge": "Tệp này có dung lượng {{size}}, vượt giới hạn xem trước {{max}}. Vui lòng tải xuống để xem.",
 		"view": "Xem",
 		"download": "Tải xuống",
 		"documents": "Văn bản tờ trình",
