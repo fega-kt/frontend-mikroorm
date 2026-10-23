@@ -57,6 +57,10 @@
 		"fileRemoved": "removed",
 		"signedVersion": "Signed version",
 		"viewPrevious": "View previous",
+		"systemComment": {
+			"overdueReject": "Rejected because the deadline passed",
+			"overdueApprove": "Automatically approved because the deadline passed"
+		},
 		"changes": {
 			"fields": "{{count}} fields",
 			"content": "Request content",
@@ -97,7 +101,7 @@
 			"span": "Submitted {{from}} → closed {{to}}",
 			"rejected": "Request rejected",
 			"autoRejected": "Request rejected after the deadline",
-			"autoRejectedHint": "The system rejected it per the step settings because nobody acted before the deadline.",
+			"autoRejectedHint": "Automatically rejected by the system because the deadline passed.",
 			"cancelled": "Request cancelled",
 			"days": "{{count}} d",
 			"hours": "{{count}} h",

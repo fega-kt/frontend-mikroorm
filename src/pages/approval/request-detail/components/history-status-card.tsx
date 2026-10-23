@@ -14,6 +14,7 @@ import {
 import { Progress, theme, Typography } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
+import { displayComment } from "../../lib/history";
 import { TimelineRow } from "./timeline-row";
 
 const { Text } = Typography;
@@ -51,7 +52,7 @@ function Person({ user, name }: { user?: ApprovalTaskItem["actedBy"], name?: str
 function Comment({ text, background }: { text?: string, background: string }) {
 	if (!text)
 		return null;
-	return <blockquote className="m-0 whitespace-pre-wrap rounded-lg rounded-tl-none px-3.5 py-2 text-[13px] leading-5" style={{ background }}>{text}</blockquote>;
+	return <blockquote className="m-0 whitespace-pre-wrap rounded-lg px-3.5 py-2 text-[13px] leading-5" style={{ background }}>{text}</blockquote>;
 }
 
 /** Trạng thái một người duyệt của bước đang chờ */
@@ -222,7 +223,7 @@ export function HistoryStatusCard({ detail, last }: { detail: ApprovalRequestDet
 				{auto
 					? <Text type="secondary" className="text-[13px]">{t("approval.history.status.autoRejectedHint")}</Text>
 					: rejected?.actor && <div className="text-[13px]"><Person user={rejected.actor} /></div>}
-				<Comment text={rejected?.comment} background={token.colorBgContainer} />
+				<Comment text={displayComment(rejected?.comment, t, !rejected?.actor)} background={token.colorBgContainer} />
 			</>,
 		));
 	}

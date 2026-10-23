@@ -57,6 +57,10 @@
 		"fileRemoved": "đã gỡ",
 		"signedVersion": "Bản sau khi ký",
 		"viewPrevious": "Xem bản trước",
+		"systemComment": {
+			"overdueReject": "Từ chối do quá hạn xử lý",
+			"overdueApprove": "Tự động duyệt do quá hạn"
+		},
 		"changes": {
 			"fields": "{{count}} trường",
 			"content": "Nội dung tờ trình",
@@ -97,7 +101,7 @@
 			"span": "Gửi {{from}} → kết thúc {{to}}",
 			"rejected": "Tờ trình bị từ chối",
 			"autoRejected": "Tờ trình bị từ chối do quá hạn xử lý",
-			"autoRejectedHint": "Hệ thống tự từ chối theo cấu hình bước vì quá hạn mà chưa ai xử lý.",
+			"autoRejectedHint": "Hệ thống tự động từ chối vì quá hạn xử lý.",
 			"cancelled": "Tờ trình đã bị hủy",
 			"days": "{{count}} ngày",
 			"hours": "{{count}} giờ",

@@ -24,6 +24,27 @@ export function historyLabel(item: ApprovalHistoryItem, t: TFunction) {
 }
 
 /**
+ * Ý kiến hệ thống tự ghi khi xử lý quá hạn: backend lưu nguyên câu tiếng Việt (email dùng nguyên văn) —
+ * khớp đúng câu trong approval-engine.service.ts (backend), đổi câu bên đó thì sửa cả ở đây.
+ */
+const SYSTEM_COMMENTS: Record<string, string> = {
+	"Từ chối do quá hạn xử lý": "approval.history.systemComment.overdueReject",
+	"Tự động duyệt do quá hạn": "approval.history.systemComment.overdueApprove",
+};
+
+/**
+ * Ý kiến hiển thị: câu hệ thống tự ghi được dịch theo ngôn ngữ người xem; ý kiến của người giữ nguyên.
+ * `bySystem`: không có người thực hiện (dòng lịch sử actor = null, task actedBy = null) — chỉ khi đó mới dịch,
+ * để người tự gõ đúng câu đó vẫn thấy nguyên văn.
+ */
+export function displayComment(comment: string | null | undefined, t: TFunction, bySystem: boolean) {
+	if (!comment || !bySystem)
+		return comment ?? undefined;
+	const key = SYSTEM_COMMENTS[comment.trim()];
+	return key ? t(key) : comment;
+}
+
+/**
  * Người thực hiện hiển thị: ủy quyền tự động được ghi theo người vừa kích hoạt bước (vd: người gửi lại)
  * nên không phải ai bấm chuyển — coi như hệ thống thực hiện.
  */
