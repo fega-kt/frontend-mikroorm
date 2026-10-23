@@ -13,6 +13,12 @@ export enum FileViewKind {
 	Unsupported = "unsupported",
 }
 
+/** Lý do không xem được (kèm kind = unsupported) — không có thì là loại tệp chưa hỗ trợ */
+export enum FileViewUnavailableReason {
+	/** Vượt ngưỡng xem trước: phải tải về */
+	TooLarge = "too-large",
+}
+
 /**
  * Ngữ cảnh của tệp — mỗi ngữ cảnh có quy tắc phân quyền riêng ở backend (đồng bộ FileContextType của backend).
  * Thêm loại mới: thêm vào đây và khai báo service sở hữu ở CONTEXT_SERVICE.
@@ -38,6 +44,10 @@ export interface FileViewDescriptor {
 	mimetype: string
 	size: number
 	kind: FileViewKind
+	/** kind = unsupported: lý do không xem được */
+	reason?: FileViewUnavailableReason
+	/** reason = too-large: ngưỡng xem trước (byte) */
+	maxPreviewSize?: number
 	/** kind = pdf | image | video | audio: đường dẫn stream (cộng với base URL của backend xử lý ngữ cảnh) */
 	streamPath?: string
 	/** kind = office: địa chỉ Document Server để tải api.js */
