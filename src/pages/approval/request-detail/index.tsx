@@ -211,6 +211,13 @@ export default function ApprovalRequestDetailPage() {
 		setDownloadingId(null);
 	};
 
+	// Word / Excel / PowerPoint: backend chuyển sang PDF rồi trả link tải; khóa riêng để nút PDF không quay chung với nút tải gốc
+	const downloadPdfFile = async (file: { id: string }) => {
+		setDownloadingId(`${file.id}:pdf`);
+		await fileViewService.downloadPdf(FileContextType.ApprovalRequest, file.id);
+		setDownloadingId(null);
+	};
+
 	// Sửa và xem chung một link: nháp mở thẳng ở chế độ sửa, trạng thái khác xem trước rồi bấm "Sửa"; thoát thì tải lại chi tiết
 	if (editing && id && detail) {
 		return (
@@ -452,6 +459,7 @@ export default function ApprovalRequestDetailPage() {
 									downloadingId={downloadingId}
 									onView={file => setViewing({ contextType: FileContextType.ApprovalRequest, fileId: file.id, filename: file.filename })}
 									onDownload={downloadFile}
+									onDownloadPdf={downloadPdfFile}
 								/>
 							),
 						},
