@@ -7,7 +7,7 @@ import { NoFormStyle } from "antd/es/form/context";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import { DATE_FORMAT, formatMoney, formatPayloadValue, parseMoney } from "../lib/payload";
-import { asTableRows, columnTotal, duplicateCells, emptyTableRow, hasTotalRow, isEmptyCell, isMoneyColumn, isSummableColumn, missingRequiredCells, numericCell, tableMaxRows } from "../lib/table-field";
+import { asTableRows, columnTotal, duplicateCells, emptyTableRow, hasTotalRow, isEmptyCell, isMoneyColumn, isSummableColumn, missingRequiredCells, newTableRowId, numericCell, TABLE_ROW_ID, tableMaxRows, tableRowId } from "../lib/table-field";
 
 const { Text } = Typography;
 const API_DATE = "YYYY-MM-DD";
@@ -176,7 +176,8 @@ export function TableFieldInput({ field, value, onChange, disabled }: TableField
 							aria-label={t("approval.formSchema.table.copyRow")}
 							icon={<CopyOutlined />}
 							disabled={full}
-							onClick={() => setRows([...rows.slice(0, index + 1), { ...row }, ...rows.slice(index + 1)])}
+							// Bản sao là dòng mới: cấp mã riêng
+							onClick={() => setRows([...rows.slice(0, index + 1), { ...row, [TABLE_ROW_ID]: newTableRowId() }, ...rows.slice(index + 1)])}
 						/>
 					</Tooltip>
 					<Tooltip title={t("approval.formSchema.table.deleteRow")}>
@@ -199,7 +200,7 @@ export function TableFieldInput({ field, value, onChange, disabled }: TableField
 					columns={tableColumns}
 					dataSource={rows}
 					// Dòng chưa có id riêng (payload chỉ lưu giá trị ô); thứ tự dòng là định danh
-					rowKey={row => String(rows.indexOf(row))}
+					rowKey={tableRowId}
 					locale={{ emptyText: <Text type="secondary">{t("approval.formSchema.table.empty")}</Text> }}
 					summary={hasTotalRow(columns) ? () => <TotalRow columns={columns} rows={rows} trailing={disabled ? 0 : 1} /> : undefined}
 				/>
@@ -244,7 +245,7 @@ export function TableFieldView({ field, value }: { field: FormField, value: unkn
 			scroll={{ x: "max-content" }}
 			columns={tableColumns}
 			dataSource={rows}
-			rowKey={row => String(rows.indexOf(row))}
+			rowKey={tableRowId}
 			locale={{ emptyText: <Text type="secondary">{t("approval.formSchema.table.empty")}</Text> }}
 			summary={hasTotalRow(columns) ? () => <TotalRow columns={columns} rows={rows} /> : undefined}
 		/>

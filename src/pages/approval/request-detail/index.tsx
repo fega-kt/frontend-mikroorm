@@ -468,7 +468,13 @@ export default function ApprovalRequestDetailPage() {
 							label: tabLabel(<HistoryOutlined />, t("approval.detail.timeline"), detail.histories.length),
 							children: (
 								<SectionCard icon={<HistoryOutlined />} title={t("approval.detail.timeline")}>
-									<HistoryTimeline histories={detail.histories} formSchema={detail.requestType.formSchema} userNames={{ ...userNames, [detail.requester.id]: detail.requester.fullName }} />
+									<HistoryTimeline
+										histories={detail.histories}
+										formSchema={detail.requestType.formSchema}
+										userNames={{ ...userNames, [detail.requester.id]: detail.requester.fullName }}
+										request={detail}
+										onViewFile={file => setViewing({ contextType: FileContextType.ApprovalRequest, fileId: file.id, filename: file.filename })}
+									/>
 								</SectionCard>
 							),
 						},
