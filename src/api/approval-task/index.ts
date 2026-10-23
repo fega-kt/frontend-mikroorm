@@ -1,5 +1,6 @@
 import type { SignaturePlacement, SigningPreparation } from "../signing-certificate/types";
 import type { ApprovalRateStats, ApprovedStats, BulkApproveResult, InboxItem, InboxSearchParams } from "./types";
+import { PDF_CONVERT_TIMEOUT_MS } from "../file-view";
 import { ApiService, CrudServiceBase } from "../service-base";
 
 export * from "./types";
@@ -33,7 +34,8 @@ export class ApprovalTaskService extends CrudServiceBase<InboxItem> {
 
 	/** Mở hộp "Ký và duyệt": backend chuyển Word/Excel sang PDF nếu cần nên có thể mất vài chục giây */
 	fetchPrepareSigning(requestId: string) {
-		return this.get<SigningPreparation>(`${requestId}/signing`, { ignoreLoading: true, timeout: 180_000, retry: 0 });
+		// Chuẩn bị ký chuyển văn bản Word / Excel / PowerPoint chưa có PDF: tệp lớn mất vài phút
+		return this.get<SigningPreparation>(`${requestId}/signing`, { ignoreLoading: true, timeout: PDF_CONVERT_TIMEOUT_MS, retry: 0 });
 	}
 
 	fetchSignApprove(requestId: string, data: { pin: string, comment?: string, placements?: Record<string, SignaturePlacement> }) {
