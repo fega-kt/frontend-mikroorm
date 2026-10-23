@@ -2,9 +2,10 @@ import type { ApprovalRequestDetail, RequestArchiveKind, RoundFileItem } from "#
 import type { MenuProps } from "antd";
 import type { RequestFile } from "./request-file-list";
 import { approvalRequestService, ApprovalRequestStatus } from "#src/api/approval-request";
+import { isConvertibleToPdf } from "#src/api/file-view";
 import { SectionCard } from "#src/components/section-card";
 import { formatBytes } from "#src/utils/format-bytes";
-import { DownloadOutlined, DownOutlined, ExclamationCircleOutlined, PaperClipOutlined, SafetyCertificateOutlined, SyncOutlined } from "@ant-design/icons";
+import { DownloadOutlined, DownOutlined, ExclamationCircleOutlined, FilePdfOutlined, PaperClipOutlined, SafetyCertificateOutlined, SyncOutlined } from "@ant-design/icons";
 import { Button, Dropdown, theme, Tooltip, Typography } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -18,6 +19,7 @@ interface FileActions {
 	downloadingId?: string | null
 	onView: (file: RequestFile) => void
 	onDownload: (file: RequestFile) => void
+	onDownloadPdf: (file: RequestFile) => void
 }
 
 interface RoundFilesProps extends FileActions {
@@ -25,7 +27,7 @@ interface RoundFilesProps extends FileActions {
 }
 
 /** Một tệp: ô loại tệp, tên (bấm để xem), dung lượng, nút tải */
-function FileCell({ file, downloadingId, onView, onDownload }: FileActions & { file: RequestFile }) {
+function FileCell({ file, downloadingId, onView, onDownload, onDownloadPdf }: FileActions & { file: RequestFile }) {
 	const { t } = useTranslation();
 	return (
 		<div className="flex min-w-0 items-center gap-2.5">
@@ -34,6 +36,17 @@ function FileCell({ file, downloadingId, onView, onDownload }: FileActions & { f
 				<Typography.Link ellipsis className="text-sm" onClick={() => onView(file)}>{file.filename}</Typography.Link>
 				<Text type="secondary" className="text-xs">{formatBytes(file.size)}</Text>
 			</div>
+			{isConvertibleToPdf(file.filename) && (
+				<Tooltip title={t("common.attachment.downloadPdf")}>
+					<Button
+						type="text"
+						icon={<FilePdfOutlined className="!text-red-500" />}
+						aria-label={t("common.attachment.downloadPdf")}
+						loading={downloadingId === `${file.id}:pdf`}
+						onClick={() => onDownloadPdf(file)}
+					/>
+				</Tooltip>
+			)}
 			<Tooltip title={t("approval.files.download")}>
 				<Button
 					type="text"
@@ -93,6 +106,11 @@ export function RoundFiles({ detail, ...actions }: RoundFilesProps) {
 	const hasFiles = documents.length > 0 || attachments.length > 0;
 	// Văn bản có chữ ký để xem: bản PDF riêng, hoặc chính tệp gốc nếu đã là PDF
 	const pdfFiles = documents.map(item => item.current ?? item.original).filter(file => extOf(file.filename) === "pdf");
+	// Chỉ hiện cột "Bản ký số" khi quy trình có bước bắt buộc ký (hoặc văn bản đã có bản ký / bản chuyển đổi từ trước)
+	const signing = !editing && (
+		!!detail.definition?.nodes.some(node => "options" in node && node.options.requireSignature)
+		|| documents.some(item => item.current || item.signatureCount > 0 || item.convertStatus)
+	);
 
 	const downloadAll = async (kind: RequestArchiveKind) => {
 		setArchiving(true);
@@ -132,7 +150,7 @@ export function RoundFiles({ detail, ...actions }: RoundFilesProps) {
 
 	const toolbar = hasFiles && (
 		<div className="flex flex-wrap items-center gap-1">
-			{editing
+			{!signing
 				? (
 					<Button type="text" size="small" icon={<DownloadOutlined />} loading={archiving} onClick={() => downloadAll("original")}>
 						{t("approval.files.downloadAll")}
@@ -146,7 +164,7 @@ export function RoundFiles({ detail, ...actions }: RoundFilesProps) {
 						</Button>
 					</Dropdown>
 				)}
-			{!editing && pdfFiles.length > 0 && (
+			{signing && pdfFiles.length > 0 && (
 				<Button type="text" size="small" icon={<SafetyCertificateOutlined />} onClick={() => setStatusFiles(pdfFiles)}>
 					{t("approval.files.signingStatus")}
 				</Button>
@@ -168,11 +186,11 @@ export function RoundFiles({ detail, ...actions }: RoundFilesProps) {
 					</span>
 				)}
 				extra={toolbar}
-				bodyClassName={documents.length ? (editing ? "px-2 py-2" : "p-0") : undefined}
+				bodyClassName={documents.length ? (signing ? "p-0" : "px-2 py-2") : undefined}
 			>
 				{!documents.length && <Text type="secondary">{t("common.noData")}</Text>}
-				{documents.length > 0 && editing && <FileList files={sources} {...actions} />}
-				{documents.length > 0 && !editing && (
+				{documents.length > 0 && !signing && <FileList files={sources} {...actions} />}
+				{documents.length > 0 && signing && (
 					<div className="flex flex-col">
 						<div className="grid grid-cols-2 gap-x-6 px-5 py-2.5 text-[13px] font-semibold max-sm:hidden" style={{ ...rowBorder, color: token.colorTextSecondary }}>
 							<span>{t("approval.files.originalColumn")}</span>
