@@ -192,6 +192,7 @@
 	},
 	"fileViewer": {
 		"download": "Download",
+		"opening": "Opening file…",
 		"toggleThumbnails": "Show/hide page list",
 		"prevPage": "Previous page",
 		"nextPage": "Next page",

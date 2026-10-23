@@ -3,7 +3,7 @@ import type { PdfPageOverlayInfo } from "./pdf/pdf-view";
 import { FileViewKind, fileViewService, FileViewUnavailableReason } from "#src/api/file-view";
 import { formatBytes } from "#src/utils/format-bytes";
 import { DownloadOutlined } from "@ant-design/icons";
-import { Alert, Button, Modal, Spin, theme } from "antd";
+import { Alert, App, Button, Modal, Spin, theme } from "antd";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ViewFallback } from "./view-fallback";
@@ -87,31 +87,13 @@ function OfficeView({ descriptor }: { descriptor: FileViewDescriptor }) {
 
 interface FileViewBodyProps {
 	target: FileViewTarget
-	onLoaded: (descriptor: FileViewDescriptor) => void
+	/** Cách xem đã hỏi backend trước khi mở cửa sổ; không có = lỗi */
+	descriptor?: FileViewDescriptor
 	onDownload: () => Promise<void>
 }
 
-function FileViewBody({ target, onLoaded, onDownload }: FileViewBodyProps) {
+function FileViewBody({ target, descriptor, onDownload }: FileViewBodyProps) {
 	const { t } = useTranslation();
-	const [descriptor, setDescriptor] = useState<FileViewDescriptor>();
-	const [error, setError] = useState(false);
-
-	useEffect(() => {
-		let cancelled = false;
-		fileViewService.fetchView(target.contextType, target.fileId)
-			.then((result) => {
-				if (cancelled)
-					return;
-				setDescriptor(result);
-				onLoaded(result);
-			})
-			.catch(() => !cancelled && setError(true));
-		return () => {
-			cancelled = true;
-		};
-		// Mỗi tệp tải một lần (component được key theo tệp)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [target]);
 
 	const streamUrl = descriptor?.streamPath ? fileViewService.buildStreamUrl(target.contextType, descriptor.streamPath) : undefined;
 	// Chặn menu chuột phải (lưu ảnh / video) — chỉ là rào cản giao diện, không thay thế quyền truy cập ở backend
@@ -122,10 +104,8 @@ function FileViewBody({ target, onLoaded, onDownload }: FileViewBodyProps) {
 		return fileViewService.buildStreamUrl(target.contextType, next.streamPath!);
 	};
 
-	if (error)
-		return <ViewFallback description={t("approval.files.viewError")} onDownload={onDownload} />;
 	if (!descriptor)
-		return <div className="flex h-full items-center justify-center"><Spin /></div>;
+		return <ViewFallback description={t("approval.files.viewError")} onDownload={onDownload} />;
 	if (descriptor.kind === FileViewKind.Office)
 		return <OfficeView descriptor={descriptor} />;
 	if (descriptor.kind === FileViewKind.Pdf && streamUrl) {
@@ -155,10 +135,6 @@ function FileViewBody({ target, onLoaded, onDownload }: FileViewBodyProps) {
 				<audio src={streamUrl} controls controlsList="nodownload noremoteplayback" onContextMenu={blockMenu} />
 			</div>
 		);
-	}
-	if (descriptor.reason === FileViewUnavailableReason.TooLarge) {
-		const description = t("approval.files.viewTooLarge", { max: formatBytes(descriptor.maxPreviewSize ?? 0) });
-		return <ViewFallback description={description} onDownload={onDownload} />;
 	}
 	return <ViewFallback description={t("approval.files.viewUnsupported")} onDownload={onDownload} />;
 }
@@ -241,10 +217,55 @@ function FileBadge({ filename }: { filename: string }) {
 export function FileViewer({ target, onClose }: FileViewerProps) {
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
-	const [loaded, setLoaded] = useState<FileViewDescriptor>();
+	const { message, modal } = App.useApp();
+	// Kết quả hỏi cách xem của tệp đã chọn; descriptor không có = lỗi (vẫn mở cửa sổ để báo lỗi kèm nút tải)
+	const [loaded, setLoaded] = useState<{ fileId: string, descriptor?: FileViewDescriptor }>();
 	const [downloading, setDownloading] = useState(false);
-	// Thông tin của tệp đang mở (bỏ qua kết quả của tệp mở trước đó)
-	const descriptor = loaded?.fileId === target?.fileId ? loaded : undefined;
+	// Kết quả của tệp đang chọn (bỏ qua kết quả của tệp chọn trước đó)
+	const current = loaded?.fileId === target?.fileId ? loaded : undefined;
+	const descriptor = current?.descriptor;
+
+	// Hỏi backend cách xem trước khi mở cửa sổ: tệp quá lớn thì chỉ cảnh báo kèm nút tải, không mở cửa sổ xem
+	useEffect(() => {
+		if (!target)
+			return;
+		let cancelled = false;
+		const loadingKey = `file-view-${target.fileId}`;
+		// Chỉ báo "đang mở" khi phản hồi chậm, phản hồi nhanh thì không nháy thông báo
+		const loadingTimer = setTimeout(() => {
+			message.open({ key: loadingKey, type: "loading", content: t("common.fileViewer.opening"), duration: 0 });
+		}, 300);
+		const stopLoading = () => {
+			clearTimeout(loadingTimer);
+			message.destroy(loadingKey);
+		};
+		fileViewService.fetchView(target.contextType, target.fileId)
+			.then((result) => {
+				if (cancelled)
+					return;
+				if (result.reason !== FileViewUnavailableReason.TooLarge) {
+					setLoaded({ fileId: target.fileId, descriptor: result });
+					return;
+				}
+				onClose();
+				modal.confirm({
+					title: t("approval.files.viewTooLargeTitle"),
+					content: t("approval.files.viewTooLarge", { size: formatBytes(result.size), max: formatBytes(result.maxPreviewSize ?? 0) }),
+					okText: t("common.fileViewer.download"),
+					okButtonProps: { icon: <DownloadOutlined /> },
+					// Chờ xin link xong mới đóng hộp: nút OK hiện loading
+					onOk: () => fileViewService.download(target.contextType, target.fileId),
+				});
+			})
+			.catch(() => !cancelled && setLoaded({ fileId: target.fileId }))
+			.finally(stopLoading);
+		return () => {
+			cancelled = true;
+			stopLoading();
+		};
+		// Mỗi lần chọn tệp hỏi một lần; onClose của nơi gọi thường là hàm mới mỗi lần render
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [target]);
 
 	const download = async () => {
 		if (!target)
@@ -260,7 +281,8 @@ export function FileViewer({ target, onClose }: FileViewerProps) {
 
 	return (
 		<Modal
-			open={!!target}
+			// Chỉ mở khi đã biết cách xem (tệp quá lớn thì không mở, chỉ hiện hộp cảnh báo)
+			open={!!target && !!current}
 			title={target && (
 				// Chừa chỗ bên phải cho nút đóng của Modal
 				<div className="flex min-w-0 items-center gap-3 pr-10">
@@ -289,7 +311,7 @@ export function FileViewer({ target, onClose }: FileViewerProps) {
 			}}
 		>
 			{/* key theo tệp: mỗi lần mở tệp khác là một lượt tải mới, không phải reset state thủ công */}
-			{target && <FileViewBody key={target.fileId} target={target} onLoaded={setLoaded} onDownload={download} />}
+			{target && current && <FileViewBody key={target.fileId} target={target} descriptor={descriptor} onDownload={download} />}
 		</Modal>
 	);
 }

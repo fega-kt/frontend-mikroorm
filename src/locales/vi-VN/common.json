@@ -196,6 +196,7 @@
 	},
 	"fileViewer": {
 		"download": "Tải xuống",
+		"opening": "Đang mở tệp…",
 		"toggleThumbnails": "Ẩn/hiện danh sách trang",
 		"prevPage": "Trang trước",
 		"nextPage": "Trang sau",

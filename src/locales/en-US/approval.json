@@ -426,7 +426,8 @@
 	"files": {
 		"viewError": "Cannot open the file for viewing. Please try again later.",
 		"viewUnsupported": "This file type cannot be viewed in the system",
-		"viewTooLarge": "This file is too large to preview (max {{max}}). Please download it to view.",
+		"viewTooLargeTitle": "File too large to preview",
+		"viewTooLarge": "This file is {{size}}, which exceeds the {{max}} preview limit. Please download it to view.",
 		"view": "View",
 		"download": "Download",
 		"documents": "Request documents",
