@@ -298,14 +298,38 @@ function ChangeValue({ row, created }: { row: ChangeRow, created: boolean }) {
 	);
 }
 
+/** Khối thêm sau "Nội dung tờ trình" (vd tệp theo từng loại): có tiêu đề riêng như các khối của form */
+export interface HistorySection {
+	key: string
+	title: string
+	/** Phụ đề cạnh tiêu đề (vd "2 tệp") */
+	meta?: string
+	content: React.ReactNode
+}
+
+interface HistoryChangesProps {
+	changes: HistoryFieldChange[]
+	formSchema: FormField[]
+	created: boolean
+	sections?: HistorySection[]
+}
+
 /**
- * Các trường đổi của một dòng lịch sử: nhãn bên trái, giá trị bên phải.
- * Dòng "tạo": trường chung trước, rồi nhóm "Nội dung tờ trình" (eform) thu gọn được.
+ * Các thay đổi của một dòng lịch sử, chia khối như form tờ trình (lúc tạo và lúc cập nhật cùng một kiểu):
+ * "Thông tin chung" → "Nội dung tờ trình" (eform, thu gọn được) → các khối thêm (văn bản tờ trình, tài liệu đính kèm).
+ * Mỗi khối có tiêu đề; trong khối: nhãn trường bên trái, giá trị bên phải. Khối không có gì thì ẩn.
  */
-export function HistoryChanges({ changes, formSchema, created }: { changes: HistoryFieldChange[], formSchema: FormField[], created: boolean }) {
+export function HistoryChanges({ changes, formSchema, created, sections = [] }: HistoryChangesProps) {
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
-	const [contentOpen, setContentOpen] = useState(true);
+	// Khối đang thu gọn (mặc định mở hết); mỗi dòng lịch sử giữ trạng thái riêng
+	const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set());
+	const toggle = (key: string) => setCollapsed((prev) => {
+		const next = new Set(prev);
+		if (!next.delete(key))
+			next.add(key);
+		return next;
+	});
 	const rows = changes.map(change => resolveChange(change, formSchema, t));
 	// Trường eform theo thứ tự cấu hình của loại tờ trình
 	const order = new Map(formSchema.map((field, index) => [`payload.${field.key}`, index]));
@@ -321,19 +345,31 @@ export function HistoryChanges({ changes, formSchema, created }: { changes: Hist
 			</div>
 		</div>
 	));
+	/** Một khối: tiêu đề chữ in hoa trên nền xám (như các khối của form) + nút thu gọn; thu gọn thì chỉ còn tiêu đề */
+	const block = (key: string, title: string, first: boolean, body: React.ReactNode, meta?: string) => {
+		const open = !collapsed.has(key);
+		return (
+			<div key={key} style={{ borderTop: first ? undefined : border }}>
+				<div className="flex items-center gap-1.5 px-3.5 py-1" style={{ borderBottom: open ? border : undefined, background: token.colorFillTertiary }}>
+					<span className="text-xs font-semibold uppercase" style={{ color: token.colorTextSecondary }}>{title}</span>
+					{meta && <span className="text-xs" style={{ color: token.colorTextSecondary }}>{`· ${meta}`}</span>}
+					<Button type="link" size="small" className="!ml-auto !h-7 !px-1 !text-xs" aria-expanded={open} onClick={() => toggle(key)}>
+						{open ? t("approval.history.changes.showLess") : t("approval.history.changes.expand")}
+					</Button>
+				</div>
+				{open && body}
+			</div>
+		);
+	};
+	const blocks = [
+		general.length > 0 && { key: "general", title: t("approval.form.general"), body: renderRows(general) },
+		content.length > 0 && { key: "content", title: t("approval.history.changes.content"), body: renderRows(content) },
+		...sections.map(section => ({ key: section.key, title: section.title, meta: section.meta, body: <div className="px-3.5 py-2.5">{section.content}</div> })),
+	].filter(Boolean) as { key: string, title: string, meta?: string, body: React.ReactNode }[];
 
 	return (
 		<div className="overflow-hidden rounded-[10px]" style={{ border }}>
-			{renderRows(general)}
-			{created && content.length > 0 && (
-				<div className="flex items-center justify-between px-3.5 py-1.5" style={{ borderTop: general.length ? border : undefined, background: token.colorFillTertiary }}>
-					<span className="text-xs font-semibold uppercase" style={{ color: token.colorTextSecondary }}>{t("approval.history.changes.content")}</span>
-					<Button type="link" size="small" className="!h-auto !p-0 !text-xs" aria-expanded={contentOpen} onClick={() => setContentOpen(!contentOpen)}>
-						{contentOpen ? t("approval.history.changes.showLess") : t("approval.history.changes.showMore")}
-					</Button>
-				</div>
-			)}
-			{(!created || contentOpen) && content.length > 0 && <div style={{ borderTop: general.length || created ? border : undefined }}>{renderRows(content)}</div>}
+			{blocks.map((item, index) => block(item.key, item.title, index === 0, item.body, item.meta))}
 		</div>
 	);
 }

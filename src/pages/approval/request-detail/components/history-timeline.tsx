@@ -1,5 +1,6 @@
 import type { ApprovalHistoryItem, ApprovalRequestDetail, HistoryFieldChange, HistoryFileItem, HistoryFileVersion } from "#src/api/approval-request";
 import type { FormField } from "#src/api/setting/request-type/types";
+import type { HistorySection } from "./history-changes";
 import type { TimelineNodeStyle } from "./timeline-row";
 import { ApprovalHistoryAction } from "#src/api/approval-request/types";
 import { PeoplePicker } from "#src/components/people-picker";
@@ -79,6 +80,8 @@ const EDIT_ACTIONS = [ApprovalHistoryAction.Create, ApprovalHistoryAction.Update
 const FILE_ACTIONS = [ApprovalHistoryAction.FileAdd, ApprovalHistoryAction.FileRemove, ApprovalHistoryAction.FileConvert];
 /** Dòng có data.files dạng bản trước → bản mới */
 const VERSION_ACTIONS = [ApprovalHistoryAction.FileConvert, ApprovalHistoryAction.Sign];
+/** Thứ tự nhóm tệp trong một dòng lịch sử */
+const FILE_BLOCKS: HistoryFileItem["block"][] = ["documents", "attachments"];
 /** Dòng mở một vòng duyệt mới */
 const ROUND_ACTIONS = [ApprovalHistoryAction.Submit, ApprovalHistoryAction.Resubmit];
 
@@ -214,6 +217,29 @@ export function HistoryTimeline({ histories, userNames, formSchema, request, onV
 			<span className="whitespace-nowrap rounded px-2 text-xs leading-5" style={{ color, background }}>{text}</span>
 		);
 		const view = (file: { id: string, filename: string }) => () => onViewFile?.(file);
+		// Tệp nhóm theo loại thành khối riêng (văn bản tờ trình / tài liệu đính kèm) như các khối của form
+		const removed = item.action === ApprovalHistoryAction.FileRemove;
+		const fileSections: HistorySection[] = FILE_BLOCKS
+			.map(block => ({ block, items: files.filter(file => file.block === block) }))
+			.filter(group => group.items.length > 0)
+			.map(group => ({
+				key: `files.${group.block}`,
+				title: t(`approval.files.${group.block}`),
+				meta: t("approval.files.count", { count: group.items.length }),
+				content: (
+					<div className="flex flex-col gap-2">
+						{group.items.map(file => (
+							<FileCard
+								key={file.id}
+								filename={file.filename}
+								removed={removed}
+								subtitle={removed ? t("approval.history.fileRemoved") : undefined}
+								actions={onViewFile && !removed ? [{ label: t("approval.files.view"), onClick: view(file) }] : []}
+							/>
+						))}
+					</div>
+				),
+			}));
 
 		return (
 			<TimelineRow key={item.id} time={dayjs(item.createdAt).format("HH:mm")} node={{ icon: style.icon, ...toneStyle(style.tone) }} last={last}>
@@ -250,18 +276,9 @@ export function HistoryTimeline({ histories, userNames, formSchema, request, onV
 				)}
 				{/* Dòng chia sẻ / thu hồi: data.principals = các principal nhận */}
 				{sharedWith.length > 0 && <div className="flex flex-wrap gap-1.5">{sharedWith.map(principal => chip(principal.name))}</div>}
-				{changes.length > 0 && <HistoryChanges changes={changes} formSchema={formSchema} created={item.action === ApprovalHistoryAction.Create} />}
-				{files.map(file => (
-					<FileCard
-						key={file.id}
-						filename={file.filename}
-						removed={item.action === ApprovalHistoryAction.FileRemove}
-						subtitle={item.action === ApprovalHistoryAction.FileRemove
-							? `${t(`approval.files.${file.block}`)} · ${t("approval.history.fileRemoved")}`
-							: t(`approval.files.${file.block}`)}
-						actions={onViewFile && item.action !== ApprovalHistoryAction.FileRemove ? [{ label: t("approval.files.view"), onClick: view(file) }] : []}
-					/>
-				))}
+				{(changes.length > 0 || fileSections.length > 0) && (
+					<HistoryChanges changes={changes} formSchema={formSchema} created={item.action === ApprovalHistoryAction.Create} sections={fileSections} />
+				)}
 				{versions.map(version => (item.action === ApprovalHistoryAction.FileConvert
 					// Chuyển PDF: tên gốc → tên PDF
 					? (
