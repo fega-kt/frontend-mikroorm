@@ -62,8 +62,11 @@ export interface FileDownloadLink {
 	expiresAt: string
 }
 
-/** Thời gian chờ chuyển sang PDF: bằng giới hạn phía backend gọi Document Converter (120 giây) cộng thời gian tải lên R2 */
-const PDF_CONVERT_TIMEOUT_MS = 150_000;
+/**
+ * Thời gian chờ request có chuyển sang PDF (tải PDF, chuẩn bị ký): backend chờ FileConverter 2 phút + 3 giây mỗi MB
+ * (tệp 200 MB ≈ 12 phút), cộng thêm thời gian ghi PDF lên R2
+ */
+export const PDF_CONVERT_TIMEOUT_MS = 13 * 60_000;
 
 class FileViewApi extends CrudServiceBase<never> {
 	constructor(service: ApiService) {

@@ -77,7 +77,8 @@ export function AttachmentConfigTab({ value, onChange, readOnly }: AttachmentCon
 						<InputNumber
 							className="w-full"
 							min={1}
-							max={100}
+							// = trần upload của backend (MAX_PRIVATE_UPLOAD_SIZE)
+							max={200}
 							addonAfter="MB"
 							disabled={disabled}
 							value={config.maxSizeMb}
