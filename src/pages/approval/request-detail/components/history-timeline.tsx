@@ -32,7 +32,7 @@ import { Button, Empty, Segmented, theme, Typography } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { historyActor, historyLabel } from "../../lib/history";
+import { displayComment, historyActor, historyLabel } from "../../lib/history";
 import { HistoryChanges } from "./history-changes";
 import { HistoryStatusCard } from "./history-status-card";
 import { TimelineRow } from "./timeline-row";
@@ -300,8 +300,8 @@ export function HistoryTimeline({ histories, userNames, formSchema, request, onV
 						/>
 					)))}
 				{item.comment && (
-					<blockquote className="m-0 whitespace-pre-wrap rounded-lg rounded-tl-none px-3.5 py-2 text-[13px] leading-5" style={{ background: commentBg }}>
-						{item.comment}
+					<blockquote className="m-0 whitespace-pre-wrap rounded-lg px-3.5 py-2 text-[13px] leading-5" style={{ background: commentBg }}>
+						{displayComment(item.comment, t, !item.actor)}
 					</blockquote>
 				)}
 			</TimelineRow>

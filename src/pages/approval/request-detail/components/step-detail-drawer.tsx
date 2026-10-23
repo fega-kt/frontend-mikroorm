@@ -7,7 +7,7 @@ import { useWorkflowApproverProfiles, useWorkflowUserNames } from "#src/componen
 import { Drawer, Tag, Timeline, Typography } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
-import { historyActor, historyLabel } from "../../lib/history";
+import { displayComment, historyActor, historyLabel } from "../../lib/history";
 import { DATE_TIME_FORMAT } from "../../lib/payload";
 import { groupSteps } from "../../lib/rounds";
 import { nodeTitle } from "../../workflow-designer/canvas/labels";
@@ -85,7 +85,7 @@ export function StepDetailDrawer({ nodeId, round, definition, userNames, fields,
 											{(userName(item.data?.from) || userName(item.data?.to)) && (
 												<Text className="text-xs">{[userName(item.data?.from), userName(item.data?.to)].filter(Boolean).join(" → ")}</Text>
 											)}
-											{item.comment && <Text className="whitespace-pre-wrap text-[13px]">{item.comment}</Text>}
+											{item.comment && <Text className="whitespace-pre-wrap text-[13px]">{displayComment(item.comment, t, !item.actor)}</Text>}
 										</div>
 									),
 								}))}

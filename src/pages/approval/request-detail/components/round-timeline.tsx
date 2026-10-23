@@ -16,6 +16,7 @@ import { Button, Tag, theme, Timeline, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import { RequestStatusTag, TaskStatusTag } from "../../components/status-tag";
+import { displayComment } from "../../lib/history";
 import { DATE_TIME_FORMAT } from "../../lib/payload";
 import { orderNodes } from "../../lib/progress";
 import { groupSteps } from "../../lib/rounds";
@@ -167,7 +168,7 @@ export function StepEntries({ group, node, names, profiles = {}, canReassign, on
 								))}
 							</span>
 						)}
-						{task.comment && <Comment>{task.comment}</Comment>}
+						{task.comment && <Comment>{displayComment(task.comment, t, !task.actedBy)}</Comment>}
 					</PersonRow>
 				</EntryCard>
 			);
@@ -327,7 +328,7 @@ export function RoundTimeline({ round, totalRounds, definition, userNames, canRe
 								<span style={{ color: endColor }}>{t(`approval.detail.roundEnd.${round.outcome}`)}</span>
 								{` ${formatTime(end.createdAt)}`}
 							</Text>
-							{end.comment && <Comment>{end.comment}</Comment>}
+							{end.comment && <Comment>{displayComment(end.comment, t, !end.actor)}</Comment>}
 						</PersonRow>
 					</div>
 				),

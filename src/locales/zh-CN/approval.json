@@ -57,6 +57,10 @@
 		"fileRemoved": "已移除",
 		"signedVersion": "签名后的版本",
 		"viewPrevious": "查看上一版",
+		"systemComment": {
+			"overdueReject": "因超过处理期限被拒绝",
+			"overdueApprove": "因超过处理期限自动通过"
+		},
 		"changes": {
 			"fields": "{{count}} 个字段",
 			"content": "申请内容",
@@ -97,7 +101,7 @@
 			"span": "提交 {{from}} → 结束 {{to}}",
 			"rejected": "申请已被拒绝",
 			"autoRejected": "申请因超期未处理被拒绝",
-			"autoRejectedHint": "系统按步骤设置自动拒绝：超过截止时间仍无人处理。",
+			"autoRejectedHint": "系统因超过处理期限自动拒绝。",
 			"cancelled": "申请已取消",
 			"days": "{{count}} 天",
 			"hours": "{{count}} 小时",
