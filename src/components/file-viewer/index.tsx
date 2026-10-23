@@ -1,6 +1,6 @@
 import type { FileContextType, FileViewDescriptor } from "#src/api/file-view";
 import type { PdfPageOverlayInfo } from "./pdf/pdf-view";
-import { FileViewKind, fileViewService } from "#src/api/file-view";
+import { FileViewKind, fileViewService, FileViewUnavailableReason } from "#src/api/file-view";
 import { formatBytes } from "#src/utils/format-bytes";
 import { DownloadOutlined } from "@ant-design/icons";
 import { Alert, Button, Modal, Spin, theme } from "antd";
@@ -155,6 +155,10 @@ function FileViewBody({ target, onLoaded, onDownload }: FileViewBodyProps) {
 				<audio src={streamUrl} controls controlsList="nodownload noremoteplayback" onContextMenu={blockMenu} />
 			</div>
 		);
+	}
+	if (descriptor.reason === FileViewUnavailableReason.TooLarge) {
+		const description = t("approval.files.viewTooLarge", { max: formatBytes(descriptor.maxPreviewSize ?? 0) });
+		return <ViewFallback description={description} onDownload={onDownload} />;
 	}
 	return <ViewFallback description={t("approval.files.viewUnsupported")} onDownload={onDownload} />;
 }

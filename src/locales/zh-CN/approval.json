@@ -426,6 +426,7 @@
 	"files": {
 		"viewError": "无法打开文件预览，请稍后重试。",
 		"viewUnsupported": "系统不支持预览此类型的文件",
+		"viewTooLarge": "文件过大，不支持预览（最大 {{max}}）。请下载后查看。",
 		"view": "查看",
 		"download": "下载",
 		"documents": "申请正文",
