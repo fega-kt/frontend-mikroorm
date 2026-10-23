@@ -8,7 +8,18 @@ export const isEmptyCell = (value: unknown) => value === undefined || value === 
 export const asTableRows = (value: unknown): TableRow[] => (Array.isArray(value) ? (value as TableRow[]) : []);
 
 /**
- * Dòng gửi lên API: chỉ giữ các cột có trong cấu hình, bỏ ô trống và bỏ dòng không nhập gì.
+ * Mã riêng của dòng: sinh khi thêm dòng, giữ nguyên khi sửa — lịch sử so hai lần lưu theo mã này để phân biệt sửa / thêm / xoá.
+ * Mã cột luôn bắt đầu bằng chữ cái nên không trùng khóa này.
+ */
+export const TABLE_ROW_ID = "_id";
+
+export const newTableRowId = () => crypto.randomUUID();
+
+/** Mã của dòng (mọi dòng đều có: dòng mới sinh lúc thêm, dữ liệu cũ đã được migrate) */
+export const tableRowId = (row: TableRow) => row[TABLE_ROW_ID] as string;
+
+/**
+ * Dòng gửi lên API: chỉ giữ mã dòng và các cột có trong cấu hình, bỏ ô trống và bỏ dòng không nhập gì.
  * Backend vẫn kiểm lại từng ô theo cột.
  */
 export function cleanTableRows(field: FormField, value: unknown): TableRow[] {
@@ -24,13 +35,14 @@ export function cleanTableRows(field: FormField, value: unknown): TableRow[] {
 				if (!isEmptyCell(cell))
 					cleaned[column.key] = typeof cell === "string" ? cell.trim() : cell;
 			}
-			return cleaned;
+			return { row, cleaned };
 		})
-		.filter(row => Object.keys(row).length > 0);
+		.filter(({ cleaned }) => Object.keys(cleaned).length > 0)
+		.map(({ row, cleaned }) => ({ [TABLE_ROW_ID]: tableRowId(row), ...cleaned }));
 }
 
 /** Một dòng mới: chưa có giá trị ô nào */
-export const emptyTableRow = (): TableRow => ({});
+export const emptyTableRow = (): TableRow => ({ [TABLE_ROW_ID]: newTableRowId() });
 
 /** Số dòng tối thiểu: cấu hình riêng, không thì bắt buộc là 1 dòng */
 export const tableMinRows = (field: FormField) => field.minRows ?? (field.required ? 1 : 0);
