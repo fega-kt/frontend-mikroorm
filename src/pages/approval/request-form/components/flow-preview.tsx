@@ -1,4 +1,5 @@
 import type { PreviewFlowResult } from "#src/api/approval-request";
+import { PrincipalPicker } from "#src/components/principal-picker";
 import { CheckOutlined, SendOutlined } from "@ant-design/icons";
 import { Alert, Skeleton, theme, Typography } from "antd";
 import { useTranslation } from "react-i18next";
@@ -66,7 +67,17 @@ export function FlowPreview({ preview, loading, empty }: FlowPreviewProps) {
 									</span>
 								)}
 								{!step.skipped && step.approvers.length > 0 && (
-									<Text className="text-[13px]" style={{ color: token.colorTextSecondary }}>{step.approvers.map(a => a.fullName).join(", ")}</Text>
+									<div className="flex flex-wrap gap-x-3 gap-y-1">
+										{step.approvers.map(approver => (
+											<PrincipalPicker
+												key={approver.id}
+												readonly
+												size="small"
+												principal={approver}
+												className="!min-h-0"
+											/>
+										))}
+									</div>
 								)}
 								{blocked && <Text type="danger" className="text-xs">{t("approval.flow.noApprover")}</Text>}
 							</div>
