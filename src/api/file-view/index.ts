@@ -82,6 +82,11 @@ class FileViewApi extends CrudServiceBase<never> {
 		});
 	}
 
+	/** Xem dạng PDF: Word / Excel / PowerPoint được chuyển tạm sang PDF (lần đầu mất vài chục giây nên chờ lâu hơn mặc định) */
+	fetchPdfView(fileId: string) {
+		return this.get<FileViewDescriptor>(`${fileId}/view-pdf`, { ignoreLoading: true, retry: 0, timeout: PDF_CONVERT_TIMEOUT_MS });
+	}
+
 	fetchDownloadUrl(fileId: string) {
 		return this.get<FileDownloadLink>(`${fileId}/download`, { ignoreLoading: true, retry: 0 });
 	}
@@ -109,6 +114,11 @@ export const fileViewService = {
 	 */
 	fetchView(contextType: FileContextType, fileId: string) {
 		return clients[CONTEXT_SERVICE[contextType]].fetchView(fileId);
+	},
+
+	/** Cách xem dạng PDF (tệp Office được chuyển tạm sang PDF) — để đặt vị trí ký trên văn bản Word / Excel / PowerPoint */
+	fetchPdfView(contextType: FileContextType, fileId: string) {
+		return clients[CONTEXT_SERVICE[contextType]].fetchPdfView(fileId);
 	},
 
 	/** Link tải tệp (cùng quyền với xem tệp) */

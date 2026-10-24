@@ -53,6 +53,8 @@ export interface SigningDocument {
 	size?: number
 	/** Vị trí tự xếp (chân trang cuối, không đè chữ ký có sẵn) */
 	auto?: SignaturePlacement
+	/** Khung người trình đặt sẵn cho bước này (null = tự xếp); locked thì người duyệt không được dời */
+	preset?: { placement: SignaturePlacement, locked: boolean } | null
 	/** Kích thước từng trang + khung chữ ký đã có [llx, lly, urx, ury] */
 	pages?: { page: number, width: number, height: number, signatures: number[][] }[]
 }

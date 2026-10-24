@@ -28,11 +28,15 @@ interface SignApproveModalProps {
 	onChanged: () => void
 }
 
-interface SignatureBoxProps {
+export interface SignatureBoxProps {
 	placement: SignaturePlacement
 	info: PdfPageOverlayInfo
-	signatureImage: string | null
-	lines: string[]
+	signatureImage?: string | null
+	lines?: string[]
+	/** Nội dung thay cho khung chữ ký mẫu (màn đặt vị trí ký của người trình) */
+	content?: React.ReactNode
+	/** Người trình đã khóa khung: không kéo / phóng được */
+	locked?: boolean
 	onMove: (placement: SignaturePlacement) => void
 }
 
@@ -43,7 +47,7 @@ const SIGNATURE_RATIO = SIGNATURE_WIDTH / SIGNATURE_HEIGHT;
  * dưới phải để phóng to / thu nhỏ (giữ tỉ lệ, góc trên trái đứng yên, trong khoảng min–max và trong trang).
  * Bên trong là khung đúng như bản ký; viền xanh bao ngoài và tay nắm chỉ để thao tác, không có trong bản ký.
  */
-function SignatureBox({ placement, info, signatureImage, lines, onMove }: SignatureBoxProps) {
+export function SignatureBox({ placement, info, signatureImage = null, lines = [], content, locked, onMove }: SignatureBoxProps) {
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
 	const { scale, size } = info;
@@ -52,6 +56,8 @@ function SignatureBox({ placement, info, signatureImage, lines, onMove }: Signat
 
 	const startDrag = (dragMode: "move" | "resize") => (event: React.PointerEvent<HTMLElement>) => {
 		event.stopPropagation();
+		if (locked)
+			return;
 		event.currentTarget.setPointerCapture(event.pointerId);
 		drag.current = { x: event.clientX, y: event.clientY, start: placement, mode: dragMode };
 		setMode(dragMode);
@@ -88,7 +94,7 @@ function SignatureBox({ placement, info, signatureImage, lines, onMove }: Signat
 		<div
 			role="button"
 			aria-label="signature"
-			className="absolute cursor-move touch-none select-none"
+			className={`absolute touch-none select-none ${locked ? "cursor-default" : "cursor-move"}`}
 			style={{
 				left: placement.x * scale,
 				top: (size.height - placement.y - placement.height) * scale,
@@ -105,7 +111,7 @@ function SignatureBox({ placement, info, signatureImage, lines, onMove }: Signat
 			onPointerUp={onPointerUp}
 			onPointerCancel={onPointerUp}
 		>
-			<SignatureAppearance width={placement.width} height={placement.height} scale={scale} lines={lines} signatureImage={signatureImage} />
+			{content ?? <SignatureAppearance width={placement.width} height={placement.height} scale={scale} lines={lines} signatureImage={signatureImage} />}
 			{mode === "move" && (
 				<span
 					className="pointer-events-none absolute flex size-6 items-center justify-center rounded-full text-white"
@@ -115,16 +121,18 @@ function SignatureBox({ placement, info, signatureImage, lines, onMove }: Signat
 				</span>
 			)}
 			{/* Tay nắm phóng to / thu nhỏ: vùng bấm 20px, ô vuông hiện ra 10px */}
-			<span
-				aria-label={t("approval.sign.resize")}
-				title={t("approval.sign.resize")}
-				className="absolute flex size-5 cursor-nwse-resize touch-none items-center justify-center"
-				style={{ right: -13, bottom: -13 }}
-				// Di chuyển / thả nổi bọt lên khung (đã có handler)
-				onPointerDown={startDrag("resize")}
-			>
-				<span className="block size-2.5 rounded-sm" style={{ background: token.colorBgContainer, border: `1.5px solid ${token.colorPrimary}` }} />
-			</span>
+			{!locked && (
+				<span
+					aria-label={t("approval.sign.resize")}
+					title={t("approval.sign.resize")}
+					className="absolute flex size-5 cursor-nwse-resize touch-none items-center justify-center"
+					style={{ right: -13, bottom: -13 }}
+					// Di chuyển / thả nổi bọt lên khung (đã có handler)
+					onPointerDown={startDrag("resize")}
+				>
+					<span className="block size-2.5 rounded-sm" style={{ background: token.colorBgContainer, border: `1.5px solid ${token.colorPrimary}` }} />
+				</span>
+			)}
 		</div>
 	);
 }
@@ -168,11 +176,13 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 				setPrep(result);
 				// Ảnh đã được service ký số cắt sát nét, đúng như ảnh sẽ đóng vào khung khi ký
 				setSignatureImage(mine?.signatureImage ?? null);
-				const signable = result.documents.filter(doc => doc.signable && doc.auto);
-				setPlacements(Object.fromEntries(signable.map(doc => [doc.id, doc.auto!])));
+				// Khung người trình đặt sẵn cho bước này được ưu tiên hơn vị trí tự xếp
+				const signable = result.documents.filter(doc => doc.signable && (doc.preset || doc.auto));
+				setPlacements(Object.fromEntries(signable.map(doc => [doc.id, (doc.preset?.placement ?? doc.auto)!])));
 				setSelectedId(signable[0]?.id);
-				if (signable[0]?.auto)
-					setFocus({ page: signable[0].auto.page });
+				const first = signable[0] && (signable[0].preset?.placement ?? signable[0].auto);
+				if (first)
+					setFocus({ page: first.page });
 				// Văn bản Word/Excel vừa được chuyển sang PDF → chi tiết tờ trình cũng đổi
 				onChanged();
 			})
@@ -239,7 +249,7 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 		const existing = doc.pages?.find(page => page.page === info.pageNumber)?.signatures ?? [];
 		// Nhấp vào chỗ trống trên trang: đưa khung chữ ký tới đó (căn giữa theo điểm nhấp)
 		const placeAt = (event: React.MouseEvent<HTMLDivElement>) => {
-			if (!placement)
+			if (!placement || doc.preset?.locked)
 				return;
 			const rect = event.currentTarget.getBoundingClientRect();
 			const x = (event.clientX - rect.left) / info.scale - placement.width / 2;
@@ -255,7 +265,7 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 			}));
 		};
 		return (
-			<div className="absolute inset-0 cursor-copy" onClick={placeAt}>
+			<div className={`absolute inset-0 ${doc.preset?.locked ? "" : "cursor-copy"}`} onClick={placeAt}>
 				{existing.map(([llx, lly, urx, ury]) => (
 					<div
 						key={`${llx}-${lly}`}
@@ -278,6 +288,7 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 						info={info}
 						signatureImage={signatureImage}
 						lines={previewLines}
+						locked={doc.preset?.locked}
 						onMove={next => setPlacements(prev => ({ ...prev, [doc.id]: next }))}
 					/>
 				)}
@@ -335,20 +346,23 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 
 			{selected && (
 				<div className="flex flex-col gap-1.5 text-xs" style={{ color: token.colorTextSecondary }}>
-					<span>{t("approval.sign.placementHint")}</span>
-					<Button
-						size="small"
-						icon={<AimOutlined />}
-						className="self-start"
-						onClick={() => {
-							if (!selected.auto)
-								return;
-							setPlacements(prev => ({ ...prev, [selected.id]: selected.auto! }));
-							setFocus({ page: selected.auto.page });
-						}}
-					>
-						{t("approval.sign.resetPlacement")}
-					</Button>
+					<span>{selected.preset?.locked ? t("approval.sign.lockedHint") : selected.preset ? t("approval.sign.presetHint") : t("approval.sign.placementHint")}</span>
+					{!selected.preset?.locked && (
+						<Button
+							size="small"
+							icon={<AimOutlined />}
+							className="self-start"
+							onClick={() => {
+								const reset = selected.preset?.placement ?? selected.auto;
+								if (!reset)
+									return;
+								setPlacements(prev => ({ ...prev, [selected.id]: reset }));
+								setFocus({ page: reset.page });
+							}}
+						>
+							{t("approval.sign.resetPlacement")}
+						</Button>
+					)}
 				</div>
 			)}
 
