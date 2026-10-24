@@ -1,6 +1,7 @@
 import type { EntityBase } from "#src/api/entity-base";
 import type { SearchParamsBase } from "#src/api/service-base";
 import type { FormField } from "#src/api/setting/request-type";
+import type { PrincipalType } from "#src/api/system/principal";
 import type { WorkflowDefinition } from "./definition";
 
 export * from "./definition";
@@ -107,7 +108,7 @@ export interface SimulateStep {
 	nodeId: string
 	name?: string
 	type: string
-	approvers: { id: string, fullName: string }[]
+	approvers: { id: string, name: string, type: PrincipalType, user?: { id: string, fullName: string, avatar?: string } }[]
 	skipped?: boolean
 	error?: string
 }

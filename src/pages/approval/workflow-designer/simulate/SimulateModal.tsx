@@ -162,7 +162,7 @@ export function SimulateModal({ open, onClose, workflowId, fields, getDefinition
 											</div>
 											{step.approvers.length > 0 && (
 												<Typography.Text type="secondary" className="text-xs">
-													{step.approvers.map(a => a.fullName).join(", ")}
+													{step.approvers.map(a => a.name).join(", ")}
 												</Typography.Text>
 											)}
 											{step.error && (

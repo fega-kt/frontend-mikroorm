@@ -119,7 +119,7 @@ export interface SubmitUnit {
 export interface PreviewFlowResult {
 	workflow: { id: string, name: string, version: number } | null
 	path: string[]
-	steps: { nodeId: string, name?: string, type: string, approvers: { id: string, fullName: string }[], skipped?: boolean, error?: string }[]
+	steps: { nodeId: string, name?: string, type: string, approvers: { id: string, name: string, type: PrincipalType, user?: { id: string, fullName: string, avatar?: string } }[], skipped?: boolean, error?: string }[]
 	outcome: "approved" | "blocked"
 }
 
