@@ -1,8 +1,9 @@
-import type { ApprovalRequestDetail, CreatableRequestType, PreviewFlowResult } from "#src/api/approval-request";
+import type { ApprovalRequestDetail, CreatableRequestType, PreviewFlowResult, SignSlot } from "#src/api/approval-request";
 import type { AttachmentEntity } from "#src/api/attachment";
 import type { AttachmentConfig } from "#src/api/setting/request-type/types";
 import type { AttachmentUploadRef } from "#src/components/attachment-upload";
 import { ApprovalHistoryAction, ApprovalPriority, approvalRequestService, ApprovalRequestStatus } from "#src/api/approval-request";
+import { isConvertibleToPdf } from "#src/api/file-view";
 import { DEFAULT_ATTACHMENT_CONFIG } from "#src/api/setting/request-type/types";
 import { BasicContent } from "#src/components/basic-content";
 import { PeoplePicker } from "#src/components/people-picker";
@@ -28,6 +29,7 @@ import { FlowPreview } from "./components/flow-preview";
 import { NumberedCard } from "./components/numbered-card";
 import { RequestHeaderMeta, ReturnedNotice } from "./components/request-status-info";
 import { LockedRequestType, RequestTypePicker } from "./components/request-type-field";
+import { SignSlotsModal } from "./components/sign-slots-modal";
 
 const { Text, Title } = Typography;
 
@@ -94,6 +96,8 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 	const [previewLoading, setPreviewLoading] = useState(false);
 	const documentsRef = useRef<AttachmentUploadRef>(null);
 	const attachmentsRef = useRef<AttachmentUploadRef>(null);
+	const [signSlotsOpen, setSignSlotsOpen] = useState(false);
+	const [savingSlots, setSavingSlots] = useState(false);
 
 	const categoryId = Form.useWatch("category", form);
 	const requestTypeId = Form.useWatch("requestType", form);
@@ -194,6 +198,37 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 	useEffect(() => {
 		refreshPreview();
 	}, [selectedType?.id, department, payloadValues, refreshPreview]);
+
+	// Đặt sẵn vị trí ký: các bước bắt buộc ký của luồng dự kiến + văn bản PDF đã lưu của tờ trình (tệp mới chọn chưa lên storage thì chưa xem được)
+	const signingSteps = useMemo(
+		() => (preview?.steps ?? [])
+			.filter(step => step.requireSignature && !step.skipped)
+			.map(step => ({ nodeId: step.nodeId, name: step.name || t(`workflowDesigner.nodeTypes.${step.type}`), approvers: step.approvers })),
+		[preview, t],
+	);
+	const signableDocuments = useMemo(
+		() => (existing?.documents ?? []).filter(file => file.filename.toLowerCase().endsWith(".pdf") || isConvertibleToPdf(file.filename)),
+		[existing],
+	);
+	const placedSlots = (existing?.signSlots ?? []).filter(slot => signingSteps.some(step => step.nodeId === slot.nodeId)).length;
+
+	const saveSignSlots = async (slots: SignSlot[]) => {
+		if (!existing)
+			return;
+		setSavingSlots(true);
+		try {
+			await approvalRequestService.fetchUpdate(existing.id, { signSlots: slots });
+			setSaved(await approvalRequestService.fetchDetail(existing.id));
+			window.$message?.success(t("approval.signSlots.saved"));
+			setSignSlotsOpen(false);
+		}
+		catch {
+			// lỗi API đã được interceptor báo
+		}
+		finally {
+			setSavingSlots(false);
+		}
+	};
 
 	const save = async (submit: boolean) => {
 		const values = await form.validateFields();
@@ -464,6 +499,23 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 										</NumberedCard>
 
 										{fileConfig.documents.enabled && <FileBlock index={3} name="documents" requestId={requestFileId} config={fileConfig.documents} disabled={!editable} uploadRef={documentsRef} />}
+										{fileConfig.documents.enabled && editable && signingSteps.length > 0 && (
+											<section style={card} className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
+												<div className="flex min-w-0 flex-1 flex-col gap-0.5">
+													<h2 className="m-0 text-base font-semibold">{t("approval.signSlots.title")}</h2>
+													<Text type="secondary" className="text-[13px]">
+														{!existing
+															? t("approval.signSlots.needSave")
+															: signableDocuments.length
+																? t("approval.signSlots.summary", { placed: placedSlots, total: signingSteps.length * signableDocuments.length })
+																: t("approval.signSlots.noPdf")}
+													</Text>
+												</div>
+												<Button disabled={!existing || !signableDocuments.length} onClick={() => setSignSlotsOpen(true)}>
+													{t("approval.signSlots.open")}
+												</Button>
+											</section>
+										)}
 										{fileConfig.attachments.enabled && (
 											<FileBlock
 												index={fileConfig.documents.enabled ? 4 : 3}
@@ -535,6 +587,17 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 					]}
 				/>
 			</Form>
+			{existing && (
+				<SignSlotsModal
+					open={signSlotsOpen}
+					documents={signableDocuments.map(file => ({ id: file.id, filename: file.filename }))}
+					steps={signingSteps}
+					value={existing.signSlots ?? []}
+					saving={savingSlots}
+					onCancel={() => setSignSlotsOpen(false)}
+					onSave={saveSignSlots}
+				/>
+			)}
 		</BasicContent>
 	);
 }

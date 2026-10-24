@@ -119,7 +119,7 @@ export interface SubmitUnit {
 export interface PreviewFlowResult {
 	workflow: { id: string, name: string, version: number } | null
 	path: string[]
-	steps: { nodeId: string, name?: string, type: string, approvers: { id: string, name: string, type: PrincipalType, user?: { id: string, fullName: string, avatar?: string } }[], skipped?: boolean, error?: string }[]
+	steps: { nodeId: string, name?: string, type: string, approvers: { id: string, name: string, type: PrincipalType, user?: { id: string, fullName: string, avatar?: string } }[], skipped?: boolean, error?: string, requireSignature?: boolean }[]
 	outcome: "approved" | "blocked"
 }
 
@@ -261,6 +261,8 @@ export interface ApprovalRequestDetail {
 	department: { id: string, name: string }
 	documents: Pick<AttachmentEntity, "id" | "filename" | "url" | "visibility" | "size" | "mimetype">[]
 	attachments: Pick<AttachmentEntity, "id" | "filename" | "url" | "visibility" | "size" | "mimetype">[]
+	/** Ô ký đặt sẵn của văn bản đang soạn (chỉ có cho người trình khi sửa) */
+	signSlots?: SignSlot[]
 	/** Bộ tệp từng vòng duyệt, mới nhất trước; rỗng với tờ trình gửi trước khi lưu theo vòng */
 	rounds?: RequestRoundFiles[]
 	workflow: { id: string, name: string, versionId: string, version: number } | null
@@ -291,6 +293,17 @@ export interface ApprovalRequestDetail {
 /** Loại tệp của tờ trình — trùng tên trường và tên thư mục trên storage */
 export type RequestFileCategory = "documents" | "attachments";
 
+/** Vị trí ký người trình đặt sẵn cho một bước duyệt trên một văn bản PDF (điểm PDF, gốc dưới-trái) */
+export interface SignSlot {
+	/** Id tệp gốc của văn bản */
+	file: string
+	nodeId: string
+	slot: number
+	placement: { page: number, x: number, y: number, width: number, height: number }
+	/** Khóa: người duyệt không được dời khung */
+	locked: boolean
+}
+
 export interface ApprovalRequestPayload {
 	/** Id sinh sẵn ở client: tệp upload trước khi tạo phiếu nằm đúng thư mục Attachments/{id}/... */
 	id?: string
@@ -304,5 +317,7 @@ export interface ApprovalRequestPayload {
 	department?: string
 	documents: string[]
 	attachments: string[]
+	/** Có gửi thì thay toàn bộ ô ký đặt sẵn của văn bản đang soạn; không gửi thì giữ nguyên */
+	signSlots?: SignSlot[]
 	submit?: boolean
 }

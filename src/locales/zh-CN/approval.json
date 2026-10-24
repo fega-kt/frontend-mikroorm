@@ -616,6 +616,21 @@
 		"requiredHint": "此模板必须保留 {{list}}，否则邮件无法使用。",
 		"missingRequired": "模板必须包含 {{list}}"
 	},
+	"signSlots": {
+		"title": "签名位置",
+		"open": "设置签名位置",
+		"needSave": "请先保存草稿，再在文档上设置签名位置。",
+		"noPdf": "暂无已保存的文档（PDF、Word、Excel、PowerPoint）可设置签名位置。",
+		"summary": "已设置 {{placed}}/{{total}} 个签名位置，未设置的由审批人签署时自行选择。",
+		"hint": "选择步骤后点击页面放置该步骤的签名框；拖动可移动，拖动角可调整大小。",
+		"steps": "签名步骤",
+		"notPlaced": "未设置",
+		"lock": "锁定位置",
+		"lockHint": "审批人将无法移动此签名框。",
+		"remove": "移除",
+		"save": "保存签名位置",
+		"saved": "已保存签名位置"
+	},
 	"sign": {
 		"title": "签名并审批",
 		"preparing": "正在准备文件（必要时将 Word/Excel 转换为 PDF）…",
@@ -628,6 +643,8 @@
 		"page": "第 {{page}} 页",
 		"notSignable": "无法签名",
 		"placementHint": "拖动签名框可调整位置，拖动右下角的小方块可放大 / 缩小，或点击任意页面的空白处将签名框放到该处。",
+		"presetHint": "提交人已为此步骤预设签名位置，如有需要可拖动调整。",
+		"lockedHint": "提交人已锁定此步骤的签名位置，无法更改。",
 		"resetPlacement": "恢复自动位置和大小",
 		"resize": "拖动以调整大小",
 		"legalHint": "内部数字签名使用您的证书（有效期至 {{date}}）。已签名文件一经修改，签名即失效。",

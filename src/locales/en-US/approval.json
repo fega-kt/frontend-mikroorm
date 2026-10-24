@@ -616,6 +616,21 @@
 		"requiredHint": "This template must keep {{list}} — without it the email is useless.",
 		"missingRequired": "The template must contain {{list}}"
 	},
+	"signSlots": {
+		"title": "Signing positions",
+		"open": "Set signing positions",
+		"needSave": "Save the draft first to set signing positions on the documents.",
+		"noPdf": "There is no saved document (PDF, Word, Excel, PowerPoint) to set signing positions on.",
+		"summary": "{{placed}}/{{total}} positions set. Any left unset will be chosen by the approver when signing.",
+		"hint": "Pick a step, then click on a page to place that step's signature box; drag to move it, drag the corner to resize it.",
+		"steps": "Signing steps",
+		"notPlaced": "Not placed",
+		"lock": "Lock position",
+		"lockHint": "The approver will not be able to move this signature box.",
+		"remove": "Remove",
+		"save": "Save signing positions",
+		"saved": "Signing positions saved"
+	},
 	"sign": {
 		"title": "Sign & approve",
 		"preparing": "Preparing documents (converting Word/Excel to PDF if needed)…",
@@ -628,6 +643,8 @@
 		"page": "Page {{page}}",
 		"notSignable": "Cannot be signed",
 		"placementHint": "Drag the signature box to move it, drag the square at its bottom-right corner to resize it, or click an empty spot on any page to place it there.",
+		"presetHint": "The requester has preset the signing position for this step. You can drag it to move it if needed.",
+		"lockedHint": "The requester has locked the signing position for this step; it cannot be changed.",
 		"resetPlacement": "Reset position and size",
 		"resize": "Drag to resize",
 		"legalHint": "The internal digital signature uses your certificate (valid until {{date}}). Signed documents cannot be changed without invalidating the signature.",
