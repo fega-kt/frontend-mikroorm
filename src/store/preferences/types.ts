@@ -72,8 +72,7 @@ export interface GeneralState {
 	watermark: boolean
 	/**
 	 * @zh 水印内容
-	 * @en Watermark content
-	 * @default ""
+	 * @en Watermark content (system value from VITE_GLOB_APP_TITLE, not persisted)
 	 */
 	watermarkContent: string
 	/**

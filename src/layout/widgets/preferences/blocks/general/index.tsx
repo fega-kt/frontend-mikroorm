@@ -65,7 +65,7 @@ export function General() {
 			<TextInput
 				name="watermarkContent"
 				value={watermarkContent}
-				onChange={(name, value) => setPreferences(name, value)}
+				disabled
 			>
 				{t("preferences.general.watermarkContent")}
 			</TextInput>
