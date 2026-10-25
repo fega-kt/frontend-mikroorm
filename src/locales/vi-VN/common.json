@@ -156,7 +156,8 @@
 		"statusPendingSync": "Chờ sync",
 		"statusPending": "Đang chờ",
 		"statusUploading": "Đang upload",
-		"retry": "Thử lại"
+		"retry": "Thử lại",
+		"invalidContent": "{{name}}: tệp bị hỏng hoặc không phải tệp .{{ext}}"
 	},
 	"updateError": "Cập nhật thất bại",
 	"featureUpdating": "Tính năng đang được cập nhật",
