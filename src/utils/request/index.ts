@@ -24,13 +24,27 @@ const defaultConfig: Options = {
 		// 当请求失败时，最多重试次数
 		limit: 3,
 	},
+	/**
+	 * Bật/tắt loading toàn cục quanh từng lần fetch (kể cả mỗi lần retry).
+	 * Không dùng beforeRequest/afterResponse vì lỗi mạng / timeout không có response → afterResponse không chạy,
+	 * bộ đếm request bị lệch và spinner quay mãi dù BE đã sống lại.
+	 * ky truyền các option không thuộc Request (như ignoreLoading) vào tham số thứ hai.
+	 */
+	fetch: async (input, init) => {
+		const ignoreLoading = (init as { ignoreLoading?: boolean } | undefined)?.ignoreLoading;
+		if (!ignoreLoading)
+			globalProgress.start();
+		try {
+			return await globalThis.fetch(input, init);
+		}
+		finally {
+			if (!ignoreLoading)
+				globalProgress.done();
+		}
+	},
 	hooks: {
 		beforeRequest: [
-			async (request, options) => {
-				const ignoreLoading = options.ignoreLoading;
-				if (!ignoreLoading) {
-					globalProgress.start();
-				}
+			async (request) => {
 				// 不需要携带 token 的请求
 				const isWhiteRequest = requestWhiteList.some(url => request.url.endsWith(url));
 				if (!isWhiteRequest) {
@@ -46,10 +60,6 @@ const defaultConfig: Options = {
 		],
 		afterResponse: [
 			async (request, options, response) => {
-				const ignoreLoading = options.ignoreLoading;
-				if (!ignoreLoading) {
-					globalProgress.done();
-				}
 				// Backend cấp device token mới (lần đầu đăng nhập trên trình duyệt này) → lưu lại
 				saveDeviceToken(response.headers.get(DEVICE_ID_HEADER));
 				// request error

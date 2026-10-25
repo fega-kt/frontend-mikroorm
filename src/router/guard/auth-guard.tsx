@@ -17,7 +17,7 @@ import { useAppSettingStore } from "#src/store/app-setting";
 
 import { usePreferencesStore } from "#src/store/preferences";
 import { useUserStore } from "#src/store/user";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { matchRoutes, Navigate, useLocation, useNavigate, useSearchParams } from "react-router";
 import { removeDuplicateRoutes } from "./utils";
 
@@ -27,6 +27,15 @@ import { removeDuplicateRoutes } from "./utils";
  * @example "privacy-policy", "terms-of-service" and so on.
  */
 const noLoginWhiteList = Array.from(whiteRouteNames).filter(item => item !== loginPath);
+
+/** Chu kỳ kiểm tra health và làm mới user info / routes khi mọi thứ bình thường */
+const REFRESH_INTERVAL = 5 * 60 * 1000;
+/** Health check lỗi liên tiếp bao nhiêu lần mới coi là server lỗi (tránh lỗi mạng thoáng qua, vd. vừa mở máy sau sleep) */
+const HEALTH_MAX_FAILURES = 3;
+/** Thời gian chờ trước lần kiểm tra lại khi health check đang lỗi */
+const HEALTH_RETRY_DELAY = 5 * 1000;
+/** Khi đã hiện trang 500 thì vẫn tự kiểm tra lại, để server/mạng ổn là tự vào lại app */
+const HEALTH_UNHEALTHY_RETRY_DELAY = 15 * 1000;
 
 interface AuthGuardProps {
 	children?: React.ReactNode
@@ -60,31 +69,71 @@ export function AuthGuard({ children }: AuthGuardProps) {
 	}, []);
 
 	useEffect(() => {
+		let timer: ReturnType<typeof setTimeout> | undefined;
+		let failures = 0;
+		let checking = false;
+		let disposed = false;
+
+		/**
+		 * Chỉ báo server lỗi khi health check lỗi liên tiếp HEALTH_MAX_FAILURES lần; đang lỗi thì kiểm tra lại sớm.
+		 * Tab ẩn thì không lên lịch nữa — quay lại tab (visibilitychange) sẽ kiểm tra ngay.
+		 */
 		async function checkSystem() {
+			if (checking || disposed)
+				return;
+			checking = true;
+			clearTimeout(timer);
 			try {
 				await healthCheck();
+				failures = 0;
 				setIsServerHealth(true);
 			}
 			catch {
-				setIsServerHealth(false);
+				failures += 1;
+				if (failures >= HEALTH_MAX_FAILURES)
+					setIsServerHealth(false);
 			}
+			finally {
+				checking = false;
+			}
+			if (disposed || document.hidden)
+				return;
+			const delay = failures === 0
+				? REFRESH_INTERVAL
+				: failures >= HEALTH_MAX_FAILURES ? HEALTH_UNHEALTHY_RETRY_DELAY : HEALTH_RETRY_DELAY;
+			timer = setTimeout(checkSystem, delay);
+		}
+
+		function onVisible() {
+			if (!document.hidden)
+				checkSystem();
 		}
 
 		checkSystem();
+		window.addEventListener("online", checkSystem);
+		document.addEventListener("visibilitychange", onVisible);
 
-		const interval = setInterval(() => {
-			checkSystem();
-		}, 5 * 60 * 1000);
-
-		return () => clearInterval(interval);
+		return () => {
+			disposed = true;
+			clearTimeout(timer);
+			window.removeEventListener("online", checkSystem);
+			document.removeEventListener("visibilitychange", onVisible);
+		};
 	}, []);
 
-	const fetchUserInfoAndRoutes = useCallback(async (hasLoading?: boolean) => {
+	/** Lần tải user info / routes thành công gần nhất, để làm mới ngầm không chạy dồn khi quay lại tab */
+	const lastFetchedAtRef = useRef(0);
+
+	/**
+	 * @param initial Lần tải đầu: hiện loading, lỗi thì hiện trang 500.
+	 * Làm mới ngầm (initial = false) mà lỗi thì giữ nguyên user info / routes cũ, không chặn người dùng.
+	 */
+	const fetchUserInfoAndRoutes = useCallback(async (initial?: boolean) => {
 		/**
 		 * @zh 登录跳转，防止闪烁
 		 * @en Login redirect, prevent flicker
 		 */
-		if (hasLoading)
+		if (initial)
 			setupLoading();
 
 		/**
@@ -121,6 +170,20 @@ export function AuthGuard({ children }: AuthGuardProps) {
 		}
 
 		const [results] = await Promise.all([Promise.allSettled(promises), appSettingPromise, translationPromise]);
+
+		/**
+		 * Kiểm tra lỗi trước khi dựng lại routes: nếu userInfo lỗi thì permissions rỗng, dựng tiếp sẽ làm mất menu/route đang có.
+		 * Chỉ lần tải đầu mới hiện trang 500; làm mới ngầm lỗi thì bỏ qua, lượt sau thử lại.
+		 */
+		const hasError = results.some(result => result.status === "rejected");
+		if (hasError) {
+			if (initial)
+				setHasErrorAuth(true);
+			return;
+		}
+		setHasErrorAuth(false);
+		lastFetchedAtRef.current = Date.now();
+
 		const [userInfoResult, routeResult] = results;
 		const routes = [];
 		const latestPermssions: string[] = [];
@@ -158,16 +221,6 @@ export function AuthGuard({ children }: AuthGuardProps) {
 		const uniqueRoutes = removeDuplicateRoutes(routes);
 		setAccessStore(uniqueRoutes);
 
-		const hasError = results.some(result => result.status === "rejected");
-		/**
-		 * @zh 网络请求失败，跳转到 500 页面
-		 * @en Network request failed, redirect to 500 page
-		 */
-		setHasErrorAuth(!!hasError);
-		if (hasError) {
-			return;
-		}
-
 		/**
 		 *
 		 * @zh 添加完动态路由后，使用 replace 替换当前路由，触发程序重新匹配到正确的路由
@@ -201,14 +254,39 @@ export function AuthGuard({ children }: AuthGuardProps) {
 		if (!isLogin)
 			return;
 
-		const interval = setInterval(() => {
-			fetchUserInfoAndRoutes();
-		}, 5 * 60 * 1000);
+		/** Làm mới ngầm khi tab đang hiện; tab ẩn lâu thì làm mới ngay khi quay lại */
+		function refreshIfStale() {
+			if (!document.hidden && Date.now() - lastFetchedAtRef.current >= REFRESH_INTERVAL)
+				fetchUserInfoAndRoutes();
+		}
 
-		return () => clearInterval(interval);
+		const interval = setInterval(refreshIfStale, REFRESH_INTERVAL);
+		document.addEventListener("visibilitychange", refreshIfStale);
+
+		return () => {
+			clearInterval(interval);
+			document.removeEventListener("visibilitychange", refreshIfStale);
+		};
 	}, [fetchUserInfoAndRoutes, isLogin]);
 
+	/**
+	 * Lần tải đầu lỗi (đang hiện trang 500) thì tự thử lại ngầm mỗi HEALTH_UNHEALTHY_RETRY_DELAY,
+	 * không cần đợi chu kỳ làm mới 5 phút; thành công thì hasErrorAuth tự về false.
+	 */
+	useEffect(() => {
+		if (!hasErrorAuth)
+			return;
+
+		const interval = setInterval(() => {
+			if (!document.hidden)
+				fetchUserInfoAndRoutes();
+		}, HEALTH_UNHEALTHY_RETRY_DELAY);
+
+		return () => clearInterval(interval);
+	}, [hasErrorAuth, fetchUserInfoAndRoutes]);
+
 	if (!isServerHealth || hasErrorAuth) {
+		hideLoading();
 		return <Exception500 hiddenBtnBackHome />;
 	}
 
