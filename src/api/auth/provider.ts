@@ -1,4 +1,4 @@
-import type { IAuthProvider, LoginInfo, RefreshResult, SetSessionParams } from "./types";
+import type { IAuthProvider, LoginInfo, LogoutOptions, RefreshResult, SetSessionParams } from "./types";
 import { supabase } from "#src/store/supabaseClient";
 
 class SupabaseAuthProvider implements IAuthProvider {
@@ -6,8 +6,8 @@ class SupabaseAuthProvider implements IAuthProvider {
 		return supabase.auth.signInWithPassword({ email: data.username, password: data.password });
 	}
 
-	async logout() {
-		await supabase.auth.signOut();
+	async logout(options?: LogoutOptions) {
+		await supabase.auth.signOut({ scope: options?.allDevices ? "global" : "local" });
 	}
 
 	async setSession(params: SetSessionParams) {

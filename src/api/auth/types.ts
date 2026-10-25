@@ -18,9 +18,14 @@ export interface RefreshResult {
 	error: Error | null
 }
 
+export interface LogoutOptions {
+	allDevices?: boolean
+}
+
 export interface IAuthProvider {
 	login: (data: LoginInfo) => Promise<{ error?: Error | null }>
-	logout: () => Promise<void>
+	/** allDevices: đăng xuất mọi thiết bị (dùng khi đổi mật khẩu); mặc định chỉ thiết bị hiện tại */
+	logout: (options?: LogoutOptions) => Promise<void>
 	setSession: (params: SetSessionParams) => Promise<void>
 	onAuthStateChange: (callback: (session: { access_token: string } | null) => void) => () => void
 	getToken: () => Promise<string | undefined>
