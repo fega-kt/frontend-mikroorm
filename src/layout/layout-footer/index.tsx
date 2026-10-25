@@ -1,18 +1,14 @@
 import { usePreferencesStore } from "#src/store/preferences";
 import { cn } from "#src/utils/cn";
 
+const appTitle = import.meta.env.VITE_GLOB_APP_TITLE;
+const appUrl = import.meta.env.VITE_GLOB_APP_URL || window.location.origin;
+
 interface LayoutFooterProps {
 	className?: string
 }
 export default function LayoutFooter({ className }: LayoutFooterProps) {
-	const {
-		enableFooter,
-		companyName,
-		companyWebsite,
-		copyrightDate,
-		ICPNumber,
-		ICPLink,
-	} = usePreferencesStore();
+	const enableFooter = usePreferencesStore(state => state.enableFooter);
 	if (!enableFooter)
 		return null;
 
@@ -23,25 +19,15 @@ export default function LayoutFooter({ className }: LayoutFooterProps) {
 				className,
 			)}
 		>
-			{
-				ICPNumber
-					? (
-						<span>
-							<a href={ICPLink} rel="noreferrer noopener" target="_blank">{ICPNumber}</a>
-							&nbsp;
-						</span>
-					)
-					: null
-			}
 			Copyright &copy;&nbsp;
-			{copyrightDate}
-			{copyrightDate ? <>&nbsp;</> : ""}
+			{new Date().getFullYear()}
+			&nbsp;
 			{
-				companyName
+				appTitle
 					? (
 						<span>
-							<a href={companyWebsite} rel="noreferrer noopener" target="_blank">
-								{companyName}
+							<a href={appUrl} rel="noreferrer noopener" target="_blank">
+								{appTitle}
 								&nbsp;
 							</a>
 						</span>

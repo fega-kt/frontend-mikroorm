@@ -118,16 +118,10 @@ export default function LayoutMenu({
 		}
 	};
 
-	const menuOpenProps = useMemo(() => {
-		// 如果开启了手风琴模式，则需要自动展开菜单
-		if (autoExpandCurrentMenu) {
-			return {
-				openKeys,
-				onOpenChange: handleOpenChange,
-			};
-		}
-		return {};
-	}, [autoExpandCurrentMenu, openKeys, handleOpenChange]);
+	// 如果开启了手风琴模式，则需要自动展开菜单
+	const menuOpenProps = autoExpandCurrentMenu
+		? { openKeys, onOpenChange: handleOpenChange }
+		: {};
 
 	/**
 	 * 侧边菜单展开时，自动展开激活的菜单
@@ -145,17 +139,15 @@ export default function LayoutMenu({
 			if (accordion) {
 				setOpenKeys(getSelectedKeys);
 			}
-			// 非手风琴模式，展开所有激活的菜单
+			// 非手风琴模式，保留已展开的菜单，并展开当前激活的菜单
 			else {
 				setOpenKeys((prevOpenKeys) => {
-					if (prevOpenKeys.length === 0) {
-						return getSelectedKeys;
-					}
-					return prevOpenKeys;
+					const missingKeys = getSelectedKeys.filter(key => !prevOpenKeys.includes(key));
+					return missingKeys.length ? [...prevOpenKeys, ...missingKeys] : prevOpenKeys;
 				});
 			}
 		}
-	}, [matches, sidebarCollapsed, getSelectedKeys]);
+	}, [matches, sidebarCollapsed, getSelectedKeys, accordion]);
 
 	return (
 		<Menu

@@ -58,16 +58,11 @@ export const DEFAULT_PREFERENCES = {
 	sidebarExtraCollapsedWidth: 48,
 	firstColumnWidthInTwoColumnNavigation: 80,
 	sidebarTheme: "light",
-	accordion: true,
+	accordion: false,
 
 	/* ================== Footer ================== */
 	enableFooter: true,
 	fixedFooter: true,
-	companyName: "zhizhu",
-	companyWebsite: "https://github.com/fega-kt/",
-	copyrightDate: "2026",
-	ICPNumber: "",
-	ICPLink: "",
 } satisfies PreferencesState;
 
 /**

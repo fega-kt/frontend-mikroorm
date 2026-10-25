@@ -56,26 +56,8 @@ interface AnimationState {
 	transitionName: string
 }
 
-export type NavigationType
-	= | typeof SIDE_NAVIGATION
-	  | typeof TOP_NAVIGATION
-	  | typeof TWO_COLUMN_NAVIGATION
-	  | typeof MIXED_NAVIGATION;
-export type BuiltinThemeType
-	= | "red"
-	  | "volcano"
-	  | "orange"
-	  | "gold"
-	  | "yellow"
-	  | "lime"
-	  | "green"
-	  | "cyan"
-	  | "blue"
-	  | "geekblue"
-	  | "purple"
-	  | "magenta"
-	  | "gray"
-	  | "custom";
+export type NavigationType = typeof SIDE_NAVIGATION | typeof TOP_NAVIGATION | typeof TWO_COLUMN_NAVIGATION | typeof MIXED_NAVIGATION;
+export type BuiltinThemeType = "red" | "volcano" | "orange" | "gold" | "yellow" | "lime" | "green" | "cyan" | "blue" | "geekblue" | "purple" | "magenta" | "gray" | "custom";
 
 interface LayoutState {
 	navigationStyle: NavigationType
@@ -196,11 +178,6 @@ export interface SidebarState {
 export interface FooterState {
 	enableFooter: boolean
 	fixedFooter: boolean
-	companyName: string
-	companyWebsite: string
-	copyrightDate: string
-	ICPNumber: string
-	ICPLink: string
 }
 
 export interface PreferencesState
