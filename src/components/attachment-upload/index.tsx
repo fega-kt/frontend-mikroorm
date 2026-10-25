@@ -12,6 +12,7 @@ import { useCallback, useImperativeHandle, useRef, useState } from "react";
 // ─── Component ────────────────────────────────────────────────────────────────
 
 import { useTranslation } from "react-i18next";
+import { fileExtension, isValidFileContent } from "./file-signature";
 
 export type { AttachmentEntity, AttachmentUploadProps, AttachmentUploadRef };
 
@@ -118,6 +119,10 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 
 	const handleBeforeUpload = useCallback(
 		async (file: File) => {
+			if (!(await isValidFileContent(file))) {
+				message.error(t("common.attachment.invalidContent", { name: file.name, ext: fileExtension(file.name) }));
+				return false;
+			}
 			const item = enqueueFile(file);
 			if (!item)
 				return false;
@@ -137,7 +142,7 @@ export function AttachmentUpload({ ref, ...props }: AttachmentUploadProps & { re
 			}
 			return false;
 		},
-		[mode, enqueueFile, uploadItem, onChange],
+		[mode, enqueueFile, uploadItem, onChange, t],
 	);
 
 	// ── Retry ─────────────────────────────────────────────────────────────

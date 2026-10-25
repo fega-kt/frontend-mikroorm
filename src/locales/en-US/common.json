@@ -152,7 +152,8 @@
 		"statusPendingSync": "Pending Sync",
 		"statusPending": "Pending",
 		"statusUploading": "Uploading",
-		"retry": "Retry"
+		"retry": "Retry",
+		"invalidContent": "{{name}}: file is damaged or not a .{{ext}} file"
 	},
 	"updateError": "Update failed",
 	"featureUpdating": "This feature is being updated",

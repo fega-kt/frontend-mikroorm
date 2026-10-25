@@ -148,7 +148,8 @@
 		"statusPendingSync": "等待同步",
 		"statusPending": "等待中",
 		"statusUploading": "上传中",
-		"retry": "重试"
+		"retry": "重试",
+		"invalidContent": "{{name}}：文件已损坏或不是 .{{ext}} 文件"
 	},
 	"updateError": "更新失败",
 	"featureUpdating": "功能正在更新中",
