@@ -1,4 +1,4 @@
-import type { AuthType, LoginInfo } from "#src/api/auth";
+import type { AuthType, LoginInfo, LogoutOptions } from "#src/api/auth";
 import { authProvider } from "#src/api/auth";
 import { useAccessStore } from "#src/store/access";
 import { useAppSettingStore } from "#src/store/app-setting";
@@ -18,7 +18,7 @@ type AuthState = AuthType;
 
 interface AuthAction {
 	login: (loginPayload: LoginInfo) => Promise<{ error?: Error | null }>
-	logout: () => Promise<void>
+	logout: (options?: LogoutOptions) => Promise<void>
 	reset: () => void
 };
 
@@ -33,12 +33,11 @@ export const useAuthStore = create<AuthState & AuthAction>()(
 			return await authProvider.login(loginPayload);
 		},
 
-		logout: async () => {
+		logout: async (options) => {
 			/**
 			 * 1. 退出登录
 			 */
-
-			await authProvider.logout();
+			await authProvider.logout(options);
 			// ✅ reset sau khi logout
 			get().reset();
 		},

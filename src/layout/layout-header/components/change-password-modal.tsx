@@ -30,7 +30,8 @@ export function ChangePasswordModal({ open, onOpenChange }: ChangePasswordModalP
 					newPassword: values.newPassword,
 				});
 				window.$message?.success(t("authority.changePasswordSuccess"));
-				await logout();
+				// Đổi mật khẩu → đăng xuất mọi thiết bị
+				await logout({ allDevices: true });
 				navigate(loginPath);
 				return true;
 			}}
