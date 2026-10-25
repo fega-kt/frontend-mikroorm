@@ -104,11 +104,6 @@
 	"footer": {
 		"title": "Footer",
 		"showFooter": "Show Footer",
-		"fixedFooter": "Fixed Footer",
-		"companyName": "Company Name",
-		"companyWebsite": "Company Website",
-		"copyrightDate": "Copyright Date",
-		"ICPNumber": "ICP Number",
-		"ICPLink": "ICP Link"
+		"fixedFooter": "Fixed Footer"
 	}
 }

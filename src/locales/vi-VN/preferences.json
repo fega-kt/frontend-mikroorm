@@ -104,11 +104,6 @@
 	"footer": {
 		"title": "Chân trang",
 		"showFooter": "Hiển thị footer",
-		"fixedFooter": "Cố định footer",
-		"companyName": "Tên công ty",
-		"companyWebsite": "Website công ty",
-		"copyrightDate": "Năm bản quyền",
-		"ICPNumber": "Số ICP",
-		"ICPLink": "Link ICP"
+		"fixedFooter": "Cố định footer"
 	}
 }

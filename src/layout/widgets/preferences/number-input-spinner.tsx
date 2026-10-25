@@ -29,10 +29,10 @@ export function NumberInputSpinner({
 	};
 
 	return (
-		<div className="hover:bg-gray-100 dark:hover:bg-gray-700 my-1 flex w-full items-center justify-between rounded-md px-2 py-2.5">
-			<span className="flex items-center text-sm">{children}</span>
+		<div className="hover:bg-gray-100 dark:hover:bg-gray-700 my-1 flex w-full items-center justify-between gap-2 rounded-md px-2 py-2.5">
+			<span className="flex min-w-0 items-center text-sm">{children}</span>
 			<InputNumber
-				className="w-40"
+				className="w-40 shrink-0"
 				min={min}
 				max={max}
 				precision={0}

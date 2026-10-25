@@ -56,26 +56,8 @@ interface AnimationState {
 	transitionName: string
 }
 
-export type NavigationType
-	= | typeof SIDE_NAVIGATION
-	  | typeof TOP_NAVIGATION
-	  | typeof TWO_COLUMN_NAVIGATION
-	  | typeof MIXED_NAVIGATION;
-export type BuiltinThemeType
-	= | "red"
-	  | "volcano"
-	  | "orange"
-	  | "gold"
-	  | "yellow"
-	  | "lime"
-	  | "green"
-	  | "cyan"
-	  | "blue"
-	  | "geekblue"
-	  | "purple"
-	  | "magenta"
-	  | "gray"
-	  | "custom";
+export type NavigationType = typeof SIDE_NAVIGATION | typeof TOP_NAVIGATION | typeof TWO_COLUMN_NAVIGATION | typeof MIXED_NAVIGATION;
+export type BuiltinThemeType = "red" | "volcano" | "orange" | "gold" | "yellow" | "lime" | "green" | "cyan" | "blue" | "geekblue" | "purple" | "magenta" | "gray" | "custom";
 
 interface LayoutState {
 	navigationStyle: NavigationType
@@ -90,8 +72,7 @@ export interface GeneralState {
 	watermark: boolean
 	/**
 	 * @zh 水印内容
-	 * @en Watermark content
-	 * @default ""
+	 * @en Watermark content (system value from VITE_GLOB_APP_TITLE, not persisted)
 	 */
 	watermarkContent: string
 	/**
@@ -196,11 +177,6 @@ export interface SidebarState {
 export interface FooterState {
 	enableFooter: boolean
 	fixedFooter: boolean
-	companyName: string
-	companyWebsite: string
-	copyrightDate: string
-	ICPNumber: string
-	ICPLink: string
 }
 
 export interface PreferencesState

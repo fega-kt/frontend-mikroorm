@@ -13,7 +13,7 @@ import { persist } from "zustand/middleware";
 export const DEFAULT_PREFERENCES = {
 	/* ================== General ================== */
 	watermark: false,
-	watermarkContent: "zhizhu",
+	watermarkContent: import.meta.env.VITE_GLOB_APP_TITLE,
 	enableBackTopButton: true,
 	pageLayout: "layout-right",
 	enableBackendAccess: true,
@@ -58,16 +58,11 @@ export const DEFAULT_PREFERENCES = {
 	sidebarExtraCollapsedWidth: 48,
 	firstColumnWidthInTwoColumnNavigation: 80,
 	sidebarTheme: "light",
-	accordion: true,
+	accordion: false,
 
 	/* ================== Footer ================== */
 	enableFooter: true,
 	fixedFooter: true,
-	companyName: "zhizhu",
-	companyWebsite: "https://github.com/fega-kt/",
-	copyrightDate: "2026",
-	ICPNumber: "",
-	ICPLink: "",
 } satisfies PreferencesState;
 
 /**
@@ -140,6 +135,15 @@ export const usePreferencesStore = create<
 				});
 			},
 		}),
-		{ name: getAppNamespace("preferences") },
+		{
+			name: getAppNamespace("preferences"),
+			// 系统值（来自 env）不保存，也不被旧的本地缓存覆盖
+			partialize: ({ watermarkContent: _, ...state }) => state,
+			merge: (persisted, current) => ({
+				...current,
+				...(persisted as Partial<PreferencesState>),
+				watermarkContent: current.watermarkContent,
+			}),
+		},
 	),
 );
