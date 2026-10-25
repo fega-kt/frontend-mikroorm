@@ -33,11 +33,13 @@ export interface SignatureBoxProps {
 	info: PdfPageOverlayInfo
 	signatureImage?: string | null
 	lines?: string[]
-	/** Nội dung thay cho khung chữ ký mẫu (màn đặt vị trí ký của người trình) */
-	content?: React.ReactNode
+	/** Màu bước (màn đặt vị trí ký): khung chờ ký và quầng sáng theo màu này */
+	accent?: string
 	/** Người trình đã khóa khung: không kéo / phóng được */
 	locked?: boolean
 	onMove: (placement: SignaturePlacement) => void
+	/** Số bước, thanh thao tác */
+	children?: React.ReactNode
 }
 
 const SIGNATURE_RATIO = SIGNATURE_WIDTH / SIGNATURE_HEIGHT;
@@ -47,7 +49,7 @@ const SIGNATURE_RATIO = SIGNATURE_WIDTH / SIGNATURE_HEIGHT;
  * dưới phải để phóng to / thu nhỏ (giữ tỉ lệ, góc trên trái đứng yên, trong khoảng min–max và trong trang).
  * Bên trong là khung đúng như bản ký; viền xanh bao ngoài và tay nắm chỉ để thao tác, không có trong bản ký.
  */
-export function SignatureBox({ placement, info, signatureImage = null, lines = [], content, locked, onMove }: SignatureBoxProps) {
+export function SignatureBox({ placement, info, signatureImage = null, lines = [], accent, locked, onMove, children }: SignatureBoxProps) {
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
 	const { scale, size } = info;
@@ -89,6 +91,14 @@ export function SignatureBox({ placement, info, signatureImage = null, lines = [
 		setMode(undefined);
 	};
 	const active = !!mode;
+	const color = accent ?? token.colorPrimary;
+	const frame: React.CSSProperties = accent
+		? { boxShadow: active ? `0 0 0 4px color-mix(in srgb, ${accent} 35%, transparent), 0 10px 24px color-mix(in srgb, ${accent} 30%, transparent)` : `0 0 0 4px color-mix(in srgb, ${accent} 22%, transparent)` }
+		: {
+			outline: `${active ? "2px solid" : "1.5px dashed"} ${token.colorPrimary}`,
+			outlineOffset: 3,
+			boxShadow: active ? `0 6px 18px color-mix(in srgb, ${token.colorPrimary} 30%, transparent)` : "none",
+		};
 
 	return (
 		<div
@@ -101,9 +111,8 @@ export function SignatureBox({ placement, info, signatureImage = null, lines = [
 				width: placement.width * scale,
 				height: placement.height * scale,
 				borderRadius: 2 * scale,
-				outline: `${active ? "2px solid" : "1.5px dashed"} ${token.colorPrimary}`,
-				outlineOffset: 3,
-				boxShadow: active ? `0 6px 18px color-mix(in srgb, ${token.colorPrimary} 30%, transparent)` : "none",
+				zIndex: 1,
+				...frame,
 			}}
 			onClick={event => event.stopPropagation()}
 			onPointerDown={startDrag("move")}
@@ -111,8 +120,9 @@ export function SignatureBox({ placement, info, signatureImage = null, lines = [
 			onPointerUp={onPointerUp}
 			onPointerCancel={onPointerUp}
 		>
-			{content ?? <SignatureAppearance width={placement.width} height={placement.height} scale={scale} lines={lines} signatureImage={signatureImage} />}
-			{mode === "move" && (
+			<SignatureAppearance width={placement.width} height={placement.height} scale={scale} lines={lines} signatureImage={signatureImage} placeholderColor={accent} />
+			{mode !== "move" && children}
+			{mode === "move" && !accent && (
 				<span
 					className="pointer-events-none absolute flex size-6 items-center justify-center rounded-full text-white"
 					style={{ right: -12, top: -12, background: token.colorPrimary, boxShadow: token.boxShadowSecondary }}
@@ -126,11 +136,11 @@ export function SignatureBox({ placement, info, signatureImage = null, lines = [
 					aria-label={t("approval.sign.resize")}
 					title={t("approval.sign.resize")}
 					className="absolute flex size-5 cursor-nwse-resize touch-none items-center justify-center"
-					style={{ right: -13, bottom: -13 }}
+					style={accent ? { right: -10, bottom: -10 } : { right: -13, bottom: -13 }}
 					// Di chuyển / thả nổi bọt lên khung (đã có handler)
 					onPointerDown={startDrag("resize")}
 				>
-					<span className="block size-2.5 rounded-sm" style={{ background: token.colorBgContainer, border: `1.5px solid ${token.colorPrimary}` }} />
+					<span className="block size-2.5 rounded-sm" style={{ background: token.colorBgContainer, border: `${accent ? 2 : 1.5}px solid ${color}` }} />
 				</span>
 			)}
 		</div>

@@ -136,16 +136,20 @@ interface SignatureAppearanceProps {
 	scale: number
 	lines: string[]
 	signatureImage: string | null
+	/** Khung chờ ký (màn đặt vị trí ký): viền / nền theo màu này, ẩn dòng "Đã ký số" nhưng giữ chỗ */
+	placeholderColor?: string
 }
 
-export function SignatureAppearance({ width: boxWidth, height: boxHeight, scale: viewScale, lines, signatureImage }: SignatureAppearanceProps) {
+export function SignatureAppearance({ width: boxWidth, height: boxHeight, scale: viewScale, lines, signatureImage, placeholderColor }: SignatureAppearanceProps) {
 	// Vẽ theo khung chuẩn rồi phóng cùng hệ số (như ma trận biến đổi bên service ký số)
 	const unit = Math.min(boxWidth / SIGNATURE_WIDTH, boxHeight / SIGNATURE_HEIGHT);
 	const width = boxWidth / unit;
 	const height = boxHeight / unit;
 	const scale = viewScale * unit;
 	const px = (pt: number) => pt * scale;
-	const cellWidth = signatureImage ? width * IMAGE_SHARE : 0;
+	const placeholder = !!placeholderColor;
+	const hasImageCell = !!signatureImage || placeholder;
+	const cellWidth = hasImageCell ? width * IMAGE_SHARE : 0;
 	const textLeft = cellWidth + TEXT_PADDING_X;
 	const { rows, scale: textScale } = useMemo(
 		() => fitText(lines, width - TEXT_PADDING_X - textLeft, height - TEXT_PADDING_Y * 2),
@@ -155,22 +159,29 @@ export function SignatureAppearance({ width: boxWidth, height: boxHeight, scale:
 
 	return (
 		<div
-			className="relative select-none overflow-hidden bg-white"
+			className="relative select-none overflow-hidden"
 			style={{
 				width: px(width),
 				height: px(height),
 				borderRadius: px(BORDER_RADIUS),
-				boxShadow: `inset 0 0 0 ${px(BORDER_WIDTH)}px ${COLORS.border}`,
+				background: placeholder ? `color-mix(in srgb, ${placeholderColor} 7%, white)` : "white",
+				boxShadow: placeholder ? `inset 0 0 0 2px ${placeholderColor}` : `inset 0 0 0 ${px(BORDER_WIDTH)}px ${COLORS.border}`,
 				fontFamily: FONT_FAMILY,
 			}}
 		>
-			{signatureImage && (
+			{hasImageCell && (
 				<>
 					<div
 						className="absolute flex items-center justify-center"
 						style={{ left: 0, top: 0, width: px(cellWidth), height: px(height), padding: `${px(IMAGE_PADDING_Y)}px ${px(IMAGE_PADDING_X)}px` }}
 					>
-						<img src={signatureImage} alt="" draggable={false} className="max-h-full max-w-full object-contain" />
+						{signatureImage
+							? <img src={signatureImage} alt="" draggable={false} className="max-h-full max-w-full object-contain" />
+							: (
+								<svg viewBox="0 0 24 24" width={px(22)} height={px(22)} aria-hidden="true" fill="none" stroke={COLORS.divider} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
+									<path d="M3 17c3-1 4-8 7-8s1 7 4 7 3-4 7-4" />
+								</svg>
+							)}
 					</div>
 					<div
 						className="absolute"
@@ -184,7 +195,7 @@ export function SignatureAppearance({ width: boxWidth, height: boxHeight, scale:
 			>
 				<div
 					className="flex items-center font-bold"
-					style={{ fontSize: px(headerSize), color: COLORS.header, letterSpacing: px(HEADER_CHAR_SPACING * headerSize), marginBottom: px(HEADER_GAP * textScale), gap: px(headerSize * 0.35) }}
+					style={{ visibility: placeholder ? "hidden" : undefined, fontSize: px(headerSize), color: COLORS.header, letterSpacing: px(HEADER_CHAR_SPACING * headerSize), marginBottom: px(HEADER_GAP * textScale), gap: px(headerSize * 0.35) }}
 				>
 					<svg viewBox="0 0 24 24" width={px(headerSize)} height={px(headerSize)} aria-hidden="true" fill="none" stroke="currentColor" strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round">
 						<circle cx="12" cy="12" r="10.5" />
