@@ -183,4 +183,13 @@ export enum PermissionType {
 	ViewActivityLogAll = "permission:activity-log:view-all",
 	/** xem activity log trong phòng ban của mình và các phòng ban con */
 	ViewActivityLogDepartment = "permission:activity-log:view-department",
+
+	/** ===== APPROVAL REPORT ===== */
+
+	/** vào menu báo cáo tờ trình */
+	MenuApprovalReport = "permission:menu:approval-report",
+	/** xem báo cáo toàn hệ thống */
+	ViewApprovalReportAll = "permission:approval-report:view-all",
+	/** xem báo cáo trong phòng ban của mình và các phòng ban con */
+	ViewApprovalReportDepartment = "permission:approval-report:view-department",
 }

@@ -23,7 +23,8 @@
 			"email_template": "邮件模板",
 			"activity_log_queue": "邮件发送队列",
 			"i18n": "多语言",
-			"signing_certificate": "数字签名"
+			"signing_certificate": "数字签名",
+			"approval_report": "审批报表"
 		},
 		"permission": {
 			"user": "用户",
@@ -40,7 +41,7 @@
 			"app-setting": "系统参数",
 			"activity-log": "操作日志",
 			"view-all": "查看全部",
-			"view-department": "查看本部门（含下级部门）",
+			"view-department": "查看本部门",
 			"approval-workflow": "审批流程",
 			"publish": "发布",
 			"approval-request-all": "全部申请",
@@ -49,7 +50,8 @@
 			"email-template": "邮件模板",
 			"retry": "重新发送",
 			"i18n": "多语言",
-			"signing-certificate": "管理签名证书"
+			"signing-certificate": "管理签名证书",
+			"approval-report": "审批报表"
 		}
 	},
 	"appSetting": {

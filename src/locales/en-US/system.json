@@ -22,7 +22,8 @@
 			"email_template": "Email templates",
 			"activity_log_queue": "Mail queue",
 			"i18n": "Localization",
-			"signing_certificate": "Digital signature"
+			"signing_certificate": "Digital signature",
+			"approval_report": "Approval reports"
 		},
 		"permission": {
 			"user": "User",
@@ -39,7 +40,7 @@
 			"app-setting": "App Parameters",
 			"activity-log": "Activity Log",
 			"view-all": "View all",
-			"view-department": "View department (incl. sub-departments)",
+			"view-department": "View own department",
 			"approval-workflow": "Approval workflows",
 			"publish": "Publish",
 			"approval-request-all": "All requests",
@@ -48,7 +49,8 @@
 			"email-template": "Email templates",
 			"retry": "Resend",
 			"i18n": "Localization",
-			"signing-certificate": "Manage signing certificates"
+			"signing-certificate": "Manage signing certificates",
+			"approval-report": "Approval reports"
 		}
 	},
 	"appSetting": {

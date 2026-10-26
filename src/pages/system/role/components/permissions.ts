@@ -87,6 +87,11 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.ViewActivityLogAll,
 		PermissionType.ViewActivityLogDepartment,
 	],
+	APPROVAL_REPORT: [
+		PermissionType.MenuApprovalReport,
+		PermissionType.ViewApprovalReportAll,
+		PermissionType.ViewApprovalReportDepartment,
+	],
 	ACTIVITY_LOG_QUEUE: [
 		PermissionType.ViewActivityLogQueue,
 		PermissionType.RetryActivityLogQueue,
