@@ -23,7 +23,8 @@
 			"email_template": "Mẫu email",
 			"activity_log_queue": "Hàng đợi gửi mail",
 			"i18n": "Đa ngôn ngữ",
-			"signing_certificate": "Chữ ký số"
+			"signing_certificate": "Chữ ký số",
+			"approval_report": "Báo cáo tờ trình"
 		},
 		"permission": {
 			"user": "Người dùng",
@@ -40,7 +41,7 @@
 			"app-setting": "Tham số hệ thống",
 			"activity-log": "Theo dõi hoạt động",
 			"view-all": "Xem toàn hệ thống",
-			"view-department": "Xem trong phòng ban (gồm phòng con)",
+			"view-department": "Xem trong phòng ban",
 			"approval-workflow": "Quy trình phê duyệt",
 			"publish": "Xuất bản",
 			"approval-request-all": "Tất cả tờ trình",
@@ -49,7 +50,8 @@
 			"email-template": "Mẫu email",
 			"retry": "Gửi lại",
 			"i18n": "Đa ngôn ngữ",
-			"signing-certificate": "Quản lý chứng thư ký số"
+			"signing-certificate": "Quản lý chứng thư ký số",
+			"approval-report": "Báo cáo tờ trình"
 		}
 	},
 	"appSetting": {
