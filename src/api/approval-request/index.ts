@@ -67,6 +67,14 @@ export class ApprovalRequestService extends CrudServiceBase<ApprovalRequestListI
 	}
 
 	/**
+	 * Nhân bản thành bản nháp mới; files: sao chép cả tài liệu và vị trí ký.
+	 * formChanged: biểu mẫu đã đổi so với phiếu gốc (nhắc kiểm tra lại các trường)
+	 */
+	fetchClone(id: string, files: boolean) {
+		return this.post<{ id: string, formChanged: boolean }>(`${id}/clone`, { json: { files }, ignoreLoading: true });
+	}
+
+	/**
 	 * "Tải về toàn bộ": backend kiểm quyền và chốt danh sách tệp, trả link zip dùng một lần;
 	 * mở link là trình duyệt tải như một tệp thường (có tiến trình, không giữ cả zip trong bộ nhớ).
 	 */

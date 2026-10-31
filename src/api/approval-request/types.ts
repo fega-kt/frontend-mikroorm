@@ -277,6 +277,8 @@ export interface ApprovalRequestDetail {
 		canEdit: boolean
 		canSubmit: boolean
 		canDelete: boolean
+		/** Nhân bản thành bản nháp mới (người trình / người tạo phiếu) */
+		canClone: boolean
 		canCancel: boolean
 		canApprove: boolean
 		canReject: boolean

@@ -106,7 +106,9 @@
 			"days": "{{count}} d",
 			"hours": "{{count}} h",
 			"minutes": "{{count}} min"
-		}
+		},
+		"clonedFrom": "Duplicated from {{code}}",
+		"clonedFromDraft": "Duplicated from a draft"
 	},
 	"fields": {
 		"code": "Code",
@@ -146,7 +148,8 @@
 		"back": "Back",
 		"viewEmails": "Sent emails",
 		"share": "Share",
-		"signApprove": "Sign & approve"
+		"signApprove": "Sign & approve",
+		"clone": "Duplicate"
 	},
 	"messages": {
 		"submitted": "Request submitted",
@@ -171,7 +174,12 @@
 		"overdue": "Overdue",
 		"dueIn": "{{time}} left",
 		"notFound": "Request not found or you cannot view it",
-		"signedApproved": "Signed and approved"
+		"signedApproved": "Signed and approved",
+		"confirmClone": "Create a new draft from this request?",
+		"cloned": "Copy created",
+		"cloneFormChanged": "The form has changed since the original request, please review the fields.",
+		"cloneWithFiles": "Also copy documents and signature positions",
+		"cloneUnsavedNote": "Unsaved changes in the form will not be copied."
 	},
 	"form": {
 		"chooseType": "Choose a request type",
