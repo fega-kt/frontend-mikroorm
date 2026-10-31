@@ -7,6 +7,7 @@ import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import {
 	CheckOutlined,
 	CloseOutlined,
+	CopyOutlined,
 	DeleteOutlined,
 	EditOutlined,
 	EllipsisOutlined,
@@ -21,6 +22,7 @@ import {
 import { Button, Dropdown, Space } from "antd";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
+import { useCloneRequest } from "../../components/clone-request";
 
 interface RequestActionsProps {
 	detail: ApprovalRequestDetail
@@ -44,6 +46,7 @@ export function RequestActions({ detail, busy, onReload, onAct, onSubmit, onEdit
 	const navigate = useNavigate();
 	const canViewMailQueue = useAccess().canAccess(PermissionType.ViewActivityLogQueue);
 	const { permissions } = detail;
+	const confirmClone = useCloneRequest();
 
 	const moreItems = [
 		permissions.canSubmit && {
@@ -54,6 +57,12 @@ export function RequestActions({ detail, busy, onReload, onAct, onSubmit, onEdit
 		},
 		permissions.canReturn && { key: "return", icon: <RollbackOutlined />, label: t("approval.actions.return"), onClick: () => onAct("return") },
 		permissions.canShare && { key: "share", icon: <ShareAltOutlined />, label: t("approval.actions.share"), onClick: onShare },
+		permissions.canClone && {
+			key: "clone",
+			icon: <CopyOutlined />,
+			label: t("approval.actions.clone"),
+			onClick: () => confirmClone(detail),
+		},
 		canViewMailQueue && {
 			key: "emails",
 			icon: <MailOutlined />,

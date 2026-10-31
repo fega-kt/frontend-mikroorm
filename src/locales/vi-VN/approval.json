@@ -106,7 +106,9 @@
 			"days": "{{count}} ngày",
 			"hours": "{{count}} giờ",
 			"minutes": "{{count}} phút"
-		}
+		},
+		"clonedFrom": "Nhân bản từ {{code}}",
+		"clonedFromDraft": "Nhân bản từ bản nháp"
 	},
 	"fields": {
 		"code": "Mã tờ trình",
@@ -146,7 +148,8 @@
 		"back": "Quay lại",
 		"viewEmails": "Mail đã gửi",
 		"share": "Chia sẻ",
-		"signApprove": "Ký và duyệt"
+		"signApprove": "Ký và duyệt",
+		"clone": "Nhân bản"
 	},
 	"messages": {
 		"submitted": "Đã gửi tờ trình",
@@ -171,7 +174,12 @@
 		"overdue": "Quá hạn",
 		"dueIn": "Còn {{time}}",
 		"notFound": "Không tìm thấy tờ trình hoặc bạn không có quyền xem",
-		"signedApproved": "Đã ký số và duyệt"
+		"signedApproved": "Đã ký số và duyệt",
+		"confirmClone": "Tạo bản nháp mới từ tờ trình này?",
+		"cloned": "Đã tạo bản sao",
+		"cloneFormChanged": "Biểu mẫu đã thay đổi so với tờ trình gốc, vui lòng kiểm tra lại các trường.",
+		"cloneWithFiles": "Sao chép cả tài liệu và vị trí ký",
+		"cloneUnsavedNote": "Các thay đổi đang soạn chưa lưu sẽ không được sao chép."
 	},
 	"form": {
 		"chooseType": "Chọn loại tờ trình",

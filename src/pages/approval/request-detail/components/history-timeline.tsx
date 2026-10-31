@@ -5,6 +5,7 @@ import type { TimelineNodeStyle } from "./timeline-row";
 import { ApprovalHistoryAction } from "#src/api/approval-request/types";
 import { PeoplePicker } from "#src/components/people-picker";
 import { UserAvatar } from "#src/components/user-avatar";
+import { approvalRequestPath } from "#src/router/extra-info";
 import {
 	ArrowRightOutlined,
 	BellOutlined,
@@ -32,6 +33,7 @@ import { Button, Empty, Segmented, theme, Typography } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router";
 import { displayComment, historyActor, historyLabel } from "../../lib/history";
 import { HistoryChanges } from "./history-changes";
 import { HistoryStatusCard } from "./history-status-card";
@@ -202,6 +204,8 @@ export function HistoryTimeline({ histories, userNames, formSchema, request, onV
 		const files = Array.isArray(data.files) && !isVersion ? (data.files as HistoryFileItem[]) : [];
 		const versions = Array.isArray(data.files) && isVersion ? (data.files as HistoryFileVersion[]) : [];
 		const sharedWith = Array.isArray(data.principals) ? (data.principals as { id: string, name: string }[]) : [];
+		// Phiếu tạo bằng nhân bản: data.clonedFrom = { id, code } của phiếu gốc (code null khi phiếu gốc chưa gửi)
+		const clonedFrom = data.clonedFrom as { id: string, code: string | null } | undefined;
 		const actor = historyActor(item);
 		const quiet = QUIET_ACTIONS.includes(item.action);
 		// Duyệt / từ chối / trả lại thay người khác theo ủy quyền
@@ -249,6 +253,12 @@ export function HistoryTimeline({ histories, userNames, formSchema, request, onV
 						{item.action === ApprovalHistoryAction.Skip && typeof data.reason === "string" && ` (${t(`approval.skipReason.${data.reason}`)})`}
 					</span>
 					{changes.length > 0 && item.action === ApprovalHistoryAction.Update && <Text type="secondary" className="text-[13px]">{`· ${t("approval.history.changes.fields", { count: changes.length })}`}</Text>}
+					{/* Bấm để mở phiếu gốc (không có quyền xem / đã xóa thì trang chi tiết tự báo) */}
+					{clonedFrom && chip(
+						<Link to={approvalRequestPath.detail(clonedFrom.id)}>
+							{clonedFrom.code ? t("approval.history.clonedFrom", { code: clonedFrom.code }) : t("approval.history.clonedFromDraft")}
+						</Link>,
+					)}
 					{item.nodeName && chip(item.nodeName)}
 					{round !== undefined && chip(t("approval.files.round", { round }))}
 					{onBehalfOf && chip(t("approval.detail.delegatedFrom", { name: onBehalfOf }), token.purple7, token.purple1)}

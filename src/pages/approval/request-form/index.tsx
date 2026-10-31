@@ -9,12 +9,13 @@ import { BasicContent } from "#src/components/basic-content";
 import { PeoplePicker } from "#src/components/people-picker";
 import { approvalRequestPath } from "#src/router/extra-info";
 import { useUserStore } from "#src/store/user";
-import { ApartmentOutlined, FileTextOutlined, HistoryOutlined, InfoCircleOutlined, SaveOutlined, SendOutlined } from "@ant-design/icons";
+import { ApartmentOutlined, CopyOutlined, EllipsisOutlined, FileTextOutlined, HistoryOutlined, InfoCircleOutlined, SaveOutlined, SendOutlined } from "@ant-design/icons";
 import { useDebounceFn, useRequest } from "ahooks";
-import { Alert, Button, Descriptions, Form, Input, Radio, Result, Select, Tabs, Tag, theme, Typography } from "antd";
+import { Alert, Button, Descriptions, Dropdown, Form, Input, Radio, Result, Select, Tabs, Tag, theme, Typography } from "antd";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams, useSearchParams } from "react-router";
+import { useCloneRequest } from "../components/clone-request";
 import { PayloadFormItems } from "../components/form-fields";
 import { RequestFormSkeleton } from "../components/page-skeleton";
 import { tabLabel } from "../components/tab-label";
@@ -71,6 +72,7 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 		return () => observer.disconnect();
 	}, [headerSentinel]);
 	const navigate = useNavigate();
+	const confirmClone = useCloneRequest();
 	const params = useParams<{ id: string }>();
 	const id = idProp ?? params.id;
 	const [searchParams] = useSearchParams();
@@ -338,6 +340,24 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 									{t(existing?.status === ApprovalRequestStatus.Returned ? "approval.actions.resubmit" : "approval.form.submit")}
 								</Button>
 							</>
+						)}
+						{/* Nhân bản lấy bản đã lưu: nhắc các thay đổi đang soạn (chưa lưu) không được sao chép */}
+						{existing?.permissions.canClone && (
+							<Dropdown
+								trigger={["click"]}
+								placement="bottomRight"
+								disabled={!!saving}
+								menu={{
+									items: [{
+										key: "clone",
+										icon: <CopyOutlined />,
+										label: t("approval.actions.clone"),
+										onClick: () => confirmClone(existing, { unsaved: editable }),
+									}],
+								}}
+							>
+								<Button disabled={!!saving} icon={<EllipsisOutlined />} />
+							</Dropdown>
 						)}
 					</div>
 				</div>

@@ -106,7 +106,9 @@
 			"days": "{{count}} 天",
 			"hours": "{{count}} 小时",
 			"minutes": "{{count}} 分钟"
-		}
+		},
+		"clonedFrom": "复制自 {{code}}",
+		"clonedFromDraft": "复制自草稿"
 	},
 	"fields": {
 		"code": "编号",
@@ -146,7 +148,8 @@
 		"back": "返回",
 		"viewEmails": "已发送邮件",
 		"share": "分享",
-		"signApprove": "签名并审批"
+		"signApprove": "签名并审批",
+		"clone": "复制"
 	},
 	"messages": {
 		"submitted": "已提交申请",
@@ -171,7 +174,12 @@
 		"overdue": "已超时",
 		"dueIn": "剩余 {{time}}",
 		"notFound": "未找到申请或无权查看",
-		"signedApproved": "已签名并审批"
+		"signedApproved": "已签名并审批",
+		"confirmClone": "从此申请创建新草稿？",
+		"cloned": "已创建副本",
+		"cloneFormChanged": "表单已与原申请不同，请检查各字段。",
+		"cloneWithFiles": "同时复制文件和签名位置",
+		"cloneUnsavedNote": "表单中未保存的修改不会被复制。"
 	},
 	"form": {
 		"chooseType": "选择申请类型",
