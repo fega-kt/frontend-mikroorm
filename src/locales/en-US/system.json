@@ -23,7 +23,9 @@
 			"activity_log_queue": "Mail queue",
 			"i18n": "Localization",
 			"signing_certificate": "Digital signature",
-			"approval_report": "Approval reports"
+			"approval_report": "Approval reports",
+			"work_shift": "Work shifts",
+			"work_calendar": "Work calendar"
 		},
 		"permission": {
 			"user": "User",
@@ -50,7 +52,10 @@
 			"retry": "Resend",
 			"i18n": "Localization",
 			"signing-certificate": "Manage signing certificates",
-			"approval-report": "Approval reports"
+			"approval-report": "Approval reports",
+			"work-shift": "Work shifts",
+			"configure": "Configure shifts, schedules, special days",
+			"work-calendar": "Work calendar"
 		}
 	},
 	"appSetting": {

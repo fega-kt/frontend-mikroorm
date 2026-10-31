@@ -92,6 +92,15 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.ViewApprovalReportAll,
 		PermissionType.ViewApprovalReportDepartment,
 	],
+	WORK_SHIFT: [
+		PermissionType.MenuWorkShift,
+		PermissionType.ManageWorkShift,
+	],
+	WORK_CALENDAR: [
+		PermissionType.MenuWorkCalendar,
+		PermissionType.ViewWorkCalendarAll,
+		PermissionType.ViewWorkCalendarDepartment,
+	],
 	ACTIVITY_LOG_QUEUE: [
 		PermissionType.ViewActivityLogQueue,
 		PermissionType.RetryActivityLogQueue,

@@ -68,7 +68,9 @@
 		"activityLogList": "Nhật ký hoạt động",
 		"mailQueue": "Hàng đợi gửi mail",
 		"i18n": "Đa ngôn ngữ",
-		"signingCertificate": "Chứng thư ký số"
+		"signingCertificate": "Chứng thư ký số",
+		"workShift": "Ca làm việc",
+		"workCalendar": "Lịch làm việc"
 	},
 	"appLoading": "Đang tải tài nguyên...",
 	"back": "Quay lại",

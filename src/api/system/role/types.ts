@@ -141,6 +141,19 @@ export enum PermissionType {
 	ViewApprovalReportAll = "permission:approval-report:view-all",
 	/** xem báo cáo trong phòng ban của mình và các phòng ban con */
 	ViewApprovalReportDepartment = "permission:approval-report:view-department",
+
+	/** ===== CA LÀM VIỆC ===== */
+
+	/** vào menu cấu hình ca làm việc */
+	MenuWorkShift = "permission:menu:work-shift",
+	/** thêm / sửa / xóa ca, lịch làm việc, gán lịch và ngày đặc biệt */
+	ManageWorkShift = "permission:work-shift:configure",
+	/** vào menu xem lịch làm việc */
+	MenuWorkCalendar = "permission:menu:work-calendar",
+	/** xem lịch làm việc của mọi phòng ban */
+	ViewWorkCalendarAll = "permission:work-calendar:view-all",
+	/** xem lịch làm việc trong phòng ban của mình và các phòng ban con */
+	ViewWorkCalendarDepartment = "permission:work-calendar:view-department",
 }
 
 export interface RoleSearchParams extends SearchParamsBase {
