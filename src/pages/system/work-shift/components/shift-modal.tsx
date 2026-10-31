@@ -89,7 +89,7 @@ export function ShiftModal({ shift, onClose }: ShiftModalProps) {
 												<TimePicker format="HH:mm" minuteStep={5} needConfirm={false} placeholder={t(`workCalendar.shift.${key}`)} />
 											</Form.Item>
 										))}
-										{fields.length > 1 && <Button type="text" icon={<DeleteOutlined />} onClick={() => remove(field.name)} />}
+										{fields.length > 1 && <Button type="text" danger icon={<DeleteOutlined />} onClick={() => remove(field.name)} />}
 									</Space>
 								))}
 								{fields.length < 6 && (
