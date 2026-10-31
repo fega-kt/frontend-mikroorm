@@ -24,7 +24,9 @@
 			"activity_log_queue": "Hàng đợi gửi mail",
 			"i18n": "Đa ngôn ngữ",
 			"signing_certificate": "Chữ ký số",
-			"approval_report": "Báo cáo tờ trình"
+			"approval_report": "Báo cáo tờ trình",
+			"work_shift": "Ca làm việc",
+			"work_calendar": "Lịch làm việc"
 		},
 		"permission": {
 			"user": "Người dùng",
@@ -51,7 +53,10 @@
 			"retry": "Gửi lại",
 			"i18n": "Đa ngôn ngữ",
 			"signing-certificate": "Quản lý chứng thư ký số",
-			"approval-report": "Báo cáo tờ trình"
+			"approval-report": "Báo cáo tờ trình",
+			"work-shift": "Ca làm việc",
+			"configure": "Cấu hình ca, lịch, ngày đặc biệt",
+			"work-calendar": "Lịch làm việc"
 		}
 	},
 	"appSetting": {

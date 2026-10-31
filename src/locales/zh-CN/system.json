@@ -24,7 +24,9 @@
 			"activity_log_queue": "邮件发送队列",
 			"i18n": "多语言",
 			"signing_certificate": "数字签名",
-			"approval_report": "审批报表"
+			"approval_report": "审批报表",
+			"work_shift": "班次",
+			"work_calendar": "工作日历"
 		},
 		"permission": {
 			"user": "用户",
@@ -51,7 +53,10 @@
 			"retry": "重新发送",
 			"i18n": "多语言",
 			"signing-certificate": "管理签名证书",
-			"approval-report": "审批报表"
+			"approval-report": "审批报表",
+			"work-shift": "班次",
+			"configure": "配置班次、排班与特殊日期",
+			"work-calendar": "工作日历"
 		}
 	},
 	"appSetting": {
