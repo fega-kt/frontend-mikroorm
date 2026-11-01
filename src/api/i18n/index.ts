@@ -6,7 +6,7 @@ export * from "./types";
 /** Bản dịch dữ liệu do người dùng nhập (nhãn trường của biểu mẫu…). Namespace là tiền tố của khóa, vd: `form.<formId>` */
 export class I18nService extends CrudServiceBase<TranslationTable> {
 	constructor() {
-		super({ endpoint: "i18n", service: ApiService.App });
+		super({ endpoint: "i18n", service: ApiService.Core });
 	}
 
 	/** Bản dịch của cả ba ngôn ngữ một lần (nạp sẵn, đổi ngôn ngữ không phải gọi lại) */
