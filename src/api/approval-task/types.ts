@@ -53,6 +53,30 @@ export interface ApprovedStats {
 	lastMonth: number
 }
 
+/** Ô "Thời gian duyệt trung bình" (các lượt tôi đã xử lý): null khi tháng chưa có dữ liệu để so */
+export interface AvgApprovalTimeStats {
+	/** Số ngày / bước, tháng này */
+	avgDays: number | null
+	/** Tháng này − tháng trước (âm = nhanh hơn) */
+	deltaDays: number | null
+	byType: { requestTypeId: string, code: string, name: string, days: number, count: number }[]
+}
+
+export type ApprovalActivityKind = "approved" | "rejected" | "returned" | "submitted" | "reassigned";
+
+/** Một dòng ở khối "Hoạt động phê duyệt" */
+export interface ApprovalActivityItem {
+	id: string
+	kind: ApprovalActivityKind
+	/** null = hệ thống (quá hạn tự duyệt / từ chối) */
+	actor: { id: string, fullName: string } | null
+	requestId: string
+	title: string
+	/** Người nhận khi kind = reassigned */
+	target: { id: string, fullName: string } | null
+	createdAt: string
+}
+
 /** Thẻ "Tỷ lệ duyệt": rate là % (0–100) của các tờ trình tôi đã xử lý tháng này */
 export interface ApprovalRateStats {
 	approved: number

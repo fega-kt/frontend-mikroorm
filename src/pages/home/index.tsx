@@ -21,7 +21,7 @@ import { KpiCards } from "./components/kpi-cards";
 import { MyRequests } from "./components/my-requests";
 import { PendingApprovals } from "./components/pending-approvals";
 import { WAIT_WARNING_HOURS } from "./constants";
-import { MOCK_ACTIVITIES, MOCK_STATS, RequestStatus } from "./mock";
+import { RequestStatus } from "./mock";
 import { useApprovalDashboard } from "./use-approval-dashboard";
 
 dayjs.extend(relativeTime);
@@ -33,7 +33,7 @@ export default function Home() {
 	const [results, setResults] = useState<Record<string, ApprovalResult>>({});
 	const petRef = useRef<BannerPetRef>(null);
 	const actionModalRef = useRef<ActionModalRef>(null);
-	const { stats, pending, myRequests, delegation, reload } = useApprovalDashboard();
+	const { stats, pending, myRequests, delegation, avgTime, activity, reload } = useApprovalDashboard();
 
 	const openPending = pending.filter(item => !results[item.id]);
 	const overdueCount = openPending.filter(item => (item.dueAt ? dayjs(item.dueAt).isBefore(dayjs()) : dayjs().diff(item.createdAt, "hour") >= WAIT_WARNING_HOURS)).length;
@@ -90,10 +90,10 @@ export default function Home() {
 					<PendingApprovals items={pending} results={results} onAction={handleAction} />
 					<div className="flex min-w-0 flex-col gap-4">
 						<DelegationCard outgoing={delegation.outgoing} incoming={delegation.incoming} />
-						<AvgApprovalTime avgDays={MOCK_STATS.avgDaysPerStep} deltaDays={MOCK_STATS.avgDaysDelta} byType={MOCK_STATS.avgByType} />
+						<AvgApprovalTime avgDays={avgTime?.avgDays ?? null} deltaDays={avgTime?.deltaDays ?? null} byType={avgTime?.byType ?? []} />
 					</div>
 					<MyRequests items={myRequests} />
-					<ApprovalActivityCard items={MOCK_ACTIVITIES} />
+					<ApprovalActivityCard items={activity} />
 				</section>
 			</div>
 			<ActionModal ref={actionModalRef} />
