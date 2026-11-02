@@ -78,16 +78,21 @@
 		"unit": "days / step",
 		"faster": "{{days}} days faster",
 		"slower": "{{days}} days slower",
-		"days": "{{days}} d"
+		"days": "{{days}} d",
+		"empty": "No requests handled yet this month"
 	},
 	"activity": {
 		"title": "Approval activity",
+		"you": "You",
+		"system": "System",
+		"to": "to",
+		"empty": "No activity in the last 30 days",
 		"kind": {
 			"approved": "approved",
 			"rejected": "rejected",
 			"returned": "returned",
 			"submitted": "submitted",
-			"delegated": "delegated approval to"
+			"reassigned": "reassigned"
 		}
 	},
 	"pet": {

@@ -78,16 +78,21 @@
 		"unit": "ngày / bước",
 		"faster": "nhanh hơn {{days}} ngày",
 		"slower": "chậm hơn {{days}} ngày",
-		"days": "{{days}} ngày"
+		"days": "{{days}} ngày",
+		"empty": "Chưa có lượt duyệt nào trong tháng này"
 	},
 	"activity": {
 		"title": "Hoạt động phê duyệt",
+		"you": "Bạn",
+		"system": "Hệ thống",
+		"to": "cho",
+		"empty": "Chưa có hoạt động nào trong 30 ngày qua",
 		"kind": {
 			"approved": "đã duyệt",
 			"rejected": "đã từ chối",
 			"returned": "đã trả lại",
 			"submitted": "đã gửi tờ trình",
-			"delegated": "đã ủy quyền duyệt cho"
+			"reassigned": "đã chuyển xử lý"
 		}
 	},
 	"pet": {

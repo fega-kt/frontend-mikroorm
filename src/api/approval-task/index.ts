@@ -1,5 +1,5 @@
 import type { SignaturePlacement, SigningPreparation } from "../signing-certificate/types";
-import type { ApprovalRateStats, ApprovedStats, BulkApproveResult, InboxItem, InboxSearchParams } from "./types";
+import type { ApprovalActivityItem, ApprovalRateStats, ApprovedStats, AvgApprovalTimeStats, BulkApproveResult, InboxItem, InboxSearchParams } from "./types";
 import { PDF_CONVERT_TIMEOUT_MS } from "../file-view";
 import { ApiService, CrudServiceBase } from "../service-base";
 
@@ -26,6 +26,14 @@ export class ApprovalTaskService extends CrudServiceBase<InboxItem> {
 
 	fetchApprovalRateStats() {
 		return this.get<ApprovalRateStats>("stats/approval-rate", { ignoreLoading: true });
+	}
+
+	fetchAvgApprovalTime() {
+		return this.get<AvgApprovalTimeStats>("stats/avg-approval-time", { ignoreLoading: true });
+	}
+
+	fetchActivity() {
+		return this.get<ApprovalActivityItem[]>("activity", { ignoreLoading: true });
 	}
 
 	fetchAct(requestId: string, action: ApprovalActionType, comment?: string) {

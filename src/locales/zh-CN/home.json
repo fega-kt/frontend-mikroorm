@@ -78,16 +78,21 @@
 		"unit": "天 / 步",
 		"faster": "快了 {{days}} 天",
 		"slower": "慢了 {{days}} 天",
-		"days": "{{days}} 天"
+		"days": "{{days}} 天",
+		"empty": "本月暂无审批记录"
 	},
 	"activity": {
 		"title": "审批动态",
+		"you": "你",
+		"system": "系统",
+		"to": "给",
+		"empty": "近 30 天暂无动态",
 		"kind": {
 			"approved": "通过了",
 			"rejected": "驳回了",
 			"returned": "退回了",
 			"submitted": "提交了申请",
-			"delegated": "委托审批给"
+			"reassigned": "转交了"
 		}
 	},
 	"pet": {

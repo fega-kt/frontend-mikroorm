@@ -1,3 +1,4 @@
+import type { ApprovalActivityItem, AvgApprovalTimeStats } from "#src/api/approval-task";
 import type { Delegation, MyRequest, PendingApproval, RequestTypeCode } from "./mock";
 import { approvalDelegationService } from "#src/api/approval-delegation";
 import { approvalRequestService } from "#src/api/approval-request";
@@ -35,23 +36,28 @@ export interface ApprovalDashboardData {
 	pending: (PendingApproval & { dueAt?: string })[]
 	myRequests: MyRequest[]
 	delegation: { outgoing?: Delegation, incoming?: Delegation }
+	/** Thời gian duyệt trung bình; undefined khi chưa tải được */
+	avgTime?: AvgApprovalTimeStats
+	activity: ApprovalActivityItem[]
 	loading: boolean
 	reload: () => Promise<void>
 }
 
-/** Dữ liệu thật cho các ô dashboard: đơn chờ tôi duyệt, đơn của tôi, ủy quyền đang hiệu lực */
+/** Dữ liệu thật cho các ô dashboard: đơn chờ tôi duyệt, đơn của tôi, ủy quyền đang hiệu lực, thời gian duyệt trung bình, hoạt động gần đây */
 export function useApprovalDashboard(): ApprovalDashboardData {
 	const { t } = useTranslation();
 	const [pending, setPending] = useState<ApprovalDashboardData["pending"]>([]);
 	const [myRequests, setMyRequests] = useState<MyRequest[]>([]);
 	const [delegation, setDelegation] = useState<ApprovalDashboardData["delegation"]>({});
 	const [stats, setStats] = useState<ApprovalMonthStats>(EMPTY_STATS);
+	const [avgTime, setAvgTime] = useState<AvgApprovalTimeStats>();
+	const [activity, setActivity] = useState<ApprovalActivityItem[]>([]);
 	const [loading, setLoading] = useState(true);
 
 	const reload = useCallback(async () => {
 		setLoading(true);
 		try {
-			const [inbox, mine, outgoing, incoming, approved, rate] = await Promise.all([
+			const [inbox, mine, outgoing, incoming, approved, rate, avg, recent] = await Promise.all([
 				approvalTaskService.fetchInbox({ tab: "pending", limit: 10 }),
 				approvalRequestService.fetchMine({ limit: 20 }),
 				approvalDelegationService.fetchList({ tab: "mine", activeOnly: true, limit: 5 }),
@@ -59,7 +65,11 @@ export function useApprovalDashboard(): ApprovalDashboardData {
 				// Thống kê lỗi thì chỉ hai thẻ KPI về 0, không làm hỏng cả dashboard
 				approvalTaskService.fetchApprovedStats().catch(() => undefined),
 				approvalTaskService.fetchApprovalRateStats().catch(() => undefined),
+				approvalTaskService.fetchAvgApprovalTime().catch(() => undefined),
+				approvalTaskService.fetchActivity().catch(() => undefined),
 			]);
+			setAvgTime(avg);
+			setActivity(recent ?? []);
 
 			setStats({
 				approvedThisMonth: approved?.thisMonth ?? 0,
@@ -130,5 +140,5 @@ export function useApprovalDashboard(): ApprovalDashboardData {
 		reload();
 	}, [reload]);
 
-	return { stats, pending, myRequests, delegation, loading, reload };
+	return { stats, pending, myRequests, delegation, avgTime, activity, loading, reload };
 }
