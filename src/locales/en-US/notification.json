@@ -56,5 +56,10 @@
 		"title": "A request was shared with you",
 		"message": "Request {{code}} {{title}} was shared with you.",
 		"message_withMessage": "Request {{code}} {{title}} was shared with you. Message: “{{message}}”"
+	},
+	"APPROVAL_COMMENTED": {
+		"title": "New comment on a request",
+		"message": "There is a new comment on request {{code}} {{title}}.",
+		"message_withMessage": "New comment on request {{code}} {{title}}: “{{message}}”"
 	}
 }

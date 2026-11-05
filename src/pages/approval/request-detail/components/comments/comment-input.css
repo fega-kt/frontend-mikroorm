@@ -1,0 +1,47 @@
+/* Ô nhập bình luận (tiptap): khung giống ô nhập của antd, @mention là một cụm tô màu */
+
+.comment-input-box {
+	border: 1px solid var(--ant-color-border);
+	border-radius: var(--ant-border-radius);
+	background: var(--ant-color-bg-container);
+	padding: 4px 11px;
+	transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.comment-input-box:focus-within {
+	border-color: var(--ant-color-primary);
+	box-shadow: 0 0 0 2px var(--ant-color-primary-bg);
+}
+
+.comment-input-box .tiptap {
+	outline: none;
+	min-height: 44px;
+	max-height: 200px;
+	overflow-y: auto;
+	font-size: 14px;
+	line-height: 1.6;
+	color: var(--ant-color-text);
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.comment-input-box .tiptap p {
+	margin: 0;
+}
+
+.comment-input-box .tiptap p.is-editor-empty:first-child::before {
+	content: attr(data-placeholder);
+	float: left;
+	height: 0;
+	color: var(--ant-color-text-placeholder);
+	pointer-events: none;
+}
+
+/* @mention: một cụm duy nhất — Backspace sau nó xóa cả cụm */
+.comment-mention {
+	color: var(--ant-color-primary);
+	background: var(--ant-color-primary-bg);
+	border-radius: 4px;
+	padding: 0 3px;
+	font-weight: 500;
+}

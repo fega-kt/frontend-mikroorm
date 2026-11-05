@@ -13,12 +13,14 @@ import { FileViewer } from "#src/components/file-viewer";
 import { PeoplePicker } from "#src/components/people-picker";
 import { SectionCard } from "#src/components/section-card";
 import { ApprovalPath } from "#src/router/extra-info";
+import { useUserStore } from "#src/store/user";
 import {
 	ArrowLeftOutlined,
 	ArrowRightOutlined,
 	BranchesOutlined,
 	FileTextOutlined,
 	HistoryOutlined,
+	MessageOutlined,
 	NodeIndexOutlined,
 	PaperClipOutlined,
 	ProfileOutlined,
@@ -40,6 +42,7 @@ import { DATE_TIME_FORMAT } from "../lib/payload";
 import { collectUserNames } from "../lib/progress";
 import { buildRounds } from "../lib/rounds";
 import ApprovalRequestForm from "../request-form";
+import { CommentPanel, mentionCandidates } from "./components/comments";
 import { HistoryTimeline } from "./components/history-timeline";
 import { RequestActions } from "./components/request-actions";
 import { RoundFiles } from "./components/round-files";
@@ -56,6 +59,7 @@ enum DetailTab {
 	Info = "info",
 	Progress = "progress",
 	Files = "files",
+	Comments = "comments",
 	History = "history",
 }
 
@@ -144,6 +148,8 @@ export default function ApprovalRequestDetailPage() {
 		setStepNodeId(null);
 	};
 
+	const currentUserId = useUserStore(state => state.id);
+	const commentCandidates = useMemo(() => (detail ? mentionCandidates(detail, currentUserId) : []), [detail, currentUserId]);
 	const userNames = useMemo(() => (detail ? collectUserNames(detail) : {}), [detail]);
 
 	const run = async (fn: () => Promise<unknown>, successKey: string) => {
@@ -461,6 +467,21 @@ export default function ApprovalRequestDetailPage() {
 									onDownload={downloadFile}
 									onDownloadPdf={downloadPdfFile}
 								/>
+							),
+						},
+						{
+							key: DetailTab.Comments,
+							label: tabLabel(<MessageOutlined />, t("approval.detail.comments"), detail.commentCount),
+							children: (
+								<SectionCard icon={<MessageOutlined />} title={t("approval.detail.comments")}>
+									<CommentPanel
+										key={detail.id}
+										requestId={detail.id}
+										canComment={!!detail.permissions.canComment}
+										candidates={commentCandidates}
+										onChanged={load}
+									/>
+								</SectionCard>
 							),
 						},
 						{

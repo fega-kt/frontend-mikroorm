@@ -236,6 +236,7 @@
 		"info": "申请信息",
 		"progress": "流程进度",
 		"timeline": "处理记录",
+		"comments": "评论",
 		"reviewProgress": "审批进度",
 		"viewFullGraph": "查看完整流程图",
 		"waitingFor": "等待 {{name}} 审批",
@@ -286,6 +287,21 @@
 		"forGroup": "代表 {{name}}",
 		"groupShared": "全组共同处理",
 		"assignedFrom": "由 {{name}} 分派"
+	},
+	"comment": {
+		"placeholder": "发表评论，输入 @ 可提及申请中的人",
+		"replyPlaceholder": "写下回复…",
+		"send": "发送",
+		"reply": "回复",
+		"edited": "（已编辑）",
+		"deleted": "该评论已被删除",
+		"confirmDelete": "删除这条评论？",
+		"empty": "暂无评论",
+		"readOnly": "你只能查看该申请的评论。",
+		"tooLong": "评论最多 {{max}} 个字符",
+		"loadMore": "加载更多评论（{{count}}）",
+		"noMentionResult": "没有匹配的人",
+		"system": "系统"
 	},
 	"share": {
 		"title": "分享申请",

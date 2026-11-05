@@ -236,6 +236,7 @@
 		"info": "Thông tin tờ trình",
 		"progress": "Sơ đồ tiến trình",
 		"timeline": "Lịch sử xử lý",
+		"comments": "Bình luận",
 		"reviewProgress": "Tiến trình duyệt",
 		"viewFullGraph": "Xem sơ đồ đầy đủ",
 		"waitingFor": "Đang chờ {{name}} duyệt",
@@ -286,6 +287,21 @@
 		"forGroup": "thay mặt {{name}}",
 		"groupShared": "Cả nhóm cùng xử lý",
 		"assignedFrom": "được chia từ {{name}}"
+	},
+	"comment": {
+		"placeholder": "Viết bình luận, gõ @ để nhắc người trong tờ trình",
+		"replyPlaceholder": "Viết phản hồi…",
+		"send": "Gửi",
+		"reply": "Trả lời",
+		"edited": "(đã chỉnh sửa)",
+		"deleted": "Bình luận đã bị xóa",
+		"confirmDelete": "Xóa bình luận này?",
+		"empty": "Chưa có bình luận nào",
+		"readOnly": "Bạn chỉ có quyền xem bình luận của tờ trình này.",
+		"tooLong": "Bình luận tối đa {{max}} ký tự",
+		"loadMore": "Xem thêm bình luận ({{count}})",
+		"noMentionResult": "Không có người phù hợp",
+		"system": "Hệ thống"
 	},
 	"share": {
 		"title": "Chia sẻ tờ trình",

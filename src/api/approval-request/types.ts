@@ -164,6 +164,44 @@ export interface ApprovalShareItem {
 	createdAt: string
 }
 
+/** Bình luận trong tờ trình; bình luận gốc đã xóa có content = null (vẫn giữ chỗ cho phản hồi bên dưới) */
+export interface ApprovalCommentBase {
+	id: string
+	parentId: string | null
+	/** Vòng duyệt lúc viết */
+	round: number
+	content: string | null
+	/** Người được nhắc lúc viết */
+	mentions: UserBrief[]
+	author: UserBrief | null
+	createdAt: string
+	/** Có giá trị = bình luận đã từng được sửa (thời điểm sửa gần nhất) */
+	editedAt: string | null
+	deleted: boolean
+	/** Là tác giả và chưa xóa: được sửa / xóa */
+	canEdit: boolean
+}
+
+export interface ApprovalComment extends ApprovalCommentBase {
+	/** Phản hồi trực tiếp theo thứ tự thời gian; mỗi phản hồi lại có `replies` của nó (cây nhiều cấp) */
+	replies: ApprovalComment[]
+}
+
+export interface ApprovalCommentSearchParams {
+	page?: number
+	limit?: number
+	/** Chỉ lấy bình luận của một vòng duyệt */
+	round?: number
+}
+
+export interface ApprovalCommentPayload {
+	content: string
+	/** Trả lời một bình luận (phản hồi của phản hồi được gom về bình luận gốc) */
+	parentId?: string
+	/** Người được nhắc — phải là người đã có mặt trong tờ trình, nếu không backend báo lỗi */
+	mentionIds?: string[]
+}
+
 export interface ApprovalSharePayload {
 	/** Id các principal (người / nhóm) nhận */
 	principals: string[]
@@ -271,9 +309,13 @@ export interface ApprovalRequestDetail {
 	histories: ApprovalHistoryItem[]
 	/** Những người / nhóm được chia sẻ; thiếu khi backend chưa hỗ trợ */
 	shares?: ApprovalShareItem[]
+	/** Số bình luận chưa xóa; thiếu khi backend chưa hỗ trợ */
+	commentCount?: number
 	permissions: {
 		/** Người duyệt, người trình, người tạo được chia sẻ; thiếu = không chia sẻ được */
 		canShare?: boolean
+		/** Người trình / người duyệt, trừ phiếu nháp; người chỉ được chia sẻ chỉ xem. Thiếu = không bình luận được */
+		canComment?: boolean
 		canEdit: boolean
 		canSubmit: boolean
 		canDelete: boolean
