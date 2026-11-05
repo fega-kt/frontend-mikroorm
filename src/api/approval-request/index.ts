@@ -1,6 +1,9 @@
 import type { PresignedUpload } from "#src/api/attachment";
 import type { PdfSignatureInfo } from "#src/api/signing-certificate/types";
 import type {
+	ApprovalComment,
+	ApprovalCommentPayload,
+	ApprovalCommentSearchParams,
 	ApprovalRequestDetail,
 	ApprovalRequestListItem,
 	ApprovalRequestPayload,
@@ -101,6 +104,24 @@ export class ApprovalRequestService extends CrudServiceBase<ApprovalRequestListI
 
 	fetchRemoveShare(id: string, shareId: string) {
 		return this.delete<void>(`${id}/shares/${shareId}`, { ignoreLoading: true });
+	}
+
+	/** Bình luận: phân trang theo bình luận gốc, kèm toàn bộ phản hồi */
+	fetchComments(id: string, params?: ApprovalCommentSearchParams) {
+		return this.get<{ data: ApprovalComment[], total: number, page: number, limit: number }>(`${id}/comments`, { searchParams: params as never, ignoreLoading: true });
+	}
+
+	fetchAddComment(id: string, data: ApprovalCommentPayload) {
+		return this.post<{ id: string }>(`${id}/comments`, { json: data as never, ignoreLoading: true });
+	}
+
+	/** Sửa chỉ đổi nội dung; người được nhắc giữ như lúc viết */
+	fetchUpdateComment(id: string, commentId: string, content: string) {
+		return this.patch<{ id: string }>(`${id}/comments/${commentId}`, { json: { content } as never, ignoreLoading: true });
+	}
+
+	fetchRemoveComment(id: string, commentId: string) {
+		return this.delete<void>(`${id}/comments/${commentId}`, { ignoreLoading: true });
 	}
 }
 

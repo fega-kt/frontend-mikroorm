@@ -236,6 +236,7 @@
 		"info": "Request details",
 		"progress": "Progress",
 		"timeline": "History",
+		"comments": "Comments",
 		"reviewProgress": "Approval progress",
 		"viewFullGraph": "View full diagram",
 		"waitingFor": "Waiting for {{name}} to review",
@@ -286,6 +287,21 @@
 		"forGroup": "on behalf of {{name}}",
 		"groupShared": "Whole group can act",
 		"assignedFrom": "assigned from {{name}}"
+	},
+	"comment": {
+		"placeholder": "Write a comment, type @ to mention someone in the request",
+		"replyPlaceholder": "Write a reply…",
+		"send": "Send",
+		"reply": "Reply",
+		"edited": "(edited)",
+		"deleted": "This comment was deleted",
+		"confirmDelete": "Delete this comment?",
+		"empty": "No comments yet",
+		"readOnly": "You can only view the comments of this request.",
+		"tooLong": "Comments are limited to {{max}} characters",
+		"loadMore": "Load more comments ({{count}})",
+		"noMentionResult": "No matching people",
+		"system": "System"
 	},
 	"share": {
 		"title": "Share request",

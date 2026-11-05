@@ -56,5 +56,10 @@
 		"title": "Tờ trình được chia sẻ với bạn",
 		"message": "Tờ trình {{code}} {{title}} được chia sẻ với bạn.",
 		"message_withMessage": "Tờ trình {{code}} {{title}} được chia sẻ với bạn. Lời nhắn: “{{message}}”"
+	},
+	"APPROVAL_COMMENTED": {
+		"title": "Bình luận mới trong tờ trình",
+		"message": "Có bình luận mới trong tờ trình {{code}} {{title}}.",
+		"message_withMessage": "Có bình luận mới trong tờ trình {{code}} {{title}}: “{{message}}”"
 	}
 }

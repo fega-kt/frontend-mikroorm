@@ -56,5 +56,10 @@
 		"title": "有申请分享给你",
 		"message": "申请 {{code}} {{title}} 已分享给你。",
 		"message_withMessage": "申请 {{code}} {{title}} 已分享给你。留言：“{{message}}”"
+	},
+	"APPROVAL_COMMENTED": {
+		"title": "申请有新评论",
+		"message": "申请 {{code}} {{title}} 有新评论。",
+		"message_withMessage": "申请 {{code}} {{title}} 有新评论：“{{message}}”"
 	}
 }
