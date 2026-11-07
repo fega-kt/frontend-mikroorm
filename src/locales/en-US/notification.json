@@ -61,5 +61,13 @@
 		"title": "New comment on a request",
 		"message": "There is a new comment on request {{code}} {{title}}.",
 		"message_withMessage": "New comment on request {{code}} {{title}}: “{{message}}”"
+	},
+	"EXPORT_READY": {
+		"title": "Your export is ready",
+		"message": "File {{name}} ({{count}} rows) is ready, click to download."
+	},
+	"EXPORT_FAILED": {
+		"title": "Export failed",
+		"message": "The export {{name}} did not finish, click to see why."
 	}
 }

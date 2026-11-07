@@ -61,5 +61,13 @@
 		"title": "申请有新评论",
 		"message": "申请 {{code}} {{title}} 有新评论。",
 		"message_withMessage": "申请 {{code}} {{title}} 有新评论：“{{message}}”"
+	},
+	"EXPORT_READY": {
+		"title": "导出文件已就绪",
+		"message": "文件 {{name}}（{{count}} 行）已生成，点击下载。"
+	},
+	"EXPORT_FAILED": {
+		"title": "导出失败",
+		"message": "导出 {{name}} 未完成，点击查看原因。"
 	}
 }

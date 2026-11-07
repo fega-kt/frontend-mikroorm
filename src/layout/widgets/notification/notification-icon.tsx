@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import { NotificationType } from "#src/api/notifications";
 
-import { AuditOutlined, BellOutlined, CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined, MessageOutlined, RiseOutlined, RollbackOutlined, SafetyOutlined, ShareAltOutlined, StopOutlined } from "@ant-design/icons";
+import { AuditOutlined, BellOutlined, CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined, FileExcelOutlined, MessageOutlined, RiseOutlined, RollbackOutlined, SafetyOutlined, ShareAltOutlined, StopOutlined } from "@ant-design/icons";
 
 interface NotificationIconConfig {
 	icon: ReactNode
@@ -26,6 +26,8 @@ const ICON_BY_TYPE: Partial<Record<NotificationType, NotificationIconConfig>> = 
 	[NotificationType.APPROVAL_STEP_APPROVED]: { icon: <CheckCircleOutlined />, color: "#52c41a" },
 	[NotificationType.APPROVAL_SHARED]: { icon: <ShareAltOutlined />, color: "#13c2c2" },
 	[NotificationType.APPROVAL_COMMENTED]: { icon: <MessageOutlined />, color: "#1677ff" },
+	[NotificationType.EXPORT_READY]: { icon: <FileExcelOutlined />, color: "#52c41a" },
+	[NotificationType.EXPORT_FAILED]: { icon: <FileExcelOutlined />, color: "#f5222d" },
 };
 
 export function getNotificationIcon(type: NotificationType): NotificationIconConfig {

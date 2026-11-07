@@ -1,8 +1,13 @@
 import type { ApprovalRequestListItem } from "#src/api/approval-request";
+import type { ExportQuery } from "#src/components/export-button";
+import type { ColumnsVisibility } from "#src/components/export-button/columns";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import { approvalRequestService, ApprovalRequestStatus } from "#src/api/approval-request";
 import { BasicTable } from "#src/components/basic-table";
+import { ExportButton } from "#src/components/export-button";
+import { visibleExportColumns } from "#src/components/export-button/columns";
 import { PeoplePicker } from "#src/components/people-picker";
+import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import { approvalRequestPath } from "#src/router/extra-info";
 import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Popconfirm, Tooltip, Typography } from "antd";
@@ -13,6 +18,19 @@ import { useNavigate } from "react-router";
 import { DATE_TIME_FORMAT } from "../lib/payload";
 import { RequestScope, RequestTableMode, SCOPE_STATUSES } from "../lib/scope";
 import { PriorityTag, RequestStatusTag } from "./status-tag";
+
+/** Cột bảng (theo `key`) → cột xuất của backend */
+const EXPORT_MAPPING: Record<string, string[]> = {
+	code: ["code"],
+	title: ["title"],
+	requestType: ["requestType"],
+	requester: ["requester"],
+	department: ["department"],
+	priority: ["priority"],
+	status: ["status"],
+	submittedAt: ["submittedAt"],
+	updatedAt: ["updatedAt"],
+};
 
 interface RequestTableProps {
 	/** mine: tờ trình của tôi; all: tất cả tờ trình (quản trị) */
@@ -27,6 +45,9 @@ export function RequestTable({ mode, title, scope = RequestScope.All }: RequestT
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const actionRef = useRef<ActionType>(null);
+	// Điều kiện lần tải gần nhất (đúng thứ đã gửi lên API) và cột người dùng đang hiện — để xuất Excel đúng cái đang xem
+	const lastQuery = useRef<ExportQuery>(undefined);
+	const [visibility, setVisibility] = useState<ColumnsVisibility>({});
 	const [typeOptions, setTypeOptions] = useState<Record<string, { text: string }>>({});
 
 	useEffect(() => {
@@ -49,6 +70,7 @@ export function RequestTable({ mode, title, scope = RequestScope.All }: RequestT
 		{ title: t("approval.fields.search"), dataIndex: "search", hideInTable: true },
 		{
 			title: t("approval.fields.code"),
+			key: "code",
 			dataIndex: "code",
 			width: 140,
 			hideInSearch: true,
@@ -56,6 +78,7 @@ export function RequestTable({ mode, title, scope = RequestScope.All }: RequestT
 		},
 		{
 			title: t("approval.fields.title"),
+			key: "title",
 			dataIndex: "title",
 			ellipsis: true,
 			width: 280,
@@ -72,6 +95,7 @@ export function RequestTable({ mode, title, scope = RequestScope.All }: RequestT
 		},
 		{
 			title: t("approval.fields.requestType"),
+			key: "requestType",
 			dataIndex: "requestTypeId",
 			width: 170,
 			ellipsis: true,
@@ -83,6 +107,7 @@ export function RequestTable({ mode, title, scope = RequestScope.All }: RequestT
 			? [
 				{
 					title: t("approval.fields.requester"),
+					key: "requester",
 					dataIndex: "requester",
 					width: 200,
 					hideInSearch: true,
@@ -92,6 +117,7 @@ export function RequestTable({ mode, title, scope = RequestScope.All }: RequestT
 				} satisfies ProColumns<ApprovalRequestListItem>,
 				{
 					title: t("approval.fields.department"),
+					key: "department",
 					dataIndex: ["department", "name"],
 					width: 160,
 					hideInSearch: true,
@@ -100,6 +126,7 @@ export function RequestTable({ mode, title, scope = RequestScope.All }: RequestT
 			: []),
 		{
 			title: t("approval.form.priority"),
+			key: "priority",
 			dataIndex: "priority",
 			width: 120,
 			hideInSearch: true,
@@ -107,6 +134,7 @@ export function RequestTable({ mode, title, scope = RequestScope.All }: RequestT
 		},
 		{
 			title: t("approval.fields.status"),
+			key: "status",
 			dataIndex: "status",
 			width: 130,
 			valueType: "select",
@@ -117,6 +145,7 @@ export function RequestTable({ mode, title, scope = RequestScope.All }: RequestT
 		},
 		{
 			title: t("approval.fields.submittedAt"),
+			key: "submittedAt",
 			dataIndex: "submittedAt",
 			width: 150,
 			hideInSearch: true,
@@ -124,6 +153,7 @@ export function RequestTable({ mode, title, scope = RequestScope.All }: RequestT
 		},
 		{
 			title: t("approval.fields.updatedAt"),
+			key: "updatedAt",
 			dataIndex: "updatedAt",
 			width: 150,
 			hideInSearch: true,
@@ -168,22 +198,37 @@ export function RequestTable({ mode, title, scope = RequestScope.All }: RequestT
 			columns={columns}
 			actionRef={actionRef}
 			rowKey="id"
+			columnsState={{ value: visibility, onChange: setVisibility }}
 			request={async (params) => {
+				// Cùng một bộ lọc cho danh sách và cho xuất Excel (đã gồm nhóm trạng thái ngầm của màn)
+				const query = mode === RequestTableMode.Mine ? { ...params, statuses: params.status ? undefined : scopeStatuses?.join(",") } : params;
 				const { data, total } = mode === RequestTableMode.Mine
-					? await approvalRequestService.fetchMine({ ...params, statuses: params.status ? undefined : scopeStatuses?.join(",") })
-					: await approvalRequestService.fetchAll(params);
+					? await approvalRequestService.fetchMine(query)
+					: await approvalRequestService.fetchAll(query);
+				lastQuery.current = { filter: query, total };
 				return { data, total, success: true };
 			}}
 			onRow={record => ({ onClick: () => view(record.id), style: { cursor: "pointer" } })}
 			headerTitle={title}
 			// Tạo mới chỉ ở màn "Đang soạn" (và trang chủ), các nhóm trạng thái khác chỉ để theo dõi
-			toolBarRender={() => mode === RequestTableMode.Mine && scope === RequestScope.Draft
-				? [
-					<Button key="create" type="primary" icon={<PlusCircleOutlined />} onClick={() => navigate(approvalRequestPath.create)}>
-						{t("approval.actions.create")}
-					</Button>,
-				]
-				: []}
+			toolBarRender={() => [
+				<ExportButton
+					key="export"
+					resource={mode === RequestTableMode.Mine ? "approval-request-mine" : "approval-request-all"}
+					permissions={mode === RequestTableMode.Mine
+						? [PermissionType.ExportApproval]
+						: [PermissionType.MenuAllApprovalRequest, PermissionType.ExportApproval]}
+					getQuery={() => lastQuery.current}
+					getColumns={() => visibleExportColumns(columns, visibility, EXPORT_MAPPING)}
+				/>,
+				...(mode === RequestTableMode.Mine && scope === RequestScope.Draft
+					? [
+						<Button key="create" type="primary" icon={<PlusCircleOutlined />} onClick={() => navigate(approvalRequestPath.create)}>
+							{t("approval.actions.create")}
+						</Button>,
+					]
+					: []),
+			]}
 		/>
 	);
 }

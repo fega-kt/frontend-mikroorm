@@ -6,6 +6,7 @@ export function getConstantColumns(t: (key: string) => string): ProColumns<Group
 	return [
 		{
 			title: t("system.userGroup.name"),
+			key: "name",
 			dataIndex: "name",
 			width: 200,
 			disable: true,
@@ -13,12 +14,14 @@ export function getConstantColumns(t: (key: string) => string): ProColumns<Group
 		},
 		{
 			title: t("system.userGroup.description"),
+			key: "description",
 			dataIndex: "description",
 			width: 300,
 			ellipsis: true,
 		},
 		{
 			title: t("common.createdBy"),
+			key: "createdBy",
 			dataIndex: "createdBy",
 			hideInSearch: true,
 			width: 180,
@@ -26,6 +29,7 @@ export function getConstantColumns(t: (key: string) => string): ProColumns<Group
 		},
 		{
 			title: t("common.createdAt"),
+			key: "createdAt",
 			dataIndex: "createdAt",
 			valueType: "dateTime",
 			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
@@ -41,6 +45,7 @@ export function getConstantColumns(t: (key: string) => string): ProColumns<Group
 		},
 		{
 			title: t("common.updatedAt"),
+			key: "updatedAt",
 			dataIndex: "updatedAt",
 			valueType: "dateTime",
 			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },

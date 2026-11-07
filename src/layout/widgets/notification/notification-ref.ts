@@ -1,4 +1,4 @@
-import { approvalRequestPath } from "#src/router/extra-info";
+import { approvalRequestPath, exportHistoryPath } from "#src/router/extra-info";
 
 /**
  * refType (tên bảng BE) → trang chi tiết của bản ghi `refId`, mở khi bấm vào noti.
@@ -7,6 +7,8 @@ import { approvalRequestPath } from "#src/router/extra-info";
  */
 const ROUTE_BY_TABLE: Record<string, (refId: string) => string> = {
 	approval_requests: refId => approvalRequestPath.detail(refId),
+	// Xuất Excel chạy nền: mở lịch sử xuất để tải file (hoặc xem lý do lỗi)
+	export_jobs: () => exportHistoryPath,
 };
 
 export function getNotificationRoute(refType?: string | null, refId?: string | null): string | undefined {

@@ -8,6 +8,7 @@ export function getConstantColumns(t: TFunction<"translation", undefined>): ProC
 	return [
 		{
 			title: t("system.dept.name"),
+			key: "name",
 			dataIndex: "name",
 			width: 200,
 			disable: true,
@@ -20,12 +21,14 @@ export function getConstantColumns(t: TFunction<"translation", undefined>): ProC
 		},
 		{
 			title: t("system.dept.code"),
+			key: "code",
 			dataIndex: "code",
 			width: 150,
 			ellipsis: true,
 		},
 		{
 			title: t("system.dept.parentCode"),
+			key: "parentCode",
 			dataIndex: "parentCode",
 			width: 200,
 			ellipsis: true,
@@ -34,6 +37,7 @@ export function getConstantColumns(t: TFunction<"translation", undefined>): ProC
 		{
 			disable: true,
 			title: t("common.status"),
+			key: "status",
 			dataIndex: "status",
 			valueType: "select",
 			ellipsis: true,
@@ -55,6 +59,7 @@ export function getConstantColumns(t: TFunction<"translation", undefined>): ProC
 		},
 		{
 			title: t("common.createdAt"),
+			key: "createdAt",
 			dataIndex: "createdAt",
 			valueType: "dateTime",
 			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
@@ -70,6 +75,7 @@ export function getConstantColumns(t: TFunction<"translation", undefined>): ProC
 		},
 		{
 			title: t("common.updatedAt"),
+			key: "updatedAt",
 			dataIndex: "updatedAt",
 			valueType: "dateTime",
 			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },

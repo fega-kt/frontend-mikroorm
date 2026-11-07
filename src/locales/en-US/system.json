@@ -46,6 +46,7 @@
 			"approval-workflow": "Approval workflows",
 			"publish": "Publish",
 			"approval-request-all": "All requests",
+			"export": "Export Excel",
 			"reassign": "Reassign approver",
 			"manage": "Manage delegations",
 			"email-template": "Email templates",

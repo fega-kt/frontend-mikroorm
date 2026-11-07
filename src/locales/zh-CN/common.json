@@ -49,6 +49,7 @@
 		"approvalAllRequests": "全部申请",
 		"approvalWorkflows": "审批流程",
 		"approvalRequestDetail": "申请详情",
+		"exportHistory": "导出历史",
 		"approvalRequestEdit": "编辑申请",
 		"approvalWorkflowDesigner": "流程设计",
 		"administration": "系统管理",
@@ -230,5 +231,8 @@
 		"lastSeen": "最后活跃 {{time}}",
 		"locked": "已锁定",
 		"lockedNote": "该账号已停用，无法再给此人分配新工作。"
-	}
+	},
+	"exportExcel": "导出 Excel",
+	"exportStarted": "正在下载 {{count}} 行…",
+	"exportEmpty": "没有可导出的数据"
 }

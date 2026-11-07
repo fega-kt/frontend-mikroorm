@@ -1,25 +1,59 @@
 import type { UserEntity } from "#src/api/user/types";
 import type { HistoryDrawerRef } from "#src/components/activity-history/history-drawer";
+import type { ExportQuery } from "#src/components/export-button";
+import type { ColumnsVisibility } from "#src/components/export-button/columns";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import type { DetailRef } from "./components/detail";
 import { userService } from "#src/api/user";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
+import { ExportButton } from "#src/components/export-button";
+import { visibleExportColumns } from "#src/components/export-button/columns";
 import { createActionColumn } from "#src/components/row-actions/create-action-column";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Detail } from "./components/detail";
 import { History } from "./components/history";
 import { getConstantColumns } from "./constants";
 
+/** Cột bảng (theo `key`) → cột xuất của backend; ô họ tên kèm email */
+const EXPORT_MAPPING: Record<string, string[]> = {
+	fullName: [
+		"fullName",
+		"loginName",
+		"workEmail",
+	],
+	phoneNumber: [
+		"phoneNumber",
+	],
+	department: [
+		"department",
+	],
+	status: [
+		"status",
+	],
+	createdBy: [
+		"createdBy",
+	],
+	createdAt: [
+		"createdAt",
+	],
+	updatedAt: [
+		"updatedAt",
+	],
+};
+
 export default function User() {
 	const { t } = useTranslation();
 	const { canAccess } = useAccess();
 	const actionRef = useRef<ActionType>(null);
+	// Điều kiện lần tải gần nhất và cột đang hiện — để xuất Excel đúng cái đang xem
+	const lastQuery = useRef<ExportQuery>(undefined);
+	const [visibility, setVisibility] = useState<ColumnsVisibility>({});
 	const detailRef = useRef<DetailRef>(null);
 	const historyRef = useRef<HistoryDrawerRef>(null);
 
@@ -79,9 +113,11 @@ export default function User() {
 			<BasicTable<UserEntity>
 				adaptive
 				columns={columns}
+				columnsState={{ value: visibility, onChange: setVisibility }}
 				actionRef={actionRef}
 				request={async (params) => {
 					const { data, total } = await userService.fetchUserList(params);
+					lastQuery.current = { filter: params, total };
 					return {
 						data,
 						total,
@@ -90,6 +126,13 @@ export default function User() {
 				}}
 				headerTitle={t("common.menu.user")}
 				toolBarRender={() => [
+					<ExportButton
+						key="export"
+						resource="user"
+						permissions={[PermissionType.MenuUser, PermissionType.ExportUser]}
+						getQuery={() => lastQuery.current}
+						getColumns={() => visibleExportColumns(columns, visibility, EXPORT_MAPPING)}
+					/>,
 					<Button
 						key="add-user"
 						icon={<PlusCircleOutlined />}

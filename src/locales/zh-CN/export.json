@@ -1,0 +1,61 @@
+{
+	"dialog": {
+		"title": "导出大批量数据",
+		"message": "该列表有 {{rows}} 行，将在后台导出。文件就绪时会通知你，期间可以继续工作。",
+		"sendEmail": "完成后发送邮件（文件小于 10 MB 时作为附件）",
+		"confirm": "导出"
+	},
+	"queued": "已将 {{count}} 行加入导出队列，完成后会通知你。",
+	"viewHistory": "查看导出历史",
+	"history": {
+		"title": "导出历史",
+		"hint": "后台导出的文件保留 {{days}} 天后自动删除。",
+		"empty": "暂无后台导出记录",
+		"file": "文件",
+		"list": "列表",
+		"rows": "行数",
+		"status": {
+			"queued": "排队中",
+			"processing": "处理中",
+			"done": "已完成",
+			"failed": "失败",
+			"cancelled": "已取消",
+			"expired": "已过期"
+		},
+		"size": "大小",
+		"createdAt": "请求时间",
+		"expiresAt": "到期时间",
+		"actions": "操作",
+		"download": "下载",
+		"cancel": "取消",
+		"confirmCancel": "取消这次导出？",
+		"cancelled": "已请求取消",
+		"refresh": "刷新",
+		"progress": "{{processed}} / {{total}} 行",
+		"parts": "一个 zip 内含 {{count}} 个 xlsx 文件",
+		"email": {
+			"pending": "完成后发送邮件",
+			"sent": "已发送邮件",
+			"failed": "邮件发送失败"
+		},
+		"error": {
+			"TIMEOUT": "处理超时",
+			"WORKER_LOST": "处理被中断",
+			"UNKNOWN_RESOURCE": "该列表已不支持导出",
+			"FAILED": "生成文件时出错，请重试"
+		},
+		"resource": {
+			"approval-request-mine": "我的申请",
+			"approval-request-all": "全部申请",
+			"approval-inbox": "审批收件箱",
+			"approval-delegation": "授权",
+			"user": "用户",
+			"department": "部门",
+			"group": "用户组",
+			"role": "角色",
+			"activity-log": "操作日志",
+			"activity-log-queue": "邮件队列"
+		},
+		"statusColumn": "状态"
+	}
+}
