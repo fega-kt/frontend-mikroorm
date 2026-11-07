@@ -1,0 +1,61 @@
+{
+	"dialog": {
+		"title": "Xuất dữ liệu lớn",
+		"message": "Danh sách có {{rows}} dòng nên sẽ được xuất ở chế độ nền. Bạn sẽ nhận thông báo khi file sẵn sàng, có thể tiếp tục làm việc khác.",
+		"sendEmail": "Gửi email khi xong (đính kèm file nếu nhỏ hơn 10 MB)",
+		"confirm": "Xuất"
+	},
+	"queued": "Đã đưa {{count}} dòng vào hàng đợi xuất. Bạn sẽ nhận thông báo khi xong.",
+	"viewHistory": "Xem lịch sử xuất",
+	"history": {
+		"title": "Lịch sử xuất",
+		"hint": "File xuất chạy nền được giữ {{days}} ngày rồi tự xóa.",
+		"empty": "Chưa có lượt xuất nào chạy nền",
+		"file": "File",
+		"list": "Danh sách",
+		"rows": "Số dòng",
+		"status": {
+			"queued": "Đang chờ",
+			"processing": "Đang xử lý",
+			"done": "Hoàn tất",
+			"failed": "Lỗi",
+			"cancelled": "Đã hủy",
+			"expired": "Đã hết hạn"
+		},
+		"size": "Dung lượng",
+		"createdAt": "Yêu cầu lúc",
+		"expiresAt": "Hết hạn",
+		"actions": "Thao tác",
+		"download": "Tải về",
+		"cancel": "Hủy",
+		"confirmCancel": "Hủy lượt xuất này?",
+		"cancelled": "Đã gửi yêu cầu hủy",
+		"refresh": "Làm mới",
+		"progress": "{{processed}} / {{total}} dòng",
+		"parts": "{{count}} file xlsx trong một file zip",
+		"email": {
+			"pending": "Sẽ gửi email khi xong",
+			"sent": "Đã gửi email",
+			"failed": "Gửi email lỗi"
+		},
+		"error": {
+			"TIMEOUT": "Quá thời gian xử lý cho phép",
+			"WORKER_LOST": "Tiến trình xử lý bị gián đoạn",
+			"UNKNOWN_RESOURCE": "Danh sách không còn hỗ trợ xuất",
+			"FAILED": "Có lỗi khi tạo file, vui lòng thử lại"
+		},
+		"resource": {
+			"approval-request-mine": "Tờ trình của tôi",
+			"approval-request-all": "Tất cả tờ trình",
+			"approval-inbox": "Hộp chờ duyệt",
+			"approval-delegation": "Ủy quyền",
+			"user": "Người dùng",
+			"department": "Phòng ban",
+			"group": "Nhóm",
+			"role": "Vai trò",
+			"activity-log": "Nhật ký hoạt động",
+			"activity-log-queue": "Hàng đợi gửi mail"
+		},
+		"statusColumn": "Trạng thái"
+	}
+}

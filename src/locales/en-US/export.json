@@ -1,0 +1,61 @@
+{
+	"dialog": {
+		"title": "Export a large list",
+		"message": "This list has {{rows}} rows, so it will be exported in the background. You will get a notification when the file is ready and can keep working.",
+		"sendEmail": "Email me when it is done (the file is attached if it is under 10 MB)",
+		"confirm": "Export"
+	},
+	"queued": "{{count}} rows were queued for export. You will be notified when it is done.",
+	"viewHistory": "View export history",
+	"history": {
+		"title": "Export history",
+		"hint": "Background exports are kept for {{days}} days and then deleted.",
+		"empty": "No background exports yet",
+		"file": "File",
+		"list": "List",
+		"rows": "Rows",
+		"status": {
+			"queued": "Queued",
+			"processing": "Processing",
+			"done": "Done",
+			"failed": "Failed",
+			"cancelled": "Cancelled",
+			"expired": "Expired"
+		},
+		"size": "Size",
+		"createdAt": "Requested at",
+		"expiresAt": "Expires",
+		"actions": "Actions",
+		"download": "Download",
+		"cancel": "Cancel",
+		"confirmCancel": "Cancel this export?",
+		"cancelled": "Cancel requested",
+		"refresh": "Refresh",
+		"progress": "{{processed}} / {{total}} rows",
+		"parts": "{{count}} xlsx files in one zip",
+		"email": {
+			"pending": "Will email when done",
+			"sent": "Email sent",
+			"failed": "Email failed"
+		},
+		"error": {
+			"TIMEOUT": "Took longer than allowed",
+			"WORKER_LOST": "Processing was interrupted",
+			"UNKNOWN_RESOURCE": "This list can no longer be exported",
+			"FAILED": "The file could not be created, please try again"
+		},
+		"resource": {
+			"approval-request-mine": "My requests",
+			"approval-request-all": "All requests",
+			"approval-inbox": "Approval inbox",
+			"approval-delegation": "Delegations",
+			"user": "Users",
+			"department": "Departments",
+			"group": "Groups",
+			"role": "Roles",
+			"activity-log": "Activity log",
+			"activity-log-queue": "Email queue"
+		},
+		"statusColumn": "Status"
+	}
+}

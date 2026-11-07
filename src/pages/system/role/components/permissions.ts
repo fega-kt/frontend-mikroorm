@@ -8,6 +8,7 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.CreateUser,
 		PermissionType.UpdateUser,
 		PermissionType.DeleteUser,
+		PermissionType.ExportUser,
 	],
 	ROLE: [
 		PermissionType.MenuRole,
@@ -15,6 +16,7 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.CreateRole,
 		PermissionType.UpdateRole,
 		PermissionType.DeleteRole,
+		PermissionType.ExportRole,
 	],
 	DEPARTMENT: [
 		PermissionType.MenuDeparment,
@@ -22,6 +24,7 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.CreateDeparment,
 		PermissionType.UpdateDeparment,
 		PermissionType.DeleteDeparment,
+		PermissionType.ExportDepartment,
 	],
 	GROUP: [
 		PermissionType.MenuGroup,
@@ -29,6 +32,7 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.CreateGroup,
 		PermissionType.UpdateGroup,
 		PermissionType.DeleteGroup,
+		PermissionType.ExportGroup,
 	],
 	CATEGORY: [
 		PermissionType.MenuCategory,
@@ -57,6 +61,7 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.UpdateApprovalWorkflow,
 		PermissionType.PublishApprovalWorkflow,
 		PermissionType.DeleteApprovalWorkflow,
+		PermissionType.ExportApproval,
 	],
 	EMAIL_TEMPLATE: [
 		PermissionType.MenuEmailTemplate,
@@ -86,6 +91,7 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 		PermissionType.MenuActivityLog,
 		PermissionType.ViewActivityLogAll,
 		PermissionType.ViewActivityLogDepartment,
+		PermissionType.ExportActivityLog,
 	],
 	APPROVAL_REPORT: [
 		PermissionType.MenuApprovalReport,
@@ -103,6 +109,7 @@ export const PERMISSION_GROUPS: Record<string, PermissionType[]> = {
 	],
 	ACTIVITY_LOG_QUEUE: [
 		PermissionType.ViewActivityLogQueue,
+		PermissionType.ExportActivityLogQueue,
 		PermissionType.RetryActivityLogQueue,
 	],
 };

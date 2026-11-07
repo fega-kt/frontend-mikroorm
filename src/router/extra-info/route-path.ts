@@ -23,6 +23,9 @@ export enum ApprovalPath {
 	ReviewPending = "/approval/review/pending",
 }
 
+/** Lịch sử xuất Excel chạy nền (trang ẩn do backend cấp route) */
+export const exportHistoryPath = "/export-history";
+
 export const approvalRequestPath = {
 	create: `${ApprovalPath.Requests}/new`,
 	/** Xem và sửa dùng chung một link; chế độ do trạng thái tờ trình quyết định (nháp mở thẳng ở chế độ sửa) hoặc `state: { edit: true }` */

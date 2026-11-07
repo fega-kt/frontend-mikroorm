@@ -6,6 +6,7 @@ export function getConstantColumns(t: any): ProColumns<UserEntity>[] {
 	return [
 		{
 			title: t("system.user.fullName"),
+			key: "fullName",
 			dataIndex: "fullName",
 			width: 180,
 			disable: true,
@@ -13,12 +14,14 @@ export function getConstantColumns(t: any): ProColumns<UserEntity>[] {
 		},
 		{
 			title: t("system.user.phone"),
+			key: "phoneNumber",
 			dataIndex: "phoneNumber",
 			width: 140,
 			ellipsis: true,
 		},
 		{
 			title: t("system.dept.name"),
+			key: "department",
 			dataIndex: ["department", "name"],
 			width: 150,
 			hideInSearch: true,
@@ -26,6 +29,7 @@ export function getConstantColumns(t: any): ProColumns<UserEntity>[] {
 		},
 		{
 			title: t("common.status"),
+			key: "status",
 			dataIndex: "isActive",
 			width: 150,
 			valueType: "select",
@@ -36,6 +40,7 @@ export function getConstantColumns(t: any): ProColumns<UserEntity>[] {
 		},
 		{
 			title: t("common.createdBy"),
+			key: "createdBy",
 			dataIndex: "createdBy",
 			hideInSearch: true,
 			width: 180,
@@ -43,6 +48,7 @@ export function getConstantColumns(t: any): ProColumns<UserEntity>[] {
 		},
 		{
 			title: t("common.createdAt"),
+			key: "createdAt",
 			dataIndex: "createdAt",
 			valueType: "dateTime",
 			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
@@ -58,6 +64,7 @@ export function getConstantColumns(t: any): ProColumns<UserEntity>[] {
 		},
 		{
 			title: t("common.updatedAt"),
+			key: "updatedAt",
 			dataIndex: "updatedAt",
 			valueType: "dateTime",
 			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },

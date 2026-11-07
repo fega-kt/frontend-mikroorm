@@ -1,5 +1,7 @@
 import type { ApprovalActionType, InboxItem } from "#src/api/approval-task";
 import type { FormField } from "#src/api/setting/request-type/types";
+import type { ExportQuery } from "#src/components/export-button";
+import type { ColumnsVisibility } from "#src/components/export-button/columns";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import type { ActionModalRef } from "../components/action-modal";
 import { approvalRequestService } from "#src/api/approval-request";
@@ -8,7 +10,10 @@ import { approvalTaskService } from "#src/api/approval-task";
 import { PrincipalType } from "#src/api/system/principal";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
+import { ExportButton } from "#src/components/export-button";
+import { visibleExportColumns } from "#src/components/export-button/columns";
 import { PeoplePicker } from "#src/components/people-picker";
+import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import { approvalRequestPath } from "#src/router/extra-info";
 import { CheckOutlined, CloseOutlined, EyeOutlined, RollbackOutlined } from "@ant-design/icons";
 import { Button, Drawer, Space, Tag, Tooltip, Typography } from "antd";
@@ -33,12 +38,27 @@ const TAB_TITLE: Record<Tab, string> = {
 	all: "common.menu.approvalReview",
 };
 
+/** Cột bảng (theo `key`) → cột xuất của backend; ô tiêu đề kèm mã tờ trình, ô "ngày xử lý" kèm trạng thái xử lý */
+const EXPORT_MAPPING: Record<string, string[]> = {
+	title: ["code", "title"],
+	priority: ["priority"],
+	requestType: ["requestType"],
+	requester: ["requester", "department"],
+	step: ["step"],
+	dueAt: ["dueAt"],
+	actedAt: ["taskStatus", "actedAt"],
+	submittedAt: ["submittedAt"],
+};
+
 const NO_FIELDS: FormField[] = [];
 
 export default function ApprovalInbox() {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const actionRef = useRef<ActionType>(null);
+	// Điều kiện lần tải gần nhất và cột đang hiện — để xuất Excel đúng cái đang xem
+	const lastQuery = useRef<ExportQuery>(undefined);
+	const [visibility, setVisibility] = useState<ColumnsVisibility>({});
 	const actionModalRef = useRef<ActionModalRef>(null);
 	// /approval/review/{pending|done|all}
 	const segment = useLocation().pathname.split("/").filter(Boolean).pop() as Tab;
@@ -127,6 +147,7 @@ export default function ApprovalInbox() {
 		{ title: t("approval.fields.search"), dataIndex: "search", hideInTable: true },
 		{
 			title: t("approval.fields.title"),
+			key: "title",
 			dataIndex: ["request", "title"],
 			width: 280,
 			ellipsis: true,
@@ -141,6 +162,7 @@ export default function ApprovalInbox() {
 		},
 		{
 			title: t("approval.form.priority"),
+			key: "priority",
 			dataIndex: ["request", "priority"],
 			width: 110,
 			hideInSearch: true,
@@ -148,6 +170,7 @@ export default function ApprovalInbox() {
 		},
 		{
 			title: t("approval.fields.requestType"),
+			key: "requestType",
 			dataIndex: "requestTypeId",
 			width: 160,
 			valueType: "select",
@@ -156,6 +179,7 @@ export default function ApprovalInbox() {
 		},
 		{
 			title: t("approval.fields.requester"),
+			key: "requester",
 			dataIndex: ["request", "requester"],
 			width: 200,
 			hideInSearch: true,
@@ -165,6 +189,7 @@ export default function ApprovalInbox() {
 		},
 		{
 			title: t("approval.fields.step"),
+			key: "step",
 			dataIndex: "nodeName",
 			width: 180,
 			hideInSearch: true,
@@ -177,9 +202,10 @@ export default function ApprovalInbox() {
 			),
 		},
 		tab === "pending"
-			? { title: t("approval.fields.dueAt"), dataIndex: "dueAt", width: 130, hideInSearch: true, render: (_, item) => dueCell(item) }
+			? { title: t("approval.fields.dueAt"), key: "dueAt", dataIndex: "dueAt", width: 130, hideInSearch: true, render: (_, item) => dueCell(item) }
 			: {
 				title: t("approval.fields.actedAt"),
+				key: "actedAt",
 				dataIndex: "actedAt",
 				width: 190,
 				hideInSearch: true,
@@ -194,6 +220,7 @@ export default function ApprovalInbox() {
 			},
 		{
 			title: t("approval.fields.submittedAt"),
+			key: "submittedAt",
 			dataIndex: ["request", "submittedAt"],
 			width: 150,
 			hideInSearch: true,
@@ -234,8 +261,10 @@ export default function ApprovalInbox() {
 				actionRef={actionRef}
 				rowKey="id"
 				params={{ tab }}
+				columnsState={{ value: visibility, onChange: setVisibility }}
 				request={async (params) => {
 					const { data, total } = await approvalTaskService.fetchInbox(params);
+					lastQuery.current = { filter: params, total };
 					setRows(data);
 					return { data, total, success: true };
 				}}
@@ -250,13 +279,22 @@ export default function ApprovalInbox() {
 				})}
 				tableAlertRender={false}
 				headerTitle={t(TAB_TITLE[tab])}
-				toolBarRender={() => tab === "pending" && selectedKeys.length
-					? [
-						<Button key="bulk" type="primary" icon={<CheckOutlined />} onClick={bulkApprove}>
-							{t("approval.actions.bulkApprove", { count: selectedKeys.length })}
-						</Button>,
-					]
-					: []}
+				toolBarRender={() => [
+					<ExportButton
+						key="export"
+						resource="approval-inbox"
+						permissions={[PermissionType.ExportApproval]}
+						getQuery={() => lastQuery.current}
+						getColumns={() => visibleExportColumns(columns, visibility, EXPORT_MAPPING)}
+					/>,
+					...(tab === "pending" && selectedKeys.length
+						? [
+							<Button key="bulk" type="primary" icon={<CheckOutlined />} onClick={bulkApprove}>
+								{t("approval.actions.bulkApprove", { count: selectedKeys.length })}
+							</Button>,
+						]
+						: []),
+				]}
 			/>
 
 			<Drawer

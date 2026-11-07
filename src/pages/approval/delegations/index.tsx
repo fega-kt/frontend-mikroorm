@@ -1,9 +1,11 @@
 import type { ApprovalDelegationEntity, ApprovalDelegationTab } from "#src/api/approval-delegation";
+import type { ExportQuery } from "#src/components/export-button";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import type { DetailRef } from "./components/detail";
 import { ApprovalDelegationMode, approvalDelegationService } from "#src/api/approval-delegation";
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
+import { ExportButton } from "#src/components/export-button";
 import { PeoplePicker } from "#src/components/people-picker";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
@@ -31,6 +33,8 @@ const STATE_BADGE = { active: "success", upcoming: "processing", expired: "defau
 export default function ApprovalDelegations() {
 	const { t } = useTranslation();
 	const actionRef = useRef<ActionType>(null);
+	// Điều kiện lần tải gần nhất — để xuất Excel đúng cái đang xem (cột bảng đổi theo tab nên xuất đủ cột)
+	const lastQuery = useRef<ExportQuery>(undefined);
 	const detailRef = useRef<DetailRef>(null);
 	const [tab, setTab] = useState<Tab>("mine");
 	const canManage = useAccess().canAccess(PermissionType.ManageApprovalDelegation);
@@ -140,6 +144,7 @@ export default function ApprovalDelegations() {
 				params={{ tab }}
 				request={async (params) => {
 					const { data, total } = await approvalDelegationService.fetchList(params);
+					lastQuery.current = { filter: params, total };
 					return { data, total, success: true };
 				}}
 				headerTitle={(
@@ -154,13 +159,21 @@ export default function ApprovalDelegations() {
 						]}
 					/>
 				)}
-				toolBarRender={() => editable
-					? [
-						<Button key="add" type="primary" icon={<PlusCircleOutlined />} onClick={() => openDetail()}>
-							{t("approval.delegation.add")}
-						</Button>,
-					]
-					: []}
+				toolBarRender={() => [
+					<ExportButton
+						key="export"
+						resource="approval-delegation"
+						permissions={[PermissionType.ExportApproval]}
+						getQuery={() => lastQuery.current}
+					/>,
+					...(editable
+						? [
+							<Button key="add" type="primary" icon={<PlusCircleOutlined />} onClick={() => openDetail()}>
+								{t("approval.delegation.add")}
+							</Button>,
+						]
+						: []),
+				]}
 			/>
 			<Detail ref={detailRef} />
 		</BasicContent>

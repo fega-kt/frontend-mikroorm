@@ -1,12 +1,16 @@
 import type { DepartmentTreeNode } from "#src/api/system/dept";
 import type { HistoryDrawerRef } from "#src/components/activity-history/history-drawer";
 
+import type { ExportQuery } from "#src/components/export-button";
+import type { ColumnsVisibility } from "#src/components/export-button/columns";
 import type { ActionType, ProColumns, ProCoreActionType } from "@ant-design/pro-components";
+
 import type { DetailRef } from "./components/detail";
 import { departmentService } from "#src/api/system/dept";
-
 import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
+import { ExportButton } from "#src/components/export-button";
+import { visibleExportColumns } from "#src/components/export-button/columns";
 import { createActionColumn } from "#src/components/row-actions/create-action-column";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
@@ -19,11 +23,36 @@ import { Detail } from "./components/detail";
 import { History } from "./components/history";
 import { getConstantColumns } from "./constants";
 
+/** Cột bảng (theo `key`) → cột xuất của backend; bảng hiển thị dạng cây còn file xuất là danh sách phẳng cùng bộ lọc */
+const EXPORT_MAPPING: Record<string, string[]> = {
+	name: [
+		"name",
+	],
+	code: [
+		"code",
+	],
+	parentCode: [
+		"parentCode",
+	],
+	status: [
+		"status",
+	],
+	createdAt: [
+		"createdAt",
+	],
+	updatedAt: [
+		"updatedAt",
+	],
+};
+
 export default function Dept() {
 	const { t } = useTranslation();
 	const { canAccess } = useAccess();
 
 	const actionRef = useRef<ActionType>(null);
+	// Điều kiện lần tải gần nhất và cột đang hiện — để xuất Excel đúng cái đang xem
+	const lastQuery = useRef<ExportQuery>(undefined);
+	const [visibility, setVisibility] = useState<ColumnsVisibility>({});
 	const detailRef = useRef<DetailRef>(null);
 	const historyRef = useRef<HistoryDrawerRef>(null);
 	const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
@@ -100,6 +129,7 @@ export default function Dept() {
 				adaptive
 				tableLayout="fixed"
 				columns={columns}
+				columnsState={{ value: visibility, onChange: setVisibility }}
 				scroll={{ x: "min-content" }}
 				actionRef={actionRef}
 				pagination={{
@@ -109,6 +139,7 @@ export default function Dept() {
 				}}
 				request={async (params) => {
 					const tree = await departmentService.fetchDeptTreeList(params);
+					lastQuery.current = { filter: params, total: countTreeNodes(tree) };
 					setExpandedRowKeys(getExpandedKeys(tree));
 					return {
 						data: tree,
@@ -122,6 +153,13 @@ export default function Dept() {
 				}}
 				headerTitle={t("common.menu.dept")}
 				toolBarRender={() => [
+					<ExportButton
+						key="export"
+						resource="department"
+						permissions={[PermissionType.MenuDeparment, PermissionType.ExportDepartment]}
+						getQuery={() => lastQuery.current}
+						getColumns={() => visibleExportColumns(columns, visibility, EXPORT_MAPPING)}
+					/>,
 					<Button
 						key="add-dept"
 						icon={<PlusCircleOutlined />}

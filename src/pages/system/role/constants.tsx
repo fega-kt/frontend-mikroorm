@@ -16,6 +16,7 @@ export function getConstantColumns(
 		},
 		{
 			title: t("system.role.name"),
+			key: "name",
 			dataIndex: "name",
 			width: 200,
 			disable: true,
@@ -23,12 +24,14 @@ export function getConstantColumns(
 		},
 		{
 			title: t("system.role.description"),
+			key: "description",
 			dataIndex: "description",
 			ellipsis: true,
 			width: 300,
 		},
 		{
 			title: t("common.createdBy"),
+			key: "createdBy",
 			dataIndex: "createdBy",
 			hideInSearch: true,
 			width: 180,
@@ -36,6 +39,7 @@ export function getConstantColumns(
 		},
 		{
 			title: t("common.createdAt"),
+			key: "createdAt",
 			dataIndex: "createdAt",
 			valueType: "dateTime",
 			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
@@ -52,6 +56,7 @@ export function getConstantColumns(
 		},
 		{
 			title: t("common.updatedAt"),
+			key: "updatedAt",
 			dataIndex: "updatedAt",
 			valueType: "dateTime",
 			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },

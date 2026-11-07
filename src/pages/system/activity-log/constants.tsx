@@ -28,6 +28,7 @@ export function getConstantColumns(t: T): ProColumns<ActivityLogEntity>[] {
 	return [
 		{
 			title: t("common.createdAt"),
+			key: "createdAt",
 			dataIndex: "createdAt",
 			valueType: "dateTime",
 			fieldProps: { format: "DD/MM/YYYY HH:mm:ss" },
@@ -49,6 +50,7 @@ export function getConstantColumns(t: T): ProColumns<ActivityLogEntity>[] {
 		},
 		{
 			title: t("system.activityLog.actor"),
+			key: "actor",
 			dataIndex: "createdBy",
 			hideInSearch: true,
 			width: 200,
@@ -59,6 +61,7 @@ export function getConstantColumns(t: T): ProColumns<ActivityLogEntity>[] {
 		{
 			// Ai thực hiện (người dùng / hệ thống) nên đặt cạnh người thực hiện
 			title: t("system.activityLog.type"),
+			key: "type",
 			dataIndex: "type",
 			width: 120,
 			valueType: "select",
@@ -67,6 +70,7 @@ export function getConstantColumns(t: T): ProColumns<ActivityLogEntity>[] {
 		},
 		{
 			title: t("system.activityLog.action"),
+			key: "action",
 			dataIndex: "action",
 			width: 200,
 			valueType: "select",
@@ -75,6 +79,7 @@ export function getConstantColumns(t: T): ProColumns<ActivityLogEntity>[] {
 		},
 		{
 			title: t("system.activityLog.parentType"),
+			key: "parentType",
 			dataIndex: "parentType",
 			width: 160,
 			valueType: "select",
@@ -83,6 +88,7 @@ export function getConstantColumns(t: T): ProColumns<ActivityLogEntity>[] {
 		},
 		{
 			title: t("system.activityLog.parentId"),
+			key: "parentId",
 			dataIndex: "parentId",
 			width: 300,
 			ellipsis: true,
@@ -90,12 +96,14 @@ export function getConstantColumns(t: T): ProColumns<ActivityLogEntity>[] {
 		},
 		{
 			title: t("system.activityLog.ip"),
+			key: "ip",
 			dataIndex: "ip",
 			hideInSearch: true,
 			width: 140,
 		},
 		{
 			title: t("system.activityLog.device"),
+			key: "device",
 			dataIndex: "device",
 			hideInSearch: true,
 			width: 240,

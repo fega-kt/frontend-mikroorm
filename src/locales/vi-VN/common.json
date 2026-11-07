@@ -51,6 +51,7 @@
 		"approvalAllRequests": "Tất cả tờ trình",
 		"approvalWorkflows": "Quy trình phê duyệt",
 		"approvalRequestDetail": "Chi tiết tờ trình",
+		"exportHistory": "Lịch sử xuất",
 		"approvalRequestEdit": "Sửa tờ trình",
 		"approvalWorkflowDesigner": "Thiết kế quy trình",
 		"administration": "Quản trị hệ thống",
@@ -238,5 +239,8 @@
 		"lastSeen": "Lần cuối {{time}}",
 		"locked": "Đã khóa",
 		"lockedNote": "Tài khoản không còn hoạt động — không giao được việc mới cho người này."
-	}
+	},
+	"exportExcel": "Xuất Excel",
+	"exportStarted": "Đang tải xuống {{count}} dòng…",
+	"exportEmpty": "Không có dữ liệu để xuất"
 }

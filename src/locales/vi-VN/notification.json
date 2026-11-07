@@ -61,5 +61,13 @@
 		"title": "Bình luận mới trong tờ trình",
 		"message": "Có bình luận mới trong tờ trình {{code}} {{title}}.",
 		"message_withMessage": "Có bình luận mới trong tờ trình {{code}} {{title}}: “{{message}}”"
+	},
+	"EXPORT_READY": {
+		"title": "File xuất đã sẵn sàng",
+		"message": "File {{name}} ({{count}} dòng) đã được tạo xong, bấm để tải."
+	},
+	"EXPORT_FAILED": {
+		"title": "Xuất file không thành công",
+		"message": "Lượt xuất {{name}} không hoàn thành, bấm để xem lý do."
 	}
 }

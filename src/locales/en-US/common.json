@@ -49,6 +49,7 @@
 		"approvalAllRequests": "All requests",
 		"approvalWorkflows": "Approval workflows",
 		"approvalRequestDetail": "Request detail",
+		"exportHistory": "Export history",
 		"approvalRequestEdit": "Edit request",
 		"approvalWorkflowDesigner": "Workflow designer",
 		"administration": "Administration",
@@ -234,5 +235,8 @@
 		"lastSeen": "Last seen {{time}}",
 		"locked": "Locked",
 		"lockedNote": "This account is inactive — new work cannot be assigned to this person."
-	}
+	},
+	"exportExcel": "Export Excel",
+	"exportStarted": "Downloading {{count}} rows…",
+	"exportEmpty": "There is no data to export"
 }
