@@ -5,7 +5,7 @@
 		"sendEmail": "Email me when it is done (the file is attached if it is under 10 MB)",
 		"confirm": "Export"
 	},
-	"queued": "{{count}} rows were queued for export. You will be notified when it is done.",
+	"queued": "{{rows}} rows were queued for export. You will be notified when it is done.",
 	"viewHistory": "View export history",
 	"history": {
 		"title": "Export history",

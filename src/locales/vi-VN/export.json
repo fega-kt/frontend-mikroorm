@@ -5,7 +5,7 @@
 		"sendEmail": "Gửi email khi xong (đính kèm file nếu nhỏ hơn 10 MB)",
 		"confirm": "Xuất"
 	},
-	"queued": "Đã đưa {{count}} dòng vào hàng đợi xuất. Bạn sẽ nhận thông báo khi xong.",
+	"queued": "Đã đưa {{rows}} dòng vào hàng đợi xuất. Bạn sẽ nhận thông báo khi xong.",
 	"viewHistory": "Xem lịch sử xuất",
 	"history": {
 		"title": "Lịch sử xuất",

@@ -3,8 +3,9 @@ import type { PermissionType } from "#src/hooks/use-access/permission-type.enum"
 import { EXPORT_BACKGROUND_THRESHOLD, exportService } from "#src/api/export";
 import { useAccess } from "#src/hooks/use-access";
 import { exportHistoryPath } from "#src/router/extra-info";
-import { FileExcelOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Modal, Typography } from "antd";
+import { formatNumber } from "#src/utils/format-number";
+import { CheckCircleFilled, FileExcelOutlined } from "@ant-design/icons";
+import { App, Button, Checkbox, Modal, theme, Tooltip, Typography } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
@@ -35,6 +36,9 @@ export function ExportButton({ resource, permissions, getQuery, getColumns }: Ex
 	const { t, i18n } = useTranslation();
 	const navigate = useNavigate();
 	const { canAccess } = useAccess();
+	const { token } = theme.useToken();
+	// Trong component dùng hook của App (đúng theme / ngôn ngữ), không cần window.$message / window.$modal
+	const { message, modal } = App.useApp();
 	const [loading, setLoading] = useState(false);
 	// Hộp hỏi gửi email của lượt xuất nền: lưu điều kiện đã chốt lúc bấm để không đổi nếu người dùng lọc tiếp
 	const [pending, setPending] = useState<{ query: ExportQuery, columns: ExportColumnRequest[] | undefined } | null>(null);
@@ -52,16 +56,19 @@ export function ExportButton({ resource, permissions, getQuery, getColumns }: Ex
 				lang: toExportLanguage(i18n.language),
 				sendEmail: email,
 			});
+			// Số dòng theo định dạng của ngôn ngữ đang dùng (78.005), không dùng `count` vì i18next hiểu đó là số nhiều
+			const rows = formatNumber(result.count, i18n.language);
 			if (result.mode === "download") {
-				window.$message?.success(t("common.exportStarted", { count: result.count }));
+				message.success(t("common.exportStarted", { rows }));
 			}
 			else {
-				window.$message?.success(t("export.queued", { count: result.count }));
-				Modal.confirm({
+				// Chỉ một thông báo: hộp thoại có sẵn nút sang trang lịch sử
+				modal.confirm({
+					icon: <CheckCircleFilled style={{ color: token.colorSuccess }} />,
 					title: t("export.history.title"),
-					content: t("export.queued", { count: result.count }),
+					content: t("export.queued", { rows }),
 					okText: t("export.viewHistory"),
-					cancelText: t("common.cancel"),
+					cancelText: t("common.close"),
 					onOk: () => navigate(exportHistoryPath),
 				});
 			}
@@ -79,7 +86,7 @@ export function ExportButton({ resource, permissions, getQuery, getColumns }: Ex
 		if (!query)
 			return;
 		if (query.total === 0) {
-			window.$message?.warning(t("common.exportEmpty"));
+			message.warning(t("common.exportEmpty"));
 			return;
 		}
 		const columns = getColumns?.();
@@ -93,9 +100,17 @@ export function ExportButton({ resource, permissions, getQuery, getColumns }: Ex
 
 	return (
 		<>
-			<Button icon={<FileExcelOutlined />} loading={loading} onClick={handleClick}>
-				{t("common.exportExcel")}
-			</Button>
+			{/* Chỉ có biểu tượng, cùng kiểu với nhóm công cụ của bảng (làm mới, mật độ, cột, toàn màn hình); chữ hiện khi rê chuột */}
+			<Tooltip title={t("common.exportExcel")}>
+				<Button
+					type="text"
+					shape="circle"
+					aria-label={t("common.exportExcel")}
+					loading={loading}
+					icon={<FileExcelOutlined style={{ color: token.colorSuccess, fontSize: 18 }} />}
+					onClick={handleClick}
+				/>
+			</Tooltip>
 			<Modal
 				open={!!pending}
 				title={t("export.dialog.title")}
@@ -110,7 +125,7 @@ export function ExportButton({ resource, permissions, getQuery, getColumns }: Ex
 				}}
 			>
 				<Typography.Paragraph>
-					{t("export.dialog.message", { rows: pending?.query.total?.toLocaleString() ?? "" })}
+					{t("export.dialog.message", { rows: formatNumber(pending?.query.total, i18n.language) })}
 				</Typography.Paragraph>
 				<Checkbox checked={sendEmail} onChange={event => setSendEmail(event.target.checked)}>
 					{t("export.dialog.sendEmail")}

@@ -237,6 +237,6 @@
 		"lockedNote": "This account is inactive — new work cannot be assigned to this person."
 	},
 	"exportExcel": "Export Excel",
-	"exportStarted": "Downloading {{count}} rows…",
+	"exportStarted": "Downloading {{rows}} rows…",
 	"exportEmpty": "There is no data to export"
 }
