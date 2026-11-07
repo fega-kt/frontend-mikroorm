@@ -7,7 +7,7 @@ import {
 	ModalForm,
 	ProFormSwitch,
 } from "@ant-design/pro-components";
-import { Form, Input, Spin } from "antd";
+import { App, Form, Input, Spin } from "antd";
 import { useImperativeHandle, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -22,6 +22,7 @@ interface DetailProps {
 let guard: (res?: { isChange: boolean }) => void;
 
 export function Detail({ ref }: DetailProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [form] = Form.useForm<UserEntity>();
 
@@ -73,11 +74,11 @@ export function Detail({ ref }: DetailProps) {
 
 		if (editingId) {
 			await userService.fetchUpdateUser(editingId, payload);
-			window.$message?.success(t("common.updateSuccess"));
+			message.success(t("common.updateSuccess"));
 		}
 		else {
 			await userService.fetchAddUser(payload);
-			window.$message?.success(t("common.addSuccess"));
+			message.success(t("common.addSuccess"));
 		}
 		guard?.({ isChange: true });
 		return true;

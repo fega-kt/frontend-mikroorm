@@ -5,14 +5,7 @@ import { BasicButton } from "#src/components/basic-button";
 import { PASSWORD_RULES, USERNAME_RULES } from "#src/constants/rules";
 import { useAuthStore } from "#src/store/auth";
 
-import {
-	Button,
-	Divider,
-	Form,
-	Input,
-	message,
-	Space,
-} from "antd";
+import { App, Button, Divider, Form, Input, message, Space } from "antd";
 import { use, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router";
@@ -25,6 +18,7 @@ const FORM_INITIAL_VALUES: LoginInfo = {
 };
 
 export function PasswordLogin() {
+	const { message: antdMessage } = App.useApp();
 	const [loading, setLoading] = useState(false);
 	const [passwordLoginForm] = Form.useForm();
 	const { t } = useTranslation();
@@ -46,7 +40,7 @@ export function PasswordLogin() {
 			}
 			messageLoadingApi?.destroy();
 
-			window.$message?.success(t("authority.loginSuccess"));
+			antdMessage.success(t("authority.loginSuccess"));
 			const redirect = searchParams.get("redirect");
 			if (redirect) {
 				navigate(`/${redirect.slice(1)}`);
@@ -57,13 +51,13 @@ export function PasswordLogin() {
 		}
 		catch {
 			messageLoadingApi?.destroy();
-			window.$message?.error(t("authority.loginFail"));
+			antdMessage.error(t("authority.loginFail"));
 		}
 		finally {
 			messageLoadingApi?.destroy();
 			// Prevent multiple requests from being made by clicking the login button
 			setTimeout(() => {
-				window.$message?.destroy();
+				antdMessage.destroy();
 				setLoading(false);
 			}, 1000);
 		}
@@ -138,7 +132,7 @@ export function PasswordLogin() {
 						type="link"
 						className="px-1"
 						onPointerDown={() => {
-							window.$message?.info(t("authority.registerContactAdmin"));
+							antdMessage.info(t("authority.registerContactAdmin"));
 						}}
 					>
 						{t("authority.goToRegister")}

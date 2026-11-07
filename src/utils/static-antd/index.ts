@@ -17,21 +17,20 @@ const { ...resetFns } = antdModal;
 let modal: Omit<ModalStaticFunctions, "warn"> = resetFns;
 
 /**
+ * message / modal / notification cho code NGOÀI component (interceptor gọi API, hàm tiện ích…).
+ * Biến module: lúc đầu là bản tĩnh của antd, được `StaticAntd` thay bằng bản theo theme / ngôn ngữ của ứng dụng ngay khi mount
+ * (luôn import `message`, đừng destructure một lần rồi giữ lại). Trong component dùng `App.useApp()`, xem CLAUDE.md.
+ *
  * @see https://ant.design/components/app
  * @see https://ant.design/docs/blog/why-not-static
  */
 export function StaticAntd() {
 	const staticFunctions = App.useApp();
 
-	/* Usage 1 */
+	// Cập nhật các biến module bên dưới: code ngoài component import `message` / `modal` / `notification` từ file này
 	message = staticFunctions.message;
 	notification = staticFunctions.notification;
 	modal = staticFunctions.modal;
-
-	/* Usage 2 */
-	window.$message = message;
-	window.$modal = modal;
-	window.$notification = notification;
 
 	return null;
 }

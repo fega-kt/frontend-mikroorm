@@ -5,7 +5,7 @@ import { DEFAULT_ATTACHMENT_CONFIG, requestTypeService, RequestTypeStatus } from
 import { FullscreenModal } from "#src/components/fullscreen-modal";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
-import { Button, Form, Spin, Tag } from "antd";
+import { App, Button, Form, Spin, Tag } from "antd";
 import * as React from "react";
 import { useImperativeHandle, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -35,6 +35,7 @@ const statusColorMap: Record<RequestTypeStatus, string> = {
 };
 
 export function Detail({ ref }: DetailProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const { canAccess } = useAccess();
 	const [form] = Form.useForm<RequestTypeEntity>();
@@ -62,7 +63,7 @@ export function Detail({ ref }: DetailProps) {
 			});
 		}
 		catch {
-			window.$message?.error(t("common.fetchError"));
+			message.error(t("common.fetchError"));
 		}
 		finally {
 			setLoading(false);
@@ -93,11 +94,11 @@ export function Detail({ ref }: DetailProps) {
 		try {
 			if (editingId) {
 				await requestTypeService.fetchUpdateRequestType(editingId, values);
-				window.$message?.success(t("common.updateSuccess"));
+				message.success(t("common.updateSuccess"));
 			}
 			else {
 				await requestTypeService.fetchAddRequestType(values);
-				window.$message?.success(t("common.addSuccess"));
+				message.success(t("common.addSuccess"));
 			}
 			guard?.({ isChange: true });
 			modalRef.current?.close();

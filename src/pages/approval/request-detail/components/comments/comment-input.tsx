@@ -3,7 +3,7 @@ import Mention from "@tiptap/extension-mention";
 import Placeholder from "@tiptap/extension-placeholder";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { Avatar, Button, theme } from "antd";
+import { App, Avatar, Button, theme } from "antd";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
@@ -41,6 +41,7 @@ interface SuggestionRenderProps {
  * mà không chọn từ danh sách thì chỉ là chữ thường, không nhắc ai.
  */
 export function CommentInput({ candidates, placeholder, submitText, autoFocus, onSubmit, onCancel }: CommentInputProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
 	const [submitting, setSubmitting] = useState(false);
@@ -140,7 +141,7 @@ export function CommentInput({ candidates, placeholder, submitText, autoFocus, o
 		if (!content)
 			return;
 		if (content.length > COMMENT_MAX_LENGTH)
-			return void window.$message?.warning(t("approval.comment.tooLong", { max: COMMENT_MAX_LENGTH }));
+			return void message.warning(t("approval.comment.tooLong", { max: COMMENT_MAX_LENGTH }));
 		// Người được nhắc = các cụm @mention còn trong nội dung (xóa cụm thì không còn nhắc)
 		const mentionIds = new Set<string>();
 		editor.state.doc.descendants((node) => {

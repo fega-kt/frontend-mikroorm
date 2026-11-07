@@ -37,7 +37,7 @@ export function ExportButton({ resource, permissions, getQuery, getColumns }: Ex
 	const navigate = useNavigate();
 	const { canAccess } = useAccess();
 	const { token } = theme.useToken();
-	// Trong component dùng hook của App (đúng theme / ngôn ngữ), không cần window.$message / window.$modal
+	// Trong component dùng hook của App (đúng theme / ngôn ngữ)
 	const { message, modal } = App.useApp();
 	const [loading, setLoading] = useState(false);
 	// Hộp hỏi gửi email của lượt xuất nền: lưu điều kiện đã chốt lúc bấm để không đổi nếu người dùng lọc tiếp

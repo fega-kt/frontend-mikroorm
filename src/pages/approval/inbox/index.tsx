@@ -16,7 +16,7 @@ import { PeoplePicker } from "#src/components/people-picker";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import { approvalRequestPath } from "#src/router/extra-info";
 import { CheckOutlined, CloseOutlined, EyeOutlined, RollbackOutlined } from "@ant-design/icons";
-import { Button, Drawer, Space, Tag, Tooltip, Typography } from "antd";
+import { App, Button, Drawer, Space, Tag, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useEffect, useRef, useState } from "react";
@@ -54,6 +54,7 @@ const NO_FIELDS: FormField[] = [];
 
 export default function ApprovalInbox() {
 	const { t } = useTranslation();
+	const { message, modal } = App.useApp();
 	const navigate = useNavigate();
 	const actionRef = useRef<ActionType>(null);
 	// Điều kiện lần tải gần nhất và cột đang hiện — để xuất Excel đúng cái đang xem
@@ -88,7 +89,7 @@ export default function ApprovalInbox() {
 		setActing(true);
 		try {
 			await approvalTaskService.fetchAct(item.request.id, action, input.comment);
-			window.$message?.success(t(`approval.messages.${action === "approve" ? "approved" : action === "reject" ? "rejected" : "returned"}`));
+			message.success(t(`approval.messages.${action === "approve" ? "approved" : action === "reject" ? "rejected" : "returned"}`));
 			setPreview(null);
 			reload();
 		}
@@ -99,14 +100,14 @@ export default function ApprovalInbox() {
 
 	const bulkApprove = () => {
 		const requestIds = [...new Set(rows.filter(r => selectedKeys.includes(r.id)).map(r => r.request.id))];
-		window.$modal?.confirm({
+		modal.confirm({
 			title: t("approval.messages.confirmBulkApprove", { count: requestIds.length }),
 			okText: t("approval.actions.approve"),
 			cancelText: t("common.cancel"),
 			onOk: async () => {
 				const res = await approvalTaskService.fetchBulkApprove(requestIds);
 				const failed = res.results.filter(r => !r.success);
-				window.$message?.[failed.length ? "warning" : "success"](t("approval.messages.bulkResult", { ok: res.succeeded, total: requestIds.length }));
+				message[failed.length ? "warning" : "success"](t("approval.messages.bulkResult", { ok: res.succeeded, total: requestIds.length }));
 				reload();
 			},
 		});

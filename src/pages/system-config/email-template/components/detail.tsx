@@ -5,7 +5,7 @@ import type { HtmlEmailEditorApi } from "./html-email-editor";
 import { emailTemplateService } from "#src/api/email-template";
 import { FormModal } from "#src/components/form-modal";
 import { CodeOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
-import { Alert, Form, Input, Segmented, Spin, Tag, theme, Tooltip, Typography } from "antd";
+import { Alert, App, Form, Input, Segmented, Spin, Tag, theme, Tooltip, Typography } from "antd";
 import { useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { HtmlEmailEditor } from "./html-email-editor";
@@ -37,6 +37,7 @@ let guard: ((res?: { isChange: boolean }) => void) | undefined;
  * Soạn: sửa chữ trực tiếp trên email · HTML: sửa mã (đổi bố cục) · Xem trước: email thật với dữ liệu mẫu.
  */
 export function Detail({ ref }: { ref: React.Ref<DetailRef> }) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
 	const [form] = Form.useForm<FormValues>();
@@ -162,7 +163,7 @@ export function Detail({ ref }: { ref: React.Ref<DetailRef> }) {
 		const text = `${values.subject} ${values.body}`;
 		const missing = (template?.requiredVariables ?? []).filter(key => !text.includes(`{{${key}}}`));
 		if (missing.length) {
-			window.$message?.error(t("approval.emailTemplate.missingRequired", { list: missing.map(key => `{{${key}}}`).join(", ") }));
+			message.error(t("approval.emailTemplate.missingRequired", { list: missing.map(key => `{{${key}}}`).join(", ") }));
 			return;
 		}
 		setSaving(true);
@@ -172,7 +173,7 @@ export function Detail({ ref }: { ref: React.Ref<DetailRef> }) {
 				await emailTemplateService.fetchUpdate(template.code, payload);
 			else
 				await emailTemplateService.fetchCreate({ ...payload, code: values.code! });
-			window.$message?.success(t(template ? "common.updateSuccess" : "common.addSuccess"));
+			message.success(t(template ? "common.updateSuccess" : "common.addSuccess"));
 			close({ isChange: true });
 		}
 		finally {

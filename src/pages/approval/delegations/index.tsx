@@ -10,7 +10,7 @@ import { PeoplePicker } from "#src/components/people-picker";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Badge, Button, Popconfirm, Segmented, Tag, Tooltip, Typography } from "antd";
+import { App, Badge, Button, Popconfirm, Segmented, Tag, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -31,6 +31,7 @@ function delegationState(item: ApprovalDelegationEntity) {
 const STATE_BADGE = { active: "success", upcoming: "processing", expired: "default" } as const;
 
 export default function ApprovalDelegations() {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const actionRef = useRef<ActionType>(null);
 	// Điều kiện lần tải gần nhất — để xuất Excel đúng cái đang xem (cột bảng đổi theo tab nên xuất đủ cột)
@@ -47,7 +48,7 @@ export default function ApprovalDelegations() {
 
 	const handleDelete = async (id: string) => {
 		await approvalDelegationService.fetchDelete(id);
-		window.$message?.success(t("common.deleteSuccess"));
+		message.success(t("common.deleteSuccess"));
 		actionRef.current?.reload();
 	};
 

@@ -15,7 +15,7 @@ import { createActionColumn } from "#src/components/row-actions/create-action-co
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { App, Button } from "antd";
 import { useRef, useState } from "react";
 
 import { useTranslation } from "react-i18next";
@@ -46,6 +46,7 @@ const EXPORT_MAPPING: Record<string, string[]> = {
 };
 
 export default function Dept() {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const { canAccess } = useAccess();
 
@@ -88,13 +89,13 @@ export default function Dept() {
 	const handleDeleteRow = async (id: string, action?: ProCoreActionType<object>) => {
 		await departmentService.fetchDeleteDeptItem(id);
 		await action?.reload?.();
-		window.$message?.success(t("common.deleteSuccess"));
+		message.success(t("common.deleteSuccess"));
 	};
 
 	const handleToggleActive = async (id: string, status: 0 | 1, action?: ProCoreActionType<object>) => {
 		await departmentService.fetchUpdateDeptActive(id, status === 1 ? 0 : 1);
 		await action?.reload?.();
-		window.$message?.success(status === 1 ? t("system.dept.deactivateSuccess") : t("system.dept.activateSuccess"));
+		message.success(status === 1 ? t("system.dept.deactivateSuccess") : t("system.dept.activateSuccess"));
 	};
 
 	const canUpdate = canAccess(PermissionType.UpdateDeparment);

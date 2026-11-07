@@ -4,13 +4,7 @@ import { parseErrorMessage } from "#src/utils/request";
 
 import { LeftOutlined } from "@ant-design/icons";
 import { useCountDown } from "ahooks";
-import {
-	Button,
-	Form,
-	Input,
-	Space,
-	Typography,
-} from "antd";
+import { App, Button, Form, Input, Space, Typography } from "antd";
 import { use, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router";
@@ -27,6 +21,7 @@ enum Step {
 }
 
 export function CodeLogin() {
+	const { message } = App.useApp();
 	const [step, setStep] = useState(Step.Email);
 	const [email, setEmail] = useState("");
 	const [otpValue, setOtpValue] = useState("");
@@ -74,7 +69,7 @@ export function CodeLogin() {
 				access_token: result.access_token,
 				refresh_token: result.refresh_token,
 			});
-			window.$message?.success(t("authority.loginSuccess"));
+			message.success(t("authority.loginSuccess"));
 			const redirect = searchParams.get("redirect");
 			navigate(redirect ? `/${redirect.slice(1)}` : import.meta.env.VITE_BASE_HOME_PATH);
 		}
@@ -94,7 +89,7 @@ export function CodeLogin() {
 		try {
 			await authService.sendOtp({ email });
 			startCooldown();
-			window.$message?.success(t("authority.otpResent"));
+			message.success(t("authority.otpResent"));
 		}
 		catch (err) {
 			const msg = await parseErrorMessage(err);

@@ -13,7 +13,7 @@ import { createActionColumn } from "#src/components/row-actions/create-action-co
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { App, Button } from "antd";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Detail } from "./components/detail";
@@ -48,6 +48,7 @@ const EXPORT_MAPPING: Record<string, string[]> = {
 };
 
 export default function User() {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const { canAccess } = useAccess();
 	const actionRef = useRef<ActionType>(null);
@@ -74,13 +75,13 @@ export default function User() {
 	const handleDelete = async (id: string) => {
 		await userService.fetchDeleteUser(id);
 		actionRef.current?.reload();
-		window.$message?.success(t("common.deleteSuccess"));
+		message.success(t("common.deleteSuccess"));
 	};
 
 	const handleToggleActive = async (id: string, isActive: boolean) => {
 		await userService.fetchUpdateUserActive(id, !isActive);
 		actionRef.current?.reload();
-		window.$message?.success(isActive ? t("system.user.deactivateSuccess") : t("system.user.activateSuccess"));
+		message.success(isActive ? t("system.user.deactivateSuccess") : t("system.user.activateSuccess"));
 	};
 
 	const canUpdate = canAccess(PermissionType.UpdateUser);

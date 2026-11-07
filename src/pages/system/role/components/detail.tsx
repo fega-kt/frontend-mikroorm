@@ -3,7 +3,7 @@ import type { PermissionType } from "#src/api/system/role/types";
 import { roleService } from "#src/api/system/role";
 import { ProFormPrincipalPicker } from "#src/components/principal-picker";
 import { ModalForm, ProFormText, ProFormTextArea } from "@ant-design/pro-components";
-import { Button, Checkbox, Col, Collapse, Form, Row, Spin, theme, Typography } from "antd";
+import { App, Button, Checkbox, Col, Collapse, Form, Row, Spin, theme, Typography } from "antd";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -22,6 +22,7 @@ interface DetailProps {
 let guard: (res?: { isChange: boolean }) => void;
 
 export function Detail({ ref }: DetailProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [form] = Form.useForm<RoleEntity>();
 	const [open, setOpen] = useState(false);
@@ -49,7 +50,7 @@ export function Detail({ ref }: DetailProps) {
 				catch (error) {
 					console.error("[RoleDetail] Failed to fetch role info:", error);
 					// Keep loading=true to prevent user interaction or close modal
-					window.$message?.error(t("common.fetchError"));
+					message.error(t("common.fetchError"));
 				}
 			}
 			return new Promise<{ isChange: boolean } | undefined>((resolve) => {
@@ -63,11 +64,11 @@ export function Detail({ ref }: DetailProps) {
 	const onFinish = async (values: RoleEntity) => {
 		if (editingId) {
 			await roleService.fetchUpdateRole(editingId, values);
-			window.$message?.success(t("common.updateSuccess"));
+			message.success(t("common.updateSuccess"));
 		}
 		else {
 			await roleService.fetchAddRole(values);
-			window.$message?.success(t("common.addSuccess"));
+			message.success(t("common.addSuccess"));
 		}
 		guard?.({ isChange: true });
 		return true;

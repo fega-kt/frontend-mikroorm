@@ -8,7 +8,7 @@ import {
 	ProForm,
 	ProFormText,
 } from "@ant-design/pro-components";
-import { Card, Col, Form, Row, Space, Typography } from "antd";
+import { App, Card, Col, Form, Row, Space, Typography } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router";
@@ -35,6 +35,7 @@ enum ProfileTab {
 const DIRTY_FIELDS = ["fullName", "workEmail", "phoneNumber", "description"] as const;
 
 export default function Profile() {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const currentUser = useUserStore();
 	const [form] = Form.useForm<ProfileFormValues>();
@@ -62,11 +63,11 @@ export default function Profile() {
 			await currentUser.getUserInfo();
 			setIsDirty(false);
 			setHasErrors(false);
-			window.$message?.success(t("personal-center.updateSuccess"));
+			message.success(t("personal-center.updateSuccess"));
 		}
 		catch (error) {
 			console.error("Update failed", error);
-			window.$message?.error(t("common.updateError"));
+			message.error(t("common.updateError"));
 		}
 	};
 

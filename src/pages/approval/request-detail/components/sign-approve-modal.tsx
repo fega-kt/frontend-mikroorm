@@ -7,7 +7,7 @@ import { signingCertificateService } from "#src/api/signing-certificate";
 import { PdfFileView } from "#src/components/file-viewer";
 import { PIN_PATTERN, PinInput } from "#src/components/pin-input";
 import { AimOutlined, CheckCircleFilled, DragOutlined, FilePdfOutlined, SafetyCertificateOutlined } from "@ant-design/icons";
-import { Alert, Button, Input, Modal, Spin, Tag, theme, Typography } from "antd";
+import { Alert, App, Button, Input, Modal, Spin, Tag, theme, Typography } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -158,6 +158,7 @@ type SignApproveBodyProps = Omit<SignApproveModalProps, "open"> & {
 
 /** Nội dung hộp: Modal hủy khi đóng nên mỗi lần mở là một lượt chuẩn bị mới (không phải reset state) */
 function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignApproveBodyProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
 	const navigate = useNavigate();
@@ -230,7 +231,7 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 		onSubmitting(true);
 		try {
 			await approvalTaskService.fetchSignApprove(requestId, { pin: value, comment: comment.trim() || undefined, placements });
-			window.$message?.success(t("approval.messages.signedApproved"));
+			message.success(t("approval.messages.signedApproved"));
 			setConfirmOpen(false);
 			onClose();
 			onChanged();

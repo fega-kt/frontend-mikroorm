@@ -2,7 +2,7 @@ import type { WorkShift } from "#src/api/work-calendar";
 import type { TableColumnsType } from "antd";
 import { workShiftService } from "#src/api/work-calendar";
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Popconfirm, Space, Table, Tag } from "antd";
+import { App, Button, Popconfirm, Space, Table, Tag } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DEFAULT_SHIFT_COLOR, formatMinutes, formatSegments } from "../utils";
@@ -16,13 +16,14 @@ interface ShiftTabProps {
 }
 
 export function ShiftTab({ shifts, loading, canManage, onChanged }: ShiftTabProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [editing, setEditing] = useState<WorkShift | null>();
 
 	const remove = async (id: string) => {
 		try {
 			await workShiftService.fetchDelete(id);
-			window.$message?.success(t("common.deleteSuccess"));
+			message.success(t("common.deleteSuccess"));
 			onChanged();
 		}
 		catch {

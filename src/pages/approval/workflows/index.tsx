@@ -7,7 +7,7 @@ import { BasicTable } from "#src/components/basic-table";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
 import { DeleteOutlined, EditOutlined, NodeIndexOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Popconfirm, Tooltip } from "antd";
+import { App, Button, Popconfirm, Tooltip } from "antd";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
@@ -15,6 +15,7 @@ import { Detail } from "./components/detail";
 import { getConstantColumns } from "./constants";
 
 export default function ApprovalWorkflows() {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { canAccess } = useAccess();
@@ -38,7 +39,7 @@ export default function ApprovalWorkflows() {
 	const handleDelete = async (id: string) => {
 		await approvalWorkflowService.fetchDelete(id);
 		actionRef.current?.reload();
-		window.$message?.success(t("common.deleteSuccess"));
+		message.success(t("common.deleteSuccess"));
 	};
 
 	const columns: ProColumns<ApprovalWorkflowEntity>[] = [

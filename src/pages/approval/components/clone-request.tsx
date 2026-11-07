@@ -1,7 +1,7 @@
 import type { ApprovalRequestDetail } from "#src/api/approval-request";
 import { approvalRequestService } from "#src/api/approval-request";
 import { approvalRequestPath } from "#src/router/extra-info";
-import { Checkbox, Typography } from "antd";
+import { App, Checkbox, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
@@ -11,16 +11,17 @@ import { useNavigate } from "react-router";
  * Nhân bản lấy dữ liệu đã lưu — gọi từ màn sửa thì truyền unsaved để nhắc thay đổi chưa lưu không được sao chép.
  */
 export function useCloneRequest() {
+	const { message, modal } = App.useApp();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 
 	const clone = async (id: string, files: boolean) => {
 		try {
 			const result = await approvalRequestService.fetchClone(id, files);
-			window.$message?.success(t("approval.messages.cloned"));
+			message.success(t("approval.messages.cloned"));
 			// Biểu mẫu đã đổi so với phiếu gốc: nhắc kiểm tra lại các trường
 			if (result.formChanged)
-				window.$message?.warning(t("approval.messages.cloneFormChanged"), 8);
+				message.warning(t("approval.messages.cloneFormChanged"), 8);
 			navigate(approvalRequestPath.detail(result.id));
 		}
 		catch {
@@ -31,7 +32,7 @@ export function useCloneRequest() {
 	return (detail: ApprovalRequestDetail, options: { unsaved?: boolean } = {}) => {
 		const hasFiles = detail.documents.length + detail.attachments.length > 0;
 		let withFiles = hasFiles;
-		window.$modal?.confirm({
+		modal.confirm({
 			title: t("approval.messages.confirmClone"),
 			content: (hasFiles || options.unsaved) && (
 				<div className="mt-2 flex flex-col gap-2">

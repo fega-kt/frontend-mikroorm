@@ -1,7 +1,7 @@
 import type { DepartmentEntity } from "#src/api/system/dept";
 import { departmentService } from "#src/api/system/dept";
 import { ModalForm } from "@ant-design/pro-components";
-import { Form, Spin, Tabs } from "antd";
+import { App, Form, Spin, Tabs } from "antd";
 import { useImperativeHandle, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DeptInfoTab } from "./dept-info-tab";
@@ -18,6 +18,7 @@ interface DetailProps {
 let guard: (res?: { isChange: boolean }) => void;
 
 export function Detail({ ref }: DetailProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [form] = Form.useForm<DepartmentEntity>();
 
@@ -46,7 +47,7 @@ export function Detail({ ref }: DetailProps) {
 				setLoading(false);
 			}
 			catch (error) {
-				window.$message?.error(error instanceof Error ? error.message : t("common.fetchError"));
+				message.error(error instanceof Error ? error.message : t("common.fetchError"));
 			}
 			return new Promise<{ isChange: boolean } | undefined>((resolve) => {
 				guard = resolve;
@@ -57,11 +58,11 @@ export function Detail({ ref }: DetailProps) {
 	const onFinish = async (values: DepartmentEntity) => {
 		if (editingId) {
 			await departmentService.fetchUpdateDeptItem(editingId, values);
-			window.$message?.success(t("common.updateSuccess"));
+			message.success(t("common.updateSuccess"));
 		}
 		else {
 			await departmentService.fetchAddDeptItem(values);
-			window.$message?.success(t("common.addSuccess"));
+			message.success(t("common.addSuccess"));
 		}
 		guard?.({ isChange: true });
 		return true;

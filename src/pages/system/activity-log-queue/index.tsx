@@ -12,7 +12,7 @@ import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import { approvalRequestPath } from "#src/router/extra-info";
 import { RedoOutlined } from "@ant-design/icons";
-import { Button, Popconfirm, Tag, Tooltip, Typography } from "antd";
+import { App, Button, Popconfirm, Tag, Tooltip, Typography } from "antd";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router";
@@ -64,6 +64,7 @@ const EXPORT_MAPPING: Record<string, string[]> = {
 };
 
 export default function MailQueue() {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const { canAccess } = useAccess();
 	const navigate = useNavigate();
@@ -79,9 +80,9 @@ export default function MailQueue() {
 	const retry = async (item: ActivityLogQueueItem) => {
 		const res = await activityLogQueueService.fetchRetry(item.id);
 		if (res.success)
-			window.$message?.success(t("system.mailQueue.retryQueued"));
+			message.success(t("system.mailQueue.retryQueued"));
 		else
-			window.$message?.error(res.error || t("system.mailQueue.retryFailed"));
+			message.error(res.error || t("system.mailQueue.retryFailed"));
 		actionRef.current?.reload();
 	};
 

@@ -5,7 +5,7 @@ import { FormModal } from "#src/components/form-modal";
 import { PayloadFormItems } from "#src/pages/approval/components/form-fields";
 import { HistoryOutlined } from "@ant-design/icons";
 import { useRequest } from "ahooks";
-import { Button, Descriptions, Empty, Form, Skeleton, Tag } from "antd";
+import { App, Button, Descriptions, Empty, Form, Skeleton, Tag } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
@@ -20,6 +20,7 @@ interface VersionPreviewModalProps {
 
 /** Xem chỉ đọc một phiên bản của biểu mẫu + khôi phục làm nội dung đang soạn */
 export function VersionPreviewModal({ formId, version, canRestore, onClose, onRestore }: VersionPreviewModalProps) {
+	const { modal } = App.useApp();
 	const { t } = useTranslation();
 	const { data, loading } = useRequest(
 		() => formService.fetchVersion(formId, version!.id),
@@ -29,7 +30,7 @@ export function VersionPreviewModal({ formId, version, canRestore, onClose, onRe
 	const confirmRestore = () => {
 		if (!data || !version)
 			return;
-		window.$modal?.confirm({
+		modal.confirm({
 			title: t("setting.form.versions.restoreConfirmTitle", { version: version.version }),
 			content: t("setting.form.versions.restoreConfirmContent"),
 			okText: t("setting.form.versions.restore"),

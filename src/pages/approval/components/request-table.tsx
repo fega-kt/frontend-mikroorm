@@ -10,7 +10,7 @@ import { PeoplePicker } from "#src/components/people-picker";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import { approvalRequestPath } from "#src/router/extra-info";
 import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Popconfirm, Tooltip, Typography } from "antd";
+import { App, Button, Popconfirm, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -41,6 +41,7 @@ interface RequestTableProps {
 }
 
 export function RequestTable({ mode, title, scope = RequestScope.All }: RequestTableProps) {
+	const { message } = App.useApp();
 	const scopeStatuses = SCOPE_STATUSES[scope];
 	const { t } = useTranslation();
 	const navigate = useNavigate();
@@ -62,7 +63,7 @@ export function RequestTable({ mode, title, scope = RequestScope.All }: RequestT
 
 	const handleDelete = async (id: string) => {
 		await approvalRequestService.fetchDelete(id);
-		window.$message?.success(t("approval.messages.deleted"));
+		message.success(t("approval.messages.deleted"));
 		actionRef.current?.reload();
 	};
 

@@ -6,7 +6,7 @@ import { PeoplePicker, ProFormPeoplePicker } from "#src/components/people-picker
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import { ModalForm, ProFormItem, ProFormRadio, ProFormSelect, ProFormTextArea } from "@ant-design/pro-components";
-import { Alert, DatePicker, Form, Typography } from "antd";
+import { Alert, App, DatePicker, Form, Typography } from "antd";
 import dayjs from "dayjs";
 import { useImperativeHandle, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -29,6 +29,7 @@ let guard: ((res?: { isChange: boolean }) => void) | undefined;
 const userId = (value: FormValues["toUser"]) => (typeof value === "string" ? value : value?.id);
 
 export function Detail({ ref }: { ref: React.Ref<DetailRef> }) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	// Người quản lý ủy quyền (vd: HR) được tạo hộ người khác
 	const canManage = useAccess().canAccess(PermissionType.ManageApprovalDelegation);
@@ -99,7 +100,7 @@ export function Detail({ ref }: { ref: React.Ref<DetailRef> }) {
 						fromUser: userId(values.fromUser) || null,
 					});
 				}
-				window.$message?.success(t(editingId ? "common.updateSuccess" : "common.addSuccess"));
+				message.success(t(editingId ? "common.updateSuccess" : "common.addSuccess"));
 				close({ isChange: true });
 				return true;
 			}}

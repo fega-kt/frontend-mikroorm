@@ -3,7 +3,7 @@ import type { PickerValueType } from "#src/components/people-picker";
 import type { Dayjs } from "dayjs";
 import { workScheduleAssignmentService, WorkTargetType } from "#src/api/work-calendar";
 import { PeoplePicker } from "#src/components/people-picker";
-import { Alert, DatePicker, Form, Modal, Select } from "antd";
+import { Alert, App, DatePicker, Form, Modal, Select } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -31,6 +31,7 @@ interface AssignmentModalProps {
 
 /** Gán lịch cho công ty / phòng / người trong khoảng hiệu lực (trống ngày kết thúc = không thời hạn) */
 export function AssignmentModal({ state, schedules, onClose }: AssignmentModalProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [form] = Form.useForm<FormValues>();
 	const [saving, setSaving] = useState(false);
@@ -52,7 +53,7 @@ export function AssignmentModal({ state, schedules, onClose }: AssignmentModalPr
 				await workScheduleAssignmentService.fetchUpdate(editing.id, payload);
 			else
 				await workScheduleAssignmentService.fetchCreate({ ...state.target, ...(pickUser && { userId: values.userId }), ...payload });
-			window.$message?.success(t(editing ? "common.updateSuccess" : "common.addSuccess"));
+			message.success(t(editing ? "common.updateSuccess" : "common.addSuccess"));
 			onClose(true);
 		}
 		catch {

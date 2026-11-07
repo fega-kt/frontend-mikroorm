@@ -3,6 +3,7 @@ import { PASSWORD_REGEXP } from "#src/constants/regular-expressions";
 import { loginPath } from "#src/router/extra-info";
 import { useAuthStore } from "#src/store/auth";
 import { ModalForm, ProFormText } from "@ant-design/pro-components";
+import { App } from "antd";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
@@ -12,6 +13,7 @@ interface ChangePasswordModalProps {
 }
 
 export function ChangePasswordModal({ open, onOpenChange }: ChangePasswordModalProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const logout = useAuthStore(state => state.logout);
@@ -29,7 +31,7 @@ export function ChangePasswordModal({ open, onOpenChange }: ChangePasswordModalP
 					oldPassword: values.currentPassword,
 					newPassword: values.newPassword,
 				});
-				window.$message?.success(t("authority.changePasswordSuccess"));
+				message.success(t("authority.changePasswordSuccess"));
 				// Đổi mật khẩu → đăng xuất mọi thiết bị
 				await logout({ allDevices: true });
 				navigate(loginPath);

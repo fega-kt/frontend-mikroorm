@@ -5,7 +5,7 @@ import { AccessControlRoles } from "#src/hooks/use-access";
 import { usePreferences } from "#src/hooks/use-preferences";
 import { useAuthStore } from "#src/store/auth";
 import { useUserStore } from "#src/store/user";
-import { Alert, Button, Card, Typography } from "antd";
+import { Alert, App, Button, Card, Typography } from "antd";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
@@ -22,6 +22,7 @@ const accounts: Record<string, LoginInfo> = {
 };
 
 export default function PageControl() {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { enableFrontendAceess, enableBackendAccess, setPreferences } = usePreferences();
@@ -74,7 +75,7 @@ export default function PageControl() {
 			});
 			return;
 		}
-		window.$message?.warning(t("access.pageControl.warningMessage"));
+		message.warning(t("access.pageControl.warningMessage"));
 	}
 
 	return (

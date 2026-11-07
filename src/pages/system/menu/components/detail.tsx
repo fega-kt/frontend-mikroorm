@@ -10,7 +10,7 @@ import {
 	ProFormRadio,
 	ProFormText,
 } from "@ant-design/pro-components";
-import { Form } from "antd";
+import { App, Form } from "antd";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -33,6 +33,7 @@ export function Detail({
 	detailData,
 	refreshTable,
 }: DetailProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [form] = Form.useForm<MenuItemType>();
 
@@ -41,11 +42,11 @@ export function Detail({
 		/* 有 id 则为修改，否则为新增 */
 		if (detailData.id) {
 			await fetchUpdateMenuItem(values);
-			window.$message?.success(t("common.updateSuccess"));
+			message.success(t("common.updateSuccess"));
 		}
 		else {
 			await fetchAddMenuItem(values);
-			window.$message?.success(t("common.addSuccess"));
+			message.success(t("common.addSuccess"));
 		}
 		/* 刷新表格 */
 		refreshTable?.();
@@ -53,11 +54,12 @@ export function Detail({
 		return true;
 	};
 
+	// Chỉ đặt lại giá trị form lúc mở hộp thoại (không theo detailData) để không ghi đè phần người dùng đang sửa
 	useEffect(() => {
 		if (open) {
 			form.setFieldsValue(detailData);
 		}
-	}, [open]);
+	}, [open]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<ModalForm<MenuItemType>

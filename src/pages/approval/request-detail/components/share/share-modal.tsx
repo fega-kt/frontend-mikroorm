@@ -1,7 +1,7 @@
 import type { PrincipalEntity } from "#src/api/system/principal";
 import { approvalRequestService } from "#src/api/approval-request";
 import { PrincipalPicker } from "#src/components/principal-picker";
-import { Alert, Checkbox, Form, Input, Modal } from "antd";
+import { Alert, App, Checkbox, Form, Input, Modal } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -19,6 +19,7 @@ interface ShareModalProps {
 
 /** Hộp chia sẻ tờ trình (chỉ xem) cho người / nhóm, kèm gửi mail và thông báo */
 export function ShareModal({ requestId, open, onClose }: ShareModalProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [form] = Form.useForm<FormValues>();
 	const [saving, setSaving] = useState(false);
@@ -33,7 +34,7 @@ export function ShareModal({ requestId, open, onClose }: ShareModalProps) {
 				sendEmail: values.channels.includes("email"),
 				sendNotification: values.channels.includes("notification"),
 			});
-			window.$message?.success(t("approval.messages.shared"));
+			message.success(t("approval.messages.shared"));
 			onClose(true);
 		}
 		catch {

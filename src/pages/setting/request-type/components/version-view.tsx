@@ -5,7 +5,7 @@ import { DEFAULT_ATTACHMENT_CONFIG, requestTypeService } from "#src/api/setting/
 import { FullscreenModal } from "#src/components/fullscreen-modal";
 import { HistoryOutlined } from "@ant-design/icons";
 import { useRequest } from "ahooks";
-import { Button, ConfigProvider, Form, Spin, Tag } from "antd";
+import { App, Button, ConfigProvider, Form, Spin, Tag } from "antd";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AttachmentConfigTab } from "./attachment-config-tab";
@@ -33,6 +33,7 @@ async function noop() {}
  * mọi ô nhập bị khóa. (Trạng thái xuất bản không thuộc phiên bản nên không hiển thị.)
  */
 export function VersionView({ requestTypeId, version, canRestore, onClose, onRestored }: VersionViewProps) {
+	const { message, modal } = App.useApp();
 	const { t } = useTranslation();
 	const [form] = Form.useForm<RequestTypeEntity>();
 	const modalRef = useRef<FullscreenModalRef>(null);
@@ -76,14 +77,14 @@ export function VersionView({ requestTypeId, version, canRestore, onClose, onRes
 	const confirmRestore = () => {
 		if (!detail || !version)
 			return;
-		window.$modal?.confirm({
+		modal.confirm({
 			title: t("setting.requestType.versions.restoreConfirmTitle", { version: version.version }),
 			content: t("setting.requestType.versions.restoreConfirmContent"),
 			okText: t("setting.requestType.versions.restore"),
 			// Trả về promise để nút OK hiện trạng thái đang xử lý; lỗi (vd: mã đã bị loại khác dùng) do interceptor báo và giữ hộp xác nhận mở
 			onOk: async () => {
 				await requestTypeService.fetchRestoreVersion(requestTypeId, version.id);
-				window.$message?.success(t("setting.requestType.versions.restored", { version: version.version }));
+				message.success(t("setting.requestType.versions.restored", { version: version.version }));
 				onRestored();
 				onClose();
 			},
