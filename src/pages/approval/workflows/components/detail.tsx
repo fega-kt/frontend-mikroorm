@@ -4,7 +4,7 @@ import { requestTypeService } from "#src/api/setting/request-type";
 import { ProFormApiSelect } from "#src/components/api-select";
 import { ProFormDepartmentPicker } from "#src/components/department-picker";
 import { ModalForm, ProFormDigit, ProFormSwitch, ProFormText, ProFormTextArea } from "@ant-design/pro-components";
-import { Form } from "antd";
+import { App, Form } from "antd";
 import { useImperativeHandle, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -26,6 +26,7 @@ interface FormValues {
 let guard: ((res?: { isChange: boolean, id?: string }) => void) | undefined;
 
 export function Detail({ ref }: { ref: React.Ref<DetailRef> }) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [form] = Form.useForm<FormValues>();
 	const [open, setOpen] = useState(false);
@@ -79,7 +80,7 @@ export function Detail({ ref }: { ref: React.Ref<DetailRef> }) {
 				const res = editingId
 					? await approvalWorkflowService.fetchUpdate(editingId, payload)
 					: await approvalWorkflowService.fetchCreate(payload);
-				window.$message?.success(t(editingId ? "common.updateSuccess" : "common.addSuccess"));
+				message.success(t(editingId ? "common.updateSuccess" : "common.addSuccess"));
 				close({ isChange: true, id: res.id });
 				return true;
 			}}

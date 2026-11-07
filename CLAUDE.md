@@ -114,6 +114,22 @@ Zustand stores: `user` (auth/profile), `access` (routes/menus), `tabs` (open tab
 
 Files are **auto-loaded** via `import.meta.glob`. Filename becomes the top-level namespace key: `src/locales/vi-VN/setting.json` → accessed as `t("setting.category.name")`. Three languages: `vi-VN` (default), `zh-CN`, `en-US`. Always add keys to all three.
 
+### Thông báo, hộp thoại (antd `message` / `modal` / `notification`)
+
+Hàm tĩnh của antd (`message.success()`, `Modal.confirm()`…) vẽ ra **ngoài cây React**, nên mất `ConfigProvider`: sai theme sáng/tối, màu chính, ngôn ngữ. Luôn dùng bản gắn với `<App>`:
+
+| Đang ở đâu | Dùng |
+|---|---|
+| **Trong component / hook** | `const { message, modal, notification } = App.useApp();` (`import { App } from "antd"`) |
+| **Ngoài component** (interceptor gọi API, hàm tiện ích) | `import { message, modal, notification } from "#src/utils/static-antd";` |
+
+- `window.$message` / `$modal` / `$notification` **đã bỏ** (khai báo trong `global.d.ts` cũng đã xóa nên dùng sẽ báo lỗi biên dịch); không dùng `window.$modal ?? Modal` hay bản tĩnh `Modal.confirm` / `message` import thẳng từ `antd`.
+- `static-antd` xuất các biến module: lúc đầu là bản tĩnh của antd, `StaticAntd` (nằm trong `AntdApp`) thay bằng bản theo theme ngay khi ứng dụng mount. Luôn import rồi gọi `message.xxx`, đừng destructure một lần rồi giữ lại.
+- Chỉ dùng được bên trong `<App>` (đã bọc cả router). Component render ngoài `<App>` (vd test render riêng) nhận context rỗng và `message.success` sẽ lỗi: bọc `<App>` hoặc dùng import tĩnh.
+- Giá trị `App.useApp()` ổn định giữa các lần render nên đưa `message` / `modal` vào mảng deps của `useCallback` / `useEffect` là an toàn (và quy tắc `exhaustive-deps` yêu cầu).
+- Tên `message` / `modal` / `notification` trùng với biến khác trong file thì đặt bí danh: `const { message: antdMessage } = App.useApp();`.
+- Số lượng hiển thị cho người dùng dùng `formatNumber(value, i18n.language)` (`#src/utils/format-number`: `78005` → `78.005`). Với i18next đừng truyền số qua biến `count` (nó hiểu là số nhiều và không định dạng): truyền chuỗi đã định dạng bằng biến khác, vd `{{rows}}`.
+
 ### List Page Pattern
 
 ```tsx

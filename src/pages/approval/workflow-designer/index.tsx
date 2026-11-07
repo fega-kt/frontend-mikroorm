@@ -7,7 +7,7 @@ import { PermissionType } from "#src/hooks/use-access/permission-type.enum";
 import { ArrowLeftOutlined, CloudUploadOutlined, PlayCircleOutlined, SaveOutlined } from "@ant-design/icons";
 import { ReactFlowProvider } from "@xyflow/react";
 import { useRequest } from "ahooks";
-import { Badge, Button, Result, Space, Tag, theme, Tooltip, Typography } from "antd";
+import { App, Badge, Button, Result, Space, Tag, theme, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -38,6 +38,7 @@ export default function WorkflowDesignerPage() {
 const isVisible = (el: HTMLElement | null) => !!el && el.offsetParent !== null;
 
 function WorkflowDesigner() {
+	const { message, modal } = App.useApp();
 	const { id = "" } = useParams();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
@@ -92,7 +93,7 @@ function WorkflowDesigner() {
 			if (detail?.draftVersion?.id !== res.id)
 				await loadDetail(false);
 			if (!silent)
-				window.$message?.success(t("workflowDesigner.messages.saved"));
+				message.success(t("workflowDesigner.messages.saved"));
 			return true;
 		}
 		catch {
@@ -101,13 +102,13 @@ function WorkflowDesigner() {
 		finally {
 			setSaving(false);
 		}
-	}, [id, store, detail, loadDetail, t]);
+	}, [id, store, detail, loadDetail, t, message]);
 
 	const publish = async () => {
 		if (!detail)
 			return;
 		if (!dirty && !detail.draftVersion) {
-			window.$message?.info(t("workflowDesigner.messages.noDraft"));
+			message.info(t("workflowDesigner.messages.noDraft"));
 			return;
 		}
 		setPublishing(true);
@@ -117,17 +118,17 @@ function WorkflowDesigner() {
 			const { valid, errors } = await approvalWorkflowService.fetchValidate(id);
 			if (!valid || errors.length) {
 				store.getState().setErrors(errors);
-				window.$message?.error(t("workflowDesigner.messages.invalid", { count: errors.length }));
+				message.error(t("workflowDesigner.messages.invalid", { count: errors.length }));
 				return;
 			}
 			const draftVersion = (await approvalWorkflowService.fetchDetail(id)).draftVersion?.version;
-			window.$modal?.confirm({
+			modal.confirm({
 				title: t("workflowDesigner.messages.publishConfirmTitle"),
 				content: t("workflowDesigner.messages.publishConfirmContent", { version: draftVersion ?? "" }),
 				okText: t("workflowDesigner.actions.publish"),
 				onOk: async () => {
 					const res = await approvalWorkflowService.fetchPublish(id);
-					window.$message?.success(t("workflowDesigner.messages.published", { version: res.version }));
+					message.success(t("workflowDesigner.messages.published", { version: res.version }));
 					await loadDetail(true);
 				},
 			});
@@ -172,7 +173,7 @@ function WorkflowDesigner() {
 			navigate("/setting/approval-workflow");
 			return;
 		}
-		window.$modal?.confirm({
+		modal.confirm({
 			title: t("workflowDesigner.messages.leaveConfirmTitle"),
 			content: t("workflowDesigner.messages.leaveConfirmContent"),
 			okButtonProps: { danger: true },

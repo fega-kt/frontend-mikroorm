@@ -3,9 +3,10 @@ import type { TableColumnsType } from "antd";
 import { ExportEmailStatus, ExportJobStatus, exportService } from "#src/api/export";
 import { BasicContent } from "#src/components/basic-content";
 import { formatBytes } from "#src/utils/format-bytes";
+import { formatNumber } from "#src/utils/format-number";
 import { DownloadOutlined, ReloadOutlined, StopOutlined } from "@ant-design/icons";
 import { useRequest } from "ahooks";
-import { Alert, Button, Card, Empty, Popconfirm, Progress, Space, Table, Tag, Tooltip, Typography } from "antd";
+import { Alert, App, Button, Card, Empty, Popconfirm, Progress, Space, Table, Tag, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -30,7 +31,8 @@ const isActive = (job: ExportJob) => job.status === ExportJobStatus.Queued || jo
 
 /** Lịch sử xuất Excel chạy nền của tôi: theo dõi tiến độ, tải file đã xong, hủy lượt đang chạy */
 export default function ExportHistory() {
-	const { t } = useTranslation();
+	const { message } = App.useApp();
+	const { t, i18n } = useTranslation();
 	const [page, setPage] = useState(1);
 	// Chỉ hỏi lại theo chu kỳ khi còn lượt đang chờ / chạy (đặt từ kết quả lần tải gần nhất; không gọi gì trong lúc render)
 	const [polling, setPolling] = useState(true);
@@ -59,7 +61,7 @@ export default function ExportHistory() {
 	const stop = async (job: ExportJob) => {
 		try {
 			await exportService.fetchCancelJob(job.id);
-			window.$message?.success(t("export.history.cancelled"));
+			message.success(t("export.history.cancelled"));
 		}
 		catch {
 			// lỗi đã được interceptor hiển thị
@@ -113,8 +115,8 @@ export default function ExportHistory() {
 			width: 170,
 			align: "right",
 			render: (_, job) => (job.status === ExportJobStatus.Processing
-				? t("export.history.progress", { processed: job.processed.toLocaleString(), total: job.total.toLocaleString() })
-				: job.total.toLocaleString()),
+				? t("export.history.progress", { processed: formatNumber(job.processed, i18n.language), total: formatNumber(job.total, i18n.language) })
+				: formatNumber(job.total, i18n.language)),
 		},
 		{
 			title: t("export.history.size"),

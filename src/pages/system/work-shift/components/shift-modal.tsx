@@ -2,7 +2,7 @@ import type { WorkShift, WorkShiftPayload } from "#src/api/work-calendar";
 import type { Color } from "antd/es/color-picker";
 import { workShiftService } from "#src/api/work-calendar";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, ColorPicker, Form, Input, Modal, Space, TimePicker } from "antd";
+import { App, Button, ColorPicker, Form, Input, Modal, Space, TimePicker } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { dayjsToTime, DEFAULT_SHIFT_COLOR, timeToDayjs } from "../utils";
@@ -15,6 +15,7 @@ interface ShiftModalProps {
 
 /** Thêm / sửa ca: mã, tên, màu và các khung giờ (khung kết thúc trước giờ bắt đầu = sang hôm sau) */
 export function ShiftModal({ shift, onClose }: ShiftModalProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [form] = Form.useForm<WorkShiftPayload>();
 	const [saving, setSaving] = useState(false);
@@ -27,7 +28,7 @@ export function ShiftModal({ shift, onClose }: ShiftModalProps) {
 				await workShiftService.fetchUpdate(shift.id, values);
 			else
 				await workShiftService.fetchCreate(values);
-			window.$message?.success(t(shift ? "common.updateSuccess" : "common.addSuccess"));
+			message.success(t(shift ? "common.updateSuccess" : "common.addSuccess"));
 			onClose(true);
 		}
 		catch {

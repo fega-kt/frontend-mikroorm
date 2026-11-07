@@ -2,7 +2,7 @@ import type { WorkDayOverride, WorkShift } from "#src/api/work-calendar";
 import type { TableColumnsType } from "antd";
 import { workDayOverrideService, WorkDayType, WorkTargetType } from "#src/api/work-calendar";
 import { CopyOutlined, DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Popconfirm, Select, Space, Table, Tag } from "antd";
+import { App, Button, DatePicker, Popconfirm, Select, Space, Table, Tag } from "antd";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -16,6 +16,7 @@ interface OverrideTabProps {
 
 /** Ngày đặc biệt theo năm: nghỉ lễ / Tết, làm bù, đổi ca — của công ty, phòng hoặc người */
 export function OverrideTab({ shifts, canManage }: OverrideTabProps) {
+	const { message, modal } = App.useApp();
 	const { t } = useTranslation();
 	const [year, setYear] = useState(dayjs().year());
 	const [scope, setScope] = useState<WorkTargetType | "all">("all");
@@ -44,7 +45,7 @@ export function OverrideTab({ shifts, canManage }: OverrideTabProps) {
 	const remove = async (id: string) => {
 		try {
 			await workDayOverrideService.fetchDelete(id);
-			window.$message?.success(t("common.deleteSuccess"));
+			message.success(t("common.deleteSuccess"));
 			await load();
 		}
 		catch {
@@ -54,7 +55,7 @@ export function OverrideTab({ shifts, canManage }: OverrideTabProps) {
 
 	/** Chép ngày đặc biệt cấp công ty sang năm sau (ngày âm lịch như Tết cần sửa lại) */
 	const copyToNextYear = () => {
-		window.$modal?.confirm({
+		modal.confirm({
 			title: t("workCalendar.override.copyConfirm", { from: year, to: year + 1 }),
 			content: t("workCalendar.override.copyHint"),
 			okText: t("common.confirm"),
@@ -66,7 +67,7 @@ export function OverrideTab({ shifts, canManage }: OverrideTabProps) {
 						fromYear: year,
 						toYear: year + 1,
 					});
-					window.$message?.success(t("workCalendar.override.copied", { copied, skipped }));
+					message.success(t("workCalendar.override.copied", { copied, skipped }));
 				}
 				catch {
 					// lỗi đã được interceptor hiển thị

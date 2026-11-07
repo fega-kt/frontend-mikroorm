@@ -5,7 +5,7 @@ import { BasicContent } from "#src/components/basic-content";
 import { BasicTable } from "#src/components/basic-table";
 import { PeoplePicker } from "#src/components/people-picker";
 import { CheckOutlined, CloseOutlined, StopOutlined } from "@ant-design/icons";
-import { Button, Input, Modal, Popconfirm, Segmented, Tag, Tooltip, Typography } from "antd";
+import { App, Button, Input, Modal, Popconfirm, Segmented, Tag, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -30,6 +30,7 @@ interface NoteDialog {
 
 /** Quản trị chứng thư ký số: duyệt đăng ký lần đầu, từ chối, thu hồi */
 export default function SigningCertificates() {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const actionRef = useRef<ActionType>(null);
 	const [status, setStatus] = useState<StatusTab>(SigningCertificateStatus.Pending);
@@ -42,7 +43,7 @@ export default function SigningCertificates() {
 		setBusyId(id);
 		try {
 			await fn();
-			window.$message?.success(t(successKey));
+			message.success(t(successKey));
 			actionRef.current?.reload();
 			return true;
 		}

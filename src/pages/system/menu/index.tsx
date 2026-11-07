@@ -9,7 +9,7 @@ import { accessControlCodes, useAccess } from "#src/hooks/use-access";
 import { handleTree } from "#src/utils/tree";
 
 import { PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Popconfirm } from "antd";
+import { App, Button, Popconfirm } from "antd";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -17,6 +17,7 @@ import { Detail } from "./components/detail";
 import { getConstantColumns } from "./constants";
 
 export default function Menu() {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const { hasAccessByCodes } = useAccess();
 	/* Detail Data */
@@ -30,7 +31,7 @@ export default function Menu() {
 	const handleDeleteRow = async (id: number, action?: ProCoreActionType<object>) => {
 		await fetchDeleteMenuItem(id);
 		await action?.reload?.();
-		window.$message?.success(t("common.deleteSuccess"));
+		message.success(t("common.deleteSuccess"));
 	};
 
 	const columns: ProColumns<MenuItemType>[] = [

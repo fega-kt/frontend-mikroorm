@@ -4,7 +4,7 @@ import { PIN_PATTERN, PinInput } from "#src/components/pin-input";
 import { SignaturePad } from "#src/components/signature-pad";
 import { SafetyCertificateOutlined } from "@ant-design/icons";
 import { useRequest } from "ahooks";
-import { Alert, Button, Descriptions, Divider, Form, Popconfirm, Spin, Tag, theme, Typography } from "antd";
+import { Alert, App, Button, Descriptions, Divider, Form, Popconfirm, Spin, Tag, theme, Typography } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -33,6 +33,7 @@ function StatusTag({ certificate }: { certificate: MySigningCertificate }) {
  * PIN không lưu ở hệ thống (chỉ dùng để mở khóa ký), quên PIN thì phải nhờ quản trị thu hồi rồi đăng ký lại.
  */
 export function DigitalSignature() {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
 	const { data: certificate, loading, refresh } = useRequest(() => signingCertificateService.fetchMine());
@@ -45,7 +46,7 @@ export function DigitalSignature() {
 		setBusy(kind);
 		try {
 			await fn();
-			window.$message?.success(t(successKey));
+			message.success(t(successKey));
 			return true;
 		}
 		catch {

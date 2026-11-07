@@ -1,7 +1,7 @@
 import type { WorkSchedule, WorkShift } from "#src/api/work-calendar";
 import type { Dayjs } from "dayjs";
 import { workScheduleService } from "#src/api/work-calendar";
-import { Collapse, DatePicker, Form, Input, InputNumber, Modal, Radio, Select, Space, Switch, theme, Tooltip } from "antd";
+import { App, Collapse, DatePicker, Form, Input, InputNumber, Modal, Radio, Select, Space, Switch, theme, Tooltip } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -47,6 +47,7 @@ interface ScheduleModalProps {
 
 /** Thêm / sửa lịch làm việc: lịch tuần (T2 … CN) hoặc ca xoay theo chu kỳ N ngày tính từ ngày mốc */
 export function ScheduleModal({ schedule, shifts, onClose }: ScheduleModalProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
 	const [form] = Form.useForm<FormValues>();
@@ -133,7 +134,7 @@ export function ScheduleModal({ schedule, shifts, onClose }: ScheduleModalProps)
 				await workScheduleService.fetchUpdate(schedule.id, payload);
 			else
 				await workScheduleService.fetchCreate(payload);
-			window.$message?.success(t(schedule ? "common.updateSuccess" : "common.addSuccess"));
+			message.success(t(schedule ? "common.updateSuccess" : "common.addSuccess"));
 			onClose(true);
 		}
 		catch {

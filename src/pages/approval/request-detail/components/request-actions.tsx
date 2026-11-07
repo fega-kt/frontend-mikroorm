@@ -19,7 +19,7 @@ import {
 	ShareAltOutlined,
 	StopOutlined,
 } from "@ant-design/icons";
-import { Button, Dropdown, Space } from "antd";
+import { App, Button, Dropdown, Space } from "antd";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { useCloneRequest } from "../../components/clone-request";
@@ -42,6 +42,7 @@ interface RequestActionsProps {
  * các thao tác còn lại gom vào menu "…" ở cuối (chỉ hiện mục người xem được phép làm).
  */
 export function RequestActions({ detail, busy, onReload, onAct, onSubmit, onEdit, onCancel, onDelete, onShare }: RequestActionsProps) {
+	const { modal } = App.useApp();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const canViewMailQueue = useAccess().canAccess(PermissionType.ViewActivityLogQueue);
@@ -81,7 +82,7 @@ export function RequestActions({ detail, busy, onReload, onAct, onSubmit, onEdit
 			label: t("approval.actions.delete"),
 			danger: true,
 			// Menu không chứa được Popconfirm → hỏi lại bằng hộp xác nhận
-			onClick: () => window.$modal?.confirm({
+			onClick: () => modal.confirm({
 				title: t("approval.messages.confirmDelete"),
 				okText: t("common.confirm"),
 				cancelText: t("common.cancel"),

@@ -11,7 +11,7 @@ import { approvalRequestPath } from "#src/router/extra-info";
 import { useUserStore } from "#src/store/user";
 import { ApartmentOutlined, CopyOutlined, EllipsisOutlined, FileTextOutlined, HistoryOutlined, InfoCircleOutlined, SaveOutlined, SendOutlined } from "@ant-design/icons";
 import { useDebounceFn, useRequest } from "ahooks";
-import { Alert, Button, Descriptions, Dropdown, Form, Input, Radio, Result, Select, Tabs, Tag, theme, Typography } from "antd";
+import { Alert, App, Button, Descriptions, Dropdown, Form, Input, Radio, Result, Select, Tabs, Tag, theme, Typography } from "antd";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams, useSearchParams } from "react-router";
@@ -59,6 +59,7 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 	/** Có khi nhúng: Hủy / gửi duyệt xong thì thoát chế độ sửa thay vì điều hướng */
 	onExit?: () => void
 } = {}) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
 	// Tiêu đề dính khi cuộn: mốc ngay trên tiêu đề ra khỏi vùng nhìn thấy → hiện viền dưới để tách khỏi nội dung
@@ -221,7 +222,7 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 		try {
 			await approvalRequestService.fetchUpdate(existing.id, { signSlots: slots });
 			setSaved(await approvalRequestService.fetchDetail(existing.id));
-			window.$message?.success(t("approval.signSlots.saved"));
+			message.success(t("approval.signSlots.saved"));
 			setSignSlotsOpen(false);
 		}
 		catch {
@@ -245,7 +246,7 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 			for (const block of ["documents", "attachments"] as const) {
 				const error = checkFileBlock(fileConfig[block], files[block]);
 				if (error) {
-					window.$message?.error(`${t(`approval.files.${block}`)}: ${t(`approval.files.errors.${error.code}`, error)}`);
+					message.error(`${t(`approval.files.${block}`)}: ${t(`approval.files.errors.${error.code}`, error)}`);
 					return;
 				}
 			}
@@ -266,7 +267,7 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 			else {
 				requestId = (await approvalRequestService.fetchCreate({ ...body, id: draftId, requestType: selectedType!.id, category: values.category!, submit })).id;
 			}
-			window.$message?.success(t(submit ? "approval.messages.submitted" : "approval.messages.saved"));
+			message.success(t(submit ? "approval.messages.submitted" : "approval.messages.saved"));
 			if (submit) {
 				if (onExit)
 					onExit();

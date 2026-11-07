@@ -2,7 +2,7 @@ import type { WorkSchedule, WorkShift } from "#src/api/work-calendar";
 import type { TableColumnsType } from "antd";
 import { workScheduleService } from "#src/api/work-calendar";
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Popconfirm, Space, Table, Tag, Tooltip } from "antd";
+import { App, Button, Popconfirm, Space, Table, Tag, Tooltip } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -18,6 +18,7 @@ interface ScheduleTabProps {
 }
 
 export function ScheduleTab({ schedules, shifts, loading, canManage, onChanged }: ScheduleTabProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [editing, setEditing] = useState<WorkSchedule | null>();
 	const shiftById = new Map(shifts.map(s => [s.id, s]));
@@ -25,7 +26,7 @@ export function ScheduleTab({ schedules, shifts, loading, canManage, onChanged }
 	const remove = async (id: string) => {
 		try {
 			await workScheduleService.fetchDelete(id);
-			window.$message?.success(t("common.deleteSuccess"));
+			message.success(t("common.deleteSuccess"));
 			onChanged();
 		}
 		catch {

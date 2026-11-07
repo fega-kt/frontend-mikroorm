@@ -233,6 +233,6 @@
 		"lockedNote": "该账号已停用，无法再给此人分配新工作。"
 	},
 	"exportExcel": "导出 Excel",
-	"exportStarted": "正在下载 {{count}} 行…",
+	"exportStarted": "正在下载 {{rows}} 行…",
 	"exportEmpty": "没有可导出的数据"
 }

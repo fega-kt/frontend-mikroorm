@@ -2,7 +2,7 @@ import type { TranslationItem } from "#src/api/i18n";
 import type { I18nSource } from "./json-strings";
 import { I18N_LANGUAGES, i18nService } from "#src/api/i18n";
 import { FormModal } from "#src/components/form-modal";
-import { Form, Input, Tag, Typography } from "antd";
+import { App, Form, Input, Tag, Typography } from "antd";
 import { useImperativeHandle, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EMPTY_TEXTS, getJsonStrings, variablesOf } from "./json-strings";
@@ -31,6 +31,7 @@ let guard: ((res?: { isChange: boolean }) => void) | undefined;
  * Biểu mẫu: tiếng Việt mặc định là chuỗi gốc của form, sửa thì đè lên chuỗi gốc khi hiển thị (để trống = dùng chuỗi gốc).
  */
 export function AppTranslationDetail({ ref }: { ref: React.Ref<AppTranslationDetailRef> }) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [form] = Form.useForm<FormValues>();
 	const [open, setOpen] = useState(false);
@@ -71,7 +72,7 @@ export function AppTranslationDetail({ ref }: { ref: React.Ref<AppTranslationDet
 		setSaving(true);
 		try {
 			await i18nService.fetchSave(namespace, [item]);
-			window.$message?.success(t("common.updateSuccess"));
+			message.success(t("common.updateSuccess"));
 			close({ isChange: true });
 		}
 		finally {

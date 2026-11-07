@@ -27,7 +27,7 @@ import {
 	ShareAltOutlined,
 } from "@ant-design/icons";
 import { useRequest } from "ahooks";
-import { Alert, Badge, Button, Descriptions, Empty, Input, Modal, Result, Space, Tabs, Tag, Tooltip, Typography } from "antd";
+import { Alert, App, Badge, Button, Descriptions, Empty, Input, Modal, Result, Space, Tabs, Tag, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -78,6 +78,7 @@ const ROUND_BADGE: Record<ApprovalRequestStatus, BadgeProps["status"]> = {
 const NO_FIELDS: FormField[] = [];
 
 export default function ApprovalRequestDetailPage() {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
@@ -156,7 +157,7 @@ export default function ApprovalRequestDetailPage() {
 		setBusy(true);
 		try {
 			await fn();
-			window.$message?.success(t(successKey));
+			message.success(t(successKey));
 			await load();
 		}
 		catch {
@@ -198,7 +199,7 @@ export default function ApprovalRequestDetailPage() {
 		if (!detail)
 			return;
 		await approvalRequestService.fetchDelete(detail.id);
-		window.$message?.success(t("approval.messages.deleted"));
+		message.success(t("approval.messages.deleted"));
 		navigate(ApprovalPath.MyDraft, { replace: true });
 	};
 

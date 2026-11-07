@@ -241,6 +241,6 @@
 		"lockedNote": "Tài khoản không còn hoạt động — không giao được việc mới cho người này."
 	},
 	"exportExcel": "Xuất Excel",
-	"exportStarted": "Đang tải xuống {{count}} dòng…",
+	"exportStarted": "Đang tải xuống {{rows}} dòng…",
 	"exportEmpty": "Không có dữ liệu để xuất"
 }

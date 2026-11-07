@@ -2,7 +2,7 @@ import type { FormItemProps } from "antd";
 import { attachmentService } from "#src/api/attachment";
 import { DeleteOutlined, EyeOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { ProFormItem } from "@ant-design/pro-components";
-import { Image, Upload } from "antd";
+import { App, Image, Upload } from "antd";
 import * as React from "react";
 import { useImperativeHandle, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -25,6 +25,7 @@ export interface ImageUploadProps {
 }
 
 export function ImageUpload({ value, onChange, storagePath, disabled, uploadRef }: ImageUploadProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [pendingFile, setPendingFile] = useState<File | null>(null);
 	const [previewSrc, setPreviewSrc] = useState<string | null>(null);
@@ -56,7 +57,7 @@ export function ImageUpload({ value, onChange, storagePath, disabled, uploadRef 
 
 	const handleBeforeUpload = (file: File) => {
 		if (file.size > MAX_SIZE) {
-			window.$message?.error(`${file.name}: ${t("common.attachment.exceedsLimit", "File too large")} (5 MB)`);
+			message.error(`${file.name}: ${t("common.attachment.exceedsLimit", "File too large")} (5 MB)`);
 			return false;
 		}
 		const objectUrl = URL.createObjectURL(file);

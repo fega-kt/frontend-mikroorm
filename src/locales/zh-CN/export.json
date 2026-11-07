@@ -5,7 +5,7 @@
 		"sendEmail": "完成后发送邮件（文件小于 10 MB 时作为附件）",
 		"confirm": "导出"
 	},
-	"queued": "已将 {{count}} 行加入导出队列，完成后会通知你。",
+	"queued": "已将 {{rows}} 行加入导出队列，完成后会通知你。",
 	"viewHistory": "查看导出历史",
 	"history": {
 		"title": "导出历史",

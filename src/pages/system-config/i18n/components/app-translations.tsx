@@ -13,7 +13,7 @@ import { APP_I18N_NAMESPACE } from "#src/locales/overrides";
 import { clearFormDictionaryCache, collectFormStrings, formI18nNamespace } from "#src/pages/approval/lib/form-i18n";
 import { DeleteOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useRequest } from "ahooks";
-import { Button, Popconfirm, theme, Typography } from "antd";
+import { App, Button, Popconfirm, theme, Typography } from "antd";
 import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AppTranslationDetail } from "./app-translation-detail";
@@ -53,6 +53,7 @@ function namespaceFilter({ source, formId }: Filters) {
  * Thêm = chọn trong danh sách i18n; bấm key để sửa trong popup; tích chọn nhiều dòng để xóa (xóa mềm).
  */
 export function AppTranslations() {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const { canAccess } = useAccess();
 	const canEdit = canAccess(PermissionType.UpdateI18n);
@@ -129,7 +130,7 @@ export function AppTranslations() {
 		try {
 			for (const [namespace, keys] of byNamespace)
 				await i18nService.fetchSave(namespace, [], keys);
-			window.$message?.success(t("system.i18n.app.removeDone", { count: selected.length }));
+			message.success(t("system.i18n.app.removeDone", { count: selected.length }));
 			setSelected([]);
 			await afterChange([...byNamespace.keys()]);
 		}

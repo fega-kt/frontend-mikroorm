@@ -3,7 +3,7 @@ import { groupService } from "#src/api/system/group";
 import { TrimInput, TrimTextArea } from "#src/components/basic-form";
 import { PeoplePicker } from "#src/components/people-picker";
 import { ModalForm } from "@ant-design/pro-components";
-import { Form, Spin } from "antd";
+import { App, Form, Spin } from "antd";
 import { useImperativeHandle, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -18,6 +18,7 @@ interface DetailProps {
 let guard: (res?: { isChange: boolean }) => void;
 
 export function Detail({ ref }: DetailProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [form] = Form.useForm<GroupEntity>();
 	const [open, setOpen] = useState(false);
@@ -39,7 +40,7 @@ export function Detail({ ref }: DetailProps) {
 				}
 				catch (error) {
 					console.error("[GroupDetail] Failed to fetch group info:", error);
-					window.$message?.error(t("common.fetchError"));
+					message.error(t("common.fetchError"));
 				}
 			}
 			return new Promise<{ isChange: boolean } | undefined>((resolve) => {
@@ -51,11 +52,11 @@ export function Detail({ ref }: DetailProps) {
 	const onFinish = async (values: GroupEntity) => {
 		if (editingId) {
 			await groupService.fetchUpdateGroup(editingId, values);
-			window.$message?.success(t("common.updateSuccess"));
+			message.success(t("common.updateSuccess"));
 		}
 		else {
 			await groupService.fetchAddGroup(values);
-			window.$message?.success(t("common.addSuccess"));
+			message.success(t("common.addSuccess"));
 		}
 		guard?.({ isChange: true });
 		return true;

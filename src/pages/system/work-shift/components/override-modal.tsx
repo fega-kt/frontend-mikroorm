@@ -4,7 +4,7 @@ import type { Dayjs } from "dayjs";
 import { workDayOverrideService, WorkDayType, WorkTargetType } from "#src/api/work-calendar";
 import { DepartmentPicker } from "#src/components/department-picker";
 import { PeoplePicker } from "#src/components/people-picker";
-import { DatePicker, Form, Input, Modal, Radio, Select } from "antd";
+import { App, DatePicker, Form, Input, Modal, Radio, Select } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -30,6 +30,7 @@ interface OverrideModalProps {
 
 /** Thêm ngày đặc biệt cho cả khoảng ngày (ngày đã có của cùng đối tượng bị ghi đè) / sửa một ngày */
 export function OverrideModal({ override, shifts, onClose }: OverrideModalProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [form] = Form.useForm<FormValues>();
 	const [saving, setSaving] = useState(false);
@@ -43,7 +44,7 @@ export function OverrideModal({ override, shifts, onClose }: OverrideModalProps)
 		try {
 			if (override) {
 				await workDayOverrideService.fetchUpdate(override.id, day);
-				window.$message?.success(t("common.updateSuccess"));
+				message.success(t("common.updateSuccess"));
 			}
 			else {
 				const { count } = await workDayOverrideService.fetchCreate({
@@ -54,7 +55,7 @@ export function OverrideModal({ override, shifts, onClose }: OverrideModalProps)
 					to: values.range[1].format(DATE_FORMAT),
 					...day,
 				});
-				window.$message?.success(t("workCalendar.override.created", { count }));
+				message.success(t("workCalendar.override.created", { count }));
 			}
 			onClose(true);
 		}

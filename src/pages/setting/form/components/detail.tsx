@@ -11,7 +11,7 @@ import { PAYLOAD_GRID_CLASS } from "#src/pages/approval/lib/payload";
 import { Header } from "#src/pages/setting/request-type/components/header";
 import { CheckOutlined, CloseOutlined, InfoCircleOutlined, SafetyCertificateOutlined } from "@ant-design/icons";
 import { ProForm, ProFormText, ProFormTextArea } from "@ant-design/pro-components";
-import { Badge, Button, Empty, Form, Segmented, Spin, theme } from "antd";
+import { App, Badge, Button, Empty, Form, Segmented, Spin, theme } from "antd";
 import * as React from "react";
 import { useImperativeHandle, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -33,6 +33,7 @@ type Tab = "info" | "design" | "preview" | "history";
 let guard: (res?: { isChange: boolean }) => void;
 
 export function Detail({ ref }: DetailProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const { canAccess } = useAccess();
 	const { token } = theme.useToken();
@@ -71,7 +72,7 @@ export function Detail({ ref }: DetailProps) {
 					setFormSchema(data.formSchema ?? []);
 				}
 				catch {
-					window.$message?.error(t("common.fetchError"));
+					message.error(t("common.fetchError"));
 				}
 				finally {
 					setLoading(false);
@@ -86,7 +87,7 @@ export function Detail({ ref }: DetailProps) {
 	const onFinish = async (formValues: FormEntity) => {
 		const schemaError = validateFormSchema(formSchema, t);
 		if (schemaError) {
-			window.$message?.error(schemaError);
+			message.error(schemaError);
 			return;
 		}
 		// ProForm bỏ hẳn trường rỗng khỏi dữ liệu gửi đi → phải gửi null tường minh thì backend mới xóa mô tả
@@ -95,11 +96,11 @@ export function Detail({ ref }: DetailProps) {
 		try {
 			if (editingId) {
 				await formService.fetchUpdateForm(editingId, values);
-				window.$message?.success(t("common.updateSuccess"));
+				message.success(t("common.updateSuccess"));
 			}
 			else {
 				await formService.fetchAddForm(values);
-				window.$message?.success(t("common.addSuccess"));
+				message.success(t("common.addSuccess"));
 			}
 			guard?.({ isChange: true });
 			modalRef.current?.close();
@@ -270,7 +271,7 @@ export function Detail({ ref }: DetailProps) {
 						onClose={() => setPreviewVersion(null)}
 						onRestore={(fields, version) => {
 							setFormSchema(fields);
-							window.$message?.success(t("setting.form.versions.restored", { version }));
+							message.success(t("setting.form.versions.restored", { version }));
 						}}
 					/>
 				)}

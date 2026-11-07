@@ -3,7 +3,7 @@ import type { Dayjs } from "dayjs";
 import { appSettingService } from "#src/api/system-config/app-setting";
 import { TrimInput, TrimTextArea } from "#src/components/basic-form";
 import { ModalForm } from "@ant-design/pro-components";
-import { DatePicker, Form, Input, InputNumber, Select, Spin, Switch, Typography } from "antd";
+import { App, DatePicker, Form, Input, InputNumber, Select, Spin, Switch, Typography } from "antd";
 import dayjs from "dayjs";
 import { useImperativeHandle, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -79,6 +79,7 @@ function toPayloadValue(record: AppSettingRow, value: FormValue): AppSettingValu
 }
 
 export function Detail({ ref }: DetailProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [form] = Form.useForm<FormValues>();
 	const [open, setOpen] = useState(false);
@@ -114,7 +115,7 @@ export function Detail({ ref }: DetailProps) {
 				}
 				catch (error) {
 					console.error("[AppSettingDetail] Failed to fetch available keys:", error);
-					window.$message?.error(t("common.fetchError"));
+					message.error(t("common.fetchError"));
 				}
 				finally {
 					setLoading(false);
@@ -129,7 +130,7 @@ export function Detail({ ref }: DetailProps) {
 				}
 				catch (error) {
 					console.error("[AppSettingDetail] Failed to fetch setting:", error);
-					window.$message?.error(t("common.fetchError"));
+					message.error(t("common.fetchError"));
 				}
 				finally {
 					setLoading(false);
@@ -160,11 +161,11 @@ export function Detail({ ref }: DetailProps) {
 		};
 		if (mode === "create") {
 			await appSettingService.fetchAddAppSetting({ key: record.key, ...payload });
-			window.$message?.success(t("common.addSuccess"));
+			message.success(t("common.addSuccess"));
 		}
 		else {
 			await appSettingService.fetchUpdateAppSetting(record.key, payload);
-			window.$message?.success(t("common.updateSuccess"));
+			message.success(t("common.updateSuccess"));
 		}
 		guard?.({ isChange: true });
 		return true;

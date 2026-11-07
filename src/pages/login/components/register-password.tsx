@@ -1,14 +1,7 @@
 import { BasicButton } from "#src/components/basic-button";
 import { PASSWORD_RULES, USERNAME_RULES } from "#src/constants/rules";
 
-import {
-	Button,
-	Checkbox,
-	Form,
-	Input,
-	Space,
-	Typography,
-} from "antd";
+import { App, Button, Checkbox, Form, Input, Space, Typography } from "antd";
 import { use, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
@@ -25,13 +18,14 @@ const FORM_INITIAL_VALUES = {
 export type RegisterPasswordFormType = typeof FORM_INITIAL_VALUES;
 
 export function RegisterPassword() {
+	const { message } = App.useApp();
 	const [loading] = useState(false);
 	const [registerForm] = Form.useForm();
 	const { t } = useTranslation();
 	const { setFormMode } = use(FormModeContext);
 
 	const handleFinish = async () => {
-		window.$message?.success("注册成功");
+		message.success("注册成功");
 	};
 
 	return (

@@ -1,7 +1,7 @@
 import type { ApprovalWorkflowDetail } from "#src/api/approval-workflow/types";
 import { approvalWorkflowService } from "#src/api/approval-workflow";
 import { DepartmentPicker } from "#src/components/department-picker";
-import { Button, Form, InputNumber, Switch, theme, Typography } from "antd";
+import { App, Button, Form, InputNumber, Switch, theme, Typography } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -19,6 +19,7 @@ interface ApplyToValues {
 
 /** "Áp dụng cho": loại đơn (chỉ đọc), phòng ban, ưu tiên, kích hoạt — lưu bằng fetchUpdate */
 export function ApplyToCard({ detail, disabled, onSaved }: ApplyToCardProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const { token } = theme.useToken();
 	const [form] = Form.useForm<ApplyToValues>();
@@ -39,7 +40,7 @@ export function ApplyToCard({ detail, disabled, onSaved }: ApplyToCardProps) {
 				priority: values.priority ?? 0,
 				isActive: !!values.isActive,
 			});
-			window.$message?.success(t("workflowDesigner.messages.settingsSaved"));
+			message.success(t("workflowDesigner.messages.settingsSaved"));
 			setChanged(false);
 			onSaved();
 		}

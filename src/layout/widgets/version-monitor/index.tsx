@@ -1,4 +1,4 @@
-import { Button, Space } from "antd";
+import { App, Button, Space } from "antd";
 import { createElement, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -17,6 +17,7 @@ export function AppVersionMonitor({
 	checkUpdatesInterval = 1,
 	checkUpdateUrl = import.meta.env.BASE_URL ?? "/",
 }: AppVersionMonitorProps) {
+	const { notification } = App.useApp();
 	let isCheckingUpdates = false;
 	const { t } = useTranslation();
 	const currentVersionTag = useRef("");
@@ -25,7 +26,7 @@ export function AppVersionMonitor({
 
 	function handleNotice(versionTag: string) {
 		currentVersionTag.current = versionTag;
-		window.$notification?.open({
+		notification.open({
 			message: t("widgets.versionMonitorTitle"),
 			description: t("widgets.versionMonitorContent"),
 			duration: 0,
@@ -39,7 +40,7 @@ export function AppVersionMonitor({
 
 							{
 								onClick() {
-									window.$notification?.destroy();
+									notification.destroy();
 								},
 								key: "cancel",
 							},

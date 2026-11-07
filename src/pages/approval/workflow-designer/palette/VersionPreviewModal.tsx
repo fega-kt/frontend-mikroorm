@@ -6,7 +6,7 @@ import { ApprovalFlowGraph } from "#src/components/approval-flow-graph";
 import { FormModal } from "#src/components/form-modal";
 import { HistoryOutlined } from "@ant-design/icons";
 import { useRequest } from "ahooks";
-import { Button, Descriptions, Skeleton } from "antd";
+import { App, Button, Descriptions, Skeleton } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 
@@ -24,6 +24,7 @@ interface VersionPreviewModalProps {
 
 /** Xem trước một phiên bản (chỉ đọc) + khôi phục làm bản nháp */
 export function VersionPreviewModal({ workflowId, version, fields, userNames, canRestore, dirty, onClose, onRestored }: VersionPreviewModalProps) {
+	const { message, modal } = App.useApp();
 	const { t } = useTranslation();
 
 	const { data, loading } = useRequest(
@@ -34,14 +35,14 @@ export function VersionPreviewModal({ workflowId, version, fields, userNames, ca
 	const { run: restore, loading: restoring } = useRequest(
 		async () => {
 			const res = await approvalWorkflowService.fetchRestoreVersion(workflowId, version!.id);
-			window.$message?.success(t("workflowDesigner.messages.restored", { version: version!.version }));
+			message.success(t("workflowDesigner.messages.restored", { version: version!.version }));
 			return res;
 		},
 		{ manual: true, onSuccess: () => onRestored() },
 	);
 
 	const confirmRestore = () => {
-		window.$modal?.confirm({
+		modal.confirm({
 			title: t("workflowDesigner.messages.restoreConfirmTitle", { version: version?.version }),
 			content: dirty ? t("workflowDesigner.messages.restoreConfirmDirty") : t("workflowDesigner.messages.restoreConfirmContent"),
 			okText: t("workflowDesigner.actions.restore"),

@@ -7,7 +7,7 @@ import { BasicTable } from "#src/components/basic-table";
 import { useAccess } from "#src/hooks/use-access";
 import { PermissionType } from "#src/hooks/use-access/permission-type.enum.js";
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined, UndoOutlined } from "@ant-design/icons";
-import { Button, Popconfirm, Space, Tag, Tooltip, Typography } from "antd";
+import { App, Button, Popconfirm, Space, Tag, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
@@ -19,6 +19,7 @@ const CATEGORY_COLOR: Record<EmailTemplateCategory, string> = { approval: "blue"
  * Mẫu email — mẫu hệ thống (sự kiện tờ trình; đăng nhập, mật khẩu; nhắc nhở) + mẫu tùy chỉnh cho bước Thông báo
  */
 export default function EmailTemplates() {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const { canAccess } = useAccess();
 	const canEdit = canAccess(PermissionType.UpdateEmailTemplate);
@@ -33,7 +34,7 @@ export default function EmailTemplates() {
 
 	const remove = async (item: EmailTemplate) => {
 		await emailTemplateService.fetchDelete(item.code);
-		window.$message?.success(t(item.system ? "approval.emailTemplate.resetDone" : "common.deleteSuccess"));
+		message.success(t(item.system ? "approval.emailTemplate.resetDone" : "common.deleteSuccess"));
 		actionRef.current?.reload();
 	};
 

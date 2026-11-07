@@ -6,7 +6,7 @@ import { departmentService } from "#src/api/system/dept";
 import { workScheduleAssignmentService, WorkTargetType } from "#src/api/work-calendar";
 import { UserAvatar } from "#src/components/user-avatar";
 import { BankOutlined, DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { Alert, Badge, Button, Card, Empty, Popconfirm, Segmented, Space, Table, Tag, Tree, Typography } from "antd";
+import { Alert, App, Badge, Button, Card, Empty, Popconfirm, Segmented, Space, Table, Tag, Tree, Typography } from "antd";
 import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -35,6 +35,7 @@ function formatDate(date?: string | null) {
  * hoặc theo người (lịch riêng, thắng lịch của phòng)
  */
 export function AssignmentTab({ schedules, canManage, version }: AssignmentTabProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [mode, setMode] = useState<"unit" | "user">("unit");
 	const [assignments, setAssignments] = useState<WorkAssignment[]>([]);
@@ -119,7 +120,7 @@ export function AssignmentTab({ schedules, canManage, version }: AssignmentTabPr
 	const remove = async (id: string) => {
 		try {
 			await workScheduleAssignmentService.fetchDelete(id);
-			window.$message?.success(t("common.deleteSuccess"));
+			message.success(t("common.deleteSuccess"));
 			await load();
 		}
 		catch {

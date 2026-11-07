@@ -8,7 +8,7 @@ import { useAuthStore } from "#src/store/auth";
 import { usePreferencesStore } from "#src/store/preferences";
 
 import { CopyOutlined, RedoOutlined, RocketOutlined, SettingOutlined } from "@ant-design/icons";
-import { theme as antdTheme, Badge, ConfigProvider, Divider, Drawer, FloatButton } from "antd";
+import { theme as antdTheme, App, Badge, ConfigProvider, Divider, Drawer, FloatButton } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
@@ -26,6 +26,7 @@ import {
 
 const preferencesContentId = "__react-antd-admin__preferences_drawer__";
 export function Preferences({ ...restProps }: ButtonProps) {
+	const { modal } = App.useApp();
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +44,7 @@ export function Preferences({ ...restProps }: ButtonProps) {
 	const handleCopyPreferences = async () => {
 		const data = JSON.stringify(preferences, null, 2);
 		await navigator.clipboard.writeText(data);
-		window.$modal?.success?.({
+		modal.success?.({
 			title: t("preferences.copyPreferencesSuccessTitle"),
 			content: t("preferences.copyPreferencesSuccess"),
 		});

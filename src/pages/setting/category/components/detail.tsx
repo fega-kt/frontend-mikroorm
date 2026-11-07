@@ -5,7 +5,7 @@ import { ProFormDepartmentPicker } from "#src/components/department-picker";
 import { ProFormImageUpload } from "#src/components/image-upload";
 import { STORAGE_PATH } from "#src/constants/storage-path";
 import { ModalForm, ProFormText } from "@ant-design/pro-components";
-import { Form, Spin } from "antd";
+import { App, Form, Spin } from "antd";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -21,6 +21,7 @@ interface DetailProps {
 let guard: (res?: { isChange: boolean }) => void;
 
 export function Detail({ ref }: DetailProps) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [form] = Form.useForm<CategoryEntity>();
 	const [open, setOpen] = useState(false);
@@ -48,7 +49,7 @@ export function Detail({ ref }: DetailProps) {
 					});
 				}
 				catch {
-					window.$message?.error(t("common.fetchError"));
+					message.error(t("common.fetchError"));
 				}
 				finally {
 					setLoading(false);
@@ -67,11 +68,11 @@ export function Detail({ ref }: DetailProps) {
 		const payload = { ...values, icon };
 		if (editingId) {
 			await categoryService.fetchUpdateCategory(editingId, payload);
-			window.$message?.success(t("common.updateSuccess"));
+			message.success(t("common.updateSuccess"));
 		}
 		else {
 			await categoryService.fetchAddCategory(payload);
-			window.$message?.success(t("common.addSuccess"));
+			message.success(t("common.addSuccess"));
 		}
 		guard?.({ isChange: true });
 		return true;

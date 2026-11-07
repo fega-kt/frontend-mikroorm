@@ -8,7 +8,7 @@ import { APP_I18N_NAMESPACE } from "#src/locales/overrides";
 import { clearFormDictionaryCache, collectFormStrings, formI18nNamespace } from "#src/pages/approval/lib/form-i18n";
 import { CheckCircleFilled, SearchOutlined } from "@ant-design/icons";
 import { useDebounce, useRequest } from "ahooks";
-import { Button, Checkbox, Input, Segmented, Select, Table, Tag, Typography } from "antd";
+import { App, Button, Checkbox, Input, Segmented, Select, Table, Tag, Typography } from "antd";
 import { useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EMPTY_TEXTS, getJsonStrings, matchesKeyword } from "./json-strings";
@@ -35,6 +35,7 @@ let guard: ((res?: { isChange: boolean }) => void) | undefined;
 
 /** Danh sách chuỗi theo nguồn (giao diện / biểu mẫu); tích chọn rồi thêm → lưu ngay vào database */
 export function JsonStringsModal({ ref }: { ref: React.Ref<JsonStringsModalRef> }) {
+	const { message } = App.useApp();
 	const { t } = useTranslation();
 	const [open, setOpen] = useState(false);
 	const [readOnly, setReadOnly] = useState(false);
@@ -148,7 +149,7 @@ export function JsonStringsModal({ ref }: { ref: React.Ref<JsonStringsModalRef> 
 			}
 			if (source === "form" && formId)
 				clearFormDictionaryCache(formId);
-			window.$message?.success(t("system.i18n.app.addSuccess", { count: keys.length }));
+			message.success(t("system.i18n.app.addSuccess", { count: keys.length }));
 			close({ isChange: true });
 		}
 		finally {
