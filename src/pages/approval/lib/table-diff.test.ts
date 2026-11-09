@@ -1,6 +1,7 @@
 import type { FormField, TableColumn } from "#src/api/setting/request-type/types";
 import { FormFieldType, FormulaOperator } from "#src/api/setting/request-type/types";
-import { describe, expect, it } from "vitest";
+import i18next from "i18next";
+import { afterEach, describe, expect, it } from "vitest";
 import { diffTableRows, formatTableCell, TableDiffKind } from "./table-diff";
 import { cleanTableRows, TABLE_ROW_ID } from "./table-field";
 
@@ -65,10 +66,19 @@ describe("cleanTableRows", () => {
 });
 
 describe("formatTableCell", () => {
+	afterEach(() => {
+		i18next.language = "vi-VN";
+	});
+
 	it("formats money and formula cells", () => {
 		const row = { _id: "a", device: "Laptop", price: 25000000, qty: 2 };
+		// Số theo ngôn ngữ đang dùng: vi "." nhóm nghìn, en ","
+		i18next.language = "vi-VN";
+		expect(formatTableCell(columns[1], row, t)).toBe("25.000.000");
+		expect(formatTableCell(columns[3], row, t)).toBe("50.000.000");
+		expect(formatTableCell(columns[0], undefined, t)).toBe("");
+		i18next.language = "en-US";
 		expect(formatTableCell(columns[1], row, t)).toBe("25,000,000");
 		expect(formatTableCell(columns[3], row, t)).toBe("50,000,000");
-		expect(formatTableCell(columns[0], undefined, t)).toBe("");
 	});
 });
