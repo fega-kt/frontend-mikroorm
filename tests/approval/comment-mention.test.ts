@@ -2,7 +2,7 @@ import { COMMENT_MENTION_OPTIONS } from "#src/pages/approval/request-detail/comp
 import Mention from "@tiptap/extension-mention";
 import { Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 
 const doc = {
 	type: "doc",
@@ -16,13 +16,22 @@ const doc = {
 	}],
 };
 
+const editors: Editor[] = [];
+
+/** Editor của test: hủy sau mỗi test để timer nền của ProseMirror không chạy khi môi trường DOM đã đóng ("document is not defined") */
 function makeEditor() {
-	return new Editor({
+	const editor = new Editor({
 		element: document.createElement("div"),
 		extensions: [StarterKit, Mention.configure(COMMENT_MENTION_OPTIONS)],
 		content: doc,
 	});
+	editors.push(editor);
+	return editor;
 }
+
+afterEach(() => {
+	editors.splice(0).forEach(editor => editor.destroy());
+});
 
 function pressBackspace(editor: Editor) {
 	return editor.view.someProp("handleKeyDown", handler => handler(editor.view, new KeyboardEvent("keydown", { key: "Backspace" })));
