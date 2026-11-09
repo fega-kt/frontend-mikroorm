@@ -1,7 +1,7 @@
 import type { FormField, TableColumn, TableRow } from "#src/api/setting/request-type/types";
 import { FormFieldType } from "#src/api/setting/request-type/types";
-import { formatMoney, formatPayloadValue } from "./payload";
-import { asTableRows, isEmptyCell, isMoneyColumn, numericCell, tableRowId } from "./table-field";
+import { formatDecimal, formatPayloadValue } from "./payload";
+import { asTableRows, isEmptyCell, numericCell, tableRowId } from "./table-field";
 
 export enum TableDiffKind {
 	Same = "same",
@@ -77,7 +77,7 @@ export function formatTableCell(column: TableColumn, row: TableRow | undefined, 
 		const value = numericCell(column, row);
 		if (value === undefined)
 			return "";
-		return isMoneyColumn(column) ? formatMoney(value) : value.toLocaleString("vi-VN");
+		return formatDecimal(value);
 	}
 	return isEmptyCell(row[column.key]) ? "" : formatPayloadValue(column as FormField, row[column.key], t);
 }

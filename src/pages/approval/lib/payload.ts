@@ -2,7 +2,9 @@ import type { FormField, FormReference } from "#src/api/setting/request-type/typ
 import type { FormProps } from "antd";
 import type { Dayjs } from "dayjs";
 import { FormFieldType } from "#src/api/setting/request-type/types";
+import { formatNumber } from "#src/utils/format-number";
 import dayjs from "dayjs";
+import i18next from "i18next";
 import { cleanTableRows } from "./table-field";
 
 /** Bố cục form tờ trình — dùng chung cho form soạn và màn xem nội dung để hai bên luôn giống nhau */
@@ -51,8 +53,53 @@ export function disabledDateFor(field: FormField) {
 	return (current: Dayjs) => (!!min && current.isBefore(min, "day")) || (!!max && current.isAfter(max, "day"));
 }
 
-export const formatMoney = (value?: string | number) => (value === undefined || value === "" ? "" : `${value}`.replace(/\B(?=(?:\d{3})+(?!\d))/g, ","));
-export const parseMoney = (value?: string) => (value ? Number(value.replace(/,/g, "")) : (undefined as unknown as number));
+/** Số lẻ tối đa khi hiển thị (đủ cho tiền / số lượng lẻ, đồng thời gọn các sai số của phép cộng số thực như 0.1 + 0.2) */
+const MAX_FRACTION_DIGITS = 6;
+
+/** Dấu nhóm nghìn và dấu thập phân theo ngôn ngữ đang dùng (vi: "." và ","; en: "," và ".") */
+function separators() {
+	const parts = new Intl.NumberFormat(i18next.language || undefined).formatToParts(1000000.5);
+	return {
+		group: parts.find(part => part.type === "group")?.value ?? ",",
+		decimal: parts.find(part => part.type === "decimal")?.value ?? ".",
+	};
+}
+
+/** Số hiển thị (chỉ đọc) theo ngôn ngữ đang dùng: vi "2.222.222,5", en "2,222,222.5"; rỗng → "" */
+export function formatDecimal(value?: string | number | null): string {
+	if (value === undefined || value === null || value === "")
+		return "";
+	const number = Number(value);
+	return Number.isFinite(number) ? formatNumber(number, i18next.language || undefined, { maximumFractionDigits: MAX_FRACTION_DIGITS }) : String(value);
+}
+
+export const formatMoney = formatDecimal;
+
+/**
+ * `formatter` của InputNumber: nhận chuỗi số với "." là dấu thập phân (kể cả đang gõ dở như "12." hay "1.50"),
+ * nhóm nghìn và đổi dấu thập phân theo ngôn ngữ mà giữ nguyên phần lẻ người dùng đang gõ.
+ */
+export function formatMoneyInput(value?: string | number): string {
+	const text = value === undefined ? "" : String(value);
+	const match = /^(-?)(\d*)(?:\.(\d*))?$/.exec(text);
+	if (!match)
+		return text;
+	const { group, decimal } = separators();
+	const [, sign, integer, fraction] = match;
+	return `${sign}${integer.replace(/\B(?=(?:\d{3})+(?!\d))/g, group)}${fraction === undefined ? "" : decimal + fraction}`;
+}
+
+/**
+ * `parser` của InputNumber: ngược lại `formatMoneyInput`, bỏ dấu nhóm và đưa dấu thập phân về ".".
+ * Trả về chuỗi (không ép số) để giữ được "12." khi đang gõ dở dấu thập phân.
+ */
+export function parseMoney(value?: string): number {
+	if (!value)
+		return undefined as unknown as number;
+	const { group, decimal } = separators();
+	const normalized = value.split(group).join("").replace(/\s/g, "").replace(decimal, ".").replace(/[^\d.-]/g, "");
+	return normalized as unknown as number;
+}
 
 /** payload (API) → giá trị form (dayjs cho trường ngày) */
 export function payloadToFormValues(fields: FormField[], payload: Record<string, unknown> = {}) {

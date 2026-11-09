@@ -10,7 +10,7 @@ import { PrincipalPicker } from "#src/components/principal-picker";
 import { useUserBriefs } from "#src/hooks/use-user-briefs";
 import { DatePicker, Descriptions, Form, Input, InputNumber, Select, Switch, theme, Typography } from "antd";
 import { useTranslation } from "react-i18next";
-import { DATE_FORMAT, disabledDateFor, fieldSpanClass, formatMoney, formatPayloadValue, parseMoney, PAYLOAD_FORM_LAYOUT, PAYLOAD_GRID_CLASS } from "../lib/payload";
+import { DATE_FORMAT, disabledDateFor, fieldSpanClass, formatMoneyInput, formatPayloadValue, parseMoney, PAYLOAD_FORM_LAYOUT, PAYLOAD_GRID_CLASS } from "../lib/payload";
 import { tableRowsError } from "../lib/table-field";
 import { TableFieldInput, TableFieldView } from "./table-field";
 
@@ -144,7 +144,7 @@ export function FormFieldInput({ field, disabled, ...control }: FormFieldInputPr
 					className="w-full"
 					min={field.min}
 					max={field.max}
-					formatter={formatMoney}
+					formatter={formatMoneyInput}
 					parser={parseMoney}
 					placeholder={field.placeholder}
 					disabled={disabled}

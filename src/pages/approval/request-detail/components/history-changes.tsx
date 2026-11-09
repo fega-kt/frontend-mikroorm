@@ -6,9 +6,9 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 import { Button, theme, Typography } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { formatMoney, formatPayloadValue } from "../../lib/payload";
+import { formatDecimal, formatPayloadValue } from "../../lib/payload";
 import { diffTableRows, formatTableCell, TableDiffKind } from "../../lib/table-diff";
-import { asTableRows, columnTotal, hasTotalRow, isMoneyColumn, isSummableColumn } from "../../lib/table-field";
+import { asTableRows, columnTotal, hasTotalRow, isSummableColumn } from "../../lib/table-field";
 
 const { Text } = Typography;
 
@@ -139,7 +139,7 @@ function DiffCell({ column, row, t }: { column: TableColumn, row: TableDiffRow, 
 	);
 }
 
-const formatTotal = (column: TableColumn, value: number) => (isMoneyColumn(column) ? formatMoney(value) : value.toLocaleString("vi-VN"));
+const formatTotal = (_column: TableColumn, value: number) => formatDecimal(value);
 
 /**
  * Trường bảng: tạo tờ trình thì hiện cả bảng; cập nhật thì so từng dòng (sửa / thêm / xoá),
