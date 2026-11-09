@@ -118,6 +118,9 @@ export function CommentInput({ candidates, placeholder, submitText, autoFocus, o
 		extensions,
 		autofocus: autoFocus ? "end" : false,
 		onUpdate: ({ editor: ed }) => setEmpty(ed.isEmpty),
+		// Danh sách vẽ qua portal ra body nên không tự ẩn khi pane bị ẩn (chuyển tab) hoặc bấm ra ngoài: ẩn khi ô nhập mất focus.
+		// Chọn một người dùng mousedown + preventDefault nên ô nhập không mất focus trước đó
+		onBlur: () => setSuggestion(null),
 		editorProps: {
 			handleKeyDown: (_view, event) => {
 				// Ctrl / Cmd + Enter: gửi (Enter thường xuống dòng)
