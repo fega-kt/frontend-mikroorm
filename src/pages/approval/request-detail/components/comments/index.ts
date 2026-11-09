@@ -1,2 +1,3 @@
 export { CommentPanel } from "./comment-panel";
-export { mentionCandidates } from "./mentions";
+export { mentionCandidates, mentionGroupIds } from "./mentions";
+export { useGroupMembers } from "./use-group-members";

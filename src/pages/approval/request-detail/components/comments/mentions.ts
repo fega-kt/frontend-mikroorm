@@ -1,11 +1,12 @@
 import type { ApprovalRequestDetail, UserBrief } from "#src/api/approval-request";
+import { PrincipalType } from "#src/api/system/principal/types";
 
 /**
  * Người có thể @mention, lấy từ chi tiết tờ trình: người trình, người duyệt / người xử lý / người được ủy quyền
- * ở các vòng, và người được chia sẻ (người dùng, không tính nhóm). Hẹp hơn phạm vi backend (thành viên nhóm không
- * hiện ở đây) nhưng không bao giờ rộng hơn — chọn từ danh sách này backend sẽ không từ chối.
+ * ở các vòng, người được chia sẻ, và `groupMembers` (thành viên các nhóm duyệt / nhóm được chia sẻ, xem `mentionGroupIds`).
+ * Không rộng hơn phạm vi backend — chọn từ danh sách này backend sẽ không từ chối.
  */
-export function mentionCandidates(detail: Pick<ApprovalRequestDetail, "requester" | "tasks" | "shares">, excludeUserId?: string): UserBrief[] {
+export function mentionCandidates(detail: Pick<ApprovalRequestDetail, "requester" | "tasks" | "shares">, excludeUserId?: string, groupMembers: UserBrief[] = []): UserBrief[] {
 	const byId = new Map<string, UserBrief>();
 	const add = (user?: UserBrief | null) => {
 		if (user && user.id !== excludeUserId && !byId.has(user.id))
@@ -20,7 +21,22 @@ export function mentionCandidates(detail: Pick<ApprovalRequestDetail, "requester
 	}
 	for (const share of detail.shares ?? [])
 		add(share.principal.user);
+	groupMembers.forEach(add);
 	return [...byId.values()];
+}
+
+/** Id các nhóm có mặt trong tờ trình (nhóm duyệt theo quy trình, nhóm được chia sẻ) — để tải thành viên cho @mention */
+export function mentionGroupIds(detail: Pick<ApprovalRequestDetail, "tasks" | "shares">): string[] {
+	const ids = new Set<string>();
+	for (const task of detail.tasks) {
+		if (task.originApprover.type === PrincipalType.Group)
+			ids.add(task.originApprover.id);
+	}
+	for (const share of detail.shares ?? []) {
+		if (share.principal.type === PrincipalType.Group)
+			ids.add(share.principal.id);
+	}
+	return [...ids];
 }
 
 /** Bỏ dấu + chữ thường để lọc không phân biệt dấu ("nguyen" khớp "Nguyễn") */
