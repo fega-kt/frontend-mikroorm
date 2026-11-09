@@ -6,14 +6,14 @@ import { Button, DatePicker, Form, Input, InputNumber, Select, Table, Tooltip, T
 import { NoFormStyle } from "antd/es/form/context";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
-import { DATE_FORMAT, formatMoney, formatPayloadValue, parseMoney } from "../lib/payload";
-import { asTableRows, columnTotal, duplicateCells, emptyTableRow, hasTotalRow, isEmptyCell, isMoneyColumn, isSummableColumn, missingRequiredCells, newTableRowId, numericCell, TABLE_ROW_ID, tableMaxRows, tableRowId } from "../lib/table-field";
+import { DATE_FORMAT, formatDecimal, formatMoneyInput, formatPayloadValue, parseMoney } from "../lib/payload";
+import { asTableRows, columnTotal, duplicateCells, emptyTableRow, hasTotalRow, isEmptyCell, isSummableColumn, missingRequiredCells, newTableRowId, numericCell, TABLE_ROW_ID, tableMaxRows, tableRowId } from "../lib/table-field";
 
 const { Text } = Typography;
 const API_DATE = "YYYY-MM-DD";
 
 /** Số hiển thị của cột số / tiền / công thức */
-const formatNumberCell = (column: TableColumn, value: number) => (isMoneyColumn(column) ? formatMoney(value) : value.toLocaleString("vi-VN"));
+const formatNumberCell = (_column: TableColumn, value: number) => formatDecimal(value);
 
 /** Ô công thức: chỉ đọc, tính lại theo các ô của dòng mỗi khi nhập */
 function FormulaCell({ column, row }: { column: TableColumn, row: TableRow }) {
@@ -83,7 +83,7 @@ function CellInput({ column, value, disabled, invalid, taken, onChange }: CellIn
 					className="w-full"
 					min={column.min}
 					max={column.max}
-					formatter={formatMoney}
+					formatter={formatMoneyInput}
 					parser={parseMoney}
 					value={value as number}
 					onChange={v => onChange(v ?? undefined)}

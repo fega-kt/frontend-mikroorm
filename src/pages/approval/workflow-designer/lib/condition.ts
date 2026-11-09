@@ -1,6 +1,7 @@
 import type { JsonLogic } from "#src/api/approval-workflow/types";
 import type { FormField } from "#src/api/setting/request-type/types";
 import { FormFieldType } from "#src/api/setting/request-type/types";
+import { formatDecimal } from "../../lib/payload";
 
 /**
  * Chuyển đổi giữa biểu thức json-logic của cạnh rẽ nhánh và dạng "hàng điều kiện" của trình tạo điều kiện.
@@ -173,7 +174,7 @@ function formatValue(value: unknown, field: FormField | undefined, opts: Summary
 	if (option)
 		return option.label;
 	if (typeof value === "number" && field?.type === FormFieldType.Money)
-		return value.toLocaleString("vi-VN");
+		return formatDecimal(value);
 	return String(value);
 }
 
