@@ -36,35 +36,37 @@ export function ApprovalActivityCard({ items }: { items: ApprovalActivityItem[] 
 			{items.length === 0
 				? <span className="text-[13px] text-colorTextTertiary">{t("home.activity.empty")}</span>
 				: (
-					<div className="flex flex-col">
-						{items.map((item) => {
-							const style = KIND_STYLE[item.kind];
-							return (
-								<div key={item.id} className="flex gap-3 py-2">
-									<span className="flex size-7 shrink-0 items-center justify-center rounded-full text-xs" style={{ color: style.color, background: style.bg }}>
-										{style.icon}
-									</span>
-									<div className="flex min-w-0 flex-col gap-0.5">
-										<span className="text-[13px] leading-normal text-colorTextSecondary">
-											<strong className="font-semibold text-colorText">{actorName(item)}</strong>
-											{" "}
-											{t(`home.activity.kind.${item.kind}`)}
-											{" "}
-											<Link to={approvalRequestPath.detail(item.requestId)} style={{ color: token.colorPrimary }}>{item.title}</Link>
-											{item.kind === "reassigned" && item.target && (
-												<>
-													{" "}
-													{t("home.activity.to")}
-													{" "}
-													<strong className="font-semibold text-colorText">{item.target.id === currentUserId ? t("home.activity.you") : item.target.fullName}</strong>
-												</>
-											)}
+					<div className="relative min-h-[280px] lg:h-full">
+						<div className="flex flex-col lg:absolute lg:inset-0 lg:overflow-y-auto">
+							{items.map((item) => {
+								const style = KIND_STYLE[item.kind];
+								return (
+									<div key={item.id} className="flex gap-3 py-2">
+										<span className="flex size-7 shrink-0 items-center justify-center rounded-full text-xs" style={{ color: style.color, background: style.bg }}>
+											{style.icon}
 										</span>
-										<span className="text-xs text-colorTextTertiary">{dayjs(item.createdAt).fromNow()}</span>
+										<div className="flex min-w-0 flex-col gap-0.5">
+											<span className="text-[13px] leading-normal text-colorTextSecondary">
+												<strong className="font-semibold text-colorText">{actorName(item)}</strong>
+												{" "}
+												{t(`home.activity.kind.${item.kind}`)}
+												{" "}
+												<Link to={approvalRequestPath.detail(item.requestId)} style={{ color: token.colorPrimary }}>{item.title}</Link>
+												{item.kind === "reassigned" && item.target && (
+													<>
+														{" "}
+														{t("home.activity.to")}
+														{" "}
+														<strong className="font-semibold text-colorText">{item.target.id === currentUserId ? t("home.activity.you") : item.target.fullName}</strong>
+													</>
+												)}
+											</span>
+											<span className="text-xs text-colorTextTertiary">{dayjs(item.createdAt).fromNow()}</span>
+										</div>
 									</div>
-								</div>
-							);
-						})}
+								);
+							})}
+						</div>
 					</div>
 				)}
 		</DashboardCard>
