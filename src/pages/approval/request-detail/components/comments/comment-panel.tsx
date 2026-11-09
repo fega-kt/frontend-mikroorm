@@ -21,7 +21,7 @@ interface CommentPanelProps {
 }
 
 /**
- * Tab bình luận của tờ trình: luồng bình luận gốc + phản hồi (cũ trước, mới sau), ô nhập có @mention,
+ * Tab bình luận của tờ trình: luồng bình luận gốc (mới nhất lên đầu) + phản hồi (cũ trước, mới sau), ô nhập có @mention,
  * sửa / xóa bình luận của mình. Cuộn tới cuối thì tự tải thêm (có nút "Xem thêm" dự phòng).
  */
 export function CommentPanel({ requestId, canComment, candidates, onChanged }: CommentPanelProps) {
@@ -50,7 +50,7 @@ export function CommentPanel({ requestId, canComment, candidates, onChanged }: C
 		setLoaded(true);
 	}, [requestId]);
 
-	/** Tải trang kế tiếp: số bình luận đã có luôn là bội của PAGE_SIZE cho đến khi tải hết */
+	/** Tải trang kế tiếp (sau khi thêm bình luận số đã có có thể lệch PAGE_SIZE 1 đơn vị: trang kế gối lên và đã lọc trùng theo id) */
 	const loadMore = useCallback(async () => {
 		if (busy.current)
 			return;
@@ -95,23 +95,23 @@ export function CommentPanel({ requestId, canComment, candidates, onChanged }: C
 
 	/**
 	 * Chạy một thao tác ghi rồi tải lại phần đã hiện. Lỗi đã được interceptor hiển thị nên chỉ báo thất bại
-	 * để giữ lại nội dung đang nhập. `showAll`: thêm bình luận mới (nằm cuối) thì tải tối đa để thấy ngay bình luận vừa viết.
+	 * để giữ lại nội dung đang nhập. Bình luận gốc mới nằm đầu danh sách nên tải lại đúng số đã hiện là thấy ngay.
 	 */
-	const write = async (action: () => Promise<unknown>, countChanged: boolean, showAll = false) => {
+	const write = async (action: () => Promise<unknown>, countChanged: boolean) => {
 		try {
 			await action();
 		}
 		catch {
 			return false;
 		}
-		await reload(showAll ? MAX_LIMIT : threads.length).catch(() => undefined);
+		await reload(threads.length + 1).catch(() => undefined);
 		if (countChanged)
 			onChanged();
 		return true;
 	};
 
 	const add = async (content: string, mentionIds: string[], parentId?: string) => {
-		const ok = await write(() => approvalRequestService.fetchAddComment(requestId, { content, mentionIds, parentId }), true, true);
+		const ok = await write(() => approvalRequestService.fetchAddComment(requestId, { content, mentionIds, parentId }), true);
 		if (ok && parentId)
 			setReplyingTo(null);
 		return ok;
