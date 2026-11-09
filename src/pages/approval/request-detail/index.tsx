@@ -42,7 +42,7 @@ import { DATE_TIME_FORMAT } from "../lib/payload";
 import { collectUserNames } from "../lib/progress";
 import { buildRounds } from "../lib/rounds";
 import ApprovalRequestForm from "../request-form";
-import { CommentPanel, mentionCandidates } from "./components/comments";
+import { CommentPanel, mentionCandidates, mentionGroupIds, useGroupMembers } from "./components/comments";
 import { HistoryTimeline } from "./components/history-timeline";
 import { RequestActions } from "./components/request-actions";
 import { RoundFiles } from "./components/round-files";
@@ -150,7 +150,9 @@ export default function ApprovalRequestDetailPage() {
 	};
 
 	const currentUserId = useUserStore(state => state.id);
-	const commentCandidates = useMemo(() => (detail ? mentionCandidates(detail, currentUserId) : []), [detail, currentUserId]);
+	const groupIds = useMemo(() => (detail ? mentionGroupIds(detail) : []), [detail]);
+	const groupMembers = useGroupMembers(groupIds);
+	const commentCandidates = useMemo(() => (detail ? mentionCandidates(detail, currentUserId, groupMembers) : []), [detail, currentUserId, groupMembers]);
 	const userNames = useMemo(() => (detail ? collectUserNames(detail) : {}), [detail]);
 
 	const run = async (fn: () => Promise<unknown>, successKey: string) => {
