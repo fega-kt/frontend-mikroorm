@@ -49,9 +49,11 @@ export function PasswordLogin() {
 				navigate(import.meta.env.VITE_BASE_HOME_PATH);
 			}
 		}
-		catch {
+		catch (error) {
 			messageLoadingApi?.destroy();
-			antdMessage.error(t("authority.loginFail"));
+			// Supabase từ chối tài khoản bị ban (tự khóa vì lâu không hoạt động, hoặc admin khóa) bằng mã user_banned
+			const banned = (error as { code?: string } | null)?.code === "user_banned";
+			antdMessage.error(t(banned ? "authority.accountLocked" : "authority.loginFail"));
 		}
 		finally {
 			messageLoadingApi?.destroy();

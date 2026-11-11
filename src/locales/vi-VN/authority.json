@@ -14,6 +14,7 @@
 	"loginInProgress": "Đang đăng nhập ...",
 	"loginSuccess": "Đăng nhập thành công",
 	"loginFail": "Đăng nhập thất bại",
+	"accountLocked": "Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên.",
 	"emailNotFound": "Email chưa được đăng ký trong hệ thống",
 	"codeLogin": "Đăng nhập bằng mã",
 	"codeLoginSubtitle": "Nhập email tài khoản để nhận mã đăng nhập",

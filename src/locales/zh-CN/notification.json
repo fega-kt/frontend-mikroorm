@@ -7,6 +7,10 @@
 		"title": "好久不见",
 		"message": "您已 {{days}} 天未登录系统。"
 	},
+	"ACCOUNT_LOCKED": {
+		"title": "账号已被锁定",
+		"message": "您的账号因 {{days}} 天未活动而被锁定。"
+	},
 	"LOGIN_NEW_DEVICE": {
 		"title": "新设备登录",
 		"message": "您的账号刚刚在 {{browser}}（{{os}}）上登录，IP {{ip}}。如果不是您本人操作，请立即修改密码。"

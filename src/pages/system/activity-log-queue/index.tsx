@@ -28,7 +28,7 @@ const STATUS_COLOR: Record<ActivityLogQueueStatus, string> = {
 };
 
 /** Loại email có thể gửi lại (có queue xử lý ở backend) */
-const MAIL_TYPES = Object.values(NotificationType).filter(type => type.startsWith("APPROVAL_") || type === NotificationType.LOGIN_INACTIVE_REMINDER);
+const MAIL_TYPES = Object.values(NotificationType).filter(type => type.startsWith("APPROVAL_") || type === NotificationType.LOGIN_INACTIVE_REMINDER || type === NotificationType.ACCOUNT_LOCKED);
 
 const REF_ROUTE: Record<string, (id: string) => string> = {
 	approval_requests: id => approvalRequestPath.detail(id),

@@ -106,6 +106,10 @@
 				"label": "Reminder email allow list",
 				"hint": "Only emails in this list receive reminders. Leave empty to send none"
 			},
+			"inactive_lock_days": {
+				"label": "Inactive days before account lock",
+				"hint": "Accounts with no activity for this many days are locked automatically (they cannot sign in until an admin unlocks them, and digital signatures are revoked). Must be greater than the reminder threshold; 0 or empty disables it"
+			},
 			"content_focus_outline_enabled": {
 				"label": "Content area outline",
 				"hint": "On: show the black outline around the main content area when it is focused. Off: hide it. Defaults to off when not configured"
@@ -169,7 +173,9 @@
 		"departmentRequired": "Department is required",
 		"activate": "Activate",
 		"deactivate": "Deactivate",
-		"confirmActivate": "Are you sure you want to activate this user?",
+		"confirmActivate": "Are you sure you want to activate this user? Digital signatures revoked when the account was deactivated are not restored; the user must enroll again.",
+		"lockReason": "Lock reason",
+		"lockReasonInactivity": "Long inactivity",
 		"confirmDeactivate": "Are you sure you want to deactivate this user?",
 		"activateSuccess": "User activated successfully",
 		"deactivateSuccess": "User deactivated successfully",
