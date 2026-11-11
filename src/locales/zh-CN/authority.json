@@ -14,6 +14,7 @@
 	"loginInProgress": "登录中...",
 	"loginSuccess": "登录成功",
 	"loginFail": "登录失败",
+	"accountLocked": "该账号已被锁定，请联系管理员。",
 	"emailNotFound": "该邮箱尚未在系统中注册",
 	"codeLogin": "验证码登录",
 	"codeLoginSubtitle": "输入账号邮箱以接收登录验证码",

@@ -12,6 +12,7 @@ const FIELD_LABELS: Record<string, string> = {
 	description: "system.user.description",
 	avatar: "system.user.avatar",
 	isActive: "common.status",
+	reason: "system.user.lockReason",
 };
 
 interface HistoryProps {
@@ -28,7 +29,14 @@ export function History({ ref }: HistoryProps) {
 			queryKeyPrefix="user"
 			fetcher={id => userService.fetchHistory(id)}
 			fieldLabels={FIELD_LABELS}
-			formatValue={(field, value) => field === "isActive" ? t(value ? "common.active" : "common.inactive") : undefined}
+			formatValue={(field, value) => {
+				if (field === "isActive")
+					return t(value ? "common.active" : "common.inactive");
+				// Lý do khóa tự động do hệ thống ghi (khóa tay không có trường này)
+				if (field === "reason" && value === "inactivity")
+					return t("system.user.lockReasonInactivity");
+				return undefined;
+			}}
 			valueTone={(field, value) => field === "isActive" && !value ? "error" : undefined}
 		/>
 	);

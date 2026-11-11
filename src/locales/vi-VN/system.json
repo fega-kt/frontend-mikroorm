@@ -107,6 +107,10 @@
 				"label": "Danh sách email nhận nhắc nhở",
 				"hint": "Chỉ các email trong danh sách mới nhận email nhắc nhở. Để trống thì không gửi cho ai"
 			},
+			"inactive_lock_days": {
+				"label": "Số ngày không hoạt động để khóa tài khoản",
+				"hint": "Tài khoản không hoạt động đủ số ngày này sẽ tự động bị khóa (không đăng nhập được cho tới khi quản trị viên mở khóa, chữ ký số bị thu hồi). Phải lớn hơn số ngày nhắc nhở; 0 hoặc để trống là tắt"
+			},
 			"content_focus_outline_enabled": {
 				"label": "Viền khung vùng nội dung",
 				"hint": "Bật: hiện viền đen quanh vùng nội dung chính khi vùng này được focus. Tắt: ẩn viền. Mặc định tắt nếu chưa cấu hình"
@@ -170,7 +174,9 @@
 		"departmentRequired": "Phòng ban là bắt buộc",
 		"activate": "Kích hoạt",
 		"deactivate": "Vô hiệu hóa",
-		"confirmActivate": "Bạn có chắc chắn muốn kích hoạt người dùng này?",
+		"confirmActivate": "Bạn có chắc chắn muốn kích hoạt người dùng này? Chữ ký số đã bị thu hồi khi khóa sẽ không được khôi phục, người dùng cần đăng ký lại.",
+		"lockReason": "Lý do khóa",
+		"lockReasonInactivity": "Lâu không hoạt động",
 		"confirmDeactivate": "Bạn có chắc chắn muốn vô hiệu hóa người dùng này?",
 		"activateSuccess": "Kích hoạt người dùng thành công",
 		"deactivateSuccess": "Vô hiệu hóa người dùng thành công",
