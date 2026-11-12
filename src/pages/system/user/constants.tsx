@@ -29,7 +29,7 @@ export function getConstantColumns(t: any): ProColumns<UserEntity>[] {
 		},
 		{
 			title: t("common.status"),
-			key: "status",
+			key: "isActive",
 			dataIndex: "isActive",
 			width: 150,
 			valueType: "select",

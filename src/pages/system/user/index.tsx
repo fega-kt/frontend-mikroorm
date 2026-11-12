@@ -33,7 +33,7 @@ const EXPORT_MAPPING: Record<string, string[]> = {
 	department: [
 		"department",
 	],
-	status: [
+	isActive: [
 		"status",
 	],
 	createdBy: [
