@@ -55,7 +55,7 @@ export function RequestDetailSkeleton() {
 export function RequestFormSkeleton() {
 	return (
 		<BasicContent>
-			<div className="mx-auto flex max-w-[1280px] flex-col gap-5">
+			<div className="flex flex-col gap-5">
 				<div className="flex flex-wrap items-center justify-between gap-4">
 					<div className="flex flex-col gap-2">
 						<Skeleton.Input active style={{ width: 220, height: 28 }} />
