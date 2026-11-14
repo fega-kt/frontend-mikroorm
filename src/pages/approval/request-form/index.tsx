@@ -307,7 +307,7 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 				layout={PAYLOAD_FORM_LAYOUT}
 				disabled={!editable}
 				initialValues={{ priority: ApprovalPriority.Normal, payload: {}, documents: [], attachments: [] }}
-				className="mx-auto flex max-w-[1280px] flex-col gap-5"
+				className="flex flex-col gap-5"
 			>
 				{/* Mốc để biết tiêu đề đã dính lên trên chưa (hết nhìn thấy mốc = đang dính) */}
 				<div ref={setHeaderSentinel} className="-mb-5 h-0" />
