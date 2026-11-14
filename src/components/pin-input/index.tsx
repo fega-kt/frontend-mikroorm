@@ -23,6 +23,8 @@ export function PinInput({ onChange, ...props }: PinInputProps) {
 		<Input.OTP
 			length={PIN_LENGTH}
 			mask="•"
+			// Ô đang focus bị antd bôi đen (select) nên lộ chữ số thật dưới lớp chấm → làm vùng bôi đen trong suốt
+			className="[&_input::selection]:bg-transparent [&_input::selection]:text-transparent"
 			formatter={value => value.replace(/\D/g, "")}
 			// onChange của OTP chỉ gọi khi đủ 6 ô; onInput gọi mỗi lần đổi để Form biết cả lúc xóa bớt số
 			onInput={cells => onChange?.(cells.join(""))}

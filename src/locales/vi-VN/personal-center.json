@@ -31,6 +31,7 @@
 		"introTitle": "Chữ ký số nội bộ",
 		"intro": "Dùng để \"Ký và duyệt\" văn bản tờ trình ở các bước bắt buộc ký. Bạn đặt mã PIN (6 chữ số) để mở khóa ký mỗi lần ký; hệ thống không lưu PIN. Sau khi đăng ký, quản trị duyệt thì chữ ký mới dùng được.",
 		"pin": "Mã PIN",
+		"setPin": "Đặt mã PIN",
 		"pinHint": "Gồm 6 chữ số. Không dùng ngày sinh, số điện thoại.",
 		"confirmPin": "Nhập lại mã PIN",
 		"oldPin": "Mã PIN hiện tại",
