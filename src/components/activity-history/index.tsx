@@ -514,7 +514,7 @@ export function ActivityHistory({ queryKey, fetcher, active = true, fillHeight =
 					{ACTION_ICONS[log.action] ?? <EditOutlined />}
 				</span>
 			),
-			children: <ActivityItem log={log} options={options} />,
+			content: <ActivityItem log={log} options={options} />,
 		};
 	});
 

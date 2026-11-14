@@ -7,7 +7,7 @@ export function tabLabel(icon: ReactNode, text: string, count?: number) {
 		<span className="inline-flex items-center gap-1.5">
 			{icon}
 			{text}
-			{!!count && <Tag bordered={false} className="m-0 rounded-full px-1.5 leading-4">{count}</Tag>}
+			{!!count && <Tag variant="filled" className="m-0 rounded-full px-1.5 leading-4">{count}</Tag>}
 		</span>
 	);
 }

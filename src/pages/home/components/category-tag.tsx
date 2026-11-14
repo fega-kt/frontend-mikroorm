@@ -7,7 +7,7 @@ import { categoryColor, REQUEST_TYPE_COLOR } from "../constants";
 export function CategoryTag({ category, type }: { category?: { id: string, name: string } | null, type: RequestTypeCode }) {
 	const { t } = useTranslation();
 	return (
-		<Tag bordered={false} color={category ? categoryColor(category.id) : REQUEST_TYPE_COLOR[type]} className="m-0 shrink-0">
+		<Tag variant="filled" color={category ? categoryColor(category.id) : REQUEST_TYPE_COLOR[type]} className="m-0 shrink-0">
 			{category?.name ?? t(`home.requestType.${type}`)}
 		</Tag>
 	);

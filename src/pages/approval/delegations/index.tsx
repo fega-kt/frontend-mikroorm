@@ -79,7 +79,7 @@ export default function ApprovalDelegations() {
 			width: 130,
 			render: (_, item) => (
 				<Tooltip title={t(`approval.delegation.modeDesc.${item.mode}`)}>
-					<Tag bordered={false} color={item.mode === ApprovalDelegationMode.Handover ? "purple" : "blue"} className="m-0">
+					<Tag variant="filled" color={item.mode === ApprovalDelegationMode.Handover ? "purple" : "blue"} className="m-0">
 						{t(`approval.delegation.modeShort.${item.mode}`)}
 					</Tag>
 				</Tooltip>

@@ -103,7 +103,7 @@ export function OverrideTab({ shifts, canManage }: OverrideTabProps) {
 			width: 240,
 			render: (_, row) => (
 				<span>
-					<Tag bordered={false}>{t(`workCalendar.target.${row.targetType}`)}</Tag>
+					<Tag variant="filled">{t(`workCalendar.target.${row.targetType}`)}</Tag>
 					{row.targetType !== WorkTargetType.Company && targetName(t, row)}
 				</span>
 			),

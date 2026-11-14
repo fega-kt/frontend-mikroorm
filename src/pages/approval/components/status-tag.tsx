@@ -27,5 +27,5 @@ export function TaskStatusTag({ status }: { status: ApprovalTaskStatus }) {
 export function PriorityTag({ priority }: { priority: ApprovalPriority }) {
 	const { t } = useTranslation();
 	const meta = PRIORITY_META[priority] ?? PRIORITY_META[1];
-	return <Tag color={meta.tag} bordered={false} className="m-0">{t(`approval.priority.${priority}`)}</Tag>;
+	return <Tag color={meta.tag} variant="filled" className="m-0">{t(`approval.priority.${priority}`)}</Tag>;
 }

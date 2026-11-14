@@ -18,9 +18,9 @@ export function VersionList({ detail, onPreview }: VersionListProps) {
 	const statusTag = (v: ApprovalWorkflowVersion) => {
 		switch (v.status) {
 			case ApprovalWorkflowVersionStatus.Draft:
-				return <Tag color="processing" bordered={false} className="m-0">{t("workflowDesigner.version.editingTag")}</Tag>;
+				return <Tag color="processing" variant="filled" className="m-0">{t("workflowDesigner.version.editingTag")}</Tag>;
 			case ApprovalWorkflowVersionStatus.Published:
-				return <Tag color="success" bordered={false} className="m-0">{t("workflowDesigner.version.live")}</Tag>;
+				return <Tag color="success" variant="filled" className="m-0">{t("workflowDesigner.version.live")}</Tag>;
 			default:
 				return (
 					<Typography.Text type="secondary" className="text-xs">

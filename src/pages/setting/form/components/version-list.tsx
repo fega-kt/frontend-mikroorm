@@ -37,7 +37,7 @@ export function VersionList({ formId, refreshToken, onPreview }: VersionListProp
 					>
 						<span className="flex items-center gap-2 text-[13px]">
 							{t("setting.form.versions.label", { version: v.version })}
-							{v.isCurrent && <Tag color="success" bordered={false} className="m-0">{t("setting.form.versions.current")}</Tag>}
+							{v.isCurrent && <Tag color="success" variant="filled" className="m-0">{t("setting.form.versions.current")}</Tag>}
 						</span>
 						<Typography.Text type="secondary" className="text-xs">
 							{[

@@ -217,7 +217,7 @@ export function StepEntries({ group, node, names, profiles = {}, canReassign, on
 				<PersonRow
 					person={person}
 					avatarSize={avatarSize}
-					extra={<Tag bordered={false} icon={<ClockCircleOutlined />} className="m-0">{t("approval.detail.notStarted")}</Tag>}
+					extra={<Tag variant="filled" icon={<ClockCircleOutlined />} className="m-0">{t("approval.detail.notStarted")}</Tag>}
 				>
 					{(node as WaitNode).slaHours && <Text type="secondary" className="text-xs">{t("workflowDesigner.summary.sla", { hours: (node as WaitNode).slaHours })}</Text>}
 				</PersonRow>
@@ -270,7 +270,7 @@ export function RoundTimeline({ round, totalRounds, definition, userNames, canRe
 		{
 			key: "submit",
 			color: token.colorPrimary,
-			children: (
+			content: (
 				<div className="pb-0">
 					<PersonRow
 						compact
@@ -292,7 +292,7 @@ export function RoundTimeline({ round, totalRounds, definition, userNames, canRe
 			return {
 				key: group.nodeId,
 				color: visual[status].color,
-				children: (
+				content: (
 					<div className="flex flex-col gap-1 pb-0">
 						{stepLabel(group.name, status)}
 						<StepEntries compact group={group} names={names} canReassign={canReassign} onReassign={onReassign} />
@@ -303,7 +303,7 @@ export function RoundTimeline({ round, totalRounds, definition, userNames, canRe
 		...upcoming.map(node => ({
 			key: node.id,
 			color: token.colorTextQuaternary,
-			children: (
+			content: (
 				<div className="flex flex-col gap-1 pb-0">
 					{stepLabel(nodeTitle(node, t), "pending")}
 					<StepEntries compact node={node} names={names} profiles={profiles} />
@@ -314,7 +314,7 @@ export function RoundTimeline({ round, totalRounds, definition, userNames, canRe
 			? [{
 				key: "end",
 				color: endColor,
-				children: (
+				content: (
 					<div className="pb-0">
 						<PersonRow
 							compact
@@ -340,7 +340,7 @@ export function RoundTimeline({ round, totalRounds, definition, userNames, canRe
 		<div className="flex flex-col gap-2">
 			<div className="flex items-center justify-between gap-2">
 				{totalRounds > 1
-					? <Tag color="blue" bordered={false} className="m-0 font-medium">{t("approval.detail.roundOf", { n: round.round, total: totalRounds })}</Tag>
+					? <Tag color="blue" variant="filled" className="m-0 font-medium">{t("approval.detail.roundOf", { n: round.round, total: totalRounds })}</Tag>
 					: <Text type="secondary" className="text-xs">{t("approval.detail.round", { n: round.round })}</Text>}
 				<RequestStatusTag status={round.outcome} />
 			</div>

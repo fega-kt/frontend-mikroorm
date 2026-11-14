@@ -46,7 +46,7 @@ export function VersionTab({ requestTypeId, refreshToken, canRestore, onRestored
 					>
 						<span className="flex items-center gap-2 text-[13px]">
 							{t("setting.requestType.versions.label", { version: v.version })}
-							{v.isCurrent && <Tag color="success" bordered={false} className="m-0">{t("setting.requestType.versions.current")}</Tag>}
+							{v.isCurrent && <Tag color="success" variant="filled" className="m-0">{t("setting.requestType.versions.current")}</Tag>}
 						</span>
 						<Typography.Text type="secondary" className="text-xs">
 							{[v.name, v.form.name, v.createdBy?.fullName, dayjs(v.createdAt).format("DD/MM/YYYY HH:mm")].filter(Boolean).join(" · ")}

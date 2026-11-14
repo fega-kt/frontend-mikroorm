@@ -116,7 +116,7 @@ export function MyRequests({ items }: { items: MyRequest[] }) {
 							))}
 						</div>
 					)}
-					<Tag bordered={false} color={STATUS_TAG[item.status]} className="m-0 w-[88px] shrink-0 text-center">
+					<Tag variant="filled" color={STATUS_TAG[item.status]} className="m-0 w-[88px] shrink-0 text-center">
 						{t(`home.myRequests.status.${item.status}`)}
 					</Tag>
 				</div>

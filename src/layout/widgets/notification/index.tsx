@@ -9,7 +9,7 @@ import { cn } from "#src/utils/cn";
 
 import { BellOutlined } from "@ant-design/icons";
 import { useLatest, useToggle } from "ahooks";
-import { Avatar, List, Popover, Skeleton, Tooltip } from "antd";
+import { Avatar, Popover, Skeleton, Tooltip } from "antd";
 import { clsx } from "clsx";
 import { useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
@@ -21,12 +21,31 @@ const useStyles = createUseStyles(({ token }) => (
 			"& .ant-popover-inner": {
 				padding: 0,
 			},
-			"& .ant-list-footer": {
-				borderTop: `1px solid ${token.colorBorder}`,
-			},
-			"& .ant-list-items": {
-				height: 380,
-				overflowY: "auto",
+		},
+		list: {
+			border: `1px solid ${token.colorBorder}`,
+			borderRadius: token.borderRadiusLG,
+			overflow: "hidden",
+		},
+		header: {
+			padding: "8px 16px",
+			borderBottom: `1px solid ${token.colorSplit}`,
+		},
+		footer: {
+			padding: "8px 16px",
+			borderTop: `1px solid ${token.colorBorder}`,
+		},
+		items: {
+			height: 380,
+			overflowY: "auto",
+		},
+		row: {
+			"display": "flex",
+			"alignItems": "center",
+			"padding": "8px 16px",
+			"borderBottom": `1px solid ${token.colorSplit}`,
+			"&:last-child": {
+				borderBottom: "none",
 			},
 		},
 		item: {
@@ -149,24 +168,51 @@ export const NotificationPopup: React.FC<Props> = ({ dot, count, notifications, 
 			onOpenChange={action.set}
 			content={(
 
-				<List
-					size="small"
-					bordered
-					header={(
-						<div className="flex items-center justify-between">
-							<div>{t("widgets.notifications")}</div>
-							<Tooltip title={notifications?.length ? t("widgets.markAllAsRead") : null}>
-								<BasicButton
-									disabled={!notifications?.length}
-									onClick={handleMakeAll}
-									type="text"
-									icon={<RiMailCheckLine />}
-								/>
-							</Tooltip>
-						</div>
-					)}
-					footer={showFooter && (
-						<div className="flex items-center justify-between">
+				<div className={classes.list}>
+					<div className={clsx(classes.header, "flex items-center justify-between")}>
+						<div>{t("widgets.notifications")}</div>
+						<Tooltip title={notifications?.length ? t("widgets.markAllAsRead") : null}>
+							<BasicButton
+								disabled={!notifications?.length}
+								onClick={handleMakeAll}
+								type="text"
+								icon={<RiMailCheckLine />}
+							/>
+						</Tooltip>
+					</div>
+					<div className={classes.items}>
+						{rows.map((item, index) => isLoadingRow(item)
+							? (
+								// Dòng loading nằm trong vùng cuộn (không phải loadMore bên ngoài) → popup không đổi chiều cao.
+								// Cuộn nhẹ cho dòng này hiện ra → các noti trượt lên thay vì giao diện nhảy
+								// Skeleton cùng bố cục với 1 noti (avatar 40px + tiêu đề, nội dung, thời gian) → như noti đang hiện dần ra
+								<div key={item.id} ref={scrollLoadingRowIntoView} className={clsx(classes.row, "gap-5")}>
+									<Skeleton.Avatar active size={40} className="shrink-0" />
+									<Skeleton active title={{ width: "60%" }} paragraph={{ rows: 2, width: ["90%", "30%"] }} />
+								</div>
+							)
+							: (
+								<div key={item.id} className={clsx(classes.row, classes.item, !item.isRead && classes.unread, "relative justify-start gap-5 cursor-pointer")} onClick={() => handleClick(item)}>
+									{/* Mốc cuộn: noti cuối lọt vào vùng nhìn thấy → tự tải trang sau */}
+									{hasMore && index === notifications!.length - 1 && <span ref={loadMoreSentinelRef} className="absolute bottom-0 left-0 h-px w-px" />}
+									{item.actorId
+										// Cả dòng là nút mở thông báo nên không bật hover
+										? <PeoplePicker readonly user={{ id: item.actorId, fullName: item.actorName, avatar: item.avatar }} avatarOnly avatarSize={40} hoverCard={false} />
+										: item.avatar || item.actorName
+											? <UserAvatar size={40} user={{ fullName: item.actorName, avatar: item.avatar }} />
+											: (
+												<Avatar size={40} icon={item.icon} className="shrink-0" style={{ backgroundColor: item.iconColor }} />
+											)}
+									<div className="flex flex-col gap-1 leading-none">
+										<p className={item.isRead ? "font-normal text-colorTextSecondary" : "font-semibold text-colorText"}>{item.title}</p>
+										<p className="my-1 text-xs text-muted-foreground line-clamp-2">{item.message}</p>
+										<p className="text-xs text-muted-foreground line-clamp-2">{item.date}</p>
+									</div>
+								</div>
+							))}
+					</div>
+					{showFooter && (
+						<div className={clsx(classes.footer, "flex items-center justify-between")}>
 							<BasicButton
 								disabled={!notifications?.length}
 								type="text"
@@ -179,37 +225,7 @@ export const NotificationPopup: React.FC<Props> = ({ dot, count, notifications, 
 							</BasicButton>
 						</div>
 					)}
-					dataSource={rows}
-					renderItem={(item, index) => isLoadingRow(item)
-						? (
-							// Dòng loading nằm trong vùng cuộn (không phải loadMore bên ngoài) → popup không đổi chiều cao.
-							// Cuộn nhẹ cho dòng này hiện ra → các noti trượt lên thay vì giao diện nhảy
-							// Skeleton cùng bố cục với 1 noti (avatar 40px + tiêu đề, nội dung, thời gian) → như noti đang hiện dần ra
-							<List.Item ref={scrollLoadingRowIntoView} className="gap-5">
-								<Skeleton.Avatar active size={40} className="shrink-0" />
-								<Skeleton active title={{ width: "60%" }} paragraph={{ rows: 2, width: ["90%", "30%"] }} />
-							</List.Item>
-						)
-						: (
-							<List.Item className={clsx(classes.item, !item.isRead && classes.unread, "relative justify-start gap-5 cursor-pointer")} onClick={() => handleClick(item)}>
-								{/* Mốc cuộn: noti cuối lọt vào vùng nhìn thấy → tự tải trang sau */}
-								{hasMore && index === notifications!.length - 1 && <span ref={loadMoreSentinelRef} className="absolute bottom-0 left-0 h-px w-px" />}
-								{item.actorId
-									// Cả dòng là nút mở thông báo nên không bật hover
-									? <PeoplePicker readonly user={{ id: item.actorId, fullName: item.actorName, avatar: item.avatar }} avatarOnly avatarSize={40} hoverCard={false} />
-									: item.avatar || item.actorName
-										? <UserAvatar size={40} user={{ fullName: item.actorName, avatar: item.avatar }} />
-										: (
-											<Avatar size={40} icon={item.icon} className="shrink-0" style={{ backgroundColor: item.iconColor }} />
-										)}
-								<div className="flex flex-col gap-1 leading-none">
-									<p className={item.isRead ? "font-normal text-colorTextSecondary" : "font-semibold text-colorText"}>{item.title}</p>
-									<p className="my-1 text-xs text-muted-foreground line-clamp-2">{item.message}</p>
-									<p className="text-xs text-muted-foreground line-clamp-2">{item.date}</p>
-								</div>
-							</List.Item>
-						)}
-				/>
+				</div>
 			)}
 		>
 

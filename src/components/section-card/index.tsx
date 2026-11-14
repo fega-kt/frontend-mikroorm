@@ -30,7 +30,7 @@ export function SectionCard({ icon, title, extra, children, className, bodyClass
 	return (
 		<Card
 			className={cn("border-none shadow-sm overflow-hidden", className)}
-			bodyStyle={{ padding: 0 }}
+			styles={{ body: { padding: 0 } }}
 			style={{ borderRadius: token.borderRadiusLG, backgroundColor: token.colorBgContainer }}
 		>
 			<div
