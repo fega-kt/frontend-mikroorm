@@ -31,6 +31,7 @@
 		"introTitle": "Internal digital signature",
 		"intro": "Used to \"Sign & approve\" request documents at steps that require a signature. You set a PIN (6 digits) to unlock signing each time; the system does not store your PIN. An administrator must approve your registration before you can sign.",
 		"pin": "PIN",
+		"setPin": "Set PIN",
 		"pinHint": "6 digits. Avoid birthdays and phone numbers.",
 		"confirmPin": "Confirm PIN",
 		"oldPin": "Current PIN",

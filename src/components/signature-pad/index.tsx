@@ -56,9 +56,19 @@ export function SignaturePad({ value, onChange }: SignaturePadProps) {
 		context.strokeStyle = "#1a2b6d";
 	}, [drawing, mode]);
 
+	/**
+	 * Toạ độ chuột → toạ độ trong canvas (đã scale theo dpr ở effect trên).
+	 * Khung có thể đổi kích thước sau khi khởi tạo (màn nhỏ, đổi số cột) nên phải quy đổi theo tỉ lệ
+	 * bitmap / kích thước hiển thị, nếu không nét vẽ lệch khỏi con trỏ
+	 */
 	const point = (event: React.PointerEvent<HTMLCanvasElement>) => {
-		const rect = event.currentTarget.getBoundingClientRect();
-		return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+		const canvas = event.currentTarget;
+		const rect = canvas.getBoundingClientRect();
+		const dpr = window.devicePixelRatio || 1;
+		return {
+			x: (event.clientX - rect.left) * (canvas.width / dpr / rect.width),
+			y: (event.clientY - rect.top) * (canvas.height / dpr / rect.height),
+		};
 	};
 
 	const onPointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {

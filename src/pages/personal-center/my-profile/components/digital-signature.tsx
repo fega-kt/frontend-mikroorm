@@ -98,7 +98,6 @@ export function DigitalSignature() {
 				<Form
 					form={enrollForm}
 					layout="vertical"
-					className="max-w-xl"
 					onFinish={async (values) => {
 						const ok = await run("enroll", () => signingCertificateService.fetchEnroll({ pin: values.pin, signatureImage: values.signatureImage }), "personal-center.signature.enrolled");
 						if (ok) {
@@ -107,18 +106,25 @@ export function DigitalSignature() {
 						}
 					}}
 				>
-					<div className="grid gap-x-4 sm:grid-cols-2">
-						<Form.Item name="pin" label={t("personal-center.signature.pin")} rules={pinRules} extra={t("personal-center.signature.pinHint")}>
-							<PinInput />
-						</Form.Item>
-						<Form.Item name="confirmPin" label={t("personal-center.signature.confirmPin")} dependencies={["pin"]} rules={[{ required: true, message: t("personal-center.signature.pinRequired") }, confirmRule("pin")]}>
-							<PinInput />
-						</Form.Item>
+					{/* Chia 2 cột như màn đã đăng ký: ảnh chữ ký bên trái, mã PIN bên phải */}
+					<div className="grid gap-6 md:grid-cols-2">
+						<div className="flex flex-col gap-2">
+							<Text strong>{t("personal-center.signature.image")}</Text>
+							<Form.Item name="signatureImage" className="m-0">
+								<SignaturePad />
+							</Form.Item>
+						</div>
+						<div className="flex flex-col gap-2">
+							<Text strong>{t("personal-center.signature.setPin")}</Text>
+							<Form.Item name="pin" label={t("personal-center.signature.pin")} rules={pinRules} extra={t("personal-center.signature.pinHint")}>
+								<PinInput />
+							</Form.Item>
+							<Form.Item name="confirmPin" label={t("personal-center.signature.confirmPin")} dependencies={["pin"]} rules={[{ required: true, message: t("personal-center.signature.pinRequired") }, confirmRule("pin")]}>
+								<PinInput />
+							</Form.Item>
+						</div>
 					</div>
-					<Form.Item name="signatureImage" label={t("personal-center.signature.image")}>
-						<SignaturePad />
-					</Form.Item>
-					<Button type="primary" htmlType="submit" loading={busy === "enroll"}>{t("personal-center.signature.enroll")}</Button>
+					<Button type="primary" htmlType="submit" loading={busy === "enroll"} className="mt-2">{t("personal-center.signature.enroll")}</Button>
 				</Form>
 			</div>
 		);
