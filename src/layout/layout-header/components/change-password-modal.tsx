@@ -25,7 +25,7 @@ export function ChangePasswordModal({ open, onOpenChange }: ChangePasswordModalP
 			title={t("authority.changePassword")}
 			open={open}
 			onOpenChange={onOpenChange}
-			modalProps={{ destroyOnClose: true, width: 420 }}
+			modalProps={{ destroyOnHidden: true, width: 420 }}
 			onFinish={async (values) => {
 				await authService.changePassword({
 					oldPassword: values.currentPassword,

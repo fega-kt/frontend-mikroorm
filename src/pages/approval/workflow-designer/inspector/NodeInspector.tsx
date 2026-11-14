@@ -65,7 +65,7 @@ function Header({ tag, tagColor, title, subtitle }: { tag: ReactNode, tagColor?:
 	const { token } = theme.useToken();
 	return (
 		<div className="px-4 pb-3 pt-4" style={{ borderBottom: `1px solid ${token.colorSplit}` }}>
-			<Tag color={tagColor} bordered={false} className="mb-1.5">{tag}</Tag>
+			<Tag color={tagColor} variant="filled" className="mb-1.5">{tag}</Tag>
 			<Typography.Title level={5} className="m-0" ellipsis>{title}</Typography.Title>
 			{subtitle && <Typography.Text type="secondary" className="text-xs">{subtitle}</Typography.Text>}
 		</div>

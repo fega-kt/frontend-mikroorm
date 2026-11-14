@@ -113,8 +113,8 @@ function UserCard({ user }: { user: PersonCardProfile }) {
 					{!locked && groups.length > 0 && (
 						<InfoRow icon={<TeamOutlined />} label={t("common.personCard.groups")}>
 							<div className="flex flex-wrap gap-1">
-								{groups.map(group => <Tag key={group.id} color="blue" bordered={false} className="m-0 max-w-full truncate">{group.name}</Tag>)}
-								{moreGroups > 0 && <Tag bordered={false} className="m-0">{`+${moreGroups}`}</Tag>}
+								{groups.map(group => <Tag key={group.id} color="blue" variant="filled" className="m-0 max-w-full truncate">{group.name}</Tag>)}
+								{moreGroups > 0 && <Tag variant="filled" className="m-0">{`+${moreGroups}`}</Tag>}
 							</div>
 						</InfoRow>
 					)}

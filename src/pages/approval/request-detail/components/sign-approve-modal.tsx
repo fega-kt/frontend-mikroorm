@@ -348,8 +348,8 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 							<FilePdfOutlined style={{ color: doc.signable ? token.colorError : token.colorTextDisabled }} />
 							<span className="min-w-0 flex-1 truncate text-[13px]">{doc.filename}</span>
 							{doc.signable
-								? <Tag className="m-0" bordered={false}>{t("approval.sign.page", { page: placement?.page ?? "—" })}</Tag>
-								: <Tag className="m-0" bordered={false}>{t("approval.sign.notSignable")}</Tag>}
+								? <Tag className="m-0" variant="filled">{t("approval.sign.page", { page: placement?.page ?? "—" })}</Tag>
+								: <Tag className="m-0" variant="filled">{t("approval.sign.notSignable")}</Tag>}
 						</button>
 					);
 				})}
@@ -416,7 +416,7 @@ function SignApproveBody({ requestId, onClose, onChanged, onSubmitting }: SignAp
 						<div key={doc.id} className="flex items-center gap-2 text-[13px]">
 							<FilePdfOutlined style={{ color: token.colorError }} />
 							<span className="min-w-0 flex-1 truncate">{doc.filename}</span>
-							<Tag className="m-0" bordered={false}>{t("approval.sign.page", { page: placements[doc.id]?.page ?? "—" })}</Tag>
+							<Tag className="m-0" variant="filled">{t("approval.sign.page", { page: placements[doc.id]?.page ?? "—" })}</Tag>
 						</div>
 					))}
 				</div>

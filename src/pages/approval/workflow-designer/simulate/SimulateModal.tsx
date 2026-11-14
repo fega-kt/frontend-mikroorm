@@ -152,7 +152,7 @@ export function SimulateModal({ open, onClose, workflowId, fields, getDefinition
 								items={result.steps.map(step => ({
 									key: step.nodeId,
 									color: step.error ? "red" : step.skipped ? "gray" : "blue",
-									children: (
+									content: (
 										<div className="flex flex-col gap-1">
 											<div className="flex flex-wrap items-center gap-1.5">
 												<Typography.Text strong className="text-[13px]">

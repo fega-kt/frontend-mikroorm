@@ -54,7 +54,7 @@ export function StepDetailDrawer({ nodeId, round, definition, userNames, fields,
 			title={node && (
 				<div className="flex items-center gap-2">
 					<span className="truncate">{nodeTitle(node, t)}</span>
-					<Tag color={visual[status].color} bordered={false} className="m-0">{t(`workflowDesigner.graph.status.${status}`)}</Tag>
+					<Tag color={visual[status].color} variant="filled" className="m-0">{t(`workflowDesigner.graph.status.${status}`)}</Tag>
 				</div>
 			)}
 		>
@@ -76,7 +76,7 @@ export function StepDetailDrawer({ nodeId, round, definition, userNames, fields,
 							<Timeline
 								items={sideEvents.map(item => ({
 									key: item.id,
-									children: (
+									content: (
 										<div className="flex flex-col gap-0.5">
 											<Text className="text-[13px]">{historyLabel(item, t)}</Text>
 											<Text type="secondary" className="text-xs">

@@ -34,7 +34,7 @@ export function IconLabel({
 		return (
 			<Tag
 				color={color}
-				bordered={false}
+				variant="filled"
 				className="m-0 font-bold px-1.5 py-0 rounded uppercase"
 				style={{ fontSize: 10 }}
 			>

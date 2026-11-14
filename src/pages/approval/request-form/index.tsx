@@ -487,7 +487,7 @@ export default function ApprovalRequestForm({ id: idProp, initialDetail, onExit 
 															label: (
 																<span className="flex items-center gap-2">
 																	<span className="min-w-0 flex-1 truncate">{u.name}</span>
-																	{u.isOwn && <Tag color="blue" bordered={false} className="m-0">{t("approval.form.ownUnitTag")}</Tag>}
+																	{u.isOwn && <Tag color="blue" variant="filled" className="m-0">{t("approval.form.ownUnitTag")}</Tag>}
 																</span>
 															),
 														}))}

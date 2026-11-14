@@ -45,7 +45,7 @@ export function ConditionBranches({ node, definition, fields, visitedNodeIds }: 
 						<div className="flex items-center justify-between gap-2">
 							<Text strong className="truncate">{edge.label || (edge.default ? t("workflowDesigner.edge.default") : condition)}</Text>
 							{taken && (
-								<Tag color="success" bordered={false} icon={<CheckCircleFilled />} className="m-0 shrink-0">
+								<Tag color="success" variant="filled" icon={<CheckCircleFilled />} className="m-0 shrink-0">
 									{t("approval.detail.branchTaken")}
 								</Tag>
 							)}

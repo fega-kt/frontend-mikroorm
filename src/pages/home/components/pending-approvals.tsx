@@ -86,7 +86,7 @@ export function PendingApprovals({ items, results, onAction }: PendingApprovalsP
 						<div className="flex w-[150px] shrink-0 justify-end gap-1.5">
 							{result
 								? (
-									<Tag bordered={false} color={result === "approved" ? "success" : "error"} className="m-0 px-2.5 py-1">
+									<Tag variant="filled" color={result === "approved" ? "success" : "error"} className="m-0 px-2.5 py-1">
 										{t(result === "approved" ? "home.pending.approved" : "home.pending.rejected")}
 									</Tag>
 								)

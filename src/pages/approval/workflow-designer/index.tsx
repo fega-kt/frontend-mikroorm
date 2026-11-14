@@ -231,7 +231,7 @@ function WorkflowDesigner() {
 								<Typography.Text strong className="truncate text-[15px]">{detail.name}</Typography.Text>
 								{editing && (
 									<Tooltip title={editing.status === "published" ? t("workflowDesigner.version.editingPublishedHint") : undefined}>
-										<Tag color={editing.color} bordered={false} className="m-0">
+										<Tag color={editing.color} variant="filled" className="m-0">
 											{t("workflowDesigner.version.label", { version: editing.version, status: t(`workflowDesigner.version.${editing.status}`) })}
 										</Tag>
 									</Tooltip>

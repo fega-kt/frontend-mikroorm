@@ -55,7 +55,7 @@ export function RequestHeaderMeta({ request }: { request?: ApprovalRequestDetail
 	const dot = <span aria-hidden="true">·</span>;
 	return (
 		<div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px]" style={{ color: token.colorTextSecondary }}>
-			<Tag bordered={false} color={status === ApprovalRequestStatus.Returned ? "warning" : undefined} className="m-0">
+			<Tag variant="filled" color={status === ApprovalRequestStatus.Returned ? "warning" : undefined} className="m-0">
 				{t(`approval.status.${status}`)}
 			</Tag>
 			{request?.code

@@ -94,7 +94,7 @@ export default function ExportHistory() {
 						<Tag color={STATUS_COLOR[job.status]} className="m-0">{t(`export.history.status.${job.status}`)}</Tag>
 						{job.sendEmail && (
 							<Tooltip title={t(`export.history.email.${job.emailStatus === ExportEmailStatus.None ? "pending" : job.emailStatus}`)}>
-								<Tag bordered={false} color={job.emailStatus === ExportEmailStatus.Failed ? "error" : undefined} className="m-0">@</Tag>
+								<Tag variant="filled" color={job.emailStatus === ExportEmailStatus.Failed ? "error" : undefined} className="m-0">@</Tag>
 							</Tooltip>
 						)}
 					</Space>

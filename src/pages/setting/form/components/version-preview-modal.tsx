@@ -62,7 +62,7 @@ export function VersionPreviewModal({ formId, version, canRestore, onClose, onRe
 					<Descriptions.Item label={t("setting.form.versions.createdBy")}>{version.createdBy?.fullName ?? "—"}</Descriptions.Item>
 					<Descriptions.Item label={t("setting.form.versions.createdAt")}>{dayjs(version.createdAt).format("DD/MM/YYYY HH:mm")}</Descriptions.Item>
 					<Descriptions.Item label={t("setting.form.versions.status")}>
-						{version.isCurrent ? <Tag color="success" bordered={false} className="m-0">{t("setting.form.versions.current")}</Tag> : "—"}
+						{version.isCurrent ? <Tag color="success" variant="filled" className="m-0">{t("setting.form.versions.current")}</Tag> : "—"}
 					</Descriptions.Item>
 				</Descriptions>
 			)}
