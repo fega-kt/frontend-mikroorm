@@ -42,7 +42,8 @@ export default function LayoutSidebar({ children, computedSidebarWidth }: Layout
 			>
 				<Logo sidebarCollapsed={sidebarCollapsed} />
 				<div className="overflow-hidden" style={{ height: `calc(100% - ${headerHeight}px - ${siderTriggerHeight}px)` }}>
-					<Scrollbar>
+					{/* global.css ép .simplebar-content cao 100% nên khi menu mở dài ra, SimpleBar không thấy content đổi kích thước → không bật cuộn. Ở sidebar để content tự giãn theo menu. */}
+					<Scrollbar className="[&_.simplebar-content]:h-auto!">
 						{children}
 					</Scrollbar>
 				</div>
