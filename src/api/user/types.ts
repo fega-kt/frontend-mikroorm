@@ -21,6 +21,10 @@ export interface UserEntity extends EntityBase {
 	workEmail: string
 	phoneNumber?: string
 	description: string
+	/** Ngày sinh, YYYY-MM-DD */
+	birthDate?: string | null
+	/** Ngày bắt đầu làm việc, YYYY-MM-DD (nhập tay, không phải createdAt) */
+	joinedDate?: string | null
 	permissions: Array<string>
 	isActive: boolean
 	department?: DepartmentEntity | null

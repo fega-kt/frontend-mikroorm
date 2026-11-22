@@ -9,6 +9,8 @@
 	"email": "Email công việc",
 	"phoneNumber": "Số điện thoại",
 	"description": "Giới thiệu bản thân",
+	"birthDate": "Ngày sinh",
+	"joinedDate": "Ngày bắt đầu làm việc",
 	"updateSuccess": "Cập nhật hồ sơ thành công",
 	"updateAvatarSuccess": "Cập nhật ảnh đại diện thành công",
 	"uploadingAvatar": "Đang tải ảnh đại diện lên...",

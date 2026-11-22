@@ -9,6 +9,8 @@
 	"email": "工作邮箱",
 	"phoneNumber": "手机号码",
 	"description": "个人简介",
+	"birthDate": "出生日期",
+	"joinedDate": "入职日期",
 	"updateSuccess": "资料更新成功",
 	"updateAvatarSuccess": "头像更新成功",
 	"uploadingAvatar": "正在上传头像...",

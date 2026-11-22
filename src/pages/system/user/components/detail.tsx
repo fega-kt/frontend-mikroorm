@@ -7,7 +7,8 @@ import {
 	ModalForm,
 	ProFormSwitch,
 } from "@ant-design/pro-components";
-import { App, Form, Input, Spin } from "antd";
+import { App, DatePicker, Form, Input, Spin } from "antd";
+import dayjs from "dayjs";
 import { useImperativeHandle, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -20,6 +21,14 @@ interface DetailProps {
 }
 
 let guard: (res?: { isChange: boolean }) => void;
+
+const DATE_FORMAT = "YYYY-MM-DD";
+
+/** Form giữ ngày dạng chuỗi YYYY-MM-DD (khớp BE), DatePicker cần dayjs */
+const dateItemProps = {
+	getValueProps: (value?: string | null) => ({ value: value ? dayjs(value, DATE_FORMAT) : null }),
+	normalize: (value?: dayjs.Dayjs | null) => (value ? value.format(DATE_FORMAT) : null),
+};
 
 export function Detail({ ref }: DetailProps) {
 	const { message } = App.useApp();
@@ -217,6 +226,25 @@ export function Detail({ ref }: DetailProps) {
 					]}
 				>
 					<TrimInput placeholder={t("common.pleaseEnter")} />
+				</Form.Item>
+				<Form.Item
+					name="birthDate"
+					label={t("system.user.birthDate")}
+					{...dateItemProps}
+				>
+					<DatePicker
+						className="w-full"
+						format="DD/MM/YYYY"
+						placeholder={t("system.user.birthDate")}
+						disabledDate={d => d.isAfter(dayjs(), "day")}
+					/>
+				</Form.Item>
+				<Form.Item
+					name="joinedDate"
+					label={t("system.user.joinedDate")}
+					{...dateItemProps}
+				>
+					<DatePicker className="w-full" format="DD/MM/YYYY" placeholder={t("system.user.joinedDate")} />
 				</Form.Item>
 				<ProFormDepartmentPicker
 					name="department"

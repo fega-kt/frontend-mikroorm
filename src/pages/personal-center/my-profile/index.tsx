@@ -1,4 +1,5 @@
 import type { DepartmentEntity } from "#src/api/system/dept/types.js";
+import type { Dayjs } from "dayjs";
 import { userService } from "#src/api/user";
 import { BasicContent } from "#src/components/basic-content";
 import { FormAvatarItem, TrimInput, TrimTextArea } from "#src/components/basic-form";
@@ -8,7 +9,8 @@ import {
 	ProForm,
 	ProFormText,
 } from "@ant-design/pro-components";
-import { App, Card, Col, Form, Row, Space, Typography } from "antd";
+import { App, Card, Col, DatePicker, Form, Row, Space, Typography } from "antd";
+import dayjs from "dayjs";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router";
@@ -23,8 +25,18 @@ interface ProfileFormValues {
 	workEmail: string
 	phoneNumber: string
 	description?: string
+	birthDate?: string | null
+	joinedDate?: string | null
 	avatar?: string | File
 }
+
+const DATE_FORMAT = "YYYY-MM-DD";
+
+/** Form giữ ngày dạng chuỗi YYYY-MM-DD (khớp BE), DatePicker cần dayjs */
+const dateItemProps = {
+	getValueProps: (value?: string | null) => ({ value: value ? dayjs(value, DATE_FORMAT) : null }),
+	normalize: (value?: Dayjs | null) => (value ? value.format(DATE_FORMAT) : null),
+};
 
 /** Tab của trang hồ sơ — giữ trên URL (?tab=signature) để mở thẳng từ hộp "Ký và duyệt" */
 enum ProfileTab {
@@ -32,7 +44,7 @@ enum ProfileTab {
 	Signature = "signature",
 }
 
-const DIRTY_FIELDS = ["fullName", "workEmail", "phoneNumber", "description"] as const;
+const DIRTY_FIELDS = ["fullName", "workEmail", "phoneNumber", "description", "birthDate"] as const;
 
 export default function Profile() {
 	const { message } = App.useApp();
@@ -56,6 +68,7 @@ export default function Profile() {
 			workEmail: values.workEmail,
 			phoneNumber: values.phoneNumber,
 			description: values.description,
+			birthDate: values.birthDate ?? null,
 		};
 
 		try {
@@ -203,6 +216,34 @@ export default function Profile() {
 											placeholder: t("personal-center.phoneNumber"),
 										}}
 									/>
+								</Col>
+								<Col xs={24} lg={12}>
+									<Form.Item
+										name="birthDate"
+										label={t("personal-center.birthDate")}
+										{...dateItemProps}
+									>
+										<DatePicker
+											className="w-full"
+											format="DD/MM/YYYY"
+											placeholder={t("personal-center.birthDate")}
+											disabledDate={d => d.isAfter(dayjs(), "day")}
+										/>
+									</Form.Item>
+								</Col>
+								<Col xs={24} lg={12}>
+									<Form.Item
+										name="joinedDate"
+										label={t("personal-center.joinedDate")}
+										{...dateItemProps}
+									>
+										<DatePicker
+											className="w-full"
+											format="DD/MM/YYYY"
+											placeholder={t("personal-center.joinedDate")}
+											disabled
+										/>
+									</Form.Item>
 								</Col>
 								<Col span={24}>
 									<Form.Item

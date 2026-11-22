@@ -66,7 +66,7 @@ export class UserService extends CrudServiceBase<UserEntity> {
 	}
 
 	/** Cập nhật thông tin cá nhân */
-	async updateProfile(data: { fullName: string, workEmail: string, phoneNumber: string, description?: string }) {
+	async updateProfile(data: { fullName: string, workEmail: string, phoneNumber: string, description?: string, birthDate?: string | null }) {
 		return this.patch<void>("profile", { json: data });
 	}
 
