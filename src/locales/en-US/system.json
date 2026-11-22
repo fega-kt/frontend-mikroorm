@@ -155,6 +155,8 @@
 		"email": "Email",
 		"phoneNumber": "Phone Number",
 		"phone": "Phone Number",
+		"birthDate": "Date of birth",
+		"joinedDate": "Start date",
 		"password": "Password",
 		"avatar": "Avatar",
 		"fullNameRequired": "Full name is required",

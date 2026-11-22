@@ -11,6 +11,8 @@ const initialState = {
 	phoneNumber: "",
 	workEmail: "",
 	description: "",
+	birthDate: null as string | null | undefined,
+	joinedDate: null as string | null | undefined,
 	permissions: [] as string[],
 	status: 1 as 0 | 1,
 };

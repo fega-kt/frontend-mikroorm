@@ -156,6 +156,8 @@
 		"email": "Email",
 		"phoneNumber": "Số điện thoại",
 		"phone": "Số điện thoại",
+		"birthDate": "Ngày sinh",
+		"joinedDate": "Ngày bắt đầu làm việc",
 		"password": "Mật khẩu",
 		"avatar": "Ảnh đại diện",
 		"fullNameRequired": "Họ và tên là bắt buộc",

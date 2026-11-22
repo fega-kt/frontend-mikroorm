@@ -10,6 +10,8 @@ const FIELD_LABELS: Record<string, string> = {
 	phoneNumber: "system.user.phoneNumber",
 	department: "system.user.department",
 	description: "system.user.description",
+	birthDate: "system.user.birthDate",
+	joinedDate: "system.user.joinedDate",
 	avatar: "system.user.avatar",
 	isActive: "common.status",
 	reason: "system.user.lockReason",

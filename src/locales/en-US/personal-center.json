@@ -9,6 +9,8 @@
 	"email": "Work Email",
 	"phoneNumber": "Phone Number",
 	"description": "About me",
+	"birthDate": "Date of birth",
+	"joinedDate": "Start date",
 	"updateSuccess": "Update Profile success",
 	"updateAvatarSuccess": "Avatar updated successfully",
 	"uploadingAvatar": "Uploading avatar...",
